@@ -22,4 +22,13 @@ public class Connect4 {
         return 0;
     }
 
+    /**
+     * This function counts the number of columns present in the board. This can be used in other functions of connect4 class
+     * @param board a 2D array board of size rows dimension 1 and columns dimension 2
+     * @return the length of the column which is the length of the number of columns.
+     */
+    public static int columnCount(int[][] board){
+        return 0;
+    }
+
 }
