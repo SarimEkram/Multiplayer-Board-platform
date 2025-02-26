@@ -13,4 +13,13 @@ public class Connect4 {
         return null;
     }
 
+    /**
+     * This function counts the number of rows present in the board. This can be used in other functions of connect4 class
+     * @param board a 2D array board of size rows dimension 1 and columns dimension 2
+     * @return the length of the board which is the length of the number of rows.
+     */
+    public static int rowCount(int[][] board){
+        return 0;
+    }
+
 }
