@@ -39,7 +39,6 @@ public class ConnectBoard {
     }
 
     /**
-     * This function counts the number of columns present in the board. This can be used in other functions of connect4 class
      * @return the board 2D array
      */
     public static int[][] getBoard(){
