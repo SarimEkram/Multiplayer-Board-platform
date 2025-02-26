@@ -9,7 +9,7 @@
 | Muhtasim Ishmam           |          |
 | Aditya Jasrotia           | 30212344 |
 | Hasanveer Kaur            |          |
-| Daniyaal Khan             |          |
+| Daniyaal Khan             | 30180782 |
 | Sean Kim                  |          |
 | Hardik Mehta              |          |
 | Advait Amitkumar Modh     |          |
