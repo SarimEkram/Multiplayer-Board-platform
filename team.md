@@ -1,4 +1,4 @@
-# CPSC 383 Group project (P-20)
+# SENG 300 Group project (P-20)
 
 
 GameLogic||
