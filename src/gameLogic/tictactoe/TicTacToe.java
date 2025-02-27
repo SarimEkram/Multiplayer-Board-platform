@@ -4,9 +4,14 @@ import java.util.Scanner;
 
 public class TicTacToe {
 
-    private static TicTacToeBoard board;
-    private static char activePlayer;
-    private static Scanner scanner = new Scanner(System.in);
+    TicTacToeBoard board;
+    private char activePlayer;
+    public static final char PLAYER_X = 'X';
+    public static final char PLAYER_O = 'O';
+    public TicTacToe(TicTacToeBoard board){
+        this.board = board;
+        this.activePlayer = PLAYER_X;
+    }
 
     /**
      * The main method that starts the game.
