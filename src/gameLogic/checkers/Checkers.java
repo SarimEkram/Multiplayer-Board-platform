@@ -8,9 +8,14 @@ public class Checkers {
     private CheckersPlayer redPlayer;
     private CheckersPlayer blackPlayer;
     private Turn turn;
+    private WINNER winner;
 
     public enum Turn {
         RED, BLACK
+    }
+
+    public enum WINNER {
+        RED, BLACK, NONE
     }
 
 
@@ -19,13 +24,14 @@ public class Checkers {
         this.board = board;
         this.redPlayer = new CheckersPlayer();
         this.blackPlayer = new CheckersPlayer();
-        turn = Turn.BLACK;
+        this.turn = Turn.BLACK;
+        this.winner = WINNER.NONE;
     }
 
     
 
     public void start(){
-        
+        board.placeAllPieces();
     }
 
 
@@ -34,13 +40,13 @@ public class Checkers {
     }
     
     public void RedTurn(){
-        CheckersPiece chosenPiece= redPlayer.choosePieceToMove(board, redPlayer);
-        movePiece(null);
+        CheckersPiece chosenPiece= redPlayer.choosePieceToMove(board);
+        movePiece(chosenPiece);
     }
 
     public void BlackTurn(){
-        CheckersPiece chosenPiece= blackPlayer.choosePieceToMove(board, redPlayer);
-        movePiece(null);
+        CheckersPiece chosenPiece= blackPlayer.choosePieceToMove(board);
+        movePiece(chosenPiece);
     }
 
     public void switchTurn(){
@@ -50,7 +56,11 @@ public class Checkers {
 
 
     public void movePiece(CheckersPiece piece){
-    
+        CheckersPiece.Type type=piece.getType();
+        if(type==CheckersPiece.Type.NORMAL){
+            CheckersMove.moveNormal(board,piece);
+        }else
+            CheckersMove.moveKing(board, piece);
     }
 
 

@@ -11,7 +11,7 @@ public class CheckersBoard {
 
     }
 
-    public void placePieces() {
+    public void placeAllPieces() {
         
     }
 
