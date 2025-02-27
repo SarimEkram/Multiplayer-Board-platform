@@ -1,14 +1,28 @@
 package gameLogic.connect4;
 
 public class ConnectBoard {
-    private static int row;
-    private static int column;
-    private static int[][] board;
+    // User inputs the row size
+    private  int row;
 
-    public ConnectBoard(int row, int column){
+    // User inputs the column size
+    private  int column;
+
+    // Player 1
+    private  int piece1;
+
+    // Player 2
+    private  int piece2;
+
+    // Board to keep track of the pieces played
+    private  int[][] board;
+
+    public ConnectBoard(int row, int column, int player1, int player2){
         this.row = row;
         this.column = column;
-        board = createBoard();
+        this.piece1 = player1;
+        this.piece2 = player2;
+        this.board = createBoard();
+
     }
 
     /**
@@ -16,31 +30,43 @@ public class ConnectBoard {
      * This is called in the constructor after the user decides to play connect 4 and selecting the size.
      * @return a 2D array filled with an integer value which will be considered for an empty spot.
      */
-    public static int[][] createBoard(){
+    public int[][] createBoard(){
         return null;
     }
 
     /**
-     * This function counts the number of rows present in the board. This can be used in other functions of connect4 class
-     * @return the length of the board which is the length of the number of rows.
+     * play from connect4 class is being called here
+     * @return the 0 if the play is successful else -1
      */
-    public static int rowCount(){
-        return row;
+    public int playPiece(int column, int player){
+        return -1;
     }
 
     /**
-     * This function counts the number of columns present in the board. This can be used in other functions of connect4 class
-     * @return the length of the column which is the length of the number of columns.
+     * This function checks if the board is full or not.
+     * @return false if any column of the first row is EMP/0.
      */
-    public static int columnCount(){
-        return column;
+    public static boolean full() {
+        return true;
     }
 
     /**
-     * @return the board 2D array
+     * When this function is called winInAnyRow, winInAnyColumn winInAnyDiagonal will be called to check.
+     * @param playerNumber The playerNumber to check for a win
+     * @return True if playerNumber has won
      */
-    public static int[][] getBoard(){
-        return board;
+    public boolean won (int playerNumber) {
+        return false;
+    }
+
+    /**
+     * This function determines if the game is complete due to a win or tie by either player
+     * if full we return true
+     * else we check won() for both blue or red
+     * @return True if game is complete, False otherwise
+     */
+    public boolean isGameOver () {
+        return false;
     }
 
 }
