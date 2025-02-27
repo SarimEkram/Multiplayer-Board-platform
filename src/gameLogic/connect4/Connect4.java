@@ -1,8 +1,22 @@
 package gameLogic.connect4;
 
 public class Connect4 {
+
+    /**
+     * This class represents the game logic for a Connect 4 game. It manages game rules,
+     * checks for wins in various directions, and controls the gameplay flow.
+     * We have to create an instance of this class after creating a ConnectBoard instance.
+     * Then we have to put that instance of Board class when we are creating instance of Connect4
+     */
     ConnectBoard board;
 
+    /**
+     * Constructs a new Connect4 game logic controller.
+     *
+     * @param board The ConnectBoard instance that represents the physical layout
+     *              and state of the Connect 4 board. This board is used to check
+     *              and update the game status as moves are made.
+     */
     public Connect4 (ConnectBoard board){
         this.board = board;
     }

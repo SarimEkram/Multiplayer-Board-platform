@@ -1,6 +1,11 @@
 package gameLogic.connect4;
 
 public class ConnectBoard {
+
+    /**
+     * Manages the game board for a Connect 4 game. This class is responsible for initializing the board,
+     * tracking player moves, and determining the state of the game.
+     */
     // User inputs the row size
     private  int row;
 
@@ -16,6 +21,13 @@ public class ConnectBoard {
     // Board to keep track of the pieces played
     private  int[][] board;
 
+    /**
+     * Constructs a new game board for Connect 4 with specified settings.
+     * @param row The number of rows in the game board.
+     * @param column The number of columns in the game board.
+     * @param player1 The identifier (usually a specific integer) for Player 1's pieces.
+     * @param player2 The identifier (usually a specific integer) for Player 2's pieces.
+     */
     public ConnectBoard(int row, int column, int player1, int player2){
         this.row = row;
         this.column = column;
