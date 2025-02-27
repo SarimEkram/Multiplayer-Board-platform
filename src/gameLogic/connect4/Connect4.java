@@ -53,6 +53,7 @@ public class Connect4 {
 
     /**
      * This function checks if the user has won in column or not.
+     * This will be called in winAnyColumn
      * @param column the column we want to check for the win condition.
      * @param piece the piece we want to check for.
      * @return true if the conditions for win in column fulfills.
@@ -64,6 +65,7 @@ public class Connect4 {
 
     /**
      * This function checks if the user has won in diagonal Forward Slash or not.
+     * This will be called in winAnyDiagonal
      * @param piece the piece we want to check for.
      * @return true if the conditions for win in Diagonal forward slash fulfills.
      */
@@ -73,13 +75,39 @@ public class Connect4 {
 
     /**
      * This function checks if the user has won in diagonal backslash or not.
-     * @param board a 2D array board of size rows (dimension 1) and columns (dimension 2)
+     * This will be called in winAnyDiagonal
      * @param piece the piece we want to check for.
-     * @param length is the length required to win.
      * @return true if the conditions for win in Diagonal backslash fulfills.
      */
-    public static boolean winInDiagonalBackslash (int[][] board, int piece, int length) {
+    public static boolean winInDiagonalBackslash (int piece) {
         return false;
     }
 
+    /**
+     * Is there a win in given board in any row of board
+     * @param piece The piece to look for length in a row for any row
+     * @return True if there is length in any row, False otherwise
+     */
+    private static boolean winInAnyRow(int piece) {
+        return false;
+    }
+
+
+    /**
+     * Is there a win in given board in any column of board
+     * @param piece The piece to look for length in a row for any column
+     * @return True if there is length in any column, False otherwise
+     */
+    private static boolean winInAnyColumn(int piece) {
+        return false;
+    }
+
+    /**
+     * Is there a win in given board in any diagonal of board
+     * @param piece The piece to look for length in a row for any diagonal
+     * @return True if there is
+     */
+    private static boolean winInAnyDiagonal(int piece) {
+        return false;
+    }
 }
