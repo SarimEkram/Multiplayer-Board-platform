@@ -12,7 +12,6 @@ public class TicTacToeBoard {
      * Creates and initializes the game board.
      */
     public void createBoard() {
-        return null;
     }
 
     /**
