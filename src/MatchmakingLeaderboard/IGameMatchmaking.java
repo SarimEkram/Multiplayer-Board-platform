@@ -9,16 +9,16 @@ package MatchmakingLeaderboard;
 public class IGameMatchmaking {
 
     void matchmaking(){
-        findMatch();
-        while (checkMatchmaking()) {
-            Player player1 = getPlayer();
-            Player player2 = getPlayer();
-            if (checkPlayers(player1, player2)) {
-                signalAddUser();
-                signalAddUser();
-                signalStartGame();
-            }
-        }
+//        findMatch();
+//        while (checkMatchmaking()) {
+//            Player player1 = getPlayer();
+//            Player player2 = getPlayer();
+//            if (checkPlayers(player1, player2)) {
+//                signalAddPlayer();
+//                signalAddPlayer();
+//                signalStartGame();
+//            }
+//        }
     }
 
     /**
@@ -62,7 +62,7 @@ public class IGameMatchmaking {
     /**
      * function to signal adding player to the game
      */
-    void signalAddUser(){
+    void signalAddPlayer(){
     }
 
     /**
