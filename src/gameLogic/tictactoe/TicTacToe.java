@@ -27,4 +27,12 @@ public class TicTacToe {
      */
     public static void changeActivePlayer() {
     }
+
+    /**
+     * Allows the current player to forfeit the game.
+     */
+    public static void forfeitGame() {
+
+    }
+    
 }
