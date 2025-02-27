@@ -42,7 +42,7 @@ public class ConnectBoard {
      * This is called in the constructor after the user decides to play connect 4 and selecting the size.
      * @return a 2D array filled with an integer value which will be considered for an empty spot.
      */
-    public int[][] createBoard(){
+    private int[][] createBoard(){
         return null;
     }
 
@@ -79,6 +79,24 @@ public class ConnectBoard {
      */
     public boolean isGameOver () {
         return false;
+    }
+
+    /**
+     * Allows a player to forfeit the game.
+     * This will be called in the gui controller class.
+     * @param playerNumber The number identifying the player who wants to forfeit.
+     * @return true if the forfeit is successful, false otherwise.
+     */
+    public boolean forfeit(int playerNumber){
+        return false;
+    }
+
+    /**
+     * Clears the game board by resetting all its elements.
+     * This will be called in the GUI controller class.
+     */
+    public void clearBoard(){
+
     }
 
 }
