@@ -1,5 +1,6 @@
 package MatchmakingLeaderboard;
 
+
 /**
  * Represents a player's rank based on ranking points.
  */
@@ -19,8 +20,8 @@ public class Rank {
      * Calculates the rank tier based on points
      * @return player's rank
      */
-    private String calculateRankTier() {
-        return BRONZE; // Default rank will be bronze
+    private RankTier calculateRankTier() {
+        return RankTier.BRONZE; // Default rank will be bronze
     }
 
     /**
@@ -41,8 +42,8 @@ public class Rank {
      * Getter method for recieving rank
      * @return rank of the player
      */
-    public String getRankTier() {
-        return rankTier;
+    public RankTier getRankTier() {
+        return this.rankTier;
     }
 
     @Override
