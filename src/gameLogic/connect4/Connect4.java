@@ -22,21 +22,17 @@ public class Connect4 {
     }
 
     /**
-     * This function checks if the row and column passed are valid or not.
-     * This will be used in play method
-     * @param row the row we are checking if it's valid or not.
-     * @param column the column we are checking if it's valid or not.
-     * @return true if the row and column is valid else return false.
+     * Switches the current player.
      */
-    private static boolean valid( int row, int column){
-        return false;
-
+    public void switchPlayer() {
     }
+
     /**
      * This function checks if we can play at a certain column or not.
      * @param column the column we want to play the piece.
-     * @return true if the column is 0/EMP.
+     * @return true if the column is empty
      */
+
     private static boolean canPlay(int column) {
         return false;
 
@@ -51,6 +47,13 @@ public class Connect4 {
     public static int play( int column, int piece) {
         return 0;
 
+    }
+    /**
+     * This checks if the board is full or not and will be called in isGameOver ConnectBoard
+     * @return true if board is full
+     */
+    public boolean isFull() {
+        return false;
     }
 
     /**
@@ -97,24 +100,6 @@ public class Connect4 {
         return false;
     }
 
-    /**
-     * Is there a win in given board in any row of board
-     * @param piece The piece to look for length in a row for any row
-     * @return True if there is length in any row, False otherwise
-     */
-    public static boolean winInAnyRow(int piece) {
-        return false;
-    }
-
-
-    /**
-     * Is there a win in given board in any column of board
-     * @param piece The piece to look for length in a row for any column
-     * @return True if there is length in any column, False otherwise
-     */
-    public static boolean winInAnyColumn(int piece) {
-        return false;
-    }
 
     /**
      * Is there a win in given board in any diagonal of board
@@ -122,6 +107,25 @@ public class Connect4 {
      * @return True if there is
      */
     public static boolean winInAnyDiagonal(int piece) {
+        return false;
+    }
+
+    /**
+     * When this function is called winInRow, winInColumn winInAnyDiagonal will be called to check.
+     * @param playerNumber The playerNumber to check for a win
+     * @return True if playerNumber has won
+     */
+    public boolean won (int playerNumber) {
+        return false;
+    }
+
+    /**
+     * Allows a player to forfeit the game.
+     * This will be called in the gui controller class.
+     * @param playerNumber The number identifying the player who wants to forfeit.
+     * @return true if the forfeit is successful, false otherwise.
+     */
+    public boolean forfeit(int playerNumber){
         return false;
     }
 

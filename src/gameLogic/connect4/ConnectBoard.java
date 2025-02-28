@@ -7,30 +7,28 @@ public class ConnectBoard {
      * tracking player moves, and determining the state of the game.
      */
     // User inputs the row size
-    private  int row;
+    private  int row = 6;
 
     // User inputs the column size
-    private  int column;
+    private  int column = 7;
 
     // Player 1
-    private  int piece1;
+    public int piece1;
 
     // Player 2
-    private  int piece2;
+    public int piece2;
+    private Connect4 gameLogic;
 
     // Board to keep track of the pieces played
     private  int[][] board;
 
     /**
      * Constructs a new game board for Connect 4 with specified settings.
-     * @param row The number of rows in the game board.
-     * @param column The number of columns in the game board.
      * @param player1 The identifier (usually a specific integer) for Player 1's pieces.
      * @param player2 The identifier (usually a specific integer) for Player 2's pieces.
      */
-    public ConnectBoard(int row, int column, int player1, int player2){
-        this.row = row;
-        this.column = column;
+    public ConnectBoard(int player1, int player2){
+        this.gameLogic = new Connect4(this);
         this.piece1 = player1;
         this.piece2 = player2;
         this.board = createBoard();
@@ -62,14 +60,7 @@ public class ConnectBoard {
         return true;
     }
 
-    /**
-     * When this function is called winInAnyRow, winInAnyColumn winInAnyDiagonal will be called to check.
-     * @param playerNumber The playerNumber to check for a win
-     * @return True if playerNumber has won
-     */
-    public boolean won (int playerNumber) {
-        return false;
-    }
+
 
     /**
      * This function determines if the game is complete due to a win or tie by either player
@@ -78,16 +69,6 @@ public class ConnectBoard {
      * @return True if game is complete, False otherwise
      */
     public boolean isGameOver () {
-        return false;
-    }
-
-    /**
-     * Allows a player to forfeit the game.
-     * This will be called in the gui controller class.
-     * @param playerNumber The number identifying the player who wants to forfeit.
-     * @return true if the forfeit is successful, false otherwise.
-     */
-    public boolean forfeit(int playerNumber){
         return false;
     }
 
