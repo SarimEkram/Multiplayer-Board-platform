@@ -7,20 +7,17 @@ package MatchmakingLeaderboard;
  */
 
 public interface IGameMatchmaking {
-
-    void matchmaking();
-
     /**
      * function for players to join the matchmaking queue
      *
      */
-    void joinQueue();
+    void joinQueue(int PLayerID);
 
     /**
      * function for players to leave the matchmaking queue
      *
      */
-    void leaveQueue();
+    void leaveQueue(int PlayerID);
 
     /**
      * function that contacts the server and finds matches to play
@@ -56,5 +53,5 @@ public interface IGameMatchmaking {
      * Check if players are similar in skill level
      *
      */
-    boolean checkPlayers(int Player1, int Player2);
+    boolean checkPlayers(Player Player1, Player Player2);
 }

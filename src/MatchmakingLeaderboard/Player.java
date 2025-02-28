@@ -1,13 +1,13 @@
 package MatchmakingLeaderboard;
 
 /**
- *
+ * Player class that is used to represent Users pulled from database and used in matchmaking and leaderboard
  *
  * @author Manav Patel
  */
 public class Player {
     private double winRatio;
-    private int Level;
+    private int level;
     private int userID;
 
     /**
@@ -18,7 +18,7 @@ public class Player {
      */
     public Player(double winRatio, int level, int userID) {
         this.winRatio = winRatio;
-        Level = level;
+        this.level = level;
         this.userID = userID;
     }
 
@@ -41,15 +41,15 @@ public class Player {
      * get level
      * @return level enum
      */
-    public int getLevel() {
-        return Level;
+    public int getlevel() {
+        return this.level;
     }
 
     /**
      * set level
      */
-    public void setLevel(int level) {
-        Level = level;
+    public void setlevel(int level) {
+        this.level = level;
     }
 
     /**
