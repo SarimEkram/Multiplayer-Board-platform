@@ -1,15 +1,15 @@
 package MatchmakingLeaderboard;
 
 /**
- *Abstract base class for game leaderboard and matchmaking
+ *Interface class for game leaderboard and matchmaking
  *
  * @author Manav Patel
  */
 
 public interface IGameMatchmaking {
+
     /**
      * function for players to join the matchmaking queue
-     *
      */
     void joinQueue(int PLayerID);
 

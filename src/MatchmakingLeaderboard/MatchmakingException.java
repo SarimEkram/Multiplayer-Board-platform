@@ -1,4 +1,4 @@
-package MatchmakingLeaderboard.TicTacToe.Matchmaking;
+package MatchmakingLeaderboard;
 
 public class MatchmakingException extends Exception{
 
