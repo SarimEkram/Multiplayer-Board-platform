@@ -1,22 +1,37 @@
 package MatchmakingLeaderboard;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
- *Abstract base class for game leaderboard and matchmaking
+ * Interface for game leaderboards.
+ * Defines essential methods for leaderboard.
  *
- * @author Manav Patel
+ * @author Happy Prajapati
  */
-
-public class IGameLeaderboard {
+public interface IGameLeaderboard {
 
     /**
-     * function to return
+     * Returns the scores or rankings of players.
      *
-     * @return
+     * @return List of player scores/rankings.
      */
-    public List<?> getScores(){
-        return null;
-    }
+    List<Player> getScores();
+
+    /**
+     * Updates a player's score in the leaderboard.
+     */
+    void updateScore(int playerId, int score);
+
+    /**
+     * Retrieves the top-ranked players from the leaderboard.
+     *
+     * @return List of top players.
+     */
+    List<Player> getTopPlayers();
+
+
+    /**
+     * Displays the leaderboard sorted by rank.
+     */
+    void displayLeaderboard();
 }
