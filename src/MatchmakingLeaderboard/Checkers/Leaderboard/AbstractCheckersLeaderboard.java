@@ -10,20 +10,8 @@ import MatchmakingLeaderboard.Player;
  * @author Jay Thakor
  */
 public abstract class AbstractCheckersLeaderboard implements IGameLeaderboard {
-    @Override
-    public List<Player> getScores() {
-    }
 
-    @Override
-    public void updateScore(int playerId, int score) {
+    public void leaderboard(){
+        // Add leaderboard logic
     }
-
-    @Override
-    public List<Player> getTopPlayers() {
-    }
-
-    @Override
-    public void displayLeaderboard() {
-    }
-
 }

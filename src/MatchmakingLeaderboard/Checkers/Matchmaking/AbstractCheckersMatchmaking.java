@@ -11,35 +11,7 @@ import MatchmakingLeaderboard.Player;
  */
 public abstract class AbstractCheckersMatchmaking implements IGameMatchmaking {
 
-    @Override
-    public void joinQueue(int playerID) {
-    }
-
-    @Override
-    public void leaveQueue(int playerID) {
-    }
-
-    @Override
-    public void findMatch() {
-    }
-
-    @Override
-    public void signalStartGame() {
-    }
-
-    @Override
-    public boolean checkMatchmaking() {
-    }
-
-    @Override
-    public void signalAddPlayer() {
-    }
-
-    @Override
-    public Player getPlayer() {
-    }
-
-    @Override
-    public boolean checkPlayers(Player Player1, Player Player2) {
+    public void matchmaking(){
+        // Add the matchmaking logic
     }
 }
