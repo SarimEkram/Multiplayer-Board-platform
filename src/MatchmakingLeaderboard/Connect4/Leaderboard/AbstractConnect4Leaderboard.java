@@ -25,7 +25,6 @@ public abstract class AbstractConnect4Leaderboard {
      * Records or updates a player's statistics in the leaderboard.
      */
     public void recordLeaderboardEntry(Player player, int score) {
-        // TODO: Add your leaderboard recording logic here
     }
 
     /**
