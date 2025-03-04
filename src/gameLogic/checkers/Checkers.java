@@ -46,15 +46,18 @@ public class Checkers {
     public void start() {
         board.placeAllPieces();
         while (checkBlackWin()||checkRedWin()) {
-    
+            BlackTurn();
+            checkBlackWin();
+            RedTurn();
+            checkRedWin();
         }
     }
 
     /**
      * Ends the game.
      */
-    public void end() {
-        
+    public WINNER end() {
+        return winner;
     }
 
     /**
