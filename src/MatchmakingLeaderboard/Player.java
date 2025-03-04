@@ -9,6 +9,7 @@ public class Player {
     private double winRatio;
     private int level;
     private int userID;
+    private boolean spectate;
 
     /**
      * construct class for Player
@@ -16,10 +17,19 @@ public class Player {
      * @param level rank level of player
      * @param userID userID of the player from database
      */
-    public Player(double winRatio, int level, int userID) {
+    public Player(double winRatio, int level, int userID, boolean spectate) {
         this.winRatio = winRatio;
         this.level = level;
         this.userID = userID;
+        this.spectate = spectate;
+    }
+
+    public boolean isSpectate() {
+        return this.spectate;
+    }
+
+    public void setSpectate(boolean spectate) {
+        this.spectate = spectate;
     }
 
     /**
@@ -27,13 +37,13 @@ public class Player {
      * @return win ratio decimal
      */
     public double getWinRatio() {
-        return winRatio;
+        return this.winRatio;
     }
 
     /**
      * set win ratio
      */
-    public void setWinRatio(int winRatio) {
+    public void setWinRatio(double winRatio) {
         this.winRatio = winRatio;
     }
 
@@ -41,14 +51,14 @@ public class Player {
      * get level
      * @return level enum
      */
-    public int getlevel() {
+    public int getLevel() {
         return this.level;
     }
 
     /**
      * set level
      */
-    public void setlevel(int level) {
+    public void setLevel(int level) {
         this.level = level;
     }
 
@@ -57,7 +67,7 @@ public class Player {
      * @return the unique ID
      */
     public int getUserID() {
-        return userID;
+        return this.userID;
     }
 
     /**
@@ -74,5 +84,8 @@ public class Player {
     }
 
     public void cancelMatch(){
+    }
+
+    public void spectateMatch(int gameid){
     }
 }
