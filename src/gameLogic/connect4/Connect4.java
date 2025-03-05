@@ -5,8 +5,7 @@ public class Connect4 {
     /**
      * This class represents the game logic for a Connect 4 game. It manages game rules,
      * checks for wins in various directions, and controls the gameplay flow.
-     * We have to create an instance of this class after creating a ConnectBoard instance.
-     * Then we have to put that instance of Board class when we are creating instance of Connect4
+     * Connect 4 instance is created in ConnectBoard
      */
     ConnectBoard board;
 
