@@ -1,11 +1,12 @@
 package networking.chat;
+import networking.NetworkHandler;
 
 import java.util.List;
 
 /**
  * Handles real-time in-game chat between players during an active game session.
  */
-public class InGameChat {
+public class InGameChat extends NetworkHandler {
 
     private String gameId;  // Unique identifier for the game session
     private List<String> chatHistory;  // Stores chat messages
@@ -16,6 +17,7 @@ public class InGameChat {
      * @param gameId The unique ID of the game session.
      */
     public InGameChat(String gameId) {
+        super(gameId);
         // Initialize chat history and set up necessary configurations
     }
 
@@ -54,6 +56,7 @@ public class InGameChat {
     /**
      * Establishes a real-time connection for the chat system.
      */
+    @Override
     public void establishConnection() {
         // Initialize WebSocket or networking connection for real-time chat
         // Handle connection setup logic
@@ -62,6 +65,7 @@ public class InGameChat {
     /**
      * Closes the real-time chat connection.
      */
+    @Override
     public void closeConnection() {
         // Gracefully close the WebSocket or networking connection
         // Ensure proper cleanup of resources

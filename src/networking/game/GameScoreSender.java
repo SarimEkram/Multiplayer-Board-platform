@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Handles sending player scores to the server when a game ends.
  */
-public class GameScoreSender {
+public class GameScoreSender extends GameNetworking{
 
     private String gameId;// Unique identifier for the game session
     private List<String> gameScore;
@@ -16,6 +16,7 @@ public class GameScoreSender {
      * @param gameId The unique ID of the game session.
      */
     public GameScoreSender(String gameId) {
+        super(gameId);
         // Initialize necessary configurations
     }
 
@@ -48,6 +49,7 @@ public class GameScoreSender {
     /**
      * Establishes a connection to the server for sending scores.
      */
+    @Override
     public void establishConnection() {
         // Initialize WebSocket or networking connection for real-time chat
         // Handle connection setup logic
@@ -56,6 +58,7 @@ public class GameScoreSender {
     /**
      * Closes the connection to server after sending scores.
      */
+    @Override
     public void closeConnection() {
         // Gracefully close the WebSocket or networking connection
         // Ensure proper cleanup of resources

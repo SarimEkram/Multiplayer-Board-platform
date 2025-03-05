@@ -1,6 +1,6 @@
 package networking.game;
 
-public class updateGameBoard {
+public class updateGameBoard extends GameNetworking {
 
     private String gameId; // Unique identifier for the game session
 
@@ -15,6 +15,7 @@ public class updateGameBoard {
      * @param //board The local game board object which we want to update.
      */
     public updateGameBoard(String gameId /* , board */) {
+        super(gameId);
         this.gameId = gameId;
         // Initialize the board field.
     }
@@ -46,4 +47,23 @@ public class updateGameBoard {
         // Return true if successful, false otherwise. Alternatively, could throw an exception if unsuccessful.
         return true;
     }
+
+    /**
+     * Establishes a network connection.
+     * This method should handle setting up the connection using WebSockets, HTTP, or another networking protocol.
+     */
+    @Override
+    public void establishConnection() {
+
+    }
+
+    /**
+     * Closes the network connection.
+     * This method should handle safely closing the connection and cleaning up resources.
+     */
+    @Override
+    public void closeConnection() {
+
+    }
+
 }
