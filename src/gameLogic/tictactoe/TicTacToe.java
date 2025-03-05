@@ -6,8 +6,8 @@ public class TicTacToe {
 
     TicTacToeBoard board;
     private char activePlayer;
-    public static final char PLAYER_X = 'X';
-    public static final char PLAYER_O = 'O';
+    private static final char PLAYER_X = 'X';
+    private static final char PLAYER_O = 'O';
     public TicTacToe(TicTacToeBoard board){
         this.board = board;
         this.activePlayer = PLAYER_X;
@@ -16,9 +16,9 @@ public class TicTacToe {
     /**
      * The main method that starts the game.
      *
-     * @param args Command-line arguments (not used).
+     *
      */
-    public static void main(String[] args) {
+    public void start() {
     }
 
     /**
