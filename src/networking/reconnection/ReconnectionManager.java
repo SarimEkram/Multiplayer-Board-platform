@@ -3,7 +3,7 @@ package networking.reconnection;
 /**
  * Handles reconnection attempts for players who lose connection during an ongoing game.
  */
-public class ReconnectionManager {
+public class ReconnectionManager extends AbstractReconnectionManager{
 
     private String gameId;  // Unique identifier for the game session
 
@@ -13,6 +13,7 @@ public class ReconnectionManager {
      * @param gameId The unique ID of the game session.
      */
     public ReconnectionManager(String gameId) {
+        super(gameId);
         // Store the game session ID and set up necessary configurations
     }
 
@@ -22,6 +23,7 @@ public class ReconnectionManager {
      * @param playerId The ID of the player attempting to reconnect.
      * @return true if reconnection is successful, false otherwise.
      */
+    @Override
     public boolean attemptReconnection(String playerId) {
         // Check if the game session is still active
         // Validate if the player is eligible for reconnection
