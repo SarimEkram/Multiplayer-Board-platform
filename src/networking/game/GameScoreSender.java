@@ -1,7 +1,6 @@
-package networking;
+package networking.game;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Handles sending player scores to the server when a game ends.

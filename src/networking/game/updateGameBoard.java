@@ -1,4 +1,4 @@
-package networking;
+package networking.game;
 
 public class updateGameBoard {
 

@@ -1,4 +1,4 @@
-package networking;
+package networking.reconnection;
 
 /**
  * Handles reconnection attempts for players who lose connection during an ongoing game.

@@ -1,4 +1,4 @@
-package networking;
+package networking.chat;
 
 import java.util.List;
 
