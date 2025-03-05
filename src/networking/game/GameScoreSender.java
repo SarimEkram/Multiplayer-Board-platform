@@ -26,11 +26,12 @@ public class GameScoreSender extends GameNetworking{
      * @param playerId The ID of the player sending the message.
      * @param score The score of a player
      */
-    public void sendScores(String playerId, int score) {
+    public boolean sendScores(String playerId, int score) {
         // Format and add score to gameScore
         // send the scores  to the server via HTTP or WebSocket
         // checks if the game has ended
         // if Game has ended each player score will be sent to the server
+        return true;
     }
 
     /**
@@ -64,6 +65,17 @@ public class GameScoreSender extends GameNetworking{
     public void closeConnection() {
         // Gracefully close the WebSocket or networking connection
         // Ensure proper cleanup of resources
+}
+
+    /**
+     * Handles network-related errors, such as disconnections or timeouts.
+     *
+     * @param errorMessage The error message or exception details.
+     */
+@Override
+public void handleNetworkError(String errorMessage) {
+    // Log the error message
+    // Attempt to reconnect if necessary
 }
 
 }
