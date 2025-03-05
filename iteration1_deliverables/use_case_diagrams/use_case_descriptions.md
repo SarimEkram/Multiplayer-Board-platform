@@ -78,3 +78,120 @@
 
 **Open Issues**:
 1. What happens if one of the players decide to cancel matchmaking midway.
+
+
+### Add player Groups
+
+**Iteration:** 1
+
+**Primary Actor**: System
+
+**Goal in Context**: Group matched players with their selected game
+
+**Preconditions**: Players are grouped by skill based matchmaking system
+
+**Trigger**: Player being grouped together
+
+**Scenario**:
+1. Matchmaking system has grouped players together based on skill.
+2. Matchmaking system sends grouped players to match their game.
+3. Groups are matched to their game worlds.
+
+**Post-Condition**: Groups attached with their game world
+
+**Exceptions**:
+1. No game worlds are available for players to enter.
+2. Network interrupt encountered.
+
+**Priority**: High, required to play games
+
+**When Available**: First development iteration
+
+**Frequency of Use**: High
+
+**Channel to actor**: Matchmaking system
+
+**Secondary Actor**: Players
+
+**Channel to Secondary Actor**: Game Screen
+
+**Open Issues**:
+1. Players cannot cancel matchmaking after reaching this level. They cannot quit the game midway.
+
+
+### Signal Start Game
+
+**Iteration:** 1
+
+**Primary Actor**: System
+
+**Goal in Context**: Signal the game system to start the game world simulation.
+
+**Preconditions**: Player groups are matched with a game world
+
+**Trigger**: Groups matched with a game world.
+
+**Scenario**:
+1. Player groups are matched with their game world.
+2. The subsystem checks if game world is ready.
+3. Signal sent to game system to start game world simulation.
+
+**Post-Condition**: Game simulation starts
+
+**Exceptions**:
+1. Network interrupt causes game to be dropped.
+2. The game system is operating at max capacity.
+
+**Priority**: High, required to play games
+
+**When Available**: First development iteration
+
+**Frequency of Use**: High
+
+**Channel to actor**: Matchmaking system
+
+**Secondary Actor**: Players
+
+**Channel to Secondary Actor**: Game Screen
+
+**Open Issues**:
+1. Player screen is not operational until the game simulation is loaded.
+
+
+### Spectate Game
+
+**Iteration:** 3
+
+**Primary Actor**: System
+
+**Goal in Context**: Signal database to join spectator player to join the game world
+
+**Preconditions**: The spectator is not blacklisted and game world is running
+
+**Trigger**: Spectator presses the spectate button
+
+**Scenario**:
+1. Spectator wants to view their friend's gameplay.
+2. The system checks if the game world is active and spectator can join.
+3. Player joins the game world simulation as spectator to their friend.
+
+**Post-Condition**: Spectator can spectate the game in real time.
+
+**Exceptions**:
+1. Player is not authorized to spectate the game
+2. Network issues disallow spectating.
+
+**Priority**: Medium, required for increased player satisfaction.
+
+**When Available**: third development iteration
+
+**Frequency of Use**: Fair
+
+**Channel to actor**: Matchmaking system
+
+**Secondary Actor**: Players
+
+**Channel to Secondary Actor**: Game Screen
+
+**Open Issues**:
+1. What happens when the game world is operating at max capacity and cannot host more players?
