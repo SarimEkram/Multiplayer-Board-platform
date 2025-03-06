@@ -29,6 +29,9 @@ public class GameScoreSender extends GameNetworking{
     public void sendScores(String playerId, int score) {
         // Format and add score to gameScore
         // send the scores  to the server via HTTP or WebSocket
+        // checks if the game has ended
+        // if Game has ended each player score will be sent to the server
+
     }
 
     /**
@@ -63,5 +66,6 @@ public class GameScoreSender extends GameNetworking{
         // Gracefully close the WebSocket or networking connection
         // Ensure proper cleanup of resources
 }
+
 
 }
