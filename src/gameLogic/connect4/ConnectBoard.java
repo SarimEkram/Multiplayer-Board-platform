@@ -24,6 +24,7 @@ public class ConnectBoard {
 
     /**
      * Constructs a new game board for Connect 4 with specified settings.
+     * creates a connect4 instance as gameLogic
      * @param player1 The identifier (usually a specific integer) for Player 1's pieces.
      * @param player2 The identifier (usually a specific integer) for Player 2's pieces.
      */
@@ -50,14 +51,6 @@ public class ConnectBoard {
      */
     public int playPiece(int column, int player){
         return -1;
-    }
-
-    /**
-     * This function checks if the board is full or not.
-     * @return false if any column of the first row is EMP/0.
-     */
-    public static boolean full() {
-        return true;
     }
 
 
