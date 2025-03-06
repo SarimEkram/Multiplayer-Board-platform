@@ -195,3 +195,51 @@
 
 **Open Issues**:
 1. What happens when the game world is operating at max capacity and cannot host more players?
+
+
+
+# Use Case: View Leaderboard
+
+**Iteration:** 1
+
+## Primary Actor
+**Player**
+
+## Goal in Context
+To allow the player to view the leaderboard and check rankings, scores, and statistics of other players.
+
+## Preconditions
+1. The player is logged into the system.
+2. The leaderboard data is available and up to date.
+
+## Trigger
+The player selects the "View Leaderboard" option from the game menu.
+
+## Scenario
+1. The player navigates to the leaderboard section.
+2. The system retrieves and displays the current leaderboard rankings.
+3. The player can scroll through the leaderboard to view player rankings.
+4. The player can search for a specific player’s ranking.
+5. The system updates the leaderboard in real-time based on new game results.
+
+## Postconditions
+1. The leaderboard information is displayed to the player.
+2. Any new updates in player rankings are reflected in the displayed leaderboard.
+3. The system logs the player's leaderboard viewing activity.
+
+## Exceptions
+1. The leaderboard data is unavailable due to a server issue.
+2. The player's search for a specific ranking returns no results.
+
+## Priority
+**High**
+
+## When Available
+Available when the player selects the "Leaderboard" option from the game menu.
+
+## Frequency of Use
+Often used, depending on player engagement and competition interest.
+
+## Channel to Actor
+Game UI interface.  
+
