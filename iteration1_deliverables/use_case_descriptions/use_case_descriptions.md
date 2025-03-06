@@ -198,7 +198,7 @@
 
 
 
-**Use Case**: View Leaderboard
+### View Leaderboard
 
 **Iteration:** 1
 
@@ -290,7 +290,7 @@ Often used, depending on player engagement and interest in performance tracking.
 Touchscreen display or game UI interface.  
 
 
-**Use Case**: Update Leaderboard
+### Update Leaderboard
 
 **Iteration:** 1
 
@@ -337,7 +337,7 @@ Frequently, depending on the number of matches played.
 System backend process with data output to the leaderboard UI.  
 
 
-**Use Case**: Game Result
+### Game Result
 
 **Iteration:** 1
 **Primary Actor**
