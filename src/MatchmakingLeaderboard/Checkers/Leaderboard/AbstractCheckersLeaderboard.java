@@ -8,6 +8,7 @@ import MatchmakingLeaderboard.Player;
  * Implements Game Leaderboard functionality.
  *
  * @author Jay Thakor
+ * @author Neel Savani
  */
 public abstract class AbstractCheckersLeaderboard implements IGameLeaderboard {
 

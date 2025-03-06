@@ -1,9 +1,16 @@
 package MatchmakingLeaderboard.Checkers.Leaderboard;
 
+
 import MatchmakingLeaderboard.Player;
 
 import java.util.List;
-
+/**
+ * Concrete class for Checkers leaderboard management.
+ * Extends Abstract Checkers Leaderboard
+ *
+ * @author Jay Thakor
+ * @author Neel Savani
+ */
 
 public class CheckersLeaderboard extends AbstractCheckersLeaderboard{
 
@@ -14,7 +21,6 @@ public class CheckersLeaderboard extends AbstractCheckersLeaderboard{
 
     @Override
     public void updateScore(int playerId, int score) {
-
     }
 
     @Override
