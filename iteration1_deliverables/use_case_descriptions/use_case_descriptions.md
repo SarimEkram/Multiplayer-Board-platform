@@ -202,45 +202,45 @@
 
 **Iteration:** 1
 
-**Primary Actor**
+**Primary Actor**:
 Player
 
-**Goal in Context**
+**Goal in Context**:
 To allow the player to view the leaderboard and check rankings, scores, and statistics of other players.
 
-**Preconditions**
+**Preconditions**:
 1. The player is logged into the system.
 2. The leaderboard data is available and up to date.
 
-**Trigger**
+**Trigger**:
 The player selects the "View Leaderboard" option from the game menu.
 
-**Scenario**
+**Scenario**:
 1. The player navigates to the leaderboard section.
 2. The system retrieves and displays the current leaderboard rankings.
 3. The player can scroll through the leaderboard to view player rankings.
 4. The player can search for a specific player’s ranking.
 5. The system updates the leaderboard in real-time based on new game results.
 
-**Postconditions**
+**Postconditions**:
 1. The leaderboard information is displayed to the player.
 2. Any new updates in player rankings are reflected in the displayed leaderboard.
 3. The system logs the player's leaderboard viewing activity.
 
-**Exceptions**
+**Exceptions**:
 1. The leaderboard data is unavailable due to a server issue.
 2. The player's search for a specific ranking returns no results.
 
-**Priority**
+**Priority**:
 High
 
-**When Available**
+**When Available**:
 Available when the player selects the "Leaderboard" option from the game menu.
 
-**Frequency of Use**
+**Frequency of Use**:
 Often used, depending on player engagement and competition interest.
 
-**Channel to Actor**
+**Channel to Actor**:
 Game UI interface.  
 
 
@@ -248,45 +248,45 @@ Game UI interface.
 
 **Iteration:** 1
 
-**Primary Actor**
+**Primary Actor**:
 layer
 
-**Goal in Context**
+**Goal in Context**:
 To allow the player to view their game statistics, including win/loss records, match history, and performance trends.
 
-**Preconditions**
+**Preconditions**:
 1. The player is logged into the system.
 2. The system has recorded and stored the player's game statistics.
 
-**Trigger**
+**Trigger**:
 The player selects the "View Stats" option from the game menu.
 
-**Scenario**
+**Scenario**:
 1. The player navigates to the stats section.
 2. The system retrieves the player’s game statistics.
 3. The system displays the player’s win/loss record, match history, and performance trends.
 4. The player can filter or sort statistics based on game type, date, or opponent.
 5. The system updates the statistics in real-time based on recent games.
 
-**Postconditions**
+**Postconditions**:
 1. The player's game statistics are displayed.
 2. Any new updates in player performance are reflected in the displayed statistics.
 3. The system logs the player's stats viewing activity.
 
-**Exceptions**
+**Exceptions**:
 1. The statistics data is unavailable due to a server issue.
 2. The player's statistics have not been recorded yet (e.g., new account with no matches).
 
-**Priority**
+**Priority**:
 High
 
-**When Available**
+**When Available**:
 Available when the player selects the "Stats" option from the game menu.
 
-**Frequency of Use**
+**Frequency of Use**:
 Often used, depending on player engagement and interest in performance tracking.
 
-**Channel to Actor**
+**Channel to Actor**:
 Touchscreen display or game UI interface.  
 
 
@@ -294,92 +294,92 @@ Touchscreen display or game UI interface.
 
 **Iteration:** 1
 
-**Primary Actor**
+**Primary Actor**:
 Game System
 
-**Goal in Context**
+**Goal in Context**:
 To update the leaderboard rankings based on the results of completed matches, ensuring accurate player rankings.
 
-**Preconditions**
+**Preconditions**:
 1. A match has been completed.
 2. The game system has recorded the match results.
 3. The leaderboard is available and operational.
 
-**Trigger**
+**Trigger**:
 A match concludes, and the system processes the results.
 
-**Scenario**
+**Scenario**:
 1. A match is completed.
 2. The system retrieves the match results.
 3. The system updates the player's ranking, win/loss record, and score.
 4. The updated leaderboard data is stored in the system.
 5. The leaderboard is refreshed and displayed with the new rankings.
 
-**Postconditions**
+**Postconditions**:
 1. The leaderboard reflects the updated rankings.
 2. The updated rankings are stored in the system database.
 3. Players can see the latest leaderboard standings.
 
-**Exceptions**
+**Exceptions**:
 1. A server error prevents the leaderboard from updating.
 2. The match results cannot be retrieved due to data corruption.
 
-**Priority**
+**Priority**:
 **High**
 
-**When Available**
+**When Available**:
 Automatically triggered after a match is completed.
 
-**Frequency of Use**
+**Frequency of Use**:
 Frequently, depending on the number of matches played.
 
-**Channel to Actor**
+**Channel to Actor**:
 System backend process with data output to the leaderboard UI.  
 
 
 ### Game Result
 
 **Iteration:** 1
-**Primary Actor**
+**Primary Actor**:
 Game System
 
-**Goal in Context**
+**Goal in Context**:
 To process and display the final result of a completed game, including winner, scores, and relevant statistics.
 
-**Preconditions**
+**Preconditions**:
 1. A match has been completed.
 2. The game system has recorded the match details and results.
 3. The game session is still active to display the final result.
 
-**Trigger**
+**Trigger**:
 The match reaches a conclusion (win/loss/draw).
 
-**Scenario**
+**Scenario**:
 1. The game detects the match has ended.
 2. The system determines the winner, final scores, and relevant statistics.
 3. The system updates the player's win/loss records.
 4. The system displays the game result to all players.
 5. The system stores the game result in the database for future reference.
 
-**Postconditions**
+**Postconditions**:
 1. The final game result is displayed to the players.
 2. The player's game records and statistics are updated.
 3. The system logs the game result for future leaderboard updates and match history.
 
-**Exceptions**
+**Exceptions**:
 1. A server error prevents the result from being recorded.
 2. The game session crashes before results are displayed.
 
-**Priority**
+**Priority**:
 **High**
 
-**When Available**
+**When Available**:
 Automatically triggered at the end of a game session.
 
-**Frequency of Use**
+**Frequency of Use**:
 Every time a match is completed.
 
-**Channel to Actor**
+**Channel to Actor**:
 Game UI and system backend for processing and storage.  
 
 
