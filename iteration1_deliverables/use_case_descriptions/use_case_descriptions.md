@@ -243,3 +243,50 @@ Often used, depending on player engagement and competition interest.
 ## Channel to Actor
 Game UI interface.  
 
+
+# Use Case: View Stats
+
+**Iteration:** 1
+
+## Primary Actor
+**Player**
+
+## Goal in Context
+To allow the player to view their game statistics, including win/loss records, match history, and performance trends.
+
+## Preconditions
+1. The player is logged into the system.
+2. The system has recorded and stored the player's game statistics.
+
+## Trigger
+The player selects the "View Stats" option from the game menu.
+
+## Scenario
+1. The player navigates to the stats section.
+2. The system retrieves the player’s game statistics.
+3. The system displays the player’s win/loss record, match history, and performance trends.
+4. The player can filter or sort statistics based on game type, date, or opponent.
+5. The system updates the statistics in real-time based on recent games.
+
+## Postconditions
+1. The player's game statistics are displayed.
+2. Any new updates in player performance are reflected in the displayed statistics.
+3. The system logs the player's stats viewing activity.
+
+## Exceptions
+1. The statistics data is unavailable due to a server issue.
+2. The player's statistics have not been recorded yet (e.g., new account with no matches).
+
+## Priority
+**High**
+
+## When Available
+Available when the player selects the "Stats" option from the game menu.
+
+## Frequency of Use
+Often used, depending on player engagement and interest in performance tracking.
+
+## Channel to Actor
+Touchscreen display or game UI interface.  
+
+
