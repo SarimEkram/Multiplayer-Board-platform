@@ -20,4 +20,4 @@ public class Connect4Leaderboard extends AbstractConnect4Leaderboard {
 
     public void removePlayerEntry(Player player) {
 }
-
+}
