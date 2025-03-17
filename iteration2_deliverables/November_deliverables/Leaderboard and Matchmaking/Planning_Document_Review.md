@@ -20,7 +20,7 @@ Currently, matchmaking development depends on game logic data. Any delays in gam
 The planning document clearly outlines set of core responsibilities and provides a structured timeline for development.
 The dependencies with game logic and GUI team are recognized.
 
-add testing period point (no clear testing period mentioned)
+
 
 
 
