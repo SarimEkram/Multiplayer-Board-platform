@@ -30,3 +30,23 @@ definitions for these aspects would enhance clarity.
 Regarding the use case diagram, the inclusion of a lobby after matchmaking may not be necessary for two-player games. The matchmaking system 
 should pair players, making them ready to start the game without an additional lobby step. Finally, ensuring consistency between the use case
 descriptions and the diagram would improve coherence and accuracy.
+
+# Class Structure Diagram
+## General Critique
+The Leaderboard & Matchmaking system has a well-structured design that properly maintains player statistics, ranks, 
+and pairing procedures while maintaining competitive balance.  The inclusion of crucial linkages between player data, matchmaking logic, 
+and rankings is advantageous.  However, the system is unclear about how ranks are calculated—whether using Elo, MMR, 
+or another algorithm—and does not specify how frequently the leaderboard refreshes. 
+Another area for improvement is managing edge circumstances, such as disconnected players or abandoned matches, in order to provide a consistent player experience.  
+Overall, the design is strong, however some features might be improved for more robustness and clarity.
+
+## Feature Requests
+- Introduce tier-based leaderboards (e.g., Bronze, Silver, Gold, and so on) and seasonal ranking resets to encourage ongoing player participation.
+- Implement a dynamic skill-based matchmaking system that evolves according to recent player performance trends.
+
+## Constructive Feedback
+The Leaderboard & Matchmaking system requires improved readability, including clearer linkages and uniform naming conventions.UML 
+relationships, particularly those between Leaderboard and PlayerStatistics, should explicitly specify aggregate or composition.The
+matchmaking mechanism is tightly connected, and employing a strategy pattern would provide flexibility for various ranking systems such as Elo or MMR.Edge
+circumstances, such as player disconnections and abandoned matches, should be handled with timeouts or fines.Optimizing 
+leaderboard updates through batch processing or event-driven refreshes will boost performance and efficiency.

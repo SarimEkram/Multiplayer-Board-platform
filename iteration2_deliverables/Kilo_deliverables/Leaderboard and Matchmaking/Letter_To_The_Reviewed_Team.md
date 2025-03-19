@@ -21,7 +21,7 @@ The Leaderboard class should have crucial features such as ranking system, score
 
 ### Feature Requested 
 - Store previous match results so that players can see their win/loss record and performance patterns, which will help with ranking computations and matching modifications.
-- Implement a queuing mechanism that prioritizes long-waiting players while gradually expanding search criteria to balance fairness and shorten wait times.
+- Implement a queuing mechanism that prioritizes long-waiting players while gradually expanding search criteria to balance fairness and shorten wait time.
 
 
 
