@@ -36,9 +36,8 @@ descriptions and the diagram would improve coherence and accuracy.
 The Leaderboard & Matchmaking system has a well-structured design that properly maintains player statistics, ranks, 
 and pairing procedures while maintaining competitive balance.  The inclusion of crucial linkages between player data, matchmaking logic, 
 and rankings is advantageous.  However, the system is unclear about how ranks are calculated—whether using Elo, MMR, 
-or another algorithm—and does not specify how frequently the leaderboard refreshes. 
-Another area for improvement is managing edge circumstances, such as disconnected players or abandoned matches, in order to provide a consistent player experience.  
-Overall, the design is strong, however some features might be improved for more robustness and clarity.
+or another algorithm and does not specify how frequently the leaderboard refreshes. Another area for improvement is managing edge circumstances, such as disconnected players or abandoned matches, 
+in order to provide a consistent player experience.Overall, the design is strong, however some features might be improved for more robustness and clarity.
 
 ## Feature Requests
 - Introduce tier-based leaderboards (e.g., Bronze, Silver, Gold, and so on) and seasonal ranking resets to encourage ongoing player participation.
