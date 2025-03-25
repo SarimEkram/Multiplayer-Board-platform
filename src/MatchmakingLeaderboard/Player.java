@@ -1,5 +1,7 @@
 package MatchmakingLeaderboard;
 
+import MatchmakingLeaderboard.TicTacToe.Matchmaking.TicTacToeMatchmaking;
+
 /**
  * Player class that is used to represent Users pulled from database and used in matchmaking and leaderboard
  *
@@ -10,6 +12,8 @@ public class Player {
     private int level;
     private int userID;
     private boolean spectate;
+    private Rank rank;
+    private int gameSignal;
 
     /**
      * construct class for Player
@@ -17,11 +21,13 @@ public class Player {
      * @param level rank level of player
      * @param userID userID of the player from database
      */
-    public Player(double winRatio, int level, int userID, boolean spectate) {
+    public Player(double winRatio, int level, int userID, boolean spectate, Rank rank, int gameSignal ) {
         this.winRatio = winRatio;
         this.level = level;
         this.userID = userID;
         this.spectate = spectate;
+        this.rank = rank;
+        this.gameSignal = gameSignal;
     }
 
     public boolean isSpectate() {
@@ -77,10 +83,30 @@ public class Player {
         this.userID = userID;
     }
 
+    public Rank getRank() {
+        return rank;
+    }
+
+    public void setRank(Rank rank) {
+        this.rank = rank;
+    }
+
+    public int getGameSignal() {
+        return gameSignal;
+    }
+
+    public void setGameSignal(int gameSignal) {
+        this.gameSignal = gameSignal;
+    }
+
     /**
      * function to
      */
     public void joinMatch(){
+        if (this.gameSignal == 1){
+            TicTacToeMatchmaking matchmaking = new TicTacToeMatchmaking();
+            matchmaking.signalAddPlayer();
+        }
     }
 
     public void cancelMatch(){

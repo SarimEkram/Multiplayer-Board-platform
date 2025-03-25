@@ -28,6 +28,7 @@ public class Rank {
      * Updates the ranking points and recalculates the rank
      */
     public void updateRank(int pointsEarned) {
+
     }
 
     /**

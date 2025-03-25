@@ -11,13 +11,13 @@ public interface IGameMatchmaking {
     /**
      * function for players to join the matchmaking queue
      */
-    void joinQueue(int PLayerID);
+    void joinQueue(Player player);
 
     /**
      * function for players to leave the matchmaking queue
      *
      */
-    void leaveQueue(int PlayerID);
+    void leaveQueue(Player player);
 
     /**
      * function that contacts the server and finds matches to play
@@ -42,12 +42,6 @@ public interface IGameMatchmaking {
      * function to signal adding player to the game
      */
     void signalAddPlayer();
-
-    /**
-     * function to simulate getting player from queue information for skilled based
-     *
-     */
-    Player getPlayer();
 
     /**
      * Check if players are similar in skill level

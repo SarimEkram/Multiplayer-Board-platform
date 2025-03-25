@@ -11,11 +11,11 @@ public class Connect4Matchmaking extends AbstractConnect4Matchmaking {
 
 
     @Override
-    public void joinQueue(int PlayerID) {
+    public void joinQueue(Player player) {
     }
 
     @Override
-    public void leaveQueue(int PlayerID) {
+    public void leaveQueue(Player player) {
     }
 
     @Override
@@ -33,11 +33,6 @@ public class Connect4Matchmaking extends AbstractConnect4Matchmaking {
 
     @Override
     public void signalAddPlayer() {
-    }
-
-    @Override
-    public Player getPlayer() {
-        return null;
     }
 
     @Override
