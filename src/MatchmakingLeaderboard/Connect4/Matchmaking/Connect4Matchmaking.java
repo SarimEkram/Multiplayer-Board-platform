@@ -32,7 +32,7 @@ public class Connect4Matchmaking extends AbstractConnect4Matchmaking {
     }
 
     @Override
-    public void signalAddPlayer() {
+    public void signalAddPlayer(Player player) {
     }
 
     @Override

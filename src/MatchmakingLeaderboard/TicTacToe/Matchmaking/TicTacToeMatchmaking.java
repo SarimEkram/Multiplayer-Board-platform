@@ -1,18 +1,37 @@
 package MatchmakingLeaderboard.TicTacToe.Matchmaking;
 
-import MatchmakingLeaderboard.MatchmakingQueue;
-import MatchmakingLeaderboard.Player;
+import MatchmakingLeaderboard.*;
 
 public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
 
     boolean matchmakingUp = false;
 
-    MatchmakingQueue queue = new MatchmakingQueue();
+    MatchmakingQueue queue;
 
     /**
      * Class that simulates matchmaking
      */
-    public TicTacToeMatchmaking() {
+    public TicTacToeMatchmaking() throws Exception {
+        try {
+            queue = new MatchmakingQueue();
+            this.matchmakingUp = true;
+        }catch (Exception e){
+            this.matchmakingUp = false;
+            throw new NetworkFailureException("Matchmaking is Down");
+        }
+        try {
+            while (true) {
+                queue.addPlayer(new Player(0.56, 2, 123456, false, new Rank(12),1));
+                this.matchmakingUp = true;
+                wait(2500);
+            }
+        }catch (Exception e){
+            this.matchmakingUp = false;
+            throw new MatchmakingException("Something went wrong!");
+        }
+    }
+
+    public void startMatchmaking(){
         if (checkMatchmaking()) {
             Player player = queue.getNextPlayer();
             boolean iscompatible = false;
@@ -42,10 +61,12 @@ public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
 
     @Override
     public void findMatch() {
+        System.out.println("Generate a request to the backend asking for an unpopulated game simulation");
     }
 
     @Override
     public void signalStartGame() {
+        System.out.println("Signal game system to start the game simulation and load matched players");
     }
 
     @Override
@@ -54,7 +75,8 @@ public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
     }
 
     @Override
-    public void signalAddPlayer() {
+    public void signalAddPlayer(Player player) {
+        System.out.printf("Signal database to add player %d ", player.getUserID());
     }
 
     @Override

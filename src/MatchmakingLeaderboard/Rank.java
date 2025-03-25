@@ -5,15 +5,19 @@ package MatchmakingLeaderboard;
  * Represents a player's rank based on ranking points.
  */
 public class Rank {
-    private Player player;
     private int rankingPoints;
     private RankTier rankTier;
 
     /**
      * Constructor initializes player's rank based on points
      */
-    public Rank(Player player) {
+    public Rank(int rankingPoints) {
+        this(RankTier.BRONZE, rankingPoints);
+    }
 
+    public Rank(RankTier rankTier, int rankingPoints) {
+        this.rankTier = rankTier;
+        this.rankingPoints = rankingPoints;
     }
 
     /**

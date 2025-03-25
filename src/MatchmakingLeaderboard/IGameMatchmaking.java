@@ -41,7 +41,7 @@ public interface IGameMatchmaking {
     /**
      * function to signal adding player to the game
      */
-    void signalAddPlayer();
+    void signalAddPlayer(Player player);
 
     /**
      * Check if players are similar in skill level

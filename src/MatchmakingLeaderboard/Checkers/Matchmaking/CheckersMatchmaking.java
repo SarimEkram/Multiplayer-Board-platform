@@ -25,7 +25,7 @@ public class CheckersMatchmaking extends AbstractCheckersMatchmaking{
     }
 
     @Override
-    public void signalAddPlayer() {
+    public void signalAddPlayer(Player player) {
     }
 
     @Override

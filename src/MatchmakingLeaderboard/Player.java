@@ -102,10 +102,11 @@ public class Player {
     /**
      * function to
      */
-    public void joinMatch(){
+    public void joinMatch() throws Exception {
         if (this.gameSignal == 1){
             TicTacToeMatchmaking matchmaking = new TicTacToeMatchmaking();
-            matchmaking.signalAddPlayer();
+            matchmaking.signalAddPlayer(this);
+            matchmaking.startMatchmaking();
         }
     }
 
