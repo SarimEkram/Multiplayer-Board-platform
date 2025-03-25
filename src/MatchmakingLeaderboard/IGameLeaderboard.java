@@ -34,4 +34,6 @@ public interface IGameLeaderboard {
      * Displays the leaderboard sorted by rank.
      */
     void displayLeaderboard();
+
+    void sortLeaderboard();
 }

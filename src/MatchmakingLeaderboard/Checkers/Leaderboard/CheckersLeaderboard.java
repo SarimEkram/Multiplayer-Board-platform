@@ -3,24 +3,27 @@ package MatchmakingLeaderboard.Checkers.Leaderboard;
 
 import MatchmakingLeaderboard.Player;
 
-import java.util.List;
+import java.util.*;
 /**
  * Concrete class for Checkers leaderboard management.
  * Extends Abstract Checkers Leaderboard
  *
  * @author Jay Thakor
  * @author Neel Savani
+ * @author Happy Prajapati
  */
 
 public class CheckersLeaderboard extends AbstractCheckersLeaderboard{
 
     @Override
     public List<Player> getScores() {
-        return List.of();
+        sortLeaderboard();
+        return players;
     }
 
     @Override
     public void updateScore(int playerId, int score) {
+
     }
 
     @Override
@@ -33,4 +36,9 @@ public class CheckersLeaderboard extends AbstractCheckersLeaderboard{
 
     }
 
+    private Player findPlayerById(int playerId) {
+        return null;
+    }
+
+    public void sortLeaderboard() {}
 }
