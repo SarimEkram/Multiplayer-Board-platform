@@ -1,3 +1,45 @@
+# IntelliJ IDEA project files
 /.idea/
+*.iml
+
+# Operating system files
 .DS_Store
-.gitignore
+Thumbs.db
+
+# Java compiled files
+*.class
+
+# Build directories
+/target/
+/build/
+
+# Maven wrapper
+mvnw
+mvnw.cmd
+/.mvn/
+
+# Gradle wrapper
+gradlew
+gradlew.bat
+/gradle/
+
+# Log files
+*.log
+
+# JDK-specific files
+/.jdk/
+
+# IDE user preferences
+*.user
+*.prefs
+
+# JavaFX runtime libraries (if included in the project)
+lib/
+
+# Eclipse project files
+/.classpath
+/.project
+/.settings/
+
+# NetBeans project files
+/nbproject/
