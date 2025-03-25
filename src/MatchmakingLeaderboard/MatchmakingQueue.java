@@ -41,8 +41,12 @@ public class MatchmakingQueue {
      * Checks if there are enough players to create a match.
      * @return true if there are enough players, false otherwise.
      */
-    public boolean ReadyToMatch() {
-        return false;
+    public boolean readyToMatch() {
+        if (this.getQueueSize() > 1){
+            return true;
+        }else {
+            return false;
+        }
     }
 
     /**
