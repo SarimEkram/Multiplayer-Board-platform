@@ -9,11 +9,20 @@ public class UserLogin {
      */
     public boolean loginUser(String email, String password){
         // Check if email and password are not null
+        if (!validateInput(email, password)){
+            return false;
+        }
         // Check in database, if user exist or not
+        if (!userExist(email)){
+            return false;
+        }
         // Get saved password from database
+        String savedPass = storedPassword(email);
         // Compare given and saved password
-        // if same return true, else false
-        return false;
+        if (!verifyPassword(password, savedPass)){
+            return false;
+        }
+        return true;
     }
 
     /**
