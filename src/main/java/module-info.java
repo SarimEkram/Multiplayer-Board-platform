@@ -1,4 +1,3 @@
-module ca.ucalgary.groupprojectgui.seng300w25project {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;
@@ -11,6 +10,4 @@ module ca.ucalgary.groupprojectgui.seng300w25project {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
 
-    opens ca.ucalgary.groupprojectgui to javafx.fxml;
-    exports ca.ucalgary.groupprojectgui;
 }
