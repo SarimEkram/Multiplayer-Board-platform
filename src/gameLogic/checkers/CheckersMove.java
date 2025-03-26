@@ -7,24 +7,18 @@ public class CheckersMove {
 
 
     /**
-     * Executes a normal move for the given checkers piece on the specified board.
+     * Executes a  move for the given checkers piece on the specified board.
      * 
      * 
      * @param board the current state of the checkers board
      * @param piece the checkers piece to move
+     * 
+     * moves the piece from start to dest location 
      */
-    public static void moveNormal(CheckersBoard board, CheckersPiece piece) {
+    public static void move(CheckersBoard board, CheckersPiece piece, int startRow, int startCol, int destRow, int destCol) {
         
     }
 
-    /**
-     * Executes a king move for the given checkers piece on the specified board.
-     * 
-     * @param board the current state of the checkers board
-     * @param piece the checkers piece to move as a king
-     */
-    public static void moveKing(CheckersBoard board, CheckersPiece piece) {
-        
-    }
+    
 
 }
