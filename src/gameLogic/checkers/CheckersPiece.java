@@ -20,7 +20,7 @@ public class CheckersPiece {
     }
 
     private final Colour colour;
-    private final Type type;
+    private Type type;
 
 
     /**
@@ -48,7 +48,7 @@ public class CheckersPiece {
      * 
      */
     public void promoteToKing() {
-        
+        this.type = Type.KING;
     }
 
     /**
