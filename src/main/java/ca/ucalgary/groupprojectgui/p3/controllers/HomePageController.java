@@ -33,20 +33,20 @@ public class HomePageController {
     @FXML
     public void initialize() {
         // Simulate logged-in user
-        String playerName = "Alex"; // Normally pulled from a user session
+        String playerName = "Generic Player"; // Normally pulled from a user session
         welcomeLabel.setText("Welcome, " + playerName + "!");
 
         // Simulate online friends
         ObservableList<String> friends = FXCollections.observableArrayList(
-                "Jamie (Online)", "Riley (Online)", "Casey (Online)"
+                "Player1 (Online)", "Player2 (Online)", "Player3 (Online)"
         );
         friendsList.setItems(friends);
 
         // Simulate recent scores
         ObservableList<String> scores = FXCollections.observableArrayList(
-                "Tic Tac Toe - Win vs Jamie",
-                "Connect 4 - Loss vs Riley",
-                "Snake Duel - Win vs AI"
+                "Tic Tac Toe - Win vs Player1",
+                "Connect 4 - Loss vs Player2"
+
         );
         recentScores.setItems(scores);
     }
