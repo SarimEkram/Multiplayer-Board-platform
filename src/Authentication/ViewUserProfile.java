@@ -1,35 +1,27 @@
 package Authentication;
 
+import java.util.List;
+
 public class ViewUserProfile {
-    /**
-     * Fetch the user's profile details
-     * @param userId The ID of user who want to see profile
-     * @return User object with profile data
-     */
-    public User getUserProfile(int userId){
-        // Check if userId is valid
-        // Fetch details of the user from database
-        // Return User object with profile data
-        return null;
+    private String username;
+    private String currentGameStatus;
+    private int userID;
+    private List<GameHistory> recentGames;
+    private UserStats userStats;
+    private Record record;
+
+    public ViewUserProfile(String username, String currentGameStatus, int userID,
+                           List<GameHistory> recentGames, UserStats userStats, Record record) {
+        this.username = username;
+        this.currentGameStatus = currentGameStatus;
+        this.userID = userID;
+        this.recentGames = recentGames;
+        this.userStats = userStats;
+        this.record = record;
     }
 
-    /**
-     * Check if user ID exists in data
-     * @param userId The ID of user who want to see profile
-     * @return Status for existence of ID
-     */
-    private boolean userExists(int userId){
-        // Search in database if ID exists or not
-        return false;
-    }
-
-    /**
-     * Fetch the profile data from database
-     * @param userId The ID of user who want to see profile
-     * @return User object with profile details
-     */
-    private User fetchProfile(int userId){
-        // Query the database to get user profile details
-        return null;
-    }
-}
+    public void viewProfile() {
+        System.out.println("Profile of " + username);
+        System.out.println("Current Game Status: " + currentGameStatus);
+        System.out.println("User ID: " + userID);
+        System.out.println("---Recent Games---");
