@@ -70,7 +70,11 @@ public class UserLogin {
      */
     private boolean verifyPassword(String password, String storedHash){
         // Convert user password to hash
+        String hashedPass = UserRegistration.hashPassword(password);
         // Compare entered hash to saved hash
+        if (storedHash.equals(hashedPass)) {
+            return true;
+        }
         // if same return true, else false
         return false;
     }
