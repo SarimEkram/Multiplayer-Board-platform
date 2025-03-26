@@ -41,8 +41,11 @@ public class UserLogin {
      */
     private boolean userExist(String email){
         // Search email in database
+        if (UserDatabase.getUserByEmail(email) == null) {
+            return false;
+        }
         // if found return true else return false
-        return false;
+        return true;
     }
 
     /**
@@ -52,7 +55,11 @@ public class UserLogin {
      */
     private String storedPassword(String email){
         // Get password from database where entered email match
-        return null;
+        User theUser = UserDatabase.getUserByEmail(email);
+
+        String password = theUser.getPassword();
+
+        return password;
     }
 
     /**
