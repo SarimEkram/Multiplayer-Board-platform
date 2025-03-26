@@ -13,4 +13,6 @@ module ca.ucalgary.groupprojectgui.p3 {
 
     opens ca.ucalgary.groupprojectgui.p3 to javafx.fxml;
     exports ca.ucalgary.groupprojectgui.p3;
+    exports ca.ucalgary.groupprojectgui.p3.controllers;
+    opens ca.ucalgary.groupprojectgui.p3.controllers to javafx.fxml;
 }
