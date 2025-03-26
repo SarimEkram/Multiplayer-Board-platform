@@ -24,8 +24,14 @@ public class UserLogin {
      */
     private boolean validateInput(String email, String password){
         // Check if email is in correct format
+        if (email == null || !email.contains("@")) {
+            return false;
+        }
         // Check if password is in correct format
-        return false;
+        if (password == null || password.length() < 6) {
+            return false;
+        }
+        return true;
     }
 
     /**
