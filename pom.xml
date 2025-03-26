@@ -135,7 +135,7 @@
                     <execution>
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>ca.ucalgary.groupprojectgui.p3/ca.ucalgary.groupprojectgui.p3.HelloApplication</mainClass>
+                            <mainClass>ca.ucalgary.groupprojectgui.p3/ca.ucalgary.groupprojectgui.p3.MainApplication</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>
