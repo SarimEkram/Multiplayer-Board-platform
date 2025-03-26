@@ -1,3 +1,4 @@
+module ca.ucalgary.groupprojectgui.p3 {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;
@@ -10,4 +11,6 @@
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
 
+    opens ca.ucalgary.groupprojectgui.p3 to javafx.fxml;
+    exports ca.ucalgary.groupprojectgui.p3;
 }
