@@ -21,7 +21,47 @@ public class ViewUserProfile {
     }
 
     public void viewProfile() {
+        if (username == null || username.isEmpty()) {
+            System.out.println("Error: Invalid user data. Profile could not be loaded.");
+            return;
+        }
+
         System.out.println("Profile of " + username);
-        System.out.println("Current Game Status: " + currentGameStatus);
+
+        if (currentGameStatus == null) {
+            System.out.println("Error: Current game status is unavailable.");
+        } else {
+            System.out.println("Current Game Status: " + currentGameStatus);
+        }
+
         System.out.println("User ID: " + userID);
+
+
         System.out.println("---Recent Games---");
+        if (recentGames == null || recentGames.isEmpty()) {
+            System.out.println("No recent games available.");
+        } else {
+            for (GameHistory game : recentGames) {
+                System.out.println(game); // Assuming GameHistory has a meaningful toString() method
+            }
+        }
+
+        System.out.println("---User Stats---");
+        if (userStats == null) {
+            System.out.println("User stats not available.");
+        } else {
+            System.out.println("Wins: " + userStats.getWins());
+            System.out.println("Losses: " + userStats.getLosses());
+            System.out.println("Total Games Played: " + userStats.getTotalGames());
+        }
+
+        System.out.println("---User Record---");
+        if (record == null) {
+            System.out.println("User record not available.");
+        } else {
+            System.out.println("Highest Score: " + record.getHighestScore());
+            System.out.println("Longest Winning Streak: " + record.getLongestWinningStreak());
+        }
+    }
+
+}
