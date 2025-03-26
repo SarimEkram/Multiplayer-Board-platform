@@ -7,7 +7,7 @@
     <groupId>ca.ucalgary.groupprojectgui</groupId>
     <artifactId>p3</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>seng300-w25-project1</name>
+    <name>seng300-w25-project</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -114,6 +114,9 @@
     </dependencies>
 
     <build>
+        <sourceDirectory>src/main/java</sourceDirectory>
+        <testSourceDirectory>src/test/java</testSourceDirectory>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -130,11 +133,9 @@
                 <version>0.0.8</version>
                 <executions>
                     <execution>
-                        <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>ca.ucalgary.groupprojectgui.p3/ca.ucalgary.groupprojectgui.p3.HelloApplication
-                            </mainClass>
+                            <mainClass>ca.ucalgary.groupprojectgui.p3/ca.ucalgary.groupprojectgui.p3.HelloApplication</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>
