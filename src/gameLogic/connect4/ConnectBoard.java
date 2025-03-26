@@ -61,16 +61,17 @@ public class ConnectBoard {
      * else we check won() for both blue or red
      * @return True if game is complete, False otherwise
      */
-    public boolean isGameOver () {
-        return false;
+    public boolean isGameOver () { //D
+        // Checks if the game is over by verifying if the board is full or if either player has won
+         return gameLogic.isFull(board) || gameLogic.won(board, piece1) || gameLogic.won(board, piece2);
     }
 
     /**
      * Clears the game board by resetting all its elements.
      * This will be called in the GUI controller class.
      */
-    public void clearBoard(){
-
+    public void clearBoard(){ //D
+        this.board = createBoard(); // just creates new board to clear the old one
     }
 
 }
