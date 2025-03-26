@@ -76,7 +76,7 @@ public class UserRegistration {
             byte[] hashed = md.digest(password.getBytes(StandardCharsets.UTF_8));
             return Base64.getEncoder().encodeToString(hashed);
         }
-        catch (Exception e){
+        catch (Exception e) {
             e.printStackTrace();
             return null;
         }

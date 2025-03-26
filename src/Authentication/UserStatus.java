@@ -23,6 +23,7 @@ public class UserStatus {
         if(user == null){   // Check if userId is valid
             return false;
         }
+
         user.setOnlineStatus(status);   // Update status in database or session store
         return true;
     }

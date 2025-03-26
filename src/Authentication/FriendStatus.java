@@ -5,6 +5,7 @@ public class FriendStatus{
         User friend = UserDatabase.getUserById(friendId);
         return (friend != null && friend.isOnline());
     }
+
     public String getFriendStatus(int friendId){
         User friend = UserDatabase.getUserById(friendId);
         if(friend == null){

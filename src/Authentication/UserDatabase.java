@@ -41,6 +41,7 @@ public class UserDatabase {
                         break;
                     }
                 }
+
                 return getUserById(id);
             }
         }
