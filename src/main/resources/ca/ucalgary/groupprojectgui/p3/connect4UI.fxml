@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.Connect4Controller"
+            prefWidth="1200" prefHeight="800">
+
+    <!-- TOP BAR -->
+    <top>
+        <HBox spacing="20" alignment="CENTER_LEFT" style="-fx-background-color: rgba(0,0,0,0.3);">
+            <padding>
+                <Insets top="15" right="20" bottom="15" left="20"/>
+            </padding>
+            <Label text="YOUR TURN" style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;"/>
+            <StackPane>
+                <Circle fx:id="disc" radius="25" fill="RED" stroke="WHITE" strokeWidth="2"/>
+            </StackPane>
+            <Label text="30s left" style="-fx-text-fill: white; -fx-font-size: 16px;"/>
+        </HBox>
+    </top>
+
+    <!-- LEFT SIDEBAR -->
+    <left>
+        <VBox spacing="20" alignment="TOP_CENTER" prefWidth="200"
+              style="-fx-background-color: rgba(0,0,0,0.3); -fx-border-color: #ffffff33; -fx-border-width: 0 2 0 0;">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+
+            <VBox alignment="CENTER">
+                <StackPane>
+                    <Circle radius="40" fill="SKYBLUE"/>
+                </StackPane>
+                <Label text="Player 1" style="-fx-text-fill: white; -fx-font-size: 16px;"/>
+                <Label text="Score: 0" style="-fx-text-fill: white; -fx-font-size: 12px;"/>
+            </VBox>
+
+            <Label text="VS" style="-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;"/>
+
+            <VBox alignment="CENTER">
+                <StackPane>
+                    <Circle radius="40" fill="ORANGE"/>
+                </StackPane>
+                <Label text="Player 2" style="-fx-text-fill: white; -fx-font-size: 16px;"/>
+                <Label text="Score: 0" style="-fx-text-fill: white; -fx-font-size: 12px;"/>
+            </VBox>
+        </VBox>
+    </left>
+
+    <!-- CENTER: BOARD -->
+    <center>
+        <StackPane fx:id="boardContainer">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <!-- The board will be populated from the controller -->
+        </StackPane>
+    </center>
+
+    <!-- RIGHT SIDEBAR: Chat -->
+    <right>
+        <VBox spacing="10" alignment="TOP_CENTER" prefWidth="300"
+              style="-fx-background-color: rgba(0,0,0,0.3); -fx-border-color: #ffffff33; -fx-border-width: 0 0 0 2;">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+
+            <Label text="CHAT" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+
+            <TextArea fx:id="chatArea" editable="false" prefRowCount="15" style="-fx-font-size: 14px;"/>
+
+            <HBox spacing="5">
+                <TextField fx:id="chatInput" promptText="Type a message..."/>
+                <Button text="Send" onAction="#onSendMessage"/>
+            </HBox>
+        </VBox>
+    </right>
+
+</BorderPane>
+
