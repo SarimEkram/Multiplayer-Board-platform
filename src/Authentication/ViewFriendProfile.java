@@ -1,16 +1,30 @@
-package Authentication;
+import java.util.ArrayList;
 
-public class ViewFriendProfile {
+    class Player {
+        private String username;
+        private ArrayList<Player> friends;
 
-    /**
-     * Retrieves the friend's profile details.
-     *
-     * @param friendId The ID of the friend whose profile is being viewed
-     * @return A User object containing the friend's profile details, or null if not found
-     */
-    public User viewFriendProfile(int friendId) {
-        // Check if friendId is valid
-        // Fetch friend profile details from database
-        return null;
-    }
-}
+        public Player(String username) {
+            this.username = username;
+            this.friends = new ArrayList<>();
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void addFriend(Player friend) {
+            if (!friends.contains(friend)) {
+                friends.add(friend);
+            }
+
+
+        public Player getFriend(String friendUsername) {
+            for (Player friend : friends) {
+                if (friend.getUsername().equals(friendUsername)) {
+                    return friend;
+                }
+            }
+            return null;
+        }
+
