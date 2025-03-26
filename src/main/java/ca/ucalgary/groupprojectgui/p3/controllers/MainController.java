@@ -14,6 +14,6 @@ public class MainController {
         welcomeText.setText("Welcome to OMG");
 
         // Use SceneManager to switch to the Connect4 screen
-        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/connect4UI.fxml", "Connect 4 Game");
+        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "HomePage");
     }
 }
