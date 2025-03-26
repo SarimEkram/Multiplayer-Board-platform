@@ -44,59 +44,36 @@ public class Checkers {
      * Starts the game and runs the game loop till someone wins.
      */
     public void start() {
-        board.placeAllPieces();
-        while (checkBlackWin()||checkRedWin()) {
-            BlackTurn();
-            checkBlackWin();
-            RedTurn();
-            checkRedWin();
-        }
+        this.board.placeAllPieces();
+        
     }
 
     /**
      * Ends the game.
      */
-    public WINNER end() {
-        return winner;
+    public WINNER end( WINNER winner) {
+        return this.winner;
     }
 
-    /**
-     * Executes the turn for the red player.
-     * The red player chooses a piece to move and then moves it.
-     */
-    public void RedTurn() {
-        CheckersPiece chosenPiece = redPlayer.choosePieceToMove(board);
-        movePiece(chosenPiece);
-    }
-
-    /**
-     * Executes the turn for the black player.
-     * The black player chooses a piece to move and then moves it.
-     */
-    public void BlackTurn() {
-        CheckersPiece chosenPiece = blackPlayer.choosePieceToMove(board);
-        movePiece(chosenPiece);
-    }
-
-    /**
-     * Switches the turn to the other player.
-     */
-    public void switchTurn() {
-        
-    }
 
     /**
      * Moves the given checkers piece.
      * If the piece is normal, performs a normal move; if it is a king, performs a king move.
      *
      * @param piece the checkers piece to be moved
+     * 
+     * handles the GUI input for selected piece and destination location
+     * and then switch turn once the function a turn has been done successfully
      */
     public void movePiece(CheckersPiece piece) {
-        CheckersPiece.Type type = piece.getType();
-        if (type == CheckersPiece.Type.NORMAL) {
-            CheckersMove.moveNormal(board, piece);
+        
+    }
+
+    private void switchTurn(){
+        if (this.turn == Turn.RED) {
+            this.turn = Turn.BLACK;
         } else {
-            CheckersMove.moveKing(board, piece);
+            this.turn = Turn.RED;
         }
     }
 
@@ -105,16 +82,27 @@ public class Checkers {
      *
      * @return true if the red player has won, false otherwise
      */
-    public boolean checkRedWin() {
-        return false;
-    }
-
-    /**
-     * Checks if the black player has won the game.
-     *
-     * @return true if the black player has won, false otherwise
-     */
-    public boolean checkBlackWin() {
-        return false;
+    private WINNER checkWin() {
+        winner = WINNER.NONE;
+        int redCount = 0;
+        int blackCount = 0;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                CheckersPiece p = this.board.board[i][j];
+                if (p != null) {
+                    if (p.getColour() == CheckersPiece.Colour.RED) 
+                        redCount++;
+                    else if (p.getColour() == CheckersPiece.Colour.BLACK) 
+                        blackCount++;
+                }
+            }
+        }
+        if (redCount == 0) {
+            winner = WINNER.BLACK;
+        } else if (blackCount == 0) {
+            winner = WINNER.RED;
+        }
+        
+        return winner;
     }
 }

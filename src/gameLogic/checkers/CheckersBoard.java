@@ -54,6 +54,6 @@ public class CheckersBoard {
      * @param col the column index from which to remove the piece
      */
     public void removePiece(int row, int col) {
-        board[row][col] = null;
+        this.board[row][col] = null;
     }
 }
