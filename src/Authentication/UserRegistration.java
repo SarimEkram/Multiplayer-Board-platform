@@ -1,5 +1,9 @@
 package Authentication;
 
+import java.security.MessageDigest;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+
 public class UserRegistration {
 
     /**
@@ -12,12 +16,26 @@ public class UserRegistration {
      */
     public boolean registerUser(String username, String email, String password) {
         // Check if username, email, and password are not empty
-        // Make sure email looks correct
+        if (!validateInput(username, email, password)){
+            return false;
+        }
+
         // Check if username or email is already used in database
+        if(UserDatabase.getUserByEmail(email) != null){
+            return false;
+        }
+        if(UserDatabase.getUserByUsername(username) != null){
+            return false;
+        }
+
         // Change password to hashed password before saving
-        // Save user info in database
-        // Return true if successful, false otherwise
-        return false;
+        String hashed = hashPassword(password);
+
+        // Create a new user object
+        User newUser = new User(0, username, email, hashed, 0.0, 1, false);
+
+        //Save user info in database
+        return UserDatabase.saveUser(newUser);
     }
 
     /**
@@ -31,22 +49,19 @@ public class UserRegistration {
     private boolean validateInput(String username, String email, String password) {
         // Check if username, email, password are not empty
         // Check if email is written properly
-        // Check if password is strong enough
-        return false;
+        // Check if password is of minimum length
+        if(username == null || username.isEmpty()){
+            return false;
+        }
+        if(email == null || !email.contains("@")){
+            return false;
+        }
+        if(password == null || password.length() < 6){
+            return false;
+        }
+        return true;
     }
 
-    /**
-     * Checks if username or email is already taken.
-     *
-     * @param username The chosen username
-     * @param email The user's email address
-     * @return true if username or email is already used, false if not
-     */
-    private boolean isUserExists(String username, String email) {
-        // Look in database for username or email
-        // If found return true, else return false
-        return false;
-    }
 
     /**
      * Hashes the user's password before saving.
@@ -56,19 +71,14 @@ public class UserRegistration {
      */
     private String hashPassword(String password) {
         // Change the password to hashed format
-        return null;
-    }
-
-    /**
-     * Saves user details in the database.
-     *
-     * @param username The chosen username
-     * @param email The user's email address
-     * @param hashedPassword The hashed version of the password
-     * @return true if user is saved successfully, false if error
-     */
-    private boolean saveUserToDatabase(String username, String email, String hashedPassword) {
-        // Save user info (username, email, hashed password) in database
-        return false;
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hashed = md.digest(password.getBytes(StandardCharsets.UTF_8));
+            return Base64.getEncoder().encodeToString(hashed);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 }

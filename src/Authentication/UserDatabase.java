@@ -30,6 +30,23 @@ public class UserDatabase {
         if (userId == null) return null;
         return getUserById(userId);
     }
+    public static User getUserByUsername(String username) {
+        for (Map<String, Object> fields : userData.values()) {
+            String existingUsername = (String) fields.get("username");
+            if (existingUsername != null && existingUsername.equals(username)) {
+                int id = -1;
+                for (Map.Entry<Integer, Map<String, Object>> entry : userData.entrySet()) {
+                    if (entry.getValue() == fields) {
+                        id = entry.getKey();
+                        break;
+                    }
+                }
+                return getUserById(id);
+            }
+        }
+        return null;
+    }
+
 
     // Save or update a user to the field map
     public static boolean saveUser(User user) {

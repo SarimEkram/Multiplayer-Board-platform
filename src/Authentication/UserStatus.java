@@ -8,9 +8,8 @@ public class UserStatus {
      * @return Status of user
      */
     public boolean isUserOnline(int userId){
-        // Check if userId is valid
-        // Search in database or session store to check if user is online
-        return false;
+        User user = UserDatabase.getUserById(userId);
+        return (user!=null && user.isOnline());// Search in database or session store to check if user is online
     }
 
     /**
@@ -20,19 +19,12 @@ public class UserStatus {
      * @return true if status update was successful
      */
     public boolean updateUserStatus(int userId, boolean status){
-        // Check if userId is valid
-        // Update status in database or session store
-        return false;
-    }
-
-    /**
-     * Fetch the user's last seen timestamp
-     * @param userId The ID of user who want to check status
-     * @return Last seen timestamp, if not found then null
-     */
-    public String getLastSeen(int userId){
-        // Fetch last seen timestamp from database
-        return null;
+        User user = UserDatabase.getUserById(userId);
+        if(user == null){   // Check if userId is valid
+            return false;
+        }
+        user.setOnlineStatus(status);   // Update status in database or session store
+        return true;
     }
 }
 
