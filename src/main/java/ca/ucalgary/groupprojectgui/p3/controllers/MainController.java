@@ -1,14 +1,8 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
 
+import ca.ucalgary.groupprojectgui.p3.SceneManager;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.net.URL;
 
 public class MainController {
 
@@ -16,22 +10,10 @@ public class MainController {
     private Label welcomeText;
 
     @FXML
-    protected void onHelloButtonClick() throws IOException {
+    protected void onHelloButtonClick() {
         welcomeText.setText("Welcome to OMG");
 
-        URL fxml = getClass().getResource("/ca/ucalgary/groupprojectgui/p3/connect4UI.fxml");
-        System.out.println("Loaded path: " + fxml);  // debug
-
-        if (fxml == null) {
-            throw new IOException("FXML file not found!");
-        }
-
-        FXMLLoader loader = new FXMLLoader(fxml);
-        Parent root = loader.load();
-
-        Stage stage = (Stage) welcomeText.getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.setTitle("Connect 4 Game");
-        stage.show();
+        // Use SceneManager to switch to the Connect4 screen
+        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/connect4UI.fxml", "Connect 4 Game");
     }
 }
