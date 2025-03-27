@@ -1,7 +1,5 @@
 package networking.game;
-import java.util.ArrayList;
 import java.util.HashMap;
-
 
 /**
  * Handles sending player scores to the server when a game ends.
@@ -25,7 +23,6 @@ public class GameScoreSender extends GameNetworking{
         this.isconnected = false;
         this.isGameOver = false;
 
-        // Initialize necessary configurations
     }
 
     /**
@@ -35,44 +32,34 @@ public class GameScoreSender extends GameNetworking{
      * @param score The score of a player
      */
     public void sendScores(String playerId, int score) {
-        if (!isconnected) {
-            System.out.println("Error: Cannot send scores. Server is not connected.");
-        } else if (isconnected) {
-            if(isGameOver) {
-                //Format and send score to server if game is over
-            }else if (!isGameOver) {
-                System.out.println("Error: Cannot send scores. Game is not over.");
+        if (!isconnected) { // checking server connection status
+            System.out.println("Error: Cannot send scores. Server is not connected."); // Error Message
+        } else if (isconnected) { // checking server connection status
+            if(isGameOver) { // checking if game is over
+                gameScore.put(playerId, score); // storing player id and in hash map
+            }else if (!isGameOver) { // checking if game is over
+                System.out.println("Error: Cannot send scores. Game is not over."); // Error Message
             }
 
-
-
         }
-        // Format and add score to gameScore
-        // send the scores  to the server via HTTP or WebSocket
-        // checks if the game has ended
-        // if Game has ended each player score will be sent to the server
 
     }
-
-
-
 
     /**
      * Establishes a connection to the server for sending scores.
      */
     @Override
     public void establishConnection() {
-            isconnected = true;
-            System.out.println("Connected to Server");
+            isconnected = true; // checking server connection status
+            System.out.println("Connected to Server for sending scores."); // connection message
     }
-
     /**
      * Closes the connection to server after sending scores.
      */
     @Override
     public void closeConnection() {
-        isconnected = false;
-        System.out.println("Disconnected from Server");
+        isconnected = false; // checking server connection status
+        System.out.println("Disconnected from Server for sending scores."); // connection message
 
 }
 
