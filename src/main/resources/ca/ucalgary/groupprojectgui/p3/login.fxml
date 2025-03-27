@@ -11,7 +11,7 @@
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="480.0" styleClass="blue-panel"  xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" >
     <children>
-      <Label alignment="TOP_LEFT" contentDisplay="TOP" style="-fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: bold;" text="🎮 OMG" />
+        <Label alignment="TOP_LEFT" contentDisplay="TOP" style="-fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: bold;" text="🎮 OMG" />
         <VBox alignment="CENTER_LEFT">
             <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="26.0" prefWidth="424.0" text="LOGIN" textFill="#1a1a1b">
                 <VBox.margin>
@@ -67,9 +67,19 @@
             <VBox.margin>
                 <Insets left="15.0" right="15.0" top="20.0" />
             </VBox.margin>
-         <font>
-            <Font size="15.0" />
-         </font>
+            <font>
+                <Font size="15.0" />
+            </font>
+        </Button>
+
+        <!-- Forgot Password Button -->
+        <Button fx:id="forgotPasswordButton" mnemonicParsing="false" onAction="#handleForgotPassword" styleClass="link-btn" text="Forgot Password?">
+            <VBox.margin>
+                <Insets left="15.0" right="15.0" top="10.0" />
+            </VBox.margin>
+            <font>
+                <Font size="15.0" />
+            </font>
         </Button>
     </children>
 </VBox>
