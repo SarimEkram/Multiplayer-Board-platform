@@ -73,7 +73,7 @@
         </Button>
 
         <!-- Forgot Password Button -->
-        <Button fx:id="forgotPasswordButton" mnemonicParsing="false" onAction="#handleForgotPassword" styleClass="link-btn" text="Forgot Password?">
+        <Button fx:id="forgotPasswordButton" mnemonicParsing="false"  styleClass="link-btn" text="Forgot Password?">
             <VBox.margin>
                 <Insets left="15.0" right="15.0" top="10.0" />
             </VBox.margin>
