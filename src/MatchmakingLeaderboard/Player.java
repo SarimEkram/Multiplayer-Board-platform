@@ -1,5 +1,6 @@
 package MatchmakingLeaderboard;
 
+import MatchmakingLeaderboard.Checkers.Matchmaking.CheckersMatchmaking;
 import MatchmakingLeaderboard.Connect4.Matchmaking.Connect4Matchmaking;
 import MatchmakingLeaderboard.TicTacToe.Matchmaking.TicTacToeMatchmaking;
 
@@ -106,16 +107,21 @@ public class Player {
     public void joinMatch() throws Exception {
         if (this.getGameSignal() == 1){
             TicTacToeMatchmaking matchmaking = new TicTacToeMatchmaking();
-            matchmaking.signalAddPlayer(this);
+            matchmaking.joinQueue(this);
             matchmaking.startMatchmaking();
         } else if (this.getGameSignal() == 2){
             Connect4Matchmaking matchmaking = new Connect4Matchmaking();
-            matchmaking.signalAddPlayer(this);
+            matchmaking.joinQueue(this);
+            matchmaking.startMatchmaking();
+        } else if (this.getGameSignal() == 3) {
+            CheckersMatchmaking matchmaking = new CheckersMatchmaking();
+            matchmaking.joinQueue(this);
             matchmaking.startMatchmaking();
         }
     }
 
     public void cancelMatch(){
+
     }
 
     public void spectateMatch(int gameid){
