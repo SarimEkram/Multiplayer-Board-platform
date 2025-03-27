@@ -18,10 +18,10 @@ public class GameScoreSender extends GameNetworking{
      */
     public GameScoreSender(String gameId) {
         super(gameId);
-        this.gameId = gameId;
-        this.gameScore = new  HashMap<>();
-        this.isconnected = false;
-        this.isGameOver = false;
+        this.gameId = gameId;               // unique game id
+        this.gameScore = new  HashMap<>();  // initializing hashmap
+        this.isconnected = false;           // initial connection set to false
+        this.isGameOver = false;            // initial game status set to false
 
     }
 
@@ -36,7 +36,8 @@ public class GameScoreSender extends GameNetworking{
             System.out.println("Error: Cannot send scores. Server is not connected."); // Error Message
         } else if (isconnected) { // checking server connection status
             if(isGameOver) { // checking if game is over
-                gameScore.put(playerId, score); // storing player id and in hash map
+                gameScore.put(playerId, score);// storing player id and in hash map
+                System.out.println("Game score sent for player " + playerId + ": " + score); // success message
             }else if (!isGameOver) { // checking if game is over
                 System.out.println("Error: Cannot send scores. Game is not over."); // Error Message
             }
@@ -51,7 +52,7 @@ public class GameScoreSender extends GameNetworking{
     @Override
     public void establishConnection() {
             isconnected = true; // checking server connection status
-            System.out.println("Connected to Server for sending scores."); // connection message
+            System.out.println("Connected to Server for sending scores."); // success message
     }
     /**
      * Closes the connection to server after sending scores.
@@ -59,7 +60,7 @@ public class GameScoreSender extends GameNetworking{
     @Override
     public void closeConnection() {
         isconnected = false; // checking server connection status
-        System.out.println("Disconnected from Server for sending scores."); // connection message
+        System.out.println("Disconnected from Server for sending scores."); // success message
 
 }
 
