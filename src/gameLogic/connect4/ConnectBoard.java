@@ -32,17 +32,22 @@ public class ConnectBoard {
         this.gameLogic = new Connect4(this);
         this.piece1 = player1;
         this.piece2 = player2;
-        this.board = createBoard();
+        board = new int[row][column];
+        createBoard();
 
     }
 
     /**
      * This function creates a Board using the row and columns inputted by the user.
      * This is called in the constructor after the user decides to play connect 4 and selecting the size.
-     * @return a 2D array filled with an integer value which will be considered for an empty spot.
+     * creates a 2D array filled with an integer value 0 which will be considered for an empty spot.
      */
-    private int[][] createBoard(){
-        return null;
+    private void createBoard(){
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                board[i][j] = 0;
+            }
+        }
     }
 
     /**
@@ -71,7 +76,7 @@ public class ConnectBoard {
      * This will be called in the GUI controller class.
      */
     public void clearBoard(){ //D
-        this.board = createBoard(); // just creates new board to clear the old one
+        createBoard(); // just creates new board to clear the old one
     }
 
 }
