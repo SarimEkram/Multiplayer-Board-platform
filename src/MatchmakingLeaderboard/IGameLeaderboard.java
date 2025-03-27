@@ -20,7 +20,7 @@ public interface IGameLeaderboard {
     /**
      * Updates a player's score in the leaderboard.
      */
-    void updateScore(int playerId, int score);
+    void updatePlayer(Player player, boolean Won);
 
     /**
      * Retrieves the top-ranked players from the leaderboard.

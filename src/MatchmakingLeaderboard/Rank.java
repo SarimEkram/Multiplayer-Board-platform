@@ -62,9 +62,4 @@ public class Rank {
     public RankTier getCurrentTier() {
         return this.currentTier;
     }
-
-    @Override
-    public String toString() {
-        return "something";
-    }
 }

@@ -15,9 +15,10 @@ public class Connect4Leaderboard extends AbstractConnect4Leaderboard {
     }
 
 
-    public void updatePlayerScore(Player player, int score) {
-    }
+    @Override
+    public void updatePlayer(Player player, boolean Won){
 
+    }
     public void removePlayerEntry(Player player) {
 }
 }
