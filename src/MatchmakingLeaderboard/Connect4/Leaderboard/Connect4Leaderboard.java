@@ -14,8 +14,6 @@ public class Connect4Leaderboard extends AbstractConnect4Leaderboard {
     public void displayLeaderboard() {
     }
 
-
-    @Override
     public static void updatePlayer(Player player, boolean Won){
 
     }

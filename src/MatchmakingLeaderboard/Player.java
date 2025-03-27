@@ -17,7 +17,7 @@ public class Player {
     private boolean spectate;
     private Rank rank;
     private int gameSignal;
-    private int mmr:
+    private int mmr;
 
     /**
      * Constructs a Player object

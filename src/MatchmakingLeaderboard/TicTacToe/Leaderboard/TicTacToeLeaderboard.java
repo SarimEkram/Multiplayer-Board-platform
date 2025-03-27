@@ -11,7 +11,6 @@ public class TicTacToeLeaderboard extends AbstractTicTacToeLeaderboard {
         return List.of();
     }
 
-    @Override
     public static void updatePlayer(Player player, boolean Won){
 
     }
@@ -23,6 +22,11 @@ public class TicTacToeLeaderboard extends AbstractTicTacToeLeaderboard {
 
     @Override
     public void displayLeaderboard() {
+
+    }
+
+    @Override
+    public void sortLeaderboard() {
 
     }
 }

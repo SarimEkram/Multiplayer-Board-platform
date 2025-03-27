@@ -16,7 +16,6 @@ import java.util.List;
 public abstract class AbstractCheckersLeaderboard implements IGameLeaderboard {
     protected List<Player> players = new ArrayList<>();
 
-    public abstract void updateScore(int playerId, int score);
 
     public abstract List<Player> getScores();
 
