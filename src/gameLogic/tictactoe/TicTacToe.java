@@ -1,5 +1,4 @@
 package gameLogic.tictactoe;
-
 import java.util.Scanner;
 
 public class TicTacToe {
@@ -19,25 +18,52 @@ public class TicTacToe {
      *
      */
     public void start() {
-    }
+        System.out.println("Welcome to Tic-Tac-Toe!");
 
-    /**
-     * Handles a player's move.
-     */
-    public  void playMove() {
+        while (true) {
+            board.createBoard();
+            board.displayBoard();
+            while (true) {
+                board.displayBoard();
+                if (board.checkForWin(activePlayer)) {
+                    System.out.println("Player " + activePlayer + " wins! Congratulations!");
+                    break;
+                }
+                if (board.boardFull()) {
+                    System.out.println("It’s a tie");
+                    break;
+                }
+                if(this.forfeitGame()){
+                    break;
+                }
+                this.changeActivePlayer();
+
+            }
+        }
     }
 
     /**
      * Switches the active player between 'X' and 'O'.
      */
     public  void changeActivePlayer() {
+        this.activePlayer = (this.activePlayer == PLAYER_X) ? PLAYER_O : PLAYER_X;
     }
 
     /**
      * Allows the current player to forfeit the game.
      */
-    public  void forfeitGame() {
-
+    public boolean forfeitGame() {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Player " + this.activePlayer + ", do you want to forfeit? (yes/no): ");
+            String input = scanner.nextLine().trim().toLowerCase();
+            if (input.equals("yes")) {
+                char winner = (this.activePlayer == PLAYER_X) ? PLAYER_O : PLAYER_X;
+                System.out.println("Player " + this.activePlayer + " forfeited the game.");
+                System.out.println("Player " + winner + " wins by forfeit!");
+                return true;
+            }
+            return false;
+        }
     }
     
-}
+
