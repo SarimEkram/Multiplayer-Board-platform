@@ -1,5 +1,6 @@
 package networking.game;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,6 +10,7 @@ public class GameScoreSender extends GameNetworking{
 
     private String gameId;// Unique identifier for the game session
     private List<String> gameScore;
+    private boolean isconnected;
 
     /**
      * Constructor to initialize the score manager.
@@ -17,6 +19,10 @@ public class GameScoreSender extends GameNetworking{
      */
     public GameScoreSender(String gameId) {
         super(gameId);
+        this.gameId = gameId;
+        this.gameScore = new ArrayList<>();
+        this.isconnected = false;
+
         // Initialize necessary configurations
     }
 
@@ -54,6 +60,8 @@ public class GameScoreSender extends GameNetworking{
      */
     @Override
     public void establishConnection() {
+            isconnected = true;
+            System.out.println("Connected to Server");
         // Initialize WebSocket or networking connection for real-time chat
         // Handle connection setup logic
     }
@@ -63,6 +71,8 @@ public class GameScoreSender extends GameNetworking{
      */
     @Override
     public void closeConnection() {
+        isconnected = false;
+        System.out.println("Disconnected from Server");
         // Gracefully close the WebSocket or networking connection
         // Ensure proper cleanup of resources
 }
