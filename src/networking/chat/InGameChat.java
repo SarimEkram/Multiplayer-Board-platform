@@ -60,30 +60,44 @@ public class InGameChat extends NetworkHandler {
     }
 
     /**
-     * Retrieves the chat history for the current game session.
-     *
-     * @return A list of chat messages exchanged during the session.
+     * Clears the chat history.
      */
-    public List<String> getChatHistory() {
-        // Return the stored chat messages for the game session
-        return null;
+    public void clearChat() {
+        chatManager.clearChatHistory();
     }
 
     /**
-     * Establishes a real-time connection for the chat system.
+     * Establishes the connection for the chat system.
+     * This simulates setting up a WebSocket or another networking protocol.
      */
     @Override
     public void establishConnection() {
-        // Initialize WebSocket or networking connection for real-time chat
-        // Handle connection setup logic
+        isConnected = true;
+        System.out.println("Chat connection established.");
     }
 
     /**
-     * Closes the real-time chat connection.
+     * Closes the connection and stops message transmission.
      */
     @Override
     public void closeConnection() {
-        // Gracefully close the WebSocket or networking connection
-        // Ensure proper cleanup of resources
+        isConnected = false;
+        System.out.println("Chat connection closed.");
+    }
+
+    /**
+     * Simulates receiving a message from a player.
+     *
+     * @param playerId The ID of the player who sent the message.
+     * @param message  The message received.
+     */
+    public void receiveMessage(String playerId, String message) {
+        if (!isConnected) {
+            System.out.println("Error: Cannot receive message. Chat is not connected.");
+            return;
+        }
+
+        chatManager.addMessage(playerId, message);
+        System.out.println("New message received: " + message);
     }
 }
