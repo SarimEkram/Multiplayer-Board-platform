@@ -1,5 +1,6 @@
 package MatchmakingLeaderboard;
 
+import MatchmakingLeaderboard.Connect4.Matchmaking.Connect4Matchmaking;
 import MatchmakingLeaderboard.TicTacToe.Matchmaking.TicTacToeMatchmaking;
 
 /**
@@ -103,8 +104,12 @@ public class Player {
      * function to
      */
     public void joinMatch() throws Exception {
-        if (this.gameSignal == 1){
+        if (this.getGameSignal() == 1){
             TicTacToeMatchmaking matchmaking = new TicTacToeMatchmaking();
+            matchmaking.signalAddPlayer(this);
+            matchmaking.startMatchmaking();
+        } else if (this.getGameSignal() == 2){
+            Connect4Matchmaking matchmaking = new Connect4Matchmaking();
             matchmaking.signalAddPlayer(this);
             matchmaking.startMatchmaking();
         }
