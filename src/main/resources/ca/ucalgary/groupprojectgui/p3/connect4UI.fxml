@@ -35,7 +35,7 @@
 
     <!-- LEFT SIDEBAR -->
     <left>
-        <VBox fx:id="leftSidebar" alignment="CENTER" prefWidth="220" spacing="20" styleClass="sidebar-left" stylesheets="@styles/styles.css">
+        <VBox fx:id="leftSidebar" alignment="BOTTOM_CENTER" prefWidth="220" spacing="20" styleClass="sidebar-left" stylesheets="@styles/styles.css">
             <padding>
                 <Insets bottom="20" left="10" right="10" top="30" />
             </padding>
@@ -76,6 +76,7 @@
                 </ImageView>
                 <Label styleClass="player-label" text="Royal Mosquito" />
             </VBox>
+         <VBox prefHeight="200.0" prefWidth="100.0" />
 
             <!-- Leave Game Button -->
             <Button alignment="BOTTOM_CENTER" styleClass="leave-button" text="Leave Game" VBox.vgrow="ALWAYS" />
