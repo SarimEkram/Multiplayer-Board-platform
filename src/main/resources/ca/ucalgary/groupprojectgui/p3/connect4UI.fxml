@@ -5,13 +5,15 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 
-<BorderPane fx:id="p" prefHeight="800" prefWidth="1200" styleClass="main-background" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21" fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.Connect4Controller">
+<BorderPane fx:id="p" prefHeight="800" prefWidth="1200" styleClass="main-background" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.Connect4Controller">
 
     <!-- TOP BAR -->
     <top>
@@ -33,22 +35,50 @@
 
     <!-- LEFT SIDEBAR -->
     <left>
-        <VBox alignment="CENTER" prefWidth="200" spacing="20" styleClass="sidebar">
-            <padding><Insets bottom="20" left="20" right="20" top="30" /></padding>
+        <VBox fx:id="leftSidebar" alignment="CENTER" prefWidth="220" spacing="20" styleClass="sidebar-left" stylesheets="@styles/styles.css">
+            <padding>
+                <Insets bottom="20" left="10" right="10" top="30" />
+            </padding>
 
-            <VBox alignment="CENTER" spacing="8">
-                <Circle fill="#ff00cc" radius="40" styleClass="circle" />
-                <Label styleClass="player-label" text="Royal Hiepoulas" />
-                <Label styleClass="score-label" text="Score: 0" />
+            <!-- Player 1 Avatar & Name -->
+            <VBox alignment="CENTER" spacing="5">
+                <ImageView fitHeight="70" fitWidth="70" preserveRatio="true">
+                    <image>
+                        <Image backgroundLoading="true" url="@images/futuristic_background.jpg" />
+                    </image>
+                </ImageView>
+                <Label styleClass="player-label" text="(You) Vacant Mockingbird" />
             </VBox>
 
-            <Label styleClass="vs-label" text="VS" />
+            <!-- Player 1 Disc Placeholder -->
+            <HBox fx:id="player1DiscContainer" alignment="CENTER">
+                <!-- The red disc will be created and added in the controller -->
+            </HBox>
 
-            <VBox alignment="CENTER" spacing="8">
-                <Circle fill="#00ffff" radius="40" styleClass="circle" />
-                <Label styleClass="player-label" text="NICE!!! Mockingbird" />
-                <Label styleClass="score-label" text="Score: 0" />
+            <!-- VS Banner (optional) -->
+            <ImageView fitHeight="64.0" fitWidth="105.0" preserveRatio="true">
+                <image>
+                    <Image backgroundLoading="true" url="@images/banner.png" />
+                </image>
+            </ImageView>
+
+            <!-- Player 2 Disc Placeholder -->
+            <HBox fx:id="player2DiscContainer" alignment="CENTER">
+                <!-- The cyan disc will be created and added in the controller -->
+            </HBox>
+
+            <!-- Player 2 Avatar & Name -->
+            <VBox alignment="CENTER" spacing="5">
+                <ImageView fitHeight="70" fitWidth="70" preserveRatio="true">
+                    <image>
+                        <Image backgroundLoading="true" url="@images/futuristic_background.jpg" />
+                    </image>
+                </ImageView>
+                <Label styleClass="player-label" text="Royal Mosquito" />
             </VBox>
+
+            <!-- Leave Game Button -->
+            <Button alignment="BOTTOM_CENTER" styleClass="leave-button" text="Leave Game" VBox.vgrow="ALWAYS" />
         </VBox>
     </left>
 
@@ -62,11 +92,13 @@
     <!-- RIGHT SIDEBAR: CHAT -->
     <right>
         <VBox alignment="TOP_CENTER" prefWidth="280" spacing="15" styleClass="sidebar">
-            <padding><Insets bottom="20" left="20" right="20" top="30" /></padding>
+            <padding>
+                <Insets bottom="20" left="20" right="20" top="30" />
+            </padding>
 
             <Label styleClass="chat-label" text="CHAT" />
 
-            <TextArea fx:id="chatArea"  editable="false" prefHeight="638.0" prefRowCount="15" prefWidth="240.0" styleClass="text-area" />
+            <TextArea fx:id="chatArea" editable="false" prefHeight="638.0" prefRowCount="15" prefWidth="240.0" styleClass="text-area" />
 
             <HBox spacing="5">
                 <TextField fx:id="chatInput" promptText="Type a message..." styleClass="text-field" />
