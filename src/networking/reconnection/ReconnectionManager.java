@@ -5,7 +5,11 @@ package networking.reconnection;
  */
 public class ReconnectionManager extends AbstractReconnectionManager{
 
-    private String gameId;  // Unique identifier for the game session
+     // Unique identifier for the game session
+    private boolean sessionActive;
+    private Set<String> connectedPlayers;
+    // Set of players that got disconnected
+    private Set<String> disconnectedPlayers;
 
     /**
      * Constructor to initialize the reconnection manager.
@@ -14,7 +18,44 @@ public class ReconnectionManager extends AbstractReconnectionManager{
      */
     public ReconnectionManager(String gameId) {
         super(gameId);
+        this.connectedPlayers = new HashSet<>();
+        this.disconnectedPlayers = new HashSet<>();
+        this.sessionActive = true;
         // Store the game session ID and set up necessary configurations
+    }
+
+    /**
+     * Starts the game session by adding the provided players as connected.
+     *
+     * @param players A set of player IDs.
+     */
+    public void startGame(Set<String> players) {
+        connectedPlayers.addAll(players);
+        System.out.println("Game started with players: " + connectedPlayers);
+    }
+    /**
+     * Simulates saving the current game state for a player.
+     *
+     * @param playerId The ID of the player.
+     * @param state The game state to be saved.
+     */
+    public void saveGameState(String playerId, GameState state) {
+        savedGameStates.put(playerId, state);
+        System.out.println("Saved game state for player " + playerId + ": " + state);
+    }
+    /**
+     * Marks a player as disconnected by moving them from the connected set
+     * to the disconnected set.
+     *
+     * @param playerId The ID of the player that disconnected.
+     */
+    public void playerDisconnected(String playerId) {
+        if (connectedPlayers.remove(playerId)) {
+            disconnectedPlayers.add(playerId);
+            System.out.println("Player " + playerId + " disconnected.");
+        } else {
+            System.out.println("Player " + playerId + " was not connected.");
+        }
     }
 
     /**
@@ -26,11 +67,21 @@ public class ReconnectionManager extends AbstractReconnectionManager{
     @Override
     public boolean attemptReconnection(String playerId) {
         // Check if the game session is still active
-        // Validate if the player is eligible for reconnection
-        // Restore the player's previous state if possible
-        // Return success or failure
-        return false;
-    }
+        if (!sessionActive) {
+            System.out.println("Game session is not active. Cannot reconnect player " + playerId + ".");
+            return false;
+        }if (disconnectedPlayers.contains(playerId)) {
+            System.out.println("Reconnecting player " + playerId + "...");
+
+            disconnectedPlayers.remove(playerId);
+            connectedPlayers.add(playerId);
+            restoreGameState(playerId);
+            return true;
+        } else {
+            System.out.println("Player " + playerId + " is not marked as disconnected.");
+            return false;
+        }
+
 
     /**
      * Checks if the game session allows reconnection.
@@ -39,8 +90,7 @@ public class ReconnectionManager extends AbstractReconnectionManager{
      */
     public boolean isReconnectionAllowed() {
         // Verify if reconnections are enabled for this game mode
-        // Check if a time limit exists for reconnection attempts
-        return false;
+        return sessionActive;
     }
 
     /**
@@ -49,10 +99,32 @@ public class ReconnectionManager extends AbstractReconnectionManager{
      * @param playerId The ID of the player who reconnected.
      */
     public void restoreGameState(String playerId) {
-        // Fetch the last known game state for the player
-        // Restore board position, turn order, and any in-progress actions
-        // Notify the other player(s) that the reconnection was successful
+        if (savedGameStates.containsKey(playerId)) {
+            GameState state = savedGameStates.get(playerId);
+            // Logic to apply the saved state to the player's session.
+            // For demonstration, we simply print out the restored state.
+            System.out.println("Restoring game state for player " + playerId + ": " + state);
+            // Optionally, remove the saved state after restoring.
+            savedGameStates.remove(playerId);
+        } else {
+            System.out.println("No saved game state found for player " + playerId + ".");
+        }
     }
+
+        /**
+         * Notifies other connected players that a player has successfully reconnected.
+         *
+         * @param playerId The ID of the player who reconnected.
+         */
+        @Override
+        public void notifyReconnection(String playerId) {
+            // Notify connected players (except the one who reconnected).
+            for (String player : connectedPlayers) {
+                if (!player.equals(playerId)) {
+                    System.out.println("Notifying player " + player + " that " + playerId + " has reconnected.");
+                }
+            }
+        }
 
     /**
      * Handles the case where a player fails to reconnect within the allowed time.
@@ -60,7 +132,15 @@ public class ReconnectionManager extends AbstractReconnectionManager{
      * @param playerId The ID of the player who failed to reconnect.
      */
     public void handleFailedReconnection(String playerId) {
-        // Remove the player from the game session
-        // Notify the opponent and update game status accordingly (e.g., forfeit, AI replacement)
+        disconnectedPlayers.remove(playerId);
+        System.out.println("Failed to reconnect player " + playerId + ". Player removed from the session.");
     }
+
+        /**
+         * Ends the game session.
+         */
+        public void endGame() {
+            sessionActive = false;
+            System.out.println("Game session " + gameId + " ended.");
+        }
 }
