@@ -41,9 +41,7 @@ public class GameScoreSender extends GameNetworking{
             }else if (!isGameOver) { // checking if game is over
                 System.out.println("Error: Cannot send scores. Game is not over."); // Error Message
             }
-
         }
-
     }
 
     /**
