@@ -33,8 +33,8 @@ public class Connect4 {
      * @return true if the column is empty
      */
 
-    private static boolean canPlay(int column) {
-        return false;
+    private static boolean canPlay(int[][] board, int column) {
+        return board[0][column] == 0;
 
     }
 
@@ -45,9 +45,21 @@ public class Connect4 {
      * @param piece  the piece we want to play.
      * @return the row of the piece we played else -1.
      */
-    public static int play(int column, int piece) {
-        return 0;
-
+    public static int play(int[][] board, int column, int piece) {
+        if (canPlay(board, column)){
+            // As the piece is deployed from the top and ends up on the bottom, I started the loop from
+            // the row count, meaning the last row.
+            for (int row = board.length-1; row >= 0; row--) {
+                // if the board at that row and column is EMP/0 we put that piece at that row and column.
+                if (board[row][column] == 0) {
+                    board[row][column] = piece;
+                    // returning the row.
+                    return row;
+                }
+            }
+        }
+        // else returning -2, meaning they cant play at that spot
+        return -2;
     }
 
     /**
