@@ -85,8 +85,16 @@ public class Connect4 {
      * @return true if the conditions for win in column fulfills.
      */
     private static boolean winInColumn(int[][] board, int column, int piece) { //D
-        return false;
-
+        int count = 0; // Keeps track of how many matching pieces have been seen in a row
+        for (int row = 0; row < board.length; row++) {
+            if (board[row][column] == piece) { //If the current cell matches the player's piece, it increases the count for the streak
+                count++;
+            } else {
+                count = 0; // If it doesn't match, it resets the count to zero since it broke the streak
+            }
+            if (count >= 4) return true; // If we've found 4 in a row, the player wins
+        }
+        return false; // If no four in a row exists in this column, it just returns false
     }
 
     /**
