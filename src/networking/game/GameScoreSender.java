@@ -1,6 +1,5 @@
 package networking.game;
-
-import java.util.List;
+import java.util.HashMap;
 
 /**
  * Handles sending player scores to the server when a game ends.
@@ -8,7 +7,9 @@ import java.util.List;
 public class GameScoreSender extends GameNetworking{
 
     private String gameId;// Unique identifier for the game session
-    private List<String> gameScore;
+    private HashMap<String, Integer> gameScore; // Hashmap for storing each player score
+    private boolean isconnected;// boolean to check connection status to server
+    private boolean isGameOver; // boolean to check if game is over
 
     /**
      * Constructor to initialize the score manager.
@@ -17,7 +18,11 @@ public class GameScoreSender extends GameNetworking{
      */
     public GameScoreSender(String gameId) {
         super(gameId);
-        // Initialize necessary configurations
+        this.gameId = gameId;               // unique game id
+        this.gameScore = new  HashMap<>();  // initializing hashmap
+        this.isconnected = false;           // initial connection set to false
+        this.isGameOver = false;            // initial game status set to false
+
     }
 
     /**
@@ -27,26 +32,18 @@ public class GameScoreSender extends GameNetworking{
      * @param score The score of a player
      */
     public void sendScores(String playerId, int score) {
-        // Format and add score to gameScore
-        // send the scores  to the server via HTTP or WebSocket
-        // checks if the game has ended
-        // if Game has ended each player score will be sent to the server
+        if (!isconnected) { // checking server connection status
+            System.out.println("Error: Cannot send scores. Server is not connected."); // Error Message
+        } else if (isconnected) { // checking server connection status
+            if(isGameOver) { // checking if game is over
+                gameScore.put(playerId, score);// storing player id and in hash map
+                System.out.println("Game score sent for player " + playerId + ": " + score); // success message
+            }else if (!isGameOver) { // checking if game is over
+                System.out.println("Error: Cannot send scores. Game is not over."); // Error Message
+            }
 
-    }
+        }
 
-    /**
-     * Receives confirmation from the server after scores are successfully sent.
-     *
-     * @param response The server response indicating success or failure.
-     */
-
-    /**
-     * Checks if the game has ended.
-     * @param gameId The unique ID of the game session.
-     * @return true if the game is over, false otherwise.
-     */
-    public boolean isGameOver(String gameId ) {
-        return true; // Replace with actual game-over check
     }
 
     /**
@@ -54,17 +51,17 @@ public class GameScoreSender extends GameNetworking{
      */
     @Override
     public void establishConnection() {
-        // Initialize WebSocket or networking connection for real-time chat
-        // Handle connection setup logic
+            isconnected = true; // checking server connection status
+            System.out.println("Connected to Server for sending scores."); // success message
     }
-
     /**
      * Closes the connection to server after sending scores.
      */
     @Override
     public void closeConnection() {
-        // Gracefully close the WebSocket or networking connection
-        // Ensure proper cleanup of resources
+        isconnected = false; // checking server connection status
+        System.out.println("Disconnected from Server for sending scores."); // success message
+
 }
 
 
