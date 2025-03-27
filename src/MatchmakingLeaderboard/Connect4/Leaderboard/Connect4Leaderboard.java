@@ -16,7 +16,7 @@ public class Connect4Leaderboard extends AbstractConnect4Leaderboard {
 
 
     @Override
-    public void updatePlayer(Player player, boolean Won){
+    public static void updatePlayer(Player player, boolean Won){
 
     }
     public void removePlayerEntry(Player player) {

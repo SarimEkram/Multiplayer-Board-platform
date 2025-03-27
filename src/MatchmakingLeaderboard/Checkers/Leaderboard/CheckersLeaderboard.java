@@ -22,7 +22,7 @@ public class CheckersLeaderboard extends AbstractCheckersLeaderboard{
     }
 
     @Override
-    public void updatePlayer(Player player, boolean Won){
+    public static void updatePlayer(Player player, boolean Won){
 
     }
 

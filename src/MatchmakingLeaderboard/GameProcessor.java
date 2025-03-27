@@ -1,5 +1,7 @@
 package MatchmakingLeaderboard;
-
+import MatchmakingLeaderboard.TicTacToe.Leaderboard.TicTacToeLeaderboard;
+import MatchmakingLeaderboard.Connect4.Leaderboard.Connect4Leaderboard;
+import MatchmakingLeaderboard.Checkers.Leaderboard.CheckersLeaderboard;
 /**
  * Keeps track of what happens after the game completes.
  **/
@@ -12,7 +14,7 @@ public class GameProcessor {
 
     public GameProcessor(Player p1, Player p2, int gameType) {
         if (p1 == null || p2 == null) {
-            throw new IllegalArgumentException("PLAYER INFO IS NULL")
+            throw new IllegalArgumentException("PLAYER INFO IS NULL");
         }
         this.winner = p1;
         this.loser = p2;
@@ -43,7 +45,7 @@ public class GameProcessor {
         updateMMR(loser, winner, false);
         updateRank(winner);
         updateRank(loser);
-        updateLeaderboard(winner, loser, gameType);
+        updateLeaderBoard(winner, loser, gameType);
     }
 
     /**
@@ -63,11 +65,11 @@ public class GameProcessor {
      *
      * @param player
      */
-    private UpdateRank(Player player){
-        player.getRank().adjustPoints(player.getMMR));
+    private static void updateRank(Player player){
+        player.getRank().adjustPoints(player.getMMR());
     }
 
-    private UpdateLeaderBoard(Player winner, Player loser, int gameType){
+    private static void updateLeaderBoard(Player winner, Player loser, int gameType){
         switch (gameType){
             case 1:
                 TicTacToeLeaderboard.updatePlayer(winner, true);
@@ -95,6 +97,6 @@ public class GameProcessor {
         p1.setMMR(p1.getMMR() + updateMMR1);
         p2.setMMR(p2.getMMR() + updateMMR2);
 
-        UpdateLeaderBoard(p1, p2, gameType);
+        updateLeaderBoard(p1, p2, gameType);
     }
 }
