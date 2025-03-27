@@ -6,37 +6,49 @@ package MatchmakingLeaderboard;
  */
 public class Rank {
     private int rankingPoints;
-    private RankTier rankTier;
+    private RankTier currentTier;
 
+    public Rank(){
+        this(0);
+    }
     /**
      * Constructor initializes player's rank based on points
      */
-    public Rank(int rankingPoints) {
-        this(RankTier.BRONZE, rankingPoints);
-    }
-
-    public Rank(RankTier rankTier, int rankingPoints) {
-        this.rankTier = rankTier;
-        this.rankingPoints = rankingPoints;
+    public Rank(int Points) {
+        this.rankingPoints = Math.max(0, Points);
+        updateRankTier();
     }
 
     /**
-     * Calculates the rank tier based on points
-     * @return player's rank
+     * Adjusts points and updates tier
      */
-    private RankTier calculateRankTier() {
-        return RankTier.BRONZE; // Default rank will be bronze
+    public void adjustPoints(int points) {
+        this.rankingPoints += points;
+        this.rankingPoints = Math.max(0, this.rankingPoints);
+        updateRankTier();
     }
-
     /**
-     * Updates the ranking points and recalculates the rank
+     * updates the rank tier based on points
      */
-    public void updateRank(int pointsEarned) {
+    private void updateRankTier() {
+
+        if (rankingPoints >= RankTier.DIAMOND.getThresholdPoints()){
+            currentTier = RankTier.DIAMOND;
+        }
+        else if (rankingPoints >= RankTier.GOLD.getThresholdPoints()) {
+            currentTier = RankTier.GOLD;
+        }
+        else if (rankingPoints >= RankTier.SILVER.getThresholdPoints()){
+            currentTier = RankTier.SILVER;
+        }
+        else {
+            currentTier = RankTier.BRONZE;
+        }
 
     }
 
     /**
-     * Getter method for recieving points
+     * Getter method for receiving points
      * @return The player's ranking points
      */
     public int getRankingPoints() {
@@ -44,11 +56,11 @@ public class Rank {
     }
 
     /**
-     * Getter method for recieving rank
+     * Getter method for receiving rank
      * @return rank of the player
      */
-    public RankTier getRankTier() {
-        return this.rankTier;
+    public RankTier getCurrentTier() {
+        return this.currentTier;
     }
 
     @Override
