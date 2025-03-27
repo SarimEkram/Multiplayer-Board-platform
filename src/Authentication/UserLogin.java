@@ -87,4 +87,16 @@ public class UserLogin {
         // if same return true, else false
         return false;
     }
+
+    /**
+     * Creates a new seesion for user after login
+     * @param userID The user's ID
+     * @param Session ID
+     */
+    private String createSession(int userID) {
+        String sessionID = UUID.randomUUID().toString(); // create ID for the session
+
+
+
+    }
 }

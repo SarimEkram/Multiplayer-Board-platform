@@ -8,19 +8,10 @@ public class UserLogout {
      */
     public boolean logoutUser(int userId){
         // Check if userId is valid
+
         // Remove user session or authentication token
         // If needed update session status in database
         // if successful return true else false
-        return false;
-    }
-
-    /**
-     * Check if user session is active
-     * @param userId The ID of user who is logged in
-     * @return Status of session
-     */
-    private boolean isUserLoggedIn(int userId){
-        // Look in database or session store if user is logged in
         return false;
     }
 
@@ -31,6 +22,7 @@ public class UserLogout {
      */
     private boolean endSession(int userId){
         // Remove session data from system
+
         return false;
     }
 
