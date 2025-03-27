@@ -18,11 +18,11 @@ public enum RankTier {
     }
 
     public int getThresholdPoints() {
-        return thresholdPoints;
+        return this.thresholdPoints;
     }
 
     public String getRankName() {
-        return rankName;
+        return this.rankName;
     }
 
     public RankTier getNextTier(){
