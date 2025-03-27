@@ -1,16 +1,14 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
 
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.layout.*;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
-import javafx.geometry.Pos;
-
-import java.net.URL;
 
 public class Connect4Controller {
 
@@ -25,20 +23,7 @@ public class Connect4Controller {
 
     @FXML
     public void initialize() {
-        // Attempt to load resource
-        URL resourceUrl = getClass().getResource("/images/futuristic_background.jpg");
-        if (resourceUrl == null) {
-            System.err.println("Could not find /images/futuristic_background.jpg on the classpath!");
-            return;
-        }
-
-
-        // Board background rectangle
-        Rectangle boardBackground = new Rectangle(600, 500, Color.BURLYWOOD);
-        boardBackground.setArcWidth(20);
-        boardBackground.setArcHeight(20);
-
-        // Create board grid
+        // Create a grid layout for Connect 4
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
@@ -46,14 +31,24 @@ public class Connect4Controller {
 
         for (int row = 0; row < 6; row++) {
             for (int col = 0; col < 7; col++) {
-                Circle slot = new Circle(30, Color.LIGHTGRAY);
-                slot.setStroke(Color.BLACK);
-                slot.setStrokeWidth(1.5);
+                Circle slot = new Circle(30);
+                slot.setFill(Color.rgb(30, 30, 30, 0.7)); // semi-dark base
+                slot.setStroke(Color.web("#FF00FF"));
+                slot.setStrokeWidth(2);
+                slot.setEffect(null); // could use DropShadow later
                 grid.add(slot, col, row);
             }
         }
 
-        boardContainer.getChildren().addAll(boardBackground, grid);
+        // Optional: Glow background behind grid
+        Rectangle glow = new Rectangle(700, 600);
+        glow.setArcWidth(30);
+        glow.setArcHeight(30);
+        glow.setFill(Color.rgb(0, 0, 0, 0.35));
+        glow.setStroke(Color.web("#9900ff"));
+        glow.setStrokeWidth(3);
+
+        boardContainer.getChildren().addAll(glow, grid);
     }
 
     @FXML
