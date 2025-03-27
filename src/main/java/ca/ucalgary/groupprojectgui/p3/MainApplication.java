@@ -7,8 +7,9 @@ public class MainApplication extends Application {
     @Override
     public void start(Stage primaryStage) {
         SceneManager.setStage(primaryStage);
+
         //switch to login
-        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/login.fxml", "Login");
+        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/connect4UI.fxml", "Login");
     }
 
     public static void main(String[] args) {

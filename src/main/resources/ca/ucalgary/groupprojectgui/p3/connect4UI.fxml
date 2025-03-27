@@ -2,85 +2,127 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.geometry.Pos?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.paint.*?>
-<?import javafx.scene.shape.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.shape.Circle?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml"
+<BorderPane fx:id="p"  xmlns:fx="http://javafx.com/fxml"
             fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.Connect4Controller"
-            prefWidth="1200" prefHeight="800">
+            prefWidth="1200" prefHeight="800"
+           >
 
     <!-- TOP BAR -->
     <top>
-        <HBox spacing="20" alignment="CENTER_LEFT" style="-fx-background-color: rgba(0,0,0,0.3);">
+        <HBox spacing="20" alignment="CENTER_LEFT"
+              style="-fx-background-color: rgba(0,0,0,0.3); -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0.3, 0, 2);">
             <padding>
-                <Insets top="15" right="20" bottom="15" left="20"/>
+                <Insets top="10" right="20" bottom="10" left="20"/>
             </padding>
-            <Label text="YOUR TURN" style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;"/>
+
+            <!-- Example Avatar or Icon at the far left -->
             <StackPane>
-                <Circle fx:id="disc" radius="25" fill="RED" stroke="WHITE" strokeWidth="2"/>
+                <Circle radius="25" fill="#FFC107"/>
             </StackPane>
-            <Label text="30s left" style="-fx-text-fill: white; -fx-font-size: 16px;"/>
+
+            <!-- Current Turn & Timer -->
+            <Label text="YOUR TURN"
+                   style="-fx-text-fill: white; -fx-font-size: 22px; -fx-font-weight: bold;"/>
+            <Label text="(23s)"
+                   style="-fx-text-fill: #FFC107; -fx-font-size: 18px;"/>
+
+            <!-- Spacer -->
+            <HBox HBox.hgrow="ALWAYS" />
+
+            <!-- Optional 'Play Again' Button on the far right -->
+            <Button text="Play Again"
+                    style="-fx-background-color: #FFC107; -fx-text-fill: #4A2176; -fx-font-weight: bold; -fx-background-radius: 20;"
+                    />
         </HBox>
     </top>
 
-    <!-- LEFT SIDEBAR -->
+    <!-- LEFT SIDEBAR: Players & Scores -->
     <left>
-        <VBox spacing="20" alignment="TOP_CENTER" prefWidth="200"
-              style="-fx-background-color: rgba(0,0,0,0.3); -fx-border-color: #ffffff33; -fx-border-width: 0 2 0 0;">
+        <VBox spacing="20" alignment="CENTER" prefWidth="200"
+              style="-fx-background-color: rgba(0,0,0,0.2); -fx-background-radius: 0 10 10 0; -fx-border-color: #FFFFFF33; -fx-border-width: 0 2 0 0;">
             <padding>
-                <Insets top="20" right="20" bottom="20" left="20"/>
+                <Insets top="30" right="20" bottom="20" left="20"/>
             </padding>
 
-            <VBox alignment="CENTER">
+            <!-- Player 1 Info -->
+            <VBox alignment="CENTER" spacing="8">
                 <StackPane>
-                    <Circle radius="40" fill="SKYBLUE"/>
+                    <!-- Avatar -->
+                    <Circle radius="40" fill="#F48FB1"/> <!-- Pinkish circle -->
                 </StackPane>
-                <Label text="Player 1" style="-fx-text-fill: white; -fx-font-size: 16px;"/>
-                <Label text="Score: 0" style="-fx-text-fill: white; -fx-font-size: 12px;"/>
+                <Label text="Royal Hiepoulas"
+                       style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+                <Label text="Score: 0"
+                       style="-fx-text-fill: white; -fx-font-size: 12px;"/>
             </VBox>
 
-            <Label text="VS" style="-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;"/>
+            <Label text="VS"
+                   style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;"/>
 
-            <VBox alignment="CENTER">
+            <!-- Player 2 Info -->
+            <VBox alignment="CENTER" spacing="8">
                 <StackPane>
-                    <Circle radius="40" fill="ORANGE"/>
+                    <!-- Avatar -->
+                    <Circle radius="40" fill="#FFD54F"/> <!-- Yellowish circle -->
                 </StackPane>
-                <Label text="Player 2" style="-fx-text-fill: white; -fx-font-size: 16px;"/>
-                <Label text="Score: 0" style="-fx-text-fill: white; -fx-font-size: 12px;"/>
+                <Label text="NICE!!! Mockingbird"
+                       style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+                <Label text="Score: 0"
+                       style="-fx-text-fill: white; -fx-font-size: 12px;"/>
             </VBox>
         </VBox>
     </left>
 
     <!-- CENTER: BOARD -->
     <center>
-        <StackPane fx:id="boardContainer">
+        <!-- Wrap board in a StackPane so you can layer discs or overlays if needed -->
+        <StackPane fx:id="boardContainer"
+                   alignment="CENTER"
+                   style="-fx-background-color: rgba(255,255,255,0.1); -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 15, 0.5, 0, 4);">
             <padding>
-                <Insets top="20" right="20" bottom="20" left="20"/>
+                <Insets top="30" right="30" bottom="30" left="30"/>
             </padding>
-            <!-- The board will be populated from the controller -->
+            <!-- Example “wood” or any other texture behind the holes (optional) -->
+            <StackPane style="
+                              -fx-background-size: cover;
+                              -fx-background-position: center;
+                              -fx-background-radius: 10;">
+                <!-- The actual Connect4 holes can be added programmatically in the controller,
+                     or you can place them here in FXML if you prefer. -->
+            </StackPane>
         </StackPane>
     </center>
 
-    <!-- RIGHT SIDEBAR: Chat -->
+    <!-- RIGHT SIDEBAR: Chat or Additional Info -->
     <right>
-        <VBox spacing="10" alignment="TOP_CENTER" prefWidth="300"
-              style="-fx-background-color: rgba(0,0,0,0.3); -fx-border-color: #ffffff33; -fx-border-width: 0 0 0 2;">
+        <VBox spacing="15" alignment="TOP_CENTER" prefWidth="280"
+              style="-fx-background-color: rgba(0,0,0,0.2); -fx-background-radius: 10 0 0 10; -fx-border-color: #FFFFFF33; -fx-border-width: 0 0 0 2;">
             <padding>
-                <Insets top="20" right="20" bottom="20" left="20"/>
+                <Insets top="30" right="20" bottom="20" left="20"/>
             </padding>
+            <Label text="CHAT"
+                   style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;"/>
 
-            <Label text="CHAT" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;"/>
-
-            <TextArea fx:id="chatArea" editable="false" prefRowCount="15" style="-fx-font-size: 14px;"/>
-
+            <TextArea fx:id="chatArea" editable="false" prefRowCount="15"
+                      style="-fx-font-size: 14px; -fx-background-radius: 5;"/>
             <HBox spacing="5">
-                <TextField fx:id="chatInput" promptText="Type a message..."/>
-                <Button text="Send" onAction="#onSendMessage"/>
+                <TextField fx:id="chatInput" promptText="Type a message..."
+                           style="-fx-background-radius: 5;"/>
+                <Button text="Send" onAction="#onSendMessage"
+                        style="-fx-background-color: #FFC107; -fx-text-fill: #4A2176; -fx-font-weight: bold; -fx-background-radius: 5;"/>
             </HBox>
         </VBox>
     </right>
 
 </BorderPane>
-

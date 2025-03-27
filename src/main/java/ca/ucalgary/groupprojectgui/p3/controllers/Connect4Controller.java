@@ -3,12 +3,14 @@ package ca.ucalgary.groupprojectgui.p3.controllers;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.GridPane;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.geometry.Pos;
+
+import java.net.URL;
 
 public class Connect4Controller {
 
@@ -23,6 +25,15 @@ public class Connect4Controller {
 
     @FXML
     public void initialize() {
+        // Attempt to load resource
+        URL resourceUrl = getClass().getResource("/images/futuristic_background.jpg");
+        if (resourceUrl == null) {
+            System.err.println("Could not find /images/futuristic_background.jpg on the classpath!");
+            return;
+        }
+
+
+        // Board background rectangle
         Rectangle boardBackground = new Rectangle(600, 500, Color.BURLYWOOD);
         boardBackground.setArcWidth(20);
         boardBackground.setArcHeight(20);
@@ -54,4 +65,3 @@ public class Connect4Controller {
         }
     }
 }
-
