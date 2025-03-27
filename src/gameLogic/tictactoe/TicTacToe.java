@@ -64,6 +64,11 @@ public class TicTacToe {
             }
             return false;
         }
+    public boolean GameOver(){
+        return board.boardFull() || board.checkForWin(activePlayer) || forfeitGame();
     }
-    
+
+    }
+
+
 

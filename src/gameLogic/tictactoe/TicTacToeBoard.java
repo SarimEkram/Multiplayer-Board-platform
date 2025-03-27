@@ -54,18 +54,8 @@ public class TicTacToeBoard {
      *
      * @return True if the board is full, false otherwise.
      */
-    public static boolean boardFull() {
+    public boolean boardFull() {
         return false;
     }
-
-    /**
-     * Determines if the game is over.
-     *
-     * @return True if the game is over, false otherwise.
-     */
-    public boolean isGameOver() {
-        return false;
-    }
-
 
 }
