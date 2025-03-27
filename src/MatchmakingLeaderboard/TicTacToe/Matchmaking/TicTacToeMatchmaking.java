@@ -57,6 +57,7 @@ public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
             }
             if (queue.readyToMatch()) {
                 findMatch();
+                // TODO : Add a game class that is returned from a database to add players
                 signalStartGame();
             } else {
                 System.out.println("Matchmaking cancelled! Not enough players...please try again!");
@@ -113,13 +114,13 @@ public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
     }
 
     /**
-     * function used by players to signal the matchmaking queue to add them
+     * function to add players to the game simulation
      *
-     * @param player the player to add to the queue
+     * @param player the player to add to simulation
      */
     @Override
     public void signalAddPlayer(Player player) {
-        System.out.printf("Signal database to add player %d ", player.getUserID());
+        System.out.printf("Signal database to add player to the game simulation %d ", player.getUserID());
     }
 
     /**
