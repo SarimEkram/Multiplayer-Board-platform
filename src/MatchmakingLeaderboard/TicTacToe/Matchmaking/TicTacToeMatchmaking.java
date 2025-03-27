@@ -6,20 +6,23 @@ import java.util.Random;
 
 public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
 
-    boolean matchmakingUp = false;
+    private boolean matchmakingUp = false;
+    private final double probabilityOfNetworkFailure = 0.125;
+    private MatchmakingQueue queue;
 
-    MatchmakingQueue queue;
 
     /**
      * Class that represents the players joining the matchmaking queue
+     * It continuously scans for player join signals from the database
      *
      */
     public TicTacToeMatchmaking() throws Exception {
-        double i = 0.123;
-        Random random = new Random();
-        double randomValue = random.nextDouble();
-        if (i <= randomValue){
-            throw new NetworkFailureException("Network Error! Could not connect to servers");
+        for (int j = 0; j < 100; j++) {
+            Random random = new Random();
+            double randomValue = random.nextDouble();
+            if (probabilityOfNetworkFailure <= randomValue) {
+                throw new NetworkFailureException("Network Error! Could not connect to servers");
+            }
         }
 
         try {
