@@ -1,7 +1,8 @@
 package networking.game;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+
 
 /**
  * Handles sending player scores to the server when a game ends.
@@ -9,7 +10,7 @@ import java.util.List;
 public class GameScoreSender extends GameNetworking{
 
     private String gameId;// Unique identifier for the game session
-    private List<String> gameScore;
+    private HashMap<String, Integer> gameScore;
     private boolean isconnected;
 
     /**
@@ -20,7 +21,7 @@ public class GameScoreSender extends GameNetworking{
     public GameScoreSender(String gameId) {
         super(gameId);
         this.gameId = gameId;
-        this.gameScore = new ArrayList<>();
+        this.gameScore = new  HashMap<>();
         this.isconnected = false;
 
         // Initialize necessary configurations
