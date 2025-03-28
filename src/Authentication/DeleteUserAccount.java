@@ -9,10 +9,19 @@ public class DeleteUserAccount {
      */
     public boolean deleteAccount(int userId){
         // Check if user ID is valid
+        if (userID <= 0) {
+            return false;
+        }
         // Verify existence of user in database
+        if (!userExist(userId)) {
+            return false;
+        }
         // Remove user's data from database
+        if (!removeUserdata(userId)) {
+            return false;
+        }
         // Return true if account is successfully deleted
-        return false;
+        return deletionLog(userId);
     }
 
     /**
@@ -22,7 +31,11 @@ public class DeleteUserAccount {
      */
     private boolean userExist( int userId){
         // Search for user in database
-        return false;
+        User user = UserDatabase.getUserById(userId);
+        if (user == null) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -32,7 +45,13 @@ public class DeleteUserAccount {
      */
     private boolean removeUserdata(int userId){
         // Delete user details from database
-        return false;
+        UserDatabase.userData.remove(userId);
+
+        if (userExist(userId)) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -42,6 +61,7 @@ public class DeleteUserAccount {
      */
     private boolean deletionLog(int userId){
         // Record deletion event for security reason
-        return false;
+        System.out.println("UserID: " + userId + " has been removed from the database.");
+        return true;
     }
 }
