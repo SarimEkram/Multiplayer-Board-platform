@@ -9,10 +9,11 @@ public class MainApplication extends Application {
         SceneManager.setStage(primaryStage);
 
         //switch to login
-        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Login");
+        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "home.css");
     }
 
     public static void main(String[] args) {
         launch(args);
     }
 }
+

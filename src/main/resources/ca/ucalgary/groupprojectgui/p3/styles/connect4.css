@@ -237,5 +237,3 @@
     /* Optional inner glow or drop shadow on the text */
     -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.8), 4, 0.8, 0, 0);
 }
-
-

@@ -13,7 +13,7 @@ public class MainController {
     protected void onHelloButtonClick() {
         welcomeText.setText("Welcome to OMG");
 
-        // Use SceneManager to switch to the Connect4 screen
-        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "HomePage");
+        // Switch to the HomePage.fxml and load its specific stylesheet
+        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "home.css");
     }
 }
