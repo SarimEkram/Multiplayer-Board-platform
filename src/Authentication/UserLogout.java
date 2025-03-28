@@ -8,7 +8,9 @@ public class UserLogout {
      */
     public boolean logoutUser(int userId){
         // Check if userId is valid
-
+        if (userID <= 0) {
+            return false;
+        }
         // Remove user session or authentication token
         // If needed update session status in database
         // if successful return true else false

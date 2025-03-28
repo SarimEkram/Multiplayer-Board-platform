@@ -107,9 +107,23 @@ public class UserLogin {
      */
     private void createSession(int userID) {
         String sessionID = UUID.randomUUID().toString(); // create ID for the session
-        LocalDateTime expiry = LocalDateTime.now().plusMinutes(30); // set expiry time
+        LocalDateTime expiry = LocalDateTime.now().plusMinutes(60); // set expiry time
 
         sessionData.put(sessionID, new ResetTokenData(userID, sessionID, expiry));
+        return;
+    }
+
+    public static HashMap<String, ResetTokenData> authTokens = new HashMap<>();
+
+    /**
+     * Creates an authentication token for the user for the session
+     * @param userID The user's ID
+     */
+    private void createAuthToken(int userID) {
+        String authToken = UUID.randomUUID().toString(); // create authToken
+        LocalDateTime expiry = LocalDateTime.now().plusMinutes(90); // set expiry time
+
+        authTokens.put(authToken, new ResetTokenData(userID, authToken, expiry));
         return;
     }
 }
