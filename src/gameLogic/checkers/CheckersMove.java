@@ -57,9 +57,9 @@ public class CheckersMove {
      * @return
      */
     private static boolean isValidMove(CheckersBoard board, int toRow, int toCol) {
-        boolean inBounds = toRow >= 0 && toRow < 8 && toCol >= 0 && toCol < 8;
+        boolean inBounds = (toRow >= 0 && toRow < 8 && toCol >= 0 && toCol < 8);
         boolean isEmpty = inBounds && board.board[toRow][toCol] == null;
-        return isEmpty;
+        return isEmpty && inBounds;
     }
 
     /**
