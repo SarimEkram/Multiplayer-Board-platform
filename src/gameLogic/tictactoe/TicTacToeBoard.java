@@ -42,7 +42,8 @@ public class TicTacToeBoard {
      * @param column The column index (0-based).
      * @return True if the cell is empty, false otherwise.
      */
-    public boolean isCellEmpty(int row, int column) {return false;
+    public boolean isCellEmpty(int row, int column) {
+        return gameBoard[row][column] == ' ';
     }
 
     /**
@@ -53,6 +54,9 @@ public class TicTacToeBoard {
      * @param player The player's symbol ('X' or 'O').
      */
     public void placePiece(int row, int column, char player) {
+        if (isCellEmpty(row, column)) {
+            gameBoard[row][column] = player;
+        }
     }
 
     /**
@@ -62,6 +66,26 @@ public class TicTacToeBoard {
      * @return True if the player has won, false otherwise.
      */
     public boolean checkForWin(char player) {
+        // Check for rows and columns
+        for (int i = 0; i < BOARD_SIZE; i++) {
+
+            // check for row wins only
+            if  (gameBoard[i][0] == player && gameBoard[i][1] == player && gameBoard[i][2] == player) {
+                return true;
+            }
+            // check for column wins only
+            if (gameBoard[0][i] == player && gameBoard[1][i] == player && gameBoard[2][i] == player) {
+                return true;
+            }
+        }
+
+        // Check for diagonal wins only
+        if (gameBoard[0][0] == player && gameBoard[1][1] == player && gameBoard[2][2] == player) {
+            return true;
+        }
+        if (gameBoard[0][2] == player && gameBoard[1][1] == player && gameBoard[2][0] == player) {
+            return true;
+        }
         return false;
     }
 
