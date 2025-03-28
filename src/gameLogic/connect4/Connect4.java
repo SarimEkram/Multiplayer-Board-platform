@@ -116,7 +116,7 @@ public class Connect4 {
      * @param piece the piece we want to check for.
      * @return true if the conditions for win in Diagonal forward slash fulfills.
      */
-    private static boolean winInDiagonalForwardSlash(int piece) {
+    private static boolean winInDiagonalForwardSlash(int[][] board,int piece) {
         return false;
     } //D
 
@@ -127,7 +127,7 @@ public class Connect4 {
      * @param piece the piece we want to check for.
      * @return true if the conditions for win in Diagonal backslash fulfills.
      */
-    private static boolean winInDiagonalBackslash(int piece) {
+    private static boolean winInDiagonalBackslash(int[][] board,int piece) {
         return false;
     } //D
 
@@ -138,9 +138,9 @@ public class Connect4 {
      * @param piece The piece to look for length in a row for any diagonal
      * @return True if there is
      */
-    public static boolean winInAnyDiagonal(int[][] board, int piece) {
-        return false;
-    } //D
+    public static boolean winInAnyDiagonal(int[][] board, int piece) {//D
+        return winInDiagonalForwardSlash(board, piece) || winInDiagonalBackslash(board, piece);
+    } //checks for all diagonals back/front slash, returns true if either are true
 
     /**
      * When this function is called winInRow, winInColumn winInAnyDiagonal will be called to check.
