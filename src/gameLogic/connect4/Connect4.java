@@ -9,6 +9,8 @@ public class Connect4 {
      */
     ConnectBoard board;
 
+    private boolean gameOver = false;
+
     /**
      * Constructs a new Connect4 game logic controller.
      *
@@ -23,7 +25,13 @@ public class Connect4 {
     /**
      * Switches the current player.
      */
-    public void switchPlayer() {
+
+    public void switchPlayer() { //D // If current player is player1, switch to player2, else switch to player1
+        if (board.getCurrentPlayer() == board.piece1) {
+            board.setCurrentPlayer(board.piece2);
+        } else {
+            board.setCurrentPlayer(board.piece1);
+        }
     }
 
     /**
@@ -162,14 +170,24 @@ public class Connect4 {
         return winInAnyDiagonal(board, playerNumber); // Checks for a diagonal win in both directions
     }
 
-        /**
-         * Allows a player to forfeit the game.
-         * This will be called in the gui controller class.
-         * @param playerNumber The number identifying the player who wants to forfeit.
-         * @return true if the forfeit is successful, false otherwise.
-         */
-        public boolean forfeit (int playerNumber){
-            return false;
-        }
+    /**
+     * Allows a player to forfeit the game.
+     * This will be called in the gui controller class.
+     * @param playerNumber The number identifying the player who wants to forfeit.
+     * @return true if the forfeit is successful, false otherwise.
+     */
 
+    public int forfeit(int playerNumber) { //D
+        gameOver = true; // Mark the game as over
+        if (playerNumber == board.piece1) { // When forfeit is called, whatever the current player is, return the opposing player as the winner
+            return board.piece2; // Player 1 forfeits, P2 wins
+        } else {
+            return board.piece1; // Player 2 forfeits, P1 wins
+        }
     }
+
+    public boolean isGameOverByForfeit() { //D
+        return gameOver; // Returns the current gameOver state, which will be true only after a forfeit
+    }
+
+}

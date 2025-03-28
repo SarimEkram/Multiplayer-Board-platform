@@ -17,10 +17,14 @@ public class ConnectBoard {
 
     // Player 2
     public int piece2;
+
     private Connect4 gameLogic;
 
     // Board to keep track of the pieces played
     private  int[][] board;
+
+    // Keeps track of current player
+    private int currentPlayer;
 
     /**
      * Constructs a new game board for Connect 4 with specified settings.
@@ -32,6 +36,7 @@ public class ConnectBoard {
         this.gameLogic = new Connect4(this);
         this.piece1 = player1;
         this.piece2 = player2;
+        this.currentPlayer = player1; // Initialize turn
         board = new int[row][column];
         createBoard();
 
@@ -48,6 +53,14 @@ public class ConnectBoard {
                 board[i][j] = 0;
             }
         }
+    }
+
+    public int getCurrentPlayer() { //D
+        return currentPlayer; // Returns the player whose turn it currently is
+    }
+
+    public void setCurrentPlayer(int player) { //D
+        this.currentPlayer = player; // Updates the current player to the specified player
     }
 
     /**
@@ -76,7 +89,8 @@ public class ConnectBoard {
      * This will be called in the GUI controller class.
      */
     public void clearBoard(){ //D
-        createBoard(); // just creates new board to clear the old one
+        createBoard(); //D // just creates new board to clear the old one
     }
 
 }
+
