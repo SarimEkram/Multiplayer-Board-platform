@@ -22,6 +22,17 @@ public class UserLogin {
         if (!verifyPassword(password, savedPass)){
             return false;
         }
+
+        // login is successful
+
+        User user = UserDataBase.getUserByEmail(email); // get user to update status and what not
+
+        int userID = user.getUserID();
+
+        new UserStatus().updateUserStatus(userID, true); // set the user as online
+
+        String sessionID = createSession(userID);
+
         return true;
     }
 
@@ -88,15 +99,17 @@ public class UserLogin {
         return false;
     }
 
+    public static HashMap<String, ResetTokenData> sessionData = new HashMap<>();
+
     /**
      * Creates a new seesion for user after login
      * @param userID The user's ID
-     * @param Session ID
      */
-    private String createSession(int userID) {
+    private void createSession(int userID) {
         String sessionID = UUID.randomUUID().toString(); // create ID for the session
+        LocalDateTime expiry = LocalDateTime.now().plusMinutes(30); // set expiry time
 
-
-
+        sessionData.put(sessionID, new ResetTokenData(userID, sessionID, expiry));
+        return;
     }
 }
