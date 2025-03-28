@@ -69,7 +69,7 @@ public class UserRegistration {
      * @param password The plain text password
      * @return The hashed password
      */
-    private String hashPassword(String password) {
+    public static String hashPassword(String password) {
         // Change the password to hashed format
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
