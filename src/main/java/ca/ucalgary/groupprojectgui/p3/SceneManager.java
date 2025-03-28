@@ -7,7 +7,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Objects;
 
 public class SceneManager {
     private static Stage primaryStage;
@@ -20,17 +19,26 @@ public class SceneManager {
         return primaryStage;
     }
 
-    public static void switchTo(String fxmlPath, String title) {
+    /**
+     * Switch to a scene, providing FXML path, window title, and optional CSS file name (inside /styles).
+     *
+     * @param fxmlPath   Path to the .fxml file
+     * @param title      Title of the window
+     * @param cssFile    Name of the CSS file (e.g., "connect4.css"), or null to skip loading
+     */
+    public static void switchTo(String fxmlPath, String title, String cssFile) {
         try {
             FXMLLoader loader = new FXMLLoader(SceneManager.class.getResource(fxmlPath));
             Parent root = loader.load();
             Scene scene = new Scene(root);
 
-            URL cssURL = SceneManager.class.getResource("/ca/ucalgary/groupprojectgui/p3/styles/styles.css");
-            System.out.println("CSS Path: " + cssURL);
-
-            if (cssURL != null) {
-                scene.getStylesheets().add(cssURL.toExternalForm());
+            if (cssFile != null && !cssFile.isEmpty()) {
+                URL cssURL = SceneManager.class.getResource("/ca/ucalgary/groupprojectgui/p3/styles/" + cssFile);
+                if (cssURL != null) {
+                    scene.getStylesheets().add(cssURL.toExternalForm());
+                } else {
+                    System.err.println("⚠️  CSS not found for: " + cssFile);
+                }
             }
 
             primaryStage.setScene(scene);

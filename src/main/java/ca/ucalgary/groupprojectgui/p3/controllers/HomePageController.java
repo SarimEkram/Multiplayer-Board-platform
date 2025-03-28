@@ -4,9 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
 import ca.ucalgary.groupprojectgui.p3.SceneManager;
-import javafx.scene.control.Label;
 
 public class HomePageController {
 
@@ -46,45 +44,44 @@ public class HomePageController {
         ObservableList<String> scores = FXCollections.observableArrayList(
                 "Tic Tac Toe - Win vs Player1",
                 "Connect 4 - Loss vs Player2"
-
         );
         recentScores.setItems(scores);
     }
 
     @FXML
     private void handleQuickMatch() {
-        // Logic to connect with random opponent or AI
         System.out.println("Searching for quick match...");
-        // You could switch scenes or trigger matchmaking logic here
+        // Matchmaking logic or scene transition can go here
     }
 
     @FXML
     private void handleLogout() {
-        // Logic to log out the player
         System.out.println("Logging out...");
-        // Possibly switch to login screen
+        // Navigate back to login screen
+        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/login.fxml", "Login Page", "login.css");
     }
 
-    // Optional: Hook up buttons via FXML or manually
     public void launchGame(String gameName) {
         System.out.println("Launching game: " + gameName);
+
         String fxmlFile;
         String title;
+        String cssFile;
 
         switch (gameName) {
             case "Connect 4":
                 fxmlFile = "/ca/ucalgary/groupprojectgui/p3/connect4UI.fxml";
                 title = "Connect 4 Game";
+                cssFile = "connect4.css"; // specific CSS file for Connect 4
                 break;
-            // Add more cases as needed for other games
+
+            // Add more game cases here if needed
+
             default:
                 System.out.println("Game not recognized: " + gameName);
                 return;
         }
 
-        // Assuming you have a SceneManager class to handle scene switching
-        SceneManager.switchTo(fxmlFile, title);
+        SceneManager.switchTo(fxmlFile, title, cssFile);
     }
-
 }
-
