@@ -101,7 +101,7 @@ public class UserLogin {
         return false;
     }
 
-    public static HashMap<String, ResetTokenData> sessionData = new HashMap<>();
+    public static HashMap<int, ResetTokenData> sessionData = new HashMap<>();
 
     /**
      * Creates a new seesion for user after login
@@ -111,11 +111,11 @@ public class UserLogin {
         String sessionID = UUID.randomUUID().toString(); // create ID for the session
         LocalDateTime expiry = LocalDateTime.now().plusMinutes(60); // set expiry time
 
-        sessionData.put(sessionID, new ResetTokenData(userID, sessionID, expiry));
+        sessionData.put(userID, new ResetTokenData(userID, sessionID, expiry));
         return;
     }
 
-    public static HashMap<String, ResetTokenData> authTokens = new HashMap<>();
+    public static HashMap<int, ResetTokenData> authTokens = new HashMap<>();
 
     /**
      * Creates an authentication token for the user for the session
@@ -125,7 +125,7 @@ public class UserLogin {
         String authToken = UUID.randomUUID().toString(); // create authToken
         LocalDateTime expiry = LocalDateTime.now().plusMinutes(90); // set expiry time
 
-        authTokens.put(authToken, new ResetTokenData(userID, authToken, expiry));
+        authTokens.put(userID, new ResetTokenData(userID, authToken, expiry));
         return;
     }
 }
