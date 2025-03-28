@@ -9,9 +9,9 @@ import MatchmakingLeaderboard.Checkers.Leaderboard.CheckersLeaderboard;
  **/
 public class GameProcessor {
 
-    private Player winner;
-    private Player loser;
-    private int gameType;
+    private final Player winner;
+    private final Player loser;
+    private final int gameType;
 
     public GameProcessor(Player p1, Player p2, int gameType) {
         if (p1 == null || p2 == null) {
