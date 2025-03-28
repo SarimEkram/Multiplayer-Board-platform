@@ -95,6 +95,13 @@ public class TicTacToeBoard {
      * @return True if the board is full, false otherwise.
      */
     public boolean boardFull() {
-        return false;
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                if(gameBoard[i][j] == ' ') {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
