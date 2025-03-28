@@ -1,39 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="homePane"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.HomePageController"
-            styleClass="home-background"
-
-            prefWidth="1200" prefHeight="800">
+<BorderPane fx:id="homePane" prefHeight="800" prefWidth="1200" styleClass="home-background" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21" fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.HomePageController">
 
 
     <!-- TOP BAR -->
     <top>
         <HBox alignment="CENTER_LEFT" spacing="20" styleClass="top-bar">
             <padding>
-                <Insets top="15" right="20" bottom="15" left="20"/>
+                <Insets bottom="15" left="20" right="20" top="15" />
             </padding>
-            <Label text="🎮 OMG" styleClass="logo-label"/>
-            <Region fx:id="spacer" HBox.hgrow="ALWAYS"/>
-            <Label fx:id="welcomeLabel" text="Welcome, Player!" styleClass="welcome-label"/>
-            <Button text="Logout" fx:id="logoutButton" styleClass="logout-button"/>
+            <Label styleClass="logo-label" text="🎮 OMG" />
+            <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
+            <Label fx:id="welcomeLabel" styleClass="welcome-label" text="Welcome, Player!" />
+            <Button fx:id="logoutButton" styleClass="logout-button" text="Logout" />
         </HBox>
     </top>
 
     <!-- LEFT SIDEBAR: Friends -->
     <left>
-        <VBox spacing="10" prefWidth="250" styleClass="sidebar-left">
+        <VBox prefWidth="250" spacing="10" styleClass="sidebar-left">
             <padding>
-                <Insets top="20" left="15" right="15" bottom="20"/>
+                <Insets bottom="20" left="15" right="15" top="20" />
             </padding>
-            <Label text="Friends Online" styleClass="sidebar-title"/>
-            <ListView fx:id="friendsList" styleClass="list-view"/>
+            <Label styleClass="sidebar-title" text="Friends Online" />
+            <ListView fx:id="friendsList" styleClass="list-view" />
         </VBox>
     </left>
 
@@ -41,28 +42,28 @@
     <center>
         <VBox alignment="TOP_CENTER" spacing="30">
             <padding>
-                <Insets top="40" left="40" right="40" bottom="40"/>
+                <Insets bottom="40" left="40" right="40" top="40" />
             </padding>
-            <Label text="Choose a Game" styleClass="section-title"/>
-            <TilePane hgap="20" vgap="20" alignment="CENTER">
-                <Button text="Connect 4" onAction="#onConnect4Click" prefWidth="200" prefHeight="80" styleClass="game-button"/>
-                <Button text="Tic Tac Toe" prefWidth="200" prefHeight="80" styleClass="game-button"/>
-                <Button text="Chess" prefWidth="200" prefHeight="80" styleClass="game-button"/>
+            <Label styleClass="section-title" text="Choose a Game" />
+            <TilePane alignment="CENTER" hgap="20" vgap="20">
+                <Button onAction="#onConnect4Click" prefHeight="80" prefWidth="200" styleClass="game-button" text="Connect 4" />
+                <Button prefHeight="80" prefWidth="200" styleClass="game-button" text="Tic Tac Toe" />
+                <Button prefHeight="80" prefWidth="200" styleClass="game-button" text="Checkers" />
             </TilePane>
         </VBox>
     </center>
 
     <!-- RIGHT SIDEBAR: Quick Match or Stats -->
     <right>
-        <VBox spacing="15" alignment="TOP_CENTER" prefWidth="250" styleClass="sidebar">
+        <VBox alignment="TOP_CENTER" prefWidth="250" spacing="15" styleClass="sidebar">
             <padding>
-                <Insets top="20" left="15" right="15" bottom="20"/>
+                <Insets bottom="20" left="15" right="15" top="20" />
             </padding>
-            <Label text="Quick Match" styleClass="sidebar-title"/>
-            <Button text="Find Opponent" fx:id="quickMatchButton" prefWidth="200" styleClass="play-button"/>
-            <Separator/>
-            <Label text="Recent Scores" styleClass="sidebar-title"/>
-            <ListView fx:id="recentScores" styleClass="list-view"/>
+            <Label styleClass="sidebar-title" text="Quick Match" />
+            <Button fx:id="quickMatchButton" prefWidth="200" styleClass="play-button" text="Find Opponent" />
+            <Separator />
+            <Label styleClass="sidebar-title" text="Recent Scores" />
+            <ListView fx:id="recentScores" styleClass="list-view" />
         </VBox>
     </right>
 
