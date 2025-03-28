@@ -9,13 +9,12 @@ import java.util.List;
 public class CheckersMove {
 
     /**
-     * Determines and processes the available moves for a given checkers piece on the board.
-     *
-     * @param board the current state of the checkers board
-     * @param piece the checkers piece for which available moves are to be determined
-     * @param row   the row of the piece
-     * @param col   the column of the piece
-     * this function check the availaible moves based on the piece type (normal moves forward only, king moves forward or backward)
+     * checks available moves for the piece and returns moves array
+     * @param board
+     * @param piece
+     * @param row
+     * @param col
+     * @return
      */
     public static int[][] availableMoves(CheckersBoard board, CheckersPiece piece, int row, int col) {
         List<int[]> movesList = new ArrayList<>();
@@ -28,15 +27,18 @@ public class CheckersMove {
         }
 
         if (!piece.isKing()) {
-            addMoveIfValidToList(board, movesList, row + direction, col - 1);
-            addMoveIfValidToList(board, movesList, row + direction, col + 1);
+            if (isValidMove(board, row + direction, col - 1))
+                movesList.add(new int[]{row + direction, col - 1});
+            if (isValidMove(board, row + direction, col + 1))
+                movesList.add(new int[]{row + direction, col + 1});
         } else {
             int[] rowChanges = {1, 1, -1, -1};
             int[] colChanges = {-1, 1, -1, 1};
             for (int i = 0; i < 4; i++) {
                 int newRow = row + rowChanges[i];
                 int newCol = col + colChanges[i];
-                addMoveIfValidToList(board, movesList, newRow, newCol);
+                if (isValidMove(board, newRow, newCol))
+                    movesList.add(new int[]{newRow, newCol});
             }
         }
 
@@ -48,19 +50,16 @@ public class CheckersMove {
     }
 
     /**
-     * Helper function to check if a move is valid
+     * check if the move is valid
      * @param board
-     * @param movesList
      * @param toRow
      * @param toCol
+     * @return
      */
-    private static void addMoveIfValidToList(CheckersBoard board, List<int[]> movesList, int toRow, int toCol) {
+    private static boolean isValidMove(CheckersBoard board, int toRow, int toCol) {
         boolean inBounds = toRow >= 0 && toRow < 8 && toCol >= 0 && toCol < 8;
         boolean isEmpty = inBounds && board.board[toRow][toCol] == null;
-
-        if (isEmpty) {
-            movesList.add(new int[]{toRow, toCol});
-        }
+        return isEmpty;
     }
 
     /**
