@@ -12,12 +12,28 @@ public class TicTacToeBoard {
      * Creates and initializes the game board.
      */
     public void createBoard() {
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                gameBoard[i][j] = ' ';
+            }
+        }
     }
 
     /**
      * Displays the current state of the game board.
      */
-    public void displayBoard() {}
+    public void displayBoard() {
+        System.out.println("----------------");
+        // Display rows for the board
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            System.out.print("| ");
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                System.out.print(gameBoard[i][j] + " | ");
+            }
+            System.out.println();
+            System.out.println("----------------");
+        }
+    }
 
     /**
      * Checks if a specific cell is empty.
@@ -26,8 +42,7 @@ public class TicTacToeBoard {
      * @param column The column index (0-based).
      * @return True if the cell is empty, false otherwise.
      */
-    public boolean isCellEmpty(int row, int column) {
-        return false;
+    public boolean isCellEmpty(int row, int column) {return false;
     }
 
     /**
@@ -37,7 +52,8 @@ public class TicTacToeBoard {
      * @param column The column index (0-based).
      * @param player The player's symbol ('X' or 'O').
      */
-    public void placePiece(int row, int column, char player) {}
+    public void placePiece(int row, int column, char player) {
+    }
 
     /**
      * Checks if the given player has won the game.
@@ -57,5 +73,4 @@ public class TicTacToeBoard {
     public boolean boardFull() {
         return false;
     }
-
 }
