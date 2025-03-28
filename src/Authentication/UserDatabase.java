@@ -1,115 +1,101 @@
 package Authentication;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 public class UserDatabase {
-    // Instead of directly storing User objects, we store field-by-field data.
-    private static final Map<Integer, Map<String, Object>> userData = new HashMap<>();
-    // For quick lookup by email, store email -> userID
-    private static final Map<String, Integer> emailIndex = new HashMap<>();
-    private static int nextId = 1;
+    private static final String FILE_PATH = "userdata.csv";
+    private static List<User> users = new ArrayList<>();
 
-    // Retrieve a full User object by ID, reconstructing it from the field map
-    public static User getUserById(int id) {
-        Map<String, Object> fields = userData.get(id);
-        if (fields == null) return null;
-
-        // Rebuild a User object
-        User user = new User();
-        user.setUserID(id); // Be careful not to loop infinitely with save calls
-        // We'll do a direct set on the fields to avoid re-calling setUserID:
-        userDataToUser(fields, user);
-        return user;
+    static {
+        loadUsersFromCSV();
     }
 
-    // Retrieve by email -> find userID, then call getUserById
-    public static User getUserByEmail(String email) {
-        if (email == null) return null;
-        Integer userId = emailIndex.get(email.toLowerCase());
-        if (userId == null) return null;
-        return getUserById(userId);
-    }
-    public static User getUserByUsername(String username) {
-        for (Map<String, Object> fields : userData.values()) {
-            String existingUsername = (String) fields.get("username");
-            if (existingUsername != null && existingUsername.equals(username)) {
-                int id = -1;
-                for (Map.Entry<Integer, Map<String, Object>> entry : userData.entrySet()) {
-                    if (entry.getValue() == fields) {
-                        id = entry.getKey();
-                        break;
-                    }
-                }
+    public static void loadUsersFromCSV() {
+        users.clear();
+        File file = new File(FILE_PATH);
+        if (!file.exists()) return;
 
-                return getUserById(id);
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.trim().isEmpty() || line.startsWith("userID")) continue;
+                String[] parts = line.split(",");
+                if (parts.length != 7) continue;
+
+                User user = new User();
+                user.setSuspendSave(true);
+                user.setUserID(Integer.parseInt(parts[0]));
+                user.setUsername(parts[1]);
+                user.setEmail(parts[2]);
+                user.setPassword(parts[3]);
+                user.setWinRatio(Double.parseDouble(parts[4]));
+                user.setLevel(Integer.parseInt(parts[5]));
+                user.setOnlineStatus(Boolean.parseBoolean(parts[6]));
+                user.setSuspendSave(false);
+
+                users.add(user);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean saveUser(User user) {
+        boolean found = false;
+        for (int i = 0; i < users.size(); i++) {
+            if (users.get(i).getUserID() == user.getUserID()) {
+                users.set(i, user);
+                found = true;
+                break;
             }
         }
-        return null;
-    }
-
-
-    // Save or update a user to the field map
-    public static boolean saveUser(User user) {
-        if (user == null) return false;
-        // If user has no valid ID, assign a new one
-        if (user.getUserID() <= 0) {
-            // Temporarily disable the auto-persist from setUserID to avoid recursion
-            int newId = nextId++;
-            // We'll do a manual field set
-            userIDFieldSet(user, newId);
+        if (!found) {
+            user.setSuspendSave(true); // temporarily stop saving
+            user.setUserID(getNextUserID());
+            user.setSuspendSave(false); // re-enable saving
+            users.add(user);
         }
-
-        // Convert user fields to the map
-        Map<String, Object> fields = userToUserData(user);
-        userData.put(user.getUserID(), fields);
-
-        // Update email index
-        emailIndex.put(user.getEmail().toLowerCase(), user.getUserID());
-        return true;
+        return saveAllToCSV();
     }
 
-    // Remove the user from the system
     public static boolean deleteUser(int userId) {
-        Map<String, Object> removed = userData.remove(userId);
-        if (removed == null) return false;
+        users.removeIf(u -> u.getUserID() == userId);
+        return saveAllToCSV();
+    }
 
-        // Remove from emailIndex too
-        String email = (String) removed.get("email");
-        if (email != null) {
-            emailIndex.remove(email.toLowerCase());
+    public static User getUserById(int id) {
+        return users.stream().filter(u -> u.getUserID() == id).findFirst().orElse(null);
+    }
+
+    public static User getUserByEmail(String email) {
+        return users.stream().filter(u -> u.getEmail().equalsIgnoreCase(email)).findFirst().orElse(null);
+    }
+
+    public static User getUserByUsername(String username) {
+        return users.stream().filter(u -> u.getUsername().equalsIgnoreCase(username)).findFirst().orElse(null);
+    }
+
+    private static int getNextUserID() {
+        return users.stream().mapToInt(User::getUserID).max().orElse(0) + 1;
+    }
+
+    private static boolean saveAllToCSV() {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_PATH))) {
+            bw.write("userID,username,email,password,winRatio,level,onlineStatus\n");
+            for (User u : users) {
+                bw.write(u.getUserID() + "," +
+                        u.getUsername() + "," +
+                        u.getEmail() + "," +
+                        u.getPassword() + "," +
+                        u.getWinRatio() + "," +
+                        u.getLevel() + "," +
+                        u.isOnline() + "\n");
+            }
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
         }
-        return true;
-    }
-
-    // Helper to copy user object -> map of fields
-    private static Map<String, Object> userToUserData(User user) {
-        Map<String, Object> fields = new HashMap<>();
-        fields.put("username", user.getUsername());
-        fields.put("email", user.getEmail());
-        fields.put("password", user.getPassword());
-        fields.put("winRatio", user.getWinRatio());
-        fields.put("level", user.getLevel());
-        fields.put("onlineStatus", user.isOnline());
-        return fields;
-    }
-
-
-    private static void userDataToUser(Map<String, Object> fields, User user) {
-        // Avoid triggering save inside setters during reconstruction
-        userIDFieldSet(user, user.getUserID());
-
-        user.setUsername((String) fields.get("username"));
-        user.setEmail((String) fields.get("email"));
-        user.setPassword((String) fields.get("password"));
-        user.setWinRatio((double) fields.get("winRatio"));
-        user.setLevel((int) fields.get("level"));
-        user.setOnlineStatus((boolean) fields.get("onlineStatus"));
-    }
-
-    // Bypasses the setter so we don’t trigger infinite recursion.
-    private static void userIDFieldSet(User user, int newId) {
-        userData.remove(user.getUserID()); // in case it was set previously
-        user.setUserID(newId);
     }
 }
