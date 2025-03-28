@@ -1,13 +1,15 @@
 package networking.game;
 import java.util.HashMap;
 
+
 /**
  * Handles sending player scores to the server when a game ends.
  */
 public class GameScoreSender extends GameNetworking{
 
     private String gameId;// Unique identifier for the game session
-    private HashMap<String, Integer> gameScore; // Hashmap for storing each player score
+    public HashMap<String, HashMap<String, Integer>> gameScore ;// Hashmap for storing each player score
+    private HashMap<String, Integer> playerScore;
     private boolean isconnected;// boolean to check connection status to server
     private boolean isGameOver; // boolean to check if game is over
 
@@ -19,7 +21,8 @@ public class GameScoreSender extends GameNetworking{
     public GameScoreSender(String gameId) {
         super(gameId);
         this.gameId = gameId;               // unique game id
-        this.gameScore = new  HashMap<>();  // initializing hashmap
+        this.playerScore = new HashMap<>();  // initializing hashmap
+        this.gameScore = new HashMap<>();
         this.isconnected = false;           // initial connection set to false
         this.isGameOver = false;            // initial game status set to false
 
@@ -36,7 +39,13 @@ public class GameScoreSender extends GameNetworking{
             System.out.println("Error: Cannot send scores. Server is not connected."); // Error Message
         } else if (isconnected) { // checking server connection status
             if(isGameOver) { // checking if game is over
-                gameScore.put(playerId, score);// storing player id and in hash map
+                   if(ScoreValidator.isScoreValid(gameId,playerId,score, playerScore,gameScore)){
+                       playerScore.put(playerId,score);  // storing player id and in hash map
+                       gameScore.put(gameId,playerScore);
+
+                   }else {
+                       System.out.println("Enter valid score");
+                   }
                 System.out.println("Game score sent for player " + playerId + ": " + score); // success message
             }else if (!isGameOver) { // checking if game is over
                 System.out.println("Error: Cannot send scores. Game is not over."); // Error Message
