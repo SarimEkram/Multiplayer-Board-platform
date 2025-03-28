@@ -1,6 +1,11 @@
 package Authentication;
 
+import java.time.LocalDateTime;
+import java.util.*;
+
 public class UserLogin {
+
+
     /**
      * Verifies the user and return the login status
      * @param email User email that has been entered
@@ -25,7 +30,7 @@ public class UserLogin {
 
         // login is successful
 
-        User user = UserDataBase.getUserByEmail(email); // get user to update status and what not
+        User user = UserDatabase.getUserByEmail(email); // get user to update status and what not
 
         int userID = user.getUserID();
 
@@ -50,10 +55,7 @@ public class UserLogin {
             return false;
         }
         // Check if password is in correct format
-        if (password == null || password.length() < 6) {
-            return false;
-        }
-        return true;
+        return password != null && password.length() >= 6;
     }
 
     /**
@@ -63,11 +65,8 @@ public class UserLogin {
      */
     private boolean userExist(String email){
         // Search email in database
-        if (UserDatabase.getUserByEmail(email) == null) {
-            return false;
-        }
+        return UserDatabase.getUserByEmail(email) != null;
         // if found return true else return false
-        return true;
     }
 
     /**
@@ -79,9 +78,7 @@ public class UserLogin {
         // Get password from database where entered email match
         User theUser = UserDatabase.getUserByEmail(email);
 
-        String password = theUser.getPassword();
-
-        return password;
+        return theUser.getPassword();
     }
 
     /**
@@ -94,14 +91,11 @@ public class UserLogin {
         // Convert user password to hash
         String hashedPass = UserRegistration.hashPassword(password);
         // Compare entered hash to saved hash
-        if (storedHash.equals(hashedPass)) {
-            return true;
-        }
+        return storedHash.equals(hashedPass);
         // if same return true, else false
-        return false;
     }
 
-    public static HashMap<int, ResetTokenData> sessionData = new HashMap<>();
+    public static HashMap<Integer, ResetTokenData> sessionData = new HashMap<>();
 
     /**
      * Creates a new seesion for user after login
@@ -115,7 +109,7 @@ public class UserLogin {
         return;
     }
 
-    public static HashMap<int, ResetTokenData> authTokens = new HashMap<>();
+    public static HashMap<Integer, ResetTokenData> authTokens = new HashMap<>();
 
     /**
      * Creates an authentication token for the user for the session
@@ -126,6 +120,5 @@ public class UserLogin {
         LocalDateTime expiry = LocalDateTime.now().plusMinutes(90); // set expiry time
 
         authTokens.put(userID, new ResetTokenData(userID, authToken, expiry));
-        return;
     }
 }

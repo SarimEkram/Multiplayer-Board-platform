@@ -8,7 +8,7 @@ public class UserLogout {
      */
     public boolean logoutUser(int userId){
         // Check if userId is valid
-        if (userID <= 0) {
+        if (userId <= 0) {
             return false;
         }
         // Remove user session or authentication token
@@ -19,10 +19,10 @@ public class UserLogout {
             return false;
         }
         // If needed update session status in database
-        new UserStatus().updateUserStatus(userID, false);
+        new UserStatus().updateUserStatus(userId, false);
 
         // if successful return true else false
-        return (!UserStatus.IsUserOnline(userId));
+        return (!(UserDatabase.getUserById(userId).isOnline()));
     }
 
     /**
@@ -34,11 +34,7 @@ public class UserLogout {
         // Remove session data from system
         UserLogin.sessionData.remove(userId);
 
-        if (UserLogin.sessiondata.contains(userId)) {
-            return false; // check for successful removal
-        }
-
-        return true;
+        return !UserLogin.sessionData.containsKey(userId); // check for successful removal
     }
 
     /**
@@ -48,12 +44,8 @@ public class UserLogout {
      */
     private boolean clearAuthTokens(int userId){
         // Delete authentication tokens
-        UserLogin.authTokens.remove(userID);
+        UserLogin.authTokens.remove(userId);
 
-        if (UserLogin.authTokens.remove(userId)) {
-            return false;
-        }
-
-        return true;
+        return !UserLogin.authTokens.containsKey(userId);
     }
 }

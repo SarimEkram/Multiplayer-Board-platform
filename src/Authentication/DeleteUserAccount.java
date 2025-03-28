@@ -9,7 +9,7 @@ public class DeleteUserAccount {
      */
     public boolean deleteAccount(int userId){
         // Check if user ID is valid
-        if (userID <= 0) {
+        if (userId <= 0) {
             return false;
         }
         // Verify existence of user in database
@@ -17,7 +17,7 @@ public class DeleteUserAccount {
             return false;
         }
         // Remove user's data from database
-        if (!removeUserdata(userId)) {
+        if (!UserDatabase.deleteUser(userId)) {
             return false;
         }
         // Return true if account is successfully deleted
@@ -32,26 +32,7 @@ public class DeleteUserAccount {
     private boolean userExist( int userId){
         // Search for user in database
         User user = UserDatabase.getUserById(userId);
-        if (user == null) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Remove user data from system
-     * @param userId User's registered ID
-     * @return Status for successful deletion
-     */
-    private boolean removeUserdata(int userId){
-        // Delete user details from database
-        UserDatabase.userData.remove(userId);
-
-        if (userExist(userId)) {
-            return false;
-        }
-
-        return true;
+        return user != null;
     }
 
     /**
