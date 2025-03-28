@@ -31,7 +31,9 @@ public class UserLogin {
 
         new UserStatus().updateUserStatus(userID, true); // set the user as online
 
-        String sessionID = createSession(userID);
+        createSession(userID);
+
+        createAuthToken(userID);
 
         return true;
     }
