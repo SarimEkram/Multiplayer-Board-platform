@@ -5,7 +5,7 @@ import MatchmakingLeaderboard.*;
 import java.util.Random;
 
 public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
-
+    int gameType = 1;
     private boolean matchmakingUp = false;
     private final double probabilityOfNetworkFailure = 0.125;
     private MatchmakingQueue queue;
@@ -131,7 +131,7 @@ public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
      */
     @Override
     public boolean checkPlayers(Player player1, Player player2) {
-        if ((player1.getRank() == player2.getRank()) && (player1.getGameSignal() == player2.getGameSignal())){
+        if ((player1.getRank(gameType) == player2.getRank(gameType)) && (player1.getGameSignal(gameType) == player2.getGameSignal(gameType))){
             return Math.abs((player1.getLevel() - player2.getLevel())) == 10;
         }
         return false;

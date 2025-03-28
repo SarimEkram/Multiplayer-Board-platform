@@ -5,7 +5,7 @@ import MatchmakingLeaderboard.*;
 import java.util.Random;
 
 public class CheckersMatchmaking extends AbstractCheckersMatchmaking{
-
+    int gameType = 3;
     private boolean matchmakingUp = false;
     private final double probabilityOfNetworkFailure = 0.117;
     private MatchmakingQueue queue;
@@ -35,7 +35,7 @@ public class CheckersMatchmaking extends AbstractCheckersMatchmaking{
         try {
             while (true) {
                 // replace with a function to get players from database
-                this.joinQueue(new Player(0.56, 2, 123456, false, new Rank(12),1));
+                this.joinQueue(new Player(0.56, 2, 123456, false, new Rank(12),3));
                 this.matchmakingUp = true;
                 wait(2500);
             }
@@ -131,7 +131,7 @@ public class CheckersMatchmaking extends AbstractCheckersMatchmaking{
      */
     @Override
     public boolean checkPlayers(Player player1, Player player2) {
-        if ((player1.getRank() == player2.getRank()) && (player1.getGameSignal() == player2.getGameSignal())){
+        if ((player1.getRank(gameType) == player2.getRank(gameType)) && (player1.getGameSignal(gameType) == player2.getGameSignal(gameType))){
             return Math.abs((player1.getLevel() - player2.getLevel())) == 10;
         }
         return false;

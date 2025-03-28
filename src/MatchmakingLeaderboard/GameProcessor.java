@@ -40,8 +40,8 @@ public class GameProcessor {
     public static void UpdateResults(Player winner, Player loser, int gameType) {
         updateMMR(winner, loser, true, gameType);
         updateMMR(loser, winner, false, gameType);
-        updateRank(winner);
-        updateRank(loser);
+        updateRank(winner, gameType);
+        updateRank(loser, gameType);
         updateLeaderBoard(winner, loser, gameType);
     }
 
@@ -50,14 +50,14 @@ public class GameProcessor {
      */
     private static void updateMMR(Player p1, Player p2, boolean won, int gameType) {
         int updateMMR = MMRCalculator.calculateMMR(p1, p2, won, gameType);
-        p1.setMMR(p1.getMMR() + updateMMR);
+        p1.setMMR(p1.getMMR(gameType) + updateMMR, gameType);
     }
 
     /**
      * Updates the player's ranking points and tier.
      */
-    private static void updateRank(Player player) {
-        player.getRank().adjustPoints(player.getMMR());
+    private static void updateRank(Player player, int gameType) {
+        player.getRank(gameType).adjustPoints(player.getMMR(gameType));
     }
 
     /**
@@ -87,8 +87,8 @@ public class GameProcessor {
         int updateMMR1 = MMRCalculator.calculateDraw(p1, p2, gameType);
         int updateMMR2 = MMRCalculator.calculateDraw(p2, p1, gameType);
 
-        p1.setMMR(p1.getMMR() + updateMMR1);
-        p2.setMMR(p2.getMMR() + updateMMR2);
+        p1.setMMR(p1.getMMR(gameType) + updateMMR1, gameType);
+        p2.setMMR(p2.getMMR(gameType) + updateMMR2, gameType);
 
         updateLeaderBoard(p1, p2, gameType);
     }
