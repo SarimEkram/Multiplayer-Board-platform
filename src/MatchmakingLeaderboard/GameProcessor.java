@@ -1,7 +1,9 @@
 package MatchmakingLeaderboard;
+
 import MatchmakingLeaderboard.TicTacToe.Leaderboard.TicTacToeLeaderboard;
 import MatchmakingLeaderboard.Connect4.Leaderboard.Connect4Leaderboard;
 import MatchmakingLeaderboard.Checkers.Leaderboard.CheckersLeaderboard;
+
 /**
  * Keeps track of what happens after the game completes.
  **/
@@ -9,7 +11,6 @@ public class GameProcessor {
 
     private Player winner;
     private Player loser;
-
     private int gameType;
 
     public GameProcessor(Player p1, Player p2, int gameType) {
@@ -21,78 +22,70 @@ public class GameProcessor {
         this.gameType = gameType;
     }
 
-
-    /**
-     * Getters from Game Processors
-     * @return
-     */
-    public Player getWinner(){
+    public Player getWinner() {
         return winner;
     }
-    public Player getLoser(){
+
+    public Player getLoser() {
         return loser;
     }
-    public int getType(){
+
+    public int getType() {
         return gameType;
     }
 
     /**
-     * Setters
-     *
+     * Handles the end of a match with a winner and loser.
      */
-    public static void UpdateResults(Player winner, Player loser, int gameType){
-        updateMMR(winner, loser, true);
-        updateMMR(loser, winner, false);
+    public static void UpdateResults(Player winner, Player loser, int gameType) {
+        updateMMR(winner, loser, true, gameType);
+        updateMMR(loser, winner, false, gameType);
         updateRank(winner);
         updateRank(loser);
         updateLeaderBoard(winner, loser, gameType);
     }
 
     /**
-     * Updates MMR for players based on game outcome
-     *
-     * @param p1
-     * @param p2
-     * @param Won
+     * Updates MMR for players based on game outcome.
      */
-    private static void updateMMR(Player p1, Player p2, boolean Won){
-        int updateMMR = MMRCalculator.calculateMMR(p1, p2, Won);
+    private static void updateMMR(Player p1, Player p2, boolean won, int gameType) {
+        int updateMMR = MMRCalculator.calculateMMR(p1, p2, won, gameType);
         p1.setMMR(p1.getMMR() + updateMMR);
     }
 
     /**
-     * Updates Rank of the Player.
-     *
-     * @param player
+     * Updates the player's ranking points and tier.
      */
-    private static void updateRank(Player player){
+    private static void updateRank(Player player) {
         player.getRank().adjustPoints(player.getMMR());
     }
 
-    private static void updateLeaderBoard(Player winner, Player loser, int gameType){
-        switch (gameType){
+    /**
+     * Updates the leaderboard after a match.
+     */
+    private static void updateLeaderBoard(Player winner, Player loser, int gameType) {
+        switch (gameType) {
             case 1:
                 TicTacToeLeaderboard.updatePlayer(winner, true);
                 TicTacToeLeaderboard.updatePlayer(loser, false);
+                break;
             case 2:
                 Connect4Leaderboard.updatePlayer(winner, true);
                 Connect4Leaderboard.updatePlayer(loser, false);
+                break;
             case 3:
                 CheckersLeaderboard.updatePlayer(winner, true);
                 CheckersLeaderboard.updatePlayer(loser, false);
+                break;
         }
     }
 
     /**
-     * Updates results after draw.
-     *
-     * @param p1
-     * @param p2
-     * @param gameType
+     * Handles the end of a draw match.
      */
-    public static void ProcessDraw(Player p1, Player p2, int gameType){
-        int updateMMR1 = MMRCalculator.calculateDraw(p1, p2);
-        int updateMMR2 = MMRCalculator.calculateDraw(p2, p1);
+    public static void ProcessDraw(Player p1, Player p2, int gameType) {
+        int updateMMR1 = MMRCalculator.calculateDraw(p1, p2, gameType);
+        int updateMMR2 = MMRCalculator.calculateDraw(p2, p1, gameType);
 
         p1.setMMR(p1.getMMR() + updateMMR1);
         p2.setMMR(p2.getMMR() + updateMMR2);

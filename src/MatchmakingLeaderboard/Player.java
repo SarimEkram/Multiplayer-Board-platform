@@ -7,11 +7,9 @@ import MatchmakingLeaderboard.TicTacToe.Matchmaking.TicTacToeMatchmaking;
 /**
  * Player class that is used to represent Users pulled from database
  * and used in matchmaking and leaderboard
- *
- * @author Manav Patel
  */
 public class Player {
-    private double winRatio;
+    private double[] winRatio = new double[3];  // 0: TicTacToe, 1: Connect4, 2: Checkers
     private int level;
     private int userID;
     private boolean spectate;
@@ -21,23 +19,23 @@ public class Player {
 
     /**
      * Constructs a Player object
-     * @param winRatio win ratio of player
      * @param level rank level of player
      * @param userID userID of the player from database
      * @param spectate whether player is spectating
      * @param rank rank of the player
      * @param gameSignal which game the player wants to play
      */
-    public Player(double winRatio, int level, int userID, boolean spectate, Rank rank, int gameSignal) {
-        this.winRatio = winRatio;
+    public Player(double winRatioForGame, int level, int userID, boolean spectate, Rank rank, int gameSignal) {
         this.level = level;
         this.userID = userID;
         this.spectate = spectate;
         this.rank = rank;
         this.gameSignal = gameSignal;
+        this.setWinRatio(gameSignal, winRatioForGame);
     }
 
-    // Getters and Setters
+
+    // --- MMR ---
     public int getMMR(){
         return mmr;
     }
@@ -45,20 +43,27 @@ public class Player {
     public void setMMR(int mmr){
         this.mmr = mmr;
     }
+
+    // --- Win Ratio ---
+    public double getWinRatio(int gameSignal) {
+        int index = gameSignal - 1;
+        return (index >= 0 && index < winRatio.length) ? winRatio[index] : 0.0;
+    }
+
+    public void setWinRatio(int gameSignal, double ratio) {
+        int index = gameSignal - 1;
+        if (index >= 0 && index < winRatio.length) {
+            winRatio[index] = ratio;
+        }
+    }
+
+    // --- General Info ---
     public boolean isSpectate() {
         return this.spectate;
     }
 
     public void setSpectate(boolean spectate) {
         this.spectate = spectate;
-    }
-
-    public double getWinRatio() {
-        return this.winRatio;
-    }
-
-    public void setWinRatio(double winRatio) {
-        this.winRatio = winRatio;
     }
 
     public int getLevel() {
