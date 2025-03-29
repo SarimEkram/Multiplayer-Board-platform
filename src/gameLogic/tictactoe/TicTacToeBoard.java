@@ -1,3 +1,4 @@
+
 package gameLogic.tictactoe;
 
 /**
@@ -7,6 +8,8 @@ public class TicTacToeBoard {
 
     private static final int BOARD_SIZE = 3;
     private char[][] gameBoard = new char[BOARD_SIZE][BOARD_SIZE];
+
+
 
     /**
      * Creates and initializes the game board.

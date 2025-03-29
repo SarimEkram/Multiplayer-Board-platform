@@ -7,6 +7,7 @@ public class TicTacToe {
     private char activePlayer;
     private static final char PLAYER_X = 'X';
     private static final char PLAYER_O = 'O';
+
     public TicTacToe(TicTacToeBoard board){
         this.board = board;
         this.activePlayer = PLAYER_X;
@@ -18,28 +19,8 @@ public class TicTacToe {
      *
      */
     public void start() {
-        System.out.println("Welcome to Tic-Tac-Toe!");
-
-        while (true) {
-            board.createBoard();
-            board.displayBoard();
-            while (true) {
-                board.displayBoard();
-                if (board.checkForWin(activePlayer)) {
-                    System.out.println("Player " + activePlayer + " wins! Congratulations!");
-                    break;
-                }
-                if (board.boardFull()) {
-                    System.out.println("It’s a tie");
-                    break;
-                }
-                if(this.forfeitGame()){
-                    break;
-                }
-                this.changeActivePlayer();
-
-            }
-        }
+        board.createBoard();
+        board.displayBoard();
     }
 
     /**
@@ -51,23 +32,23 @@ public class TicTacToe {
 
     /**
      * Allows the current player to forfeit the game.
+     * @param player
      */
-    public boolean forfeitGame() {
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("Player " + this.activePlayer + ", do you want to forfeit? (yes/no): ");
-            String input = scanner.nextLine().trim().toLowerCase();
-            if (input.equals("yes")) {
-                char winner = (this.activePlayer == PLAYER_X) ? PLAYER_O : PLAYER_X;
-                System.out.println("Player " + this.activePlayer + " forfeited the game.");
-                System.out.println("Player " + winner + " wins by forfeit!");
-                return true;
-            }
-            return false;
-        }
-    public boolean GameOver(){
-        return board.boardFull() || board.checkForWin(activePlayer) || forfeitGame();
-    }
 
+    public char forfeitGame(char player) {
+        if (player == PLAYER_X) {
+           return PLAYER_O;
+        }
+        else{
+            return PLAYER_X;
+        }
+    }
+    public boolean isGameOver() {
+        if(board.checkForWin(activePlayer) || board.boardFull() || ((forfeitGame(activePlayer) == PLAYER_O) || (forfeitGame(activePlayer) == PLAYER_X))) {
+            return true;
+        }
+        return false;
+    }
     }
 
 
