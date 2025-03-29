@@ -132,4 +132,8 @@ public class Player {
     public void spectateMatch(int gameid) {
         // Implementation needed
     }
+
+    public boolean getName() {
+        return false;
+    }
 }
