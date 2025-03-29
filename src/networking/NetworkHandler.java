@@ -33,8 +33,18 @@ public abstract class NetworkHandler {
      * @param errorMessage The error message or exception details.
      */
     public void handleNetworkError(String errorMessage) {
-        // Log the error message
-        // Attempt to reconnect if necessary
-    }
+        System.err.println("[Network Error][" + gameId + "]: " + errorMessage);
 
+        System.out.println("Attempting to reconnect session: " + gameId);
+
+        try {
+            Thread.sleep(2000); // Simulate retry delay
+            establishConnection();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            System.err.println("Reconnection attempt interrupted for game: " + gameId);
+        } catch (Exception e) {
+            System.err.println("Failed to reconnect for game " + gameId + ": " + e.getMessage());
+        }
+    }
 }
