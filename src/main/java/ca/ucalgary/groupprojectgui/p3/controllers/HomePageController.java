@@ -1,6 +1,11 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -12,9 +17,13 @@ import javafx.scene.input.MouseEvent;
 
 import ca.ucalgary.groupprojectgui.p3.SceneManager;
 
+import java.io.IOException;
+import java.net.URL;
+
 public class HomePageController {
     @FXML private TextField gameSearchField;
-    @FXML private TilePane gameTilePane;
+    @FXML private HBox gameTilePane;
+
 
 
     @FXML private Label welcomeLabel;
@@ -27,13 +36,13 @@ public class HomePageController {
     @FXML private ImageView previewImage;
     @FXML private Button connect4Btn;
     @FXML private Button tttBtn;
-    @FXML private Button chessBtn;
+    @FXML private Button checkersBtn;
 
     @FXML
     public void initialize() {
         // Simulate logged-in user
         String playerName = "Generic Player";
-        welcomeLabel.setText("Welcome, " + playerName + "!");
+        //welcomeLabel.setText("Welcome, " + playerName + "!");
 
         // Simulate online friends
         ObservableList<String> friends = FXCollections.observableArrayList(
@@ -42,16 +51,16 @@ public class HomePageController {
         friendsList.setItems(friends);
 
         // Simulate recent scores
-        ObservableList<String> scores = FXCollections.observableArrayList(
-                "Tic Tac Toe - Win vs Player1",
-                "Connect 4 - Loss vs Player2"
-        );
-        recentScores.setItems(scores);
+        //ObservableList<String> scores = FXCollections.observableArrayList(
+                //"Tic Tac Toe - Win vs Player1",
+                //"Connect 4 - Loss vs Player2"
+     //   );
+       // recentScores.setItems(scores);
 
         // Setup image preview on hover
         setupPreview(connect4Btn, "/ca/ucalgary/groupprojectgui/p3/images/connect4_preview.jpg");
         setupPreview(tttBtn, "/ca/ucalgary/groupprojectgui/p3/images/tictactoe_preview.jpg");
-        setupPreview(chessBtn, "/ca/ucalgary/groupprojectgui/p3/images/chess_preview.jpg");
+        setupPreview(checkersBtn, "/ca/ucalgary/groupprojectgui/p3/images/chess_preview.jpg");
 
         setupGameSearch();
 
@@ -82,6 +91,10 @@ public class HomePageController {
     private void onConnect4Click() {
         launchGame("Connect 4");
     }
+    @FXML
+    private void onCheckersClick(){
+        launchGame("Checkers");
+    }
 
     @FXML
     private void handleQuickMatch() {
@@ -107,6 +120,11 @@ public class HomePageController {
                 title = "Connect 4 Game";
                 cssFile = "connect4.css";
                 break;
+            case "Checkers":
+                fxmlFile = "/ca/ucalgary/groupprojectgui/p3/checkers_gui.fxml";
+                title = "Checkers";
+                cssFile = "connect4.css";
+                break;
 
             default:
                 System.out.println("Game not recognized: " + gameName);
@@ -128,5 +146,29 @@ public class HomePageController {
             }
         });
     }
+
+    @FXML private BorderPane homePane;
+    @FXML
+    private void openNotificationPanel(MouseEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ca/ucalgary/groupprojectgui/p3/NotificationPanel.fxml"));
+            Node panel = loader.load();
+            homePane.setRight(panel);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText("Oops!");
+            alert.setContentText("Couldn't load the notification panel.");
+            alert.showAndWait();
+        }
+    }
+
+
+
+
+
+
+
+
 
 }
