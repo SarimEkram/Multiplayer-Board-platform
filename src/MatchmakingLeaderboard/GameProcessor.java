@@ -49,15 +49,13 @@ public class GameProcessor {
 
         updateMMR(winner, loser, true, gameType);
         updateMMR(loser, winner, false, gameType);
-        updateRank(winner, gameType);
-        updateRank(loser, gameType);
         updateLeaderBoard(winner, loser, gameType);
     }
 
     /**
      * Updates MMR for players based on game outcome.
      */
-    private static void updateMMR(Player p1, Player p2, boolean won, int gameType) {
+    public static void updateMMR(Player p1, Player p2, boolean won, int gameType) {
         int updateMMR = MMRCalculator.calculateMMR(p1, p2, won, gameType);
         int newMMR = p1.getMMR(gameType) + updateMMR;
 
@@ -66,16 +64,12 @@ public class GameProcessor {
         }
 
         p1.setMMR(newMMR,gameType);
+
+        Rank rank = p1.getRank(gameType);
+        Rank.adjustPoints(p1,updateMMR,gameType);
     }
 
-    /**
-     * Updates the player's ranking points and tier.
-     */
-    private static void updateRank(Player player, int gameType) {
 
-        Rank rank = player.getRank(gameType);
-        rank.adjustPoints(player.getMMR(gameType)); //this adds the entire MMR into ranking points instead of delta MMR
-    }
 
     /**
      * Updates the leaderboard after a match.

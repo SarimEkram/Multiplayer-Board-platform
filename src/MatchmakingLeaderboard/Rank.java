@@ -22,15 +22,15 @@ public class Rank {
     /**
      * Adjusts points and updates tier
      */
-    public void adjustPoints(int points) {
-        this.rankingPoints += points;
-        this.rankingPoints = Math.max(0, this.rankingPoints);
+    public static void adjustPoints(Player player,int points, int game) {
+        player.getRank(game).rankingPoints += points;
+        player.getRank(game).rankingPoints = Math.max(0, player.getRank(game).rankingPoints);
         updateRankTier();
     }
     /**
      * updates the rank tier based on points
      */
-    private void updateRankTier() {
+    private static void updateRankTier() {
 
         if (rankingPoints >= RankTier.DIAMOND.getThresholdPoints()){
             currentTier = RankTier.DIAMOND;
