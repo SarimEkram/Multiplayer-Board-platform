@@ -20,4 +20,18 @@ public class ManageProfileController {
                 "edit_profile.css"
         );
     }
+    @FXML
+    private void handleChangePasswordButtonClick() {
+        SceneManager.switchTo(
+                "/ca/ucalgary/groupprojectgui/p3/ChangePassword.fxml",
+                "Edit Profile",
+                "edit_profile.css"
+        );
+    }
+
+    @FXML
+    private void handleDeleteProfile() {
+//        placeholder
+        System.out.println("Profile deleted");
+    }
 }

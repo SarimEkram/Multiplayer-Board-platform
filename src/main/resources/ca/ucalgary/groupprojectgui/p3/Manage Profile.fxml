@@ -18,10 +18,12 @@
                 prefWidth="320" prefHeight="80"/>
 
         <Button text="Change Password"
+                onAction="#handleChangePasswordButtonClick"
                 styleClass="neon-outline-button"
                 prefWidth="320" prefHeight="80"/>
 
         <Button text="Delete Profile"
+                onAction="#handleDeleteProfile"
                 styleClass="danger-outline-button"
                 prefWidth="320" prefHeight="80"/>
     </VBox>
