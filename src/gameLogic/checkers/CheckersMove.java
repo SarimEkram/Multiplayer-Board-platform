@@ -9,12 +9,13 @@ import java.util.List;
 public class CheckersMove {
 
     /**
-     * checks available moves for the piece and returns moves array
-     * @param board
-     * @param piece
-     * @param row
-     * @param col
-     * @return
+     * return alll valid moves for a given checkers piece.
+     *
+     * @param board current state of checkers board
+     * @param piece the piece to check
+     * @param row current row of the piece
+     * @param col current col of the piece
+     * @return an array with valid move positions
      */
     public static int[][] availableMoves(CheckersBoard board, CheckersPiece piece, int row, int col) {
         List<int[]> movesList = new ArrayList<>();
@@ -50,11 +51,11 @@ public class CheckersMove {
     }
 
     /**
-     * check if the move is valid
-     * @param board
-     * @param toRow
-     * @param toCol
-     * @return
+     * check if the position is on the board nd empty
+     *
+     * @param toRow the target row to move
+     * @param toCol the target col to move
+     * @return true if the move is valid, false otherwise
      */
     private static boolean isValidMove(CheckersBoard board, int toRow, int toCol) {
         boolean inBounds = (toRow >= 0 && toRow < 8 && toCol >= 0 && toCol < 8);
@@ -63,12 +64,14 @@ public class CheckersMove {
     }
 
     /**
-     * Executes a  move for the given checkers piece on the specified board.
+     * Moves a piece on the board and handles captures and promotions
      *
-     * @param board the current state of the checkers board
-     * @param piece the checkers piece to move
-     * moves the piece from start to dest location
+     * @param startRow the row the piece is moving from
+     * @param startCol the column the piece is moving from
+     * @param destRow the row the piece is moving to
+     * @param destCol the column the piece is moving to
      */
+
     public static void move(CheckersBoard board, CheckersPiece piece, int startRow, int startCol, int destRow, int destCol) {
         board.board[destRow][destCol] = piece;
         board.board[startRow][startCol] = null;
