@@ -14,7 +14,7 @@ public class Player {
     private final int[] losses = new int[3];
     private int level;
     private int userID;
-    private boolean spectate;
+    //private boolean spectate;
     private final Rank[] rank = new Rank[3];
     private final int[] gameSignal = new int[3];
     private final int[] mmr = new int[3];
@@ -23,14 +23,12 @@ public class Player {
      * Constructs a Player object
      * @param level rank level of player
      * @param userID userID of the player from database
-     * @param spectate whether player is spectating
-     * @param rank rank of the player
-     * @param gameSignal which game the player wants to play
+     *
      */
-    public Player(double winRatioForGame, int level, int userID, boolean spectate, Rank rank, int gameSignal) {
+    public Player(int level, int userID) {
         this.level = level;
         this.userID = userID;
-        this.spectate = spectate;
+        //this.spectate = spectate;
         for(int i = 0; i < 3; i++) {
             this.winRatio[i] = 0.0;
             this.wins[i] = 0;
@@ -46,10 +44,23 @@ public class Player {
         validGame(gameType);
         return wins[gameType-1];
     }
+
+    public void addWin(int gameType) {
+        validGame(gameType);
+        wins[gameType-1]++;
+        calculateRatio(gameType);
+    }
     public int getLosses(int gameType) {
         validGame(gameType);
         return losses[gameType-1];
     }
+
+    public void addLoss(int gameType) {
+        validGame(gameType);
+        losses[gameType-1]++;
+        calculateRatio(gameType);
+    }
+
     private void validGame(int gameType){
         if(gameType < 1 || gameType > 3) {
             throw new IllegalArgumentException("Invalid game type");
@@ -75,17 +86,24 @@ public class Player {
     public void setWinRatio(int gameSignal, double ratio) {
         validGame(gameSignal);
         winRatio[gameSignal - 1] = ratio;
+        calculateRatio(gameSignal);
     }
 
-    // --- General Info ---
-    public boolean isSpectate() {
-        return this.spectate;
+    public void calculateRatio(int gameType) {
+        validGame(gameType);
+        int gameIndex = gameType - 1;
+        int totalGames = wins[gameIndex] + losses[gameIndex];
+
+        if(totalGames > 0){
+            winRatio[gameIndex] = (double) wins[gameIndex] / totalGames;
+        }
+        else{
+            winRatio[gameIndex] = 0.0;
+        }
+
     }
 
-    public void setSpectate(boolean spectate) {
-        this.spectate = spectate;
-    }
-
+    // general info
     public int getLevel() {
         return this.level;
     }
@@ -119,7 +137,7 @@ public class Player {
 
     public void setGameSignal(int Signal, int gameType) {
         validGame(gameType);
-        if(gameType < 0 || gameType > 3) {
+        if(Signal < 0 || Signal > 3) {
             throw new IllegalArgumentException("Signal must be between 0 and 3");
         }
 
@@ -147,22 +165,21 @@ public class Player {
         }
     }
 
-    /**
-     * Cancels the current matchmaking search
-     */
-    public void cancelMatch() {
-        // Implementation needed
-    }
 
-    /**
-     * Allows player to spectate a specific game
-     * @param gameid the ID of the game to spectate
-     */
-    public void spectateMatch(int gameid) {
-        // Implementation needed
-    }
+    // --- General Info ---
+    // public boolean isSpectate() {
+    //return this.spectate;}
 
-    public boolean getName() {
-        return false;
-    }
+    //public void setSpectate(boolean spectate) {
+    //this.spectate = spectate;}
+
+    //public void cancelMatch() {
+        // Implementation needed}
+
+   // /**
+   //  * Allows player to spectate a specific game
+   //  * @param gameid the ID of the game to spectate
+   //  */
+   // public void spectateMatch(int gameid) {
+        // Implementation needed}
 }

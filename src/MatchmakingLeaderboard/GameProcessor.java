@@ -17,6 +17,11 @@ public class GameProcessor {
         if (p1 == null || p2 == null) {
             throw new IllegalArgumentException("PLAYER INFO IS NULL");
         }
+
+        if(gameType < 1 || gameType > 3) {
+            throw new IllegalArgumentException("GAME TYPE IS INVALID");
+        }
+
         this.winner = p1;
         this.loser = p2;
         this.gameType = gameType;
@@ -38,6 +43,10 @@ public class GameProcessor {
      * Handles the end of a match with a winner and loser.
      */
     public static void UpdateResults(Player winner, Player loser, int gameType) {
+
+        winner.addWin(gameType);
+        loser.addLoss(gameType);
+
         updateMMR(winner, loser, true, gameType);
         updateMMR(loser, winner, false, gameType);
         updateRank(winner, gameType);
@@ -50,14 +59,22 @@ public class GameProcessor {
      */
     private static void updateMMR(Player p1, Player p2, boolean won, int gameType) {
         int updateMMR = MMRCalculator.calculateMMR(p1, p2, won, gameType);
-        p1.setMMR(p1.getMMR(gameType) + updateMMR, gameType);
+        int newMMR = p1.getMMR(gameType) + updateMMR;
+
+        if(newMMR < 0) {
+            p1.setMMR(0, gameType);
+        }
+
+        p1.setMMR(newMMR,gameType);
     }
 
     /**
      * Updates the player's ranking points and tier.
      */
     private static void updateRank(Player player, int gameType) {
-        player.getRank(gameType).adjustPoints(player.getMMR(gameType));
+
+        Rank rank = player.getRank(gameType);
+        rank.adjustPoints(player.getMMR(gameType));
     }
 
     /**
