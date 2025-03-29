@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Pos?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.ManageProfileController"
+           prefWidth="1200" prefHeight="800"
+           stylesheets="@styles/manage_profile.css"
+           styleClass="root">
+
+    <!-- Centered VBox for Main Buttons -->
+    <VBox alignment="CENTER" spacing="30">
+        <Button text="Edit Profile"
+                styleClass="neon-outline-button"
+                prefWidth="320" prefHeight="80"/>
+
+        <Button text="Change Password"
+                styleClass="neon-outline-button"
+                prefWidth="320" prefHeight="80"/>
+
+        <Button text="Delete Profile"
+                styleClass="danger-outline-button"
+                prefWidth="320" prefHeight="80"/>
+    </VBox>
+
+    <!-- Overlay UI: Title and Back Button -->
+    <AnchorPane pickOnBounds="false">
+
+        <!-- Title -->
+        <Label text="Manage Profile"
+               layoutX="40" layoutY="30"
+               style="-fx-font-family: 'Nunito';"
+               styleClass="section-title"/>
+
+        <!-- Back Button -->
+        <Button text="← Back"
+                onAction="#handleBackButtonClick"
+                styleClass="neon-outline-button"
+                prefWidth="120" prefHeight="40"
+                AnchorPane.leftAnchor="30.0"
+                AnchorPane.bottomAnchor="30.0"/>
+    </AnchorPane>
+
+</StackPane>
