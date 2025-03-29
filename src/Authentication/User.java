@@ -1,17 +1,32 @@
 package Authentication;
 
+/**
+ * Represents a user in system
+ * Each user has an ID, username, email, hashed password, game stats and online status
+ * All user data is persisted to the CSV database automatically when modified
+ */
 public class User {
-    private int userID;
-    private String username;
-    private String email;
-    private String password;
-    private double winRatio;
-    private int level;
-    private boolean onlineStatus;
-    private boolean suspendSave = false;
+    private int userID;                            // Unique identifier for user
+    private String username;                       // User's Display name
+    private String email;                          // User's email address
+    private String password;                       // User's password (hashed)
+    private double winRatio;                       // User's game ratio
+    private int level;                             // User's current game level
+    private boolean onlineStatus;                  // User's status
+    private boolean suspendSave = false;           // Prevents auto-saving during batch updates
 
     public User() {}
 
+    /**
+     * Creates a fully-initialized user with all fields set
+     * @param userID Unique ID
+     * @param username User's username
+     * @param email User's email
+     * @param password Hashed password
+     * @param winRatio Game win ratio
+     * @param level User level
+     * @param onlineStatus Whether user is online
+     */
     public User(int userID, String username, String email, String password, double winRatio, int level, boolean onlineStatus) {
         this.userID = userID;
         this.username = username;
@@ -21,6 +36,8 @@ public class User {
         this.level = level;
         this.onlineStatus = onlineStatus;
     }
+
+    // -------- Getters and Setters --------
 
     public int getUserID() { return userID; }
     public void setUserID(int userID) { this.userID = userID; save(); }
@@ -43,12 +60,19 @@ public class User {
     public boolean isOnline() { return onlineStatus; }
     public void setOnlineStatus(boolean onlineStatus) { this.onlineStatus = onlineStatus; save(); }
 
+    /**
+     * Saves the user to the database if auto-save is enabled
+     */
     private void save() {
         if (!suspendSave) {
             UserDatabase.saveUser(this);
         }
     }
 
+    /**
+     * Controls whether auto-save should be temporarily disabled (used during batch updates)
+     * @param suspendSave true to prevent auto-save, false to allow it
+     */
     public void setSuspendSave(boolean suspendSave) {
         this.suspendSave = suspendSave;
     }
