@@ -74,7 +74,7 @@ public class GameProcessor {
     private static void updateRank(Player player, int gameType) {
 
         Rank rank = player.getRank(gameType);
-        rank.adjustPoints(player.getMMR(gameType));
+        rank.adjustPoints(player.getMMR(gameType)); //this adds the entire MMR into ranking points instead of delta MMR
     }
 
     /**
