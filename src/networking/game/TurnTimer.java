@@ -15,6 +15,19 @@ public class TurnTimer {
         this.remainingTime = duration * 1000L;
     }
 
+    // Start the timer when the player's turn begins
+    public void startTimer() {
+        this.startTime = System.currentTimeMillis();
+        this.isPaused = false;
+        System.out.println("Turn timer started for player: " + playerId);
+    }
+
+
+
+
+
+
+
 
 
 }
