@@ -19,6 +19,14 @@
     -fx-cursor: hand;
     -fx-effect: dropshadow(gaussian, #ff4b2b, 6, 0.4, 0, 0);
 }
+.manage-profile-button {
+    -fx-background-color: linear-gradient(to right, #8e2de2, #4a00e0); /* neon purple to deep electric blue */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 12;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, #8e2de2, 6, 0.4, 0, 0);
+}
 
 .section-title {
     -fx-text-fill: #ffffff;
