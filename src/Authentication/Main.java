@@ -1,7 +1,5 @@
 package Authentication;
 
-import static Authentication.UserLogin.hashPassword;
-
 public class Main {
     public static void main(String[] args) {
         // Create and save a test user
@@ -23,7 +21,7 @@ public class Main {
             System.out.println("User not found in CSV.");
         }
 
-        User loginTest = new User(0, "login", "login@example.com", hashPassword("login123456"), 0.5, 2, false);
+        User loginTest = new User(0, "login", "login@example.com", UserLogin.hashPassword("login123456"), 0.5, 2, false);
         UserDatabase.saveUser(loginTest);
 
         //correct password
