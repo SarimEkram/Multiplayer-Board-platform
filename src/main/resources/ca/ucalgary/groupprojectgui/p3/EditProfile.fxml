@@ -19,7 +19,7 @@
         <TextField fx:id="emailField" promptText="Email" styleClass="form-field"/>
 
         <Button text="Save Changes"
-
+                onAction="#handleSaveChanges"
                 styleClass="save-button"
                 prefWidth="200" prefHeight="45"/>
     </VBox>

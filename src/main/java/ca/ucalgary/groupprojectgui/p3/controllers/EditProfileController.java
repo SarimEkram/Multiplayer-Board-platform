@@ -5,6 +5,10 @@ import javafx.fxml.FXML;
 
 public class EditProfileController {
     @FXML
+    private void handleSaveChanges() {}
+
+
+    @FXML
     private void handleBack() {
         SceneManager.switchTo(
                 "/ca/ucalgary/groupprojectgui/p3/Manage Profile.fxml",
