@@ -54,10 +54,10 @@ public class Connect4 {
      * @return the row of the piece we played else -1.
      */
     public static int play(int[][] board, int column, int piece) {
-        if (canPlay(board, column)){
+        if (canPlay(board, column)) {
             // As the piece is deployed from the top and ends up on the bottom, I started the loop from
             // the row count, meaning the last row.
-            for (int row = board.length-1; row >= 0; row--) {
+            for (int row = board.length - 1; row >= 0; row--) {
                 // if the board at that row and column is EMP/0 we put that piece at that row and column.
                 if (board[row][column] == 0) {
                     board[row][column] = piece;
@@ -124,9 +124,19 @@ public class Connect4 {
      * @param piece the piece we want to check for.
      * @return true if the conditions for win in Diagonal forward slash fulfills.
      */
-    private static boolean winInDiagonalForwardSlash(int[][] board,int piece) {
-        return false;
-    } //D
+    private static boolean winInDiagonalForwardSlash(int[][] board, int piece) { //D
+        // Starts from row 3 to make sure there are enough rows above to check diagonals going upward (avoid out of bounds)
+        for (int row = 3; row < board.length; row++) {
+            // Only check up to column (totalColumns - 4) to make sure there aren't any out of bounds errors
+            for (int col = 0; col <= board[0].length - 4; col++) {
+                // Checks for 4 matching pieces going up and to the right (/ direction)
+                if (board[row][col] == piece && board[row - 1][col + 1] == piece && board[row - 2][col + 2] == piece && board[row - 3][col + 3] == piece){
+                    return true; // A forward-slash diagonal win is found
+            }
+        }
+    }
+    return false; // No forward-slash diagonal win was found
+}
 
     /**
      * This function checks if the user has won in diagonal backslash or not.
@@ -135,9 +145,20 @@ public class Connect4 {
      * @param piece the piece we want to check for.
      * @return true if the conditions for win in Diagonal backslash fulfills.
      */
-    private static boolean winInDiagonalBackslash(int[][] board,int piece) {
-        return false;
-    } //D
+    private static boolean winInDiagonalBackslash(int[][] board,int piece) { //D // same concept as winInDiagonalForwardSlash, but checks in the opposite (\) direction
+        // Starts from the top-left of the board (row 0) and checks diagonals going down and to the right (\ direction)
+        for(int row = 0; row < board.length; row++) {
+            // Only check up to column (totalColumns - 4) to avoid going out of bounds
+            for (int col = 0; col <= board[0].length - 4; col++) {
+                // Checks for 4 matching pieces going down and to the right (\ direction)
+                if (board[row][col] == piece && board[row + 1][col + 1] == piece && board[row + 2][col + 2] == piece && board[row + 3][col + 3] == piece){
+                    return true; // A forward-slash diagonal win is found
+                }
+
+            }
+        }
+        return false; // No back-slash diagonal win was found
+    }
 
 
     /**
@@ -151,7 +172,7 @@ public class Connect4 {
     } //checks for all diagonals back/front slash, returns true if either are true
 
     /**
-     * When this function is called winInRow, winInColumn winInAnyDiagonal will be called to check.
+     * When this function is called, winInRow, winInColumn & winInAnyDiagonal will be called to check.
      *
      * @param playerNumber The playerNumber to check for a win
      * @return True if playerNumber has won
