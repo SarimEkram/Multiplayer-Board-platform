@@ -1,5 +1,8 @@
 package Authentication;
 
+import java.util.HashMap;
+import java.util.HashSet;
+
 public class DeleteUserAccount {
 
     /**
@@ -7,7 +10,7 @@ public class DeleteUserAccount {
      * @param userId User's registered ID
      * @return Status for deletion of account
      */
-    public boolean deleteAccount(int userId){
+    public static boolean deleteAccount(int userId){
         // Check if user ID is valid
         if (userId <= 0) {
             return false;
@@ -16,12 +19,16 @@ public class DeleteUserAccount {
         if (!userExist(userId)) {
             return false;
         }
+
+        deletionLog(userId);
+
         // Remove user's data from database
         if (!UserDatabase.deleteUser(userId)) {
+            deletedUsers.remove(UserDatabase.getUserById(userId));
             return false;
         }
         // Return true if account is successfully deleted
-        return deletionLog(userId);
+        return (!(userExist(userId) && deletedUsers.contains(UserDatabase.getUserById(userId))));
     }
 
     /**
@@ -29,20 +36,22 @@ public class DeleteUserAccount {
      * @param userId User's registered ID
      * @return Status of user existence
      */
-    private boolean userExist( int userId){
+    private static boolean userExist( int userId){
         // Search for user in database
         User user = UserDatabase.getUserById(userId);
         return user != null;
     }
+
+    public static HashSet<User> deletedUsers = new HashSet<>();
 
     /**
      * Logs the account deletion for security purpose
      * @param userId User's registered ID
      * @return Status for logging data
      */
-    private boolean deletionLog(int userId){
+    private static boolean deletionLog(int userId){
         // Record deletion event for security reason
-        System.out.println("UserID: " + userId + " has been removed from the database.");
-        return true;
+        deletedUsers.add(UserDatabase.getUserById(userId));
+        return deletedUsers.contains(UserDatabase.getUserById(userId));
     }
 }

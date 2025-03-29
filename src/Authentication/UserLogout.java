@@ -9,16 +9,13 @@ public class UserLogout {
     public static boolean logoutUser(int userId){
         // Check if userId is valid
         if (userId <= 0) {
-            System.out.println("userID");
             return false;
         }
         // Remove user session or authentication token
         if (!endSession(userId)) {
-            System.out.println("endSession");
             return false;
         }
         if (!clearAuthTokens(userId)) {
-            System.out.println("clearAuthTokens");
             return false;
         }
         // If needed update session status in database

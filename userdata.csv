@@ -5,3 +5,7 @@ userID,username,email,password,winRatio,level,onlineStatus
 4,login,login@example.com,6guodY6Dl0CoyAr3A/dK7XQyCa9JNrQ/3nzhZsrGxe0=,0.5,2,false
 5,tester,test@example.com,hashedpass123,0.5,2,false
 6,login,login@example.com,6guodY6Dl0CoyAr3A/dK7XQyCa9JNrQ/3nzhZsrGxe0=,0.5,2,false
+7,tester,test@example.com,hashedpass123,0.5,2,false
+8,login,login@example.com,6guodY6Dl0CoyAr3A/dK7XQyCa9JNrQ/3nzhZsrGxe0=,0.5,2,false
+9,tester,test@example.com,hashedpass123,0.5,2,false
+10,tester,test@example.com,hashedpass123,0.5,2,false

@@ -17,18 +17,15 @@ public class UserLogin {
     public static boolean loginUser(String email, String password){
         // Check if email and password are not null
         if (!validateInput(email, password)){
-            System.out.println("validateInput");
             return false;
         }
         // Check in database, if user exist or not
         if (!userExist(email)){
-            System.out.println("userExist");
             return false;
         }
         // Get saved password from database
         String savedPass = storedPassword(email);
         if (!verifyPassword(password, savedPass)){
-            System.out.println("verifyPassword");
             return false;
         }
 

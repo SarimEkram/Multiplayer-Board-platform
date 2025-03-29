@@ -37,6 +37,9 @@ public class Main {
         }
         System.out.println(loginTest.isOnline());
 
+        System.out.println(UserDatabase.getUserById(loginTest.getUserID()));
+
+        System.out.println(DeleteUserAccount.deleteAccount(loginTest.getUserID()));
     }
 
 }
