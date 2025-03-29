@@ -107,7 +107,6 @@ public class UserLogin {
         LocalDateTime expiry = LocalDateTime.now().plusMinutes(60); // set expiry time
 
         sessionData.put(userID, new ResetTokenData(userID, sessionID, expiry));
-        return;
     }
 
     public static HashMap<Integer, ResetTokenData> authTokens = new HashMap<>();

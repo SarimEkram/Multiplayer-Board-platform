@@ -19,6 +19,7 @@ public class DeleteUserAccount {
             return false;
         }
 
+        //log user deletion
         if (!deletionLog(userId)) {
             return false;
         }
@@ -43,6 +44,7 @@ public class DeleteUserAccount {
         return user != null;
     }
 
+    //for logging deletion
     public static HashSet<User> deletedUsers = new HashSet<>();
 
     /**
