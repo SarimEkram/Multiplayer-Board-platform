@@ -16,6 +16,7 @@ public class TicTacToeLeaderboard extends AbstractTicTacToeLeaderboard {
                 .sorted(Map.Entry.<Player, Integer>comparingByValue().reversed())
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
+
     }
 
     public static void updatePlayer(Player player, boolean Won){
