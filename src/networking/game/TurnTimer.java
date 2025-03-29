@@ -23,7 +23,20 @@ public class TurnTimer {
     }
 
 
+    // Reset the timer when a player successfully makes a move
+    public void resetTimer() {
+        this.remainingTime = turnDuration * 1000L;
+        System.out.println("Timer reset for player: " + playerId);
+    }
 
+    // Pause the timer in case of network issues or reconnection
+    public void pauseTimer() {
+        if (!isPaused) {
+            remainingTime -= (System.currentTimeMillis() - startTime);
+            isPaused = true;
+            System.out.println("Timer paused for player: " + playerId);
+        }
+    }
 
 
 
