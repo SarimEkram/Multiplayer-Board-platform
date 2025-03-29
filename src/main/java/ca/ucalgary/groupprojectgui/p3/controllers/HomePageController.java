@@ -27,6 +27,23 @@ public class HomePageController {
     private void onConnect4Click() {
         launchGame("Connect 4");
     }
+    @FXML
+    private void handleManageProfile() {
+        SceneManager.switchTo(
+                "/ca/ucalgary/groupprojectgui/p3/Manage Profile.fxml",
+                "Manage Profile",
+                "manage_profile.css"
+        );
+    }
+    @FXML
+    private void handleBackButtonClick() {
+        SceneManager.switchTo(
+                "/ca/ucalgary/groupprojectgui/p3/HomePage.fxml",
+                "Manage Profile",
+                "manage_profile.css"
+        );
+    }
+
 
     @FXML
     public void initialize() {

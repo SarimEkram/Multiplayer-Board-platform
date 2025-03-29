@@ -23,7 +23,7 @@
             <Label styleClass="logo-label" text="🎮 OMG" />
             <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
             <Label fx:id="welcomeLabel" styleClass="welcome-label" text="Welcome, Player!" />
-            <Button fx:id="logoutButton" styleClass="manage-profile-button" text="Manage Profile" />
+            <Button fx:id="manageProfile"  onAction="#handleManageProfile" styleClass="manage-profile-button" text="Manage Profile" />
          <Button fx:id="logoutButton1" layoutX="1136.0" layoutY="25.0" styleClass="logout-button" text="Logout" />
         </HBox>
     </top>
