@@ -1,6 +1,5 @@
 package Authentication;
 
-import java.util.HashMap;
 import java.util.HashSet;
 
 public class DeleteUserAccount {
@@ -20,7 +19,9 @@ public class DeleteUserAccount {
             return false;
         }
 
-        deletionLog(userId);
+        if (!deletionLog(userId)) {
+            return false;
+        }
 
         // Remove user's data from database
         if (!UserDatabase.deleteUser(userId)) {
