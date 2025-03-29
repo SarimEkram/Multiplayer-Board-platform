@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="homePane" prefHeight="800" prefWidth="1200" styleClass="home-background" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21" fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.HomePageController">
+<BorderPane fx:id="homePane" prefHeight="800" prefWidth="1200" styleClass="home-background" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.HomePageController">
 
 
     <!-- TOP BAR -->
@@ -23,7 +23,8 @@
             <Label styleClass="logo-label" text="🎮 OMG" />
             <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
             <Label fx:id="welcomeLabel" styleClass="welcome-label" text="Welcome, Player!" />
-            <Button fx:id="logoutButton" styleClass="logout-button" text="Logout" />
+            <Button fx:id="logoutButton" styleClass="manage-profile-button" text="Manage Profile" />
+         <Button fx:id="logoutButton1" layoutX="1136.0" layoutY="25.0" styleClass="logout-button" text="Logout" />
         </HBox>
     </top>
 
