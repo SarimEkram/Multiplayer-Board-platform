@@ -1,5 +1,7 @@
 package Authentication;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -12,19 +14,21 @@ public class UserLogin {
      * @param password User password that has been entered
      * @return Status of login
      */
-    public boolean loginUser(String email, String password){
+    public static boolean loginUser(String email, String password){
         // Check if email and password are not null
         if (!validateInput(email, password)){
+            System.out.println("validateInput");
             return false;
         }
         // Check in database, if user exist or not
         if (!userExist(email)){
+            System.out.println("userExist");
             return false;
         }
         // Get saved password from database
         String savedPass = storedPassword(email);
-        // Compare given and saved password
         if (!verifyPassword(password, savedPass)){
+            System.out.println("verifyPassword");
             return false;
         }
 
@@ -34,7 +38,7 @@ public class UserLogin {
 
         int userID = user.getUserID();
 
-        new UserStatus().updateUserStatus(userID, true); // set the user as online
+        user.setOnlineStatus(true); // set the user as online
 
         createSession(userID);
 
@@ -49,7 +53,7 @@ public class UserLogin {
      * @param password User password that has been entered
      * @return Validation status of input
      */
-    private boolean validateInput(String email, String password){
+    private static boolean validateInput(String email, String password){
         // Check if email is in correct format
         if (email == null || !email.contains("@")) {
             return false;
@@ -63,7 +67,7 @@ public class UserLogin {
      * @param email User email that has been entered
      * @return User existence status
      */
-    private boolean userExist(String email){
+    private static boolean userExist(String email){
         // Search email in database
         return UserDatabase.getUserByEmail(email) != null;
         // if found return true else return false
@@ -74,7 +78,7 @@ public class UserLogin {
      * @param email User email that has been entered
      * @return Password from database
      */
-    private String storedPassword(String email){
+    private static String storedPassword(String email){
         // Get password from database where entered email match
         User theUser = UserDatabase.getUserByEmail(email);
 
@@ -87,9 +91,9 @@ public class UserLogin {
      * @param storedHash The stored hash password
      * @return Password verification status
      */
-    private boolean verifyPassword(String password, String storedHash){
+    private static boolean verifyPassword(String password, String storedHash){
         // Convert user password to hash
-        String hashedPass = UserRegistration.hashPassword(password);
+        String hashedPass = hashPassword(password);
         // Compare entered hash to saved hash
         return storedHash.equals(hashedPass);
         // if same return true, else false
@@ -101,7 +105,7 @@ public class UserLogin {
      * Creates a new seesion for user after login
      * @param userID The user's ID
      */
-    private void createSession(int userID) {
+    private static void createSession(int userID) {
         String sessionID = UUID.randomUUID().toString(); // create ID for the session
         LocalDateTime expiry = LocalDateTime.now().plusMinutes(60); // set expiry time
 
@@ -115,10 +119,29 @@ public class UserLogin {
      * Creates an authentication token for the user for the session
      * @param userID The user's ID
      */
-    private void createAuthToken(int userID) {
+    private static void createAuthToken(int userID) {
         String authToken = UUID.randomUUID().toString(); // create authToken
         LocalDateTime expiry = LocalDateTime.now().plusMinutes(90); // set expiry time
 
         authTokens.put(userID, new ResetTokenData(userID, authToken, expiry));
+    }
+
+    /**
+     * Hashes the user's password before saving.
+     *
+     * @param password The plain text password
+     * @return The hashed password
+     */
+    public static String hashPassword(String password) {
+        // Change the password to hashed format
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hashed = md.digest(password.getBytes(StandardCharsets.UTF_8));
+            return Base64.getEncoder().encodeToString(hashed);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
