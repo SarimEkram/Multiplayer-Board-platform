@@ -1,10 +1,8 @@
 .root {
-    -fx-background-image: url("../images/HomePage.jpg");
-    -fx-background-size: cover;
-    -fx-background-position: center center;
-    -fx-background-repeat: no-repeat;
+    -fx-background-color: linear-gradient(to bottom right, #2a0845, #6441a5);
     -fx-font-family: 'Nunito', sans-serif;
 }
+
 
 /* Title style */
 .section-title {
