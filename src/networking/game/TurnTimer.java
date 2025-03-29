@@ -8,6 +8,12 @@ public class TurnTimer {
     private String playerId; // Unique identifier for the player
 
 
+    public TurnTimer(String playerId, int duration) {
+        this.playerId = playerId;
+        this.turnDuration = duration;
+        this.isPaused = false;
+        this.remainingTime = duration * 1000L;
+    }
 
 
 
