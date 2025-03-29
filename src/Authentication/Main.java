@@ -32,8 +32,13 @@ public class Main {
         }
         //incorrect
         if (UserLogin.loginUser("login@example.com", "12323412341234")) {
-            System.out.println("Failed");
+            System.out.println("This should not print");
         }
+        if (UserLogout.logoutUser(loginTest.getUserID())) {
+            System.out.println("User logged out.");
+        }
+        System.out.println(loginTest.isOnline());
+
     }
 
 }

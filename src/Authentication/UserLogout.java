@@ -6,20 +6,25 @@ public class UserLogout {
      * @param userId The ID of user who is logged in
      * @return logout status
      */
-    public boolean logoutUser(int userId){
+    public static boolean logoutUser(int userId){
         // Check if userId is valid
         if (userId <= 0) {
+            System.out.println("userID");
             return false;
         }
         // Remove user session or authentication token
         if (!endSession(userId)) {
+            System.out.println("endSession");
             return false;
         }
         if (!clearAuthTokens(userId)) {
+            System.out.println("clearAuthTokens");
             return false;
         }
         // If needed update session status in database
-        new UserStatus().updateUserStatus(userId, false);
+        User user = UserDatabase.getUserById(userId);
+
+        user.setOnlineStatus(false);
 
         // if successful return true else false
         return (!(UserDatabase.getUserById(userId).isOnline()));
@@ -30,7 +35,7 @@ public class UserLogout {
      * @param userId The ID of user who is logged in
      * @return status whether session is ended or not
      */
-    private boolean endSession(int userId){
+    private static boolean endSession(int userId){
         // Remove session data from system
         UserLogin.sessionData.remove(userId);
 
@@ -42,7 +47,7 @@ public class UserLogout {
      * @param userId The ID of user who is logged in
      * @return Status whether cookies/tokens cleared or not
      */
-    private boolean clearAuthTokens(int userId){
+    private static boolean clearAuthTokens(int userId){
         // Delete authentication tokens
         UserLogin.authTokens.remove(userId);
 
