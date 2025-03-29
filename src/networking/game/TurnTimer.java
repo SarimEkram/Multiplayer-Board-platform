@@ -39,6 +39,14 @@ public class TurnTimer {
     }
 
 
+    // Resume the timer after a network issue is resolved
+    public void resumeTimer() {
+        if (isPaused) {
+            startTime = System.currentTimeMillis();
+            isPaused = false;
+            System.out.println("Timer resumed for player: " + playerId);
+        }
+    }
 
 
 
