@@ -13,6 +13,7 @@
     <!-- Centered VBox for Main Buttons -->
     <VBox alignment="CENTER" spacing="30">
         <Button text="Edit Profile"
+                onAction="#handleEditProfileButtonClick"
                 styleClass="neon-outline-button"
                 prefWidth="320" prefHeight="80"/>
 

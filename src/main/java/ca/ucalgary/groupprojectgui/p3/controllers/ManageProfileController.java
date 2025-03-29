@@ -12,4 +12,12 @@ public class ManageProfileController {
                 "home.css"
         );
     }
+    @FXML
+    private void handleEditProfileButtonClick() {
+        SceneManager.switchTo(
+                "/ca/ucalgary/groupprojectgui/p3/EditProfile.fxml",
+                "Edit Profile",
+                "edit_profile.css"
+        );
+    }
 }
