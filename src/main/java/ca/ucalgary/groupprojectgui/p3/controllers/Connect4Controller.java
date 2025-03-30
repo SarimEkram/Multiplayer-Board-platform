@@ -1,5 +1,6 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
 
+import ca.ucalgary.groupprojectgui.p3.SceneManager;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -88,46 +89,82 @@ public class Connect4Controller {
 
     @FXML
     private void onLeaveGame() {
-        // Instead of blurring rootPane, blur only mainGamePane:
+        // Blur only the main game pane (not the entire StackPane)
         BoxBlur blur = new BoxBlur(10, 10, 3);
         mainGamePane.setEffect(blur);
 
-        // Grab the root stack pane (so we can place our overlay on top):
+        // Grab the root (StackPane) so we can place our overlay on top
         StackPane rootPane = (StackPane) mainGamePane.getScene().getRoot();
 
-        // The rest of your modal code remains the same
+        // Create a semi-transparent overlay
         StackPane overlay = new StackPane();
         overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
         overlay.prefWidthProperty().bind(rootPane.widthProperty());
         overlay.prefHeightProperty().bind(rootPane.heightProperty());
 
-        VBox modal = new VBox(20);
+        // Create your modal content
+        VBox modal = new VBox(15);
         modal.setAlignment(Pos.CENTER);
         modal.setPadding(new Insets(20));
         modal.setStyle("-fx-background-color: rgba(0, 0, 0, 0.8); -fx-background-radius: 10;");
         modal.setMinWidth(300);
-        modal.setMinHeight(150);
-        Label prompt = new Label("Are you sure you want to leave the game?");
-        prompt.setStyle("-fx-text-fill: white; -fx-font-size: 16px;");
-        Button yesButton = new Button("Yes, Leave");
+
+        Label prompt = new Label("Pause Menu");
+        prompt.setStyle("-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;");
+
+        // Example Buttons
+        Button resumeButton = new Button("Resume");
+        Button saveAndQuitButton = new Button("Save & Quit");
+        Button quitWithoutSavingButton = new Button("Quit Without Saving");
         Button cancelButton = new Button("Cancel");
-        yesButton.setStyle("-fx-background-color: #5f27cd; -fx-text-fill: white; -fx-background-radius: 10;");
-        cancelButton.setStyle("-fx-background-color: #341f97; -fx-text-fill: white; -fx-background-radius: 10;");
-        HBox buttonBox = new HBox(10, yesButton, cancelButton);
-        buttonBox.setAlignment(Pos.CENTER);
-        modal.getChildren().addAll(prompt, buttonBox);
+
+        // A simple shared style, or you can style each button differently
+        String buttonStyle = "-fx-background-color: #5f27cd; " +
+                "-fx-text-fill: white; " +
+                "-fx-background-radius: 10; " +
+                "-fx-font-weight: bold;";
+        resumeButton.setStyle(buttonStyle);
+        saveAndQuitButton.setStyle(buttonStyle);
+        quitWithoutSavingButton.setStyle(buttonStyle);
+        cancelButton.setStyle(buttonStyle);
+
+        // Add them all to the modal
+        modal.getChildren().addAll(prompt, resumeButton, saveAndQuitButton, quitWithoutSavingButton, cancelButton);
         overlay.getChildren().add(modal);
 
+        // Add overlay above the current UI
         rootPane.getChildren().add(overlay);
         overlay.toFront();
 
-        yesButton.setOnAction(e -> {
+        // Button actions
+        resumeButton.setOnAction(e -> {
+            // Simply remove the overlay and clear the blur
             rootPane.getChildren().remove(overlay);
             mainGamePane.setEffect(null);
-            // TODO: actual "leave" logic here
+            // Logic for unpausing goes here, if any
+        });
+
+        saveAndQuitButton.setOnAction(e -> {
+            // Add your "save game" logic here
+            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "home.css");
+
+            // Then remove overlay, clear blur
+            rootPane.getChildren().remove(overlay);
+            mainGamePane.setEffect(null);
+            // Maybe load main menu or exit
+        });
+
+        quitWithoutSavingButton.setOnAction(e -> {
+            // Remove overlay, clear blur
+            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "home.css");
+
+            rootPane.getChildren().remove(overlay);
+            mainGamePane.setEffect(null);
+            // Go back to main menu or exit directly
         });
 
         cancelButton.setOnAction(e -> {
+            // “Cancel” here just closes the modal
             rootPane.getChildren().remove(overlay);
             mainGamePane.setEffect(null);
         });

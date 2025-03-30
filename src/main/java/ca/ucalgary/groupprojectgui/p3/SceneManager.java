@@ -42,6 +42,11 @@ public class SceneManager {
             }
 
             primaryStage.setScene(scene);
+            // Make the window open in full page (maximized) every time we switch.
+            primaryStage.setMaximized(true);
+            // For full screen (no title bar), use:
+            // primaryStage.setFullScreen(true);
+
             primaryStage.setTitle(title);
             primaryStage.show();
 
