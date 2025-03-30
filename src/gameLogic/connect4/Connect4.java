@@ -92,8 +92,19 @@ public class Connect4 {
      * @return true if the conditions for win in row fulfills.
      */
     private static boolean winInRow(int[][] board, int row, int piece) {
-        return false;
+        int count = 0;
 
+        for (int col = 0; col < board[0].length; col++) {
+            if (board[row][col] == piece) {
+                count++;
+                if (count == 4) {
+                    return true;
+                }
+            } else {
+                count = 0; // reset count if the sequence breaks
+            }
+        }
+        return false;
     }
 
     /**
@@ -205,6 +216,9 @@ public class Connect4 {
         } else {
             return board.piece1; // Player 2 forfeits, P1 wins
         }
+    }
+    public void resetGame() {
+        gameOver = false;
     }
 
     public boolean isGameOverByForfeit() { //D
