@@ -131,7 +131,12 @@ public class HomePageController {
                 return;
         }
 
-        SceneManager.switchTo(fxmlFile, title, cssFile);
+        SceneManager.showLoadingScreenAndLoadMain(
+                "/ca/ucalgary/groupprojectgui/p3/LoadingScreen.fxml",
+                fxmlFile,
+                title,
+                cssFile
+        );
     }
     private void setupGameSearch() {
         gameSearchField.textProperty().addListener((obs, oldVal, newVal) -> {
