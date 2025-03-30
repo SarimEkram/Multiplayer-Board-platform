@@ -21,7 +21,7 @@ public class ConnectBoard {
     private Connect4 gameLogic;
 
     // Board to keep track of the pieces played
-    private  int[][] board;
+    private int[][] board;
 
     // Keeps track of current player
     private int currentPlayer;
@@ -67,8 +67,16 @@ public class ConnectBoard {
      * play from connect4 class is being called here
      * @return the 0 if the play is successful else -1
      */
-    public int playPiece(int column, int player){
-        return -1;
+    public int playPiece(int column){
+        int row = Connect4.play(board, column, currentPlayer);
+        if (row >= 0) {
+            setCurrentPlayer(currentPlayer == piece1 ? piece2 : piece1);
+        }
+        return row;
+    }
+
+    public int[][] getBoard() {
+        return board;
     }
 
 
@@ -90,6 +98,8 @@ public class ConnectBoard {
      */
     public void clearBoard(){ //D
         createBoard(); //D // just creates new board to clear the old one
+        gameLogic.resetGame();
+        currentPlayer = piece1;
     }
 
 }
