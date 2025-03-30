@@ -43,4 +43,5 @@ public abstract class AbstractCheckersLeaderboard implements IGameLeaderboard {
     }
 
 
+    public abstract List<Player> getTopPlayers();
 }
