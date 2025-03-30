@@ -17,7 +17,7 @@ public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
      *
      */
     public TicTacToeMatchmaking() throws Exception {
-        for (int j = 0; j < 100; j++) {
+        for (int j = 0; j < 10; j++) {
             Random random = new Random();
             double randomValue = random.nextDouble();
             if (probabilityOfNetworkFailure <= randomValue) {
@@ -32,6 +32,7 @@ public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
             this.matchmakingUp = false;
             throw new MatchmakingException("Matchmaking is Down");
         }
+
         try {
             while (true) {
                 // replace with a function to get players from database
@@ -50,15 +51,16 @@ public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
      */
     public void startMatchmaking(){
         if (checkMatchmaking()) {
-            Player player = queue.getNextPlayer();
-            boolean iscompatible = false;
+            Player player1 = queue.getNextPlayer();
+            Player player2 = queue.getNextPlayer();
+            boolean iscompatible = checkPlayers(player1, player2);
             while (iscompatible) {
-                iscompatible = checkPlayers(player, queue.getNextPlayer());
+                iscompatible = checkPlayers(player1, player2);
+                player2 = queue.getNextPlayer();
             }
             if (queue.readyToMatch()) {
-                findMatch();
-                // TODO : Add a game class that is returned from a database to add players
-                signalStartGame();
+                this.findMatch(player1, player2);
+                this.signalStartGame();
             } else {
                 System.out.println("Matchmaking cancelled! Not enough players...please try again!");
             }
@@ -91,7 +93,7 @@ public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
      * function to find matched players an unpopulated game simulation ready to play
      */
     @Override
-    public void findMatch() {
+    public void findMatch(Player Player1, Player Player2) {
         System.out.println("Generate a request to the backend asking for an unpopulated game simulation");
     }
 

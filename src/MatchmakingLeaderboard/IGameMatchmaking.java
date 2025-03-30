@@ -23,7 +23,7 @@ public interface IGameMatchmaking {
      * function that contacts the server and finds matches to play
      *
      */
-    void findMatch();
+    void findMatch(Player Player1, Player Player2);
 
     /**
      * function to signal start of game once matchmaking is completed
