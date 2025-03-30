@@ -8,6 +8,7 @@ public class TicTacToe {
     private static final char PLAYER_X = 'X';
     private static final char PLAYER_O = 'O';
 
+
     public TicTacToe(TicTacToeBoard board){
         this.board = board;
         this.activePlayer = PLAYER_X;
@@ -32,7 +33,7 @@ public class TicTacToe {
 
     /**
      * Allows the current player to forfeit the game.
-     * @param player
+     * @param player the player who forfeits the game
      */
 
     public char forfeitGame(char player) {
@@ -44,7 +45,7 @@ public class TicTacToe {
         }
     }
     public boolean isGameOver() {
-        if(board.checkForWin(activePlayer) || board.boardFull() || ((forfeitGame(activePlayer) == PLAYER_O) || (forfeitGame(activePlayer) == PLAYER_X))) {
+        if(this.board.checkForWin(activePlayer) || this.board.boardFull() || ((forfeitGame(activePlayer) == PLAYER_O) || (forfeitGame(activePlayer) == PLAYER_X))) {
             return true;
         }
         return false;
