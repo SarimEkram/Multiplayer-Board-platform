@@ -2,6 +2,7 @@ package Authentication;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * The UserDatabase class handles storing, loading, and managing users from a CSV file called "userdata.csv"
@@ -116,6 +117,14 @@ public class UserDatabase {
         return users.stream().filter(u -> u.getUsername().equalsIgnoreCase(username)).findFirst().orElse(null);
     }
 
+    public static int generateUniqueUserID(){
+        int userID;
+        do{
+            userID = ThreadLocalRandom.current().nextInt(100000, 999999);
+        }
+        while (getUserById(userID)!=null);
+        return userID;
+    }
     /**
      * Returns the next available user ID by finding the max ID + 1
      * @return A new unique user ID

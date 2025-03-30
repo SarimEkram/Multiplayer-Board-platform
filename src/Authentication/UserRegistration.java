@@ -28,11 +28,17 @@ public class UserRegistration {
             return false;
         }
 
+        // Generate and validate Unique userID
+        int userID = UserDatabase.generateUniqueUserID();
+        // Check if userID is valid and check if it's not same as another user
+        if (userID<=0 || UserDatabase.getUserById(userID)!=null)
+            return false;
+
         // Change password to hashed password before saving
         String hashed = hashPassword(password);
 
         // Create a new user object
-        User newUser = new User(0, username, email, hashed, 0.0, 1, false);
+        User newUser = new User(userID, username, email, hashed, 0.0, 1, false);
 
         //Save user info in database
         return UserDatabase.saveUser(newUser);
