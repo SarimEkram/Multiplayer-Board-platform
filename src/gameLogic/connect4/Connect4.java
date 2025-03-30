@@ -58,7 +58,7 @@ public class Connect4 {
             // As the piece is deployed from the top and ends up on the bottom, I started the loop from
             // the row count, meaning the last row.
             for (int row = board.length - 1; row >= 0; row--) {
-                // if the board at that row and column is EMP/0 we put that piece at that row and column.
+                // if the board at that row and column is 0 we put that piece at that row and column.
                 if (board[row][column] == 0) {
                     board[row][column] = piece;
                     // returning the row.
