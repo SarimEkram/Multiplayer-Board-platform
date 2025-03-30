@@ -165,7 +165,7 @@ public class CheckersController {
         yesButton.setOnAction(e -> {
             rootPane.getChildren().remove(overlay);
             mainGamePane.setEffect(null);
-            // TODO: Implement actual logic to leave the game
+
         });
 
         cancelButton.setOnAction(e -> {

@@ -8,11 +8,13 @@ public class MainApplication extends Application {
     public void start(Stage primaryStage) {
         SceneManager.setStage(primaryStage);
         // Show the loading screen then load the HomePage.
-        SceneManager.showLoadingScreenAndLoadMain(
-                "/ca/ucalgary/groupprojectgui/p3/LoadingScreen.fxml",
+
+        SceneManager.switchTo(
+
                 "/ca/ucalgary/groupprojectgui/p3/HomePage.fxml",
                 "Home Page",
                 "home.css"
+
         );
         primaryStage.show();
     }
