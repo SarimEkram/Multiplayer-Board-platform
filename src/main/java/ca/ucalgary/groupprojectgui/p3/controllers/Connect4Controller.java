@@ -1,12 +1,15 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
 
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
+import javafx.scene.effect.BoxBlur;
+import javafx.scene.layout.*;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
@@ -22,15 +25,30 @@ public class Connect4Controller {
     private HBox player2DiscContainer;
 
     @FXML
+    private BorderPane mainGamePane;
+
+    @FXML
     private TextArea chatArea;
 
     @FXML
     private TextField chatInput;
 
+    private GridPane boardGrid;
+    private Rectangle glowRect;
+
+    // Connect 4 board is 7 columns by 6 rows
+    private static final double ASPECT_RATIO = 7.0 / 6.0;
+
+    // We'll scale the board to 90% of the container’s size
+    private static final double BOARD_CONTAINER_SCALE = 0.9;
+
+    // Increased margin inside the rectangle so circles aren’t flush with the edges
+    private static final double BOARD_MARGIN = 20.0;
+
     @FXML
     public void initialize() {
         // Create and add the player discs to the left sidebar
-        Circle redDisc = new Circle(25); // adjust the radius as needed
+        Circle redDisc = new Circle(25);
         redDisc.getStyleClass().add("disc-red");
         player1DiscContainer.getChildren().add(redDisc);
 
@@ -38,28 +56,143 @@ public class Connect4Controller {
         cyanDisc.getStyleClass().add("disc-cyan");
         player2DiscContainer.getChildren().add(cyanDisc);
 
-        // Create a grid layout for the Connect 4 board
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setAlignment(Pos.CENTER);
+        // Create the grid for the Connect 4 board
+        boardGrid = new GridPane();
+        boardGrid.setHgap(10);  // horizontal spacing between circles
+        boardGrid.setVgap(10);  // vertical spacing
+        boardGrid.setAlignment(Pos.CENTER);
 
-        // Create the board slots with the default "empty-slot" style defined in CSS
+        // Populate the grid with circles
         for (int row = 0; row < 6; row++) {
             for (int col = 0; col < 7; col++) {
-                Circle slot = new Circle(30);
+                Circle slot = new Circle(30); // initial radius (will be updated)
                 slot.getStyleClass().add("empty-slot");
-                grid.add(slot, col, row);
+                boardGrid.add(slot, col, row);
             }
         }
 
-        // Optional: Create a glow background behind the grid (using a CSS style)
-        Rectangle glow = new Rectangle(700, 600);
-        glow.setArcWidth(30);
-        glow.setArcHeight(30);
-        glow.getStyleClass().add("glow-rect");
+        // Create the glow rectangle behind the grid
+        glowRect = new Rectangle();
+        glowRect.setArcWidth(30);
+        glowRect.setArcHeight(30);
+        glowRect.getStyleClass().add("glow-rect");
 
-        boardContainer.getChildren().addAll(glow, grid);
+        // Add the rectangle and the grid to the same StackPane
+        boardContainer.getChildren().addAll(glowRect, boardGrid);
+
+        // Listen for boardContainer resizing
+        boardContainer.widthProperty().addListener((obs, oldVal, newVal) -> updateBoardLayout());
+        boardContainer.heightProperty().addListener((obs, oldVal, newVal) -> updateBoardLayout());
+    }
+
+
+    @FXML
+    private void onLeaveGame() {
+        // Instead of blurring rootPane, blur only mainGamePane:
+        BoxBlur blur = new BoxBlur(10, 10, 3);
+        mainGamePane.setEffect(blur);
+
+        // Grab the root stack pane (so we can place our overlay on top):
+        StackPane rootPane = (StackPane) mainGamePane.getScene().getRoot();
+
+        // The rest of your modal code remains the same
+        StackPane overlay = new StackPane();
+        overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
+        overlay.prefWidthProperty().bind(rootPane.widthProperty());
+        overlay.prefHeightProperty().bind(rootPane.heightProperty());
+
+        VBox modal = new VBox(20);
+        modal.setAlignment(Pos.CENTER);
+        modal.setPadding(new Insets(20));
+        modal.setStyle("-fx-background-color: rgba(0, 0, 0, 0.8); -fx-background-radius: 10;");
+        modal.setMinWidth(300);
+        modal.setMinHeight(150);
+        Label prompt = new Label("Are you sure you want to leave the game?");
+        prompt.setStyle("-fx-text-fill: white; -fx-font-size: 16px;");
+        Button yesButton = new Button("Yes, Leave");
+        Button cancelButton = new Button("Cancel");
+        yesButton.setStyle("-fx-background-color: #5f27cd; -fx-text-fill: white; -fx-background-radius: 10;");
+        cancelButton.setStyle("-fx-background-color: #341f97; -fx-text-fill: white; -fx-background-radius: 10;");
+        HBox buttonBox = new HBox(10, yesButton, cancelButton);
+        buttonBox.setAlignment(Pos.CENTER);
+        modal.getChildren().addAll(prompt, buttonBox);
+        overlay.getChildren().add(modal);
+
+        rootPane.getChildren().add(overlay);
+        overlay.toFront();
+
+        yesButton.setOnAction(e -> {
+            rootPane.getChildren().remove(overlay);
+            mainGamePane.setEffect(null);
+            // TODO: actual "leave" logic here
+        });
+
+        cancelButton.setOnAction(e -> {
+            rootPane.getChildren().remove(overlay);
+            mainGamePane.setEffect(null);
+        });
+    }
+
+
+    /**
+     * Dynamically update the glow rectangle and circle sizes,
+     * preserving a 7:6 aspect ratio and adding margin around the edges.
+     * The circles are scaled down by 20% to avoid looking too big.
+     */
+    private void updateBoardLayout() {
+        double containerWidth = boardContainer.getWidth();
+        double containerHeight = boardContainer.getHeight();
+
+        if (containerWidth <= 0 || containerHeight <= 0) {
+            return;
+        }
+
+        // Scale to 90% of the container so there's some outer padding
+        double maxUsableWidth = containerWidth * BOARD_CONTAINER_SCALE;
+        double maxUsableHeight = containerHeight * BOARD_CONTAINER_SCALE;
+
+        // Decide the boardWidth and boardHeight based on 7:6 ratio
+        double containerRatio = maxUsableWidth / maxUsableHeight;
+        double boardWidth, boardHeight;
+
+        if (containerRatio > ASPECT_RATIO) {
+            // Container is relatively wider, so limit by height
+            boardHeight = maxUsableHeight;
+            boardWidth = boardHeight * ASPECT_RATIO;
+        } else {
+            // Container is relatively taller (or equal ratio), so limit by width
+            boardWidth = maxUsableWidth;
+            boardHeight = boardWidth / ASPECT_RATIO;
+        }
+
+        // Set the glow rectangle size
+        glowRect.setWidth(boardWidth);
+        glowRect.setHeight(boardHeight);
+
+        // Calculate how much horizontal/vertical spacing the grid consumes
+        int columns = 7;
+        int rows = 6;
+        double totalHSpacing = boardGrid.getHgap() * (columns - 1);
+        double totalVSpacing = boardGrid.getVgap() * (rows - 1);
+
+        // Subtract the spacing + the BOARD_MARGIN from the rectangle to find the actual circle area
+        double circleAreaWidth = boardWidth - totalHSpacing - 2 * BOARD_MARGIN;
+        double circleAreaHeight = boardHeight - totalVSpacing - 2 * BOARD_MARGIN;
+
+        // Each cell dimension
+        double cellWidth = circleAreaWidth / columns;
+        double cellHeight = circleAreaHeight / rows;
+
+        // The circle's radius is half the smaller dimension of the cell,
+        // further reduced by 20% (multiply by 0.8)
+        double newRadius = (Math.min(cellWidth, cellHeight) / 2.0) * 0.7;
+
+        // Update every circle
+        boardGrid.getChildren().forEach(node -> {
+            if (node instanceof Circle) {
+                ((Circle) node).setRadius(Math.max(0, newRadius));
+            }
+        });
     }
 
     @FXML
@@ -73,40 +206,30 @@ public class Connect4Controller {
 
     /**
      * Example method to update a slot with a disc.
-     * This method removes the "empty-slot" style and applies either "disc-red" or "disc-cyan".
+     * This removes the "empty-slot" style and applies either "disc-red" or "disc-cyan".
      *
-     * @param row       The row index where the disc is dropped.
-     * @param col       The column index where the disc is dropped.
-     * @param discColor Either "red" or "cyan".
+     * @param row       The row index (0-based)
+     * @param col       The column index (0-based)
+     * @param discColor "red" or "cyan"
      */
     public void dropDiscAt(int row, int col, String discColor) {
-        // Find the grid (assumes the grid is added as one of the children in boardContainer)
-        GridPane grid = null;
-        for (var node : boardContainer.getChildren()) {
-            if (node instanceof GridPane) {
-                grid = (GridPane) node;
-                break;
-            }
-        }
-        if (grid != null) {
-            // Locate the Circle node at the given grid coordinates
-            for (var node : grid.getChildren()) {
-                Integer colIndex = GridPane.getColumnIndex(node);
-                Integer rowIndex = GridPane.getRowIndex(node);
-                // Handle possible nulls in index
-                if (colIndex == null) { colIndex = 0; }
-                if (rowIndex == null) { rowIndex = 0; }
-                if (colIndex == col && rowIndex == row && node instanceof Circle) {
-                    Circle disc = (Circle) node;
-                    disc.getStyleClass().clear();  // Remove any previous style
-                    if ("red".equalsIgnoreCase(discColor)) {
-                        disc.getStyleClass().add("disc-red");
-                    } else if ("cyan".equalsIgnoreCase(discColor)) {
-                        disc.getStyleClass().add("disc-cyan");
-                    }
-                    break;
+        if (boardGrid == null) return;
+
+        boardGrid.getChildren().forEach(node -> {
+            Integer colIndex = GridPane.getColumnIndex(node);
+            Integer rowIndex = GridPane.getRowIndex(node);
+            if (colIndex == null) colIndex = 0;
+            if (rowIndex == null) rowIndex = 0;
+
+            if (colIndex == col && rowIndex == row && node instanceof Circle) {
+                Circle disc = (Circle) node;
+                disc.getStyleClass().clear();
+                if ("red".equalsIgnoreCase(discColor)) {
+                    disc.getStyleClass().add("disc-red");
+                } else if ("cyan".equalsIgnoreCase(discColor)) {
+                    disc.getStyleClass().add("disc-cyan");
                 }
             }
-        }
+        });
     }
 }

@@ -7,11 +7,6 @@
 }
 
 /* === TOP BAR === */
-.top-bar {
-    -fx-background-color: rgba(10, 10, 10, 0.6);
-    -fx-background-radius: 0;
-}
-
 .turn-label {
     -fx-text-fill: white;
     -fx-font-size: 22px;
@@ -19,19 +14,25 @@
     -fx-effect: dropshadow(gaussian, #ff00ff, 6, 0.3, 0, 0);
 }
 
+/* Updated timer label to match pink/purple theme */
 .timer-label {
-    -fx-text-fill: #ffdd57;
+    -fx-text-fill: #ff66ff;
     -fx-font-size: 18px;
     -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, #ff00ff, 6, 0.3, 0, 0);
 }
 
+/* Updated Play Again button to match the purple theme
+   (similar to the leave-button style). */
 .play-button {
-    -fx-background-color: linear-gradient(to bottom, #ffe066, #ffb400);
-    -fx-text-fill: black;
+    -fx-background-color: linear-gradient(to bottom, #5f27cd, #341f97);
+    -fx-text-fill: white;
     -fx-font-weight: bold;
-    -fx-background-radius: 20;
-    -fx-effect: dropshadow(gaussian, #ffdd57, 6, 0.4, 0, 2);
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(gaussian, #341f97, 6, 0.4, 0, 2);
+    -fx-padding: 8 20 8 20;
 }
+
 
 /* === PLAYER PANEL & CHAT PANEL === */
 .sidebar {
@@ -237,3 +238,17 @@
     /* Optional inner glow or drop shadow on the text */
     -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.8), 4, 0.8, 0, 0);
 }
+
+
+.glass-pane {
+    -fx-background-color: rgba(255, 255, 255, 0.8);
+    -fx-background-insets: 10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);
+    -fx-padding: 10;
+}
+
+.blur-background {
+    -fx-effect: box-blur(5, 5, 3);
+}
+
+
