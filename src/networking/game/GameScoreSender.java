@@ -70,6 +70,23 @@ public class GameScoreSender extends GameNetworking{
         System.out.println("Disconnected from Server for sending scores."); // success message
 
 }
+    @Override
+    public void sendGameUpdate(String update) {
+        if (!isconnected) {
+            System.out.println("Error: Cannot send game update. Server not connected.");
+            return;
+        }
+        System.out.println("Sending game update: " + update);
+        // Simulate server transmission logic here
+    }
 
-
+    @Override
+    public void receiveGameUpdate() {
+        if (!isconnected) {
+            System.out.println("Error: Cannot receive game update. Server not connected.");
+            return;
+        }
+        System.out.println("Receiving game update...");
+        // Simulate update handling
+    }
 }

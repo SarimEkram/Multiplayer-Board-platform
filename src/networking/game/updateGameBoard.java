@@ -65,5 +65,15 @@ public class updateGameBoard extends GameNetworking {
     public void closeConnection() {
 
     }
+    @Override
+    public void sendGameUpdate(String update) {
+        System.out.println("Uploading board update to server: " + update);
+        // simulate WebSocket or HTTP call to push update to the server
+    }
 
+    @Override
+    public void receiveGameUpdate() {
+        System.out.println("Fetching board update from server...");
+        // Simulate retrieving update from server
+    }
 }
