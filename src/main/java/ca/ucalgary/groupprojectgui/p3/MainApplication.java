@@ -7,9 +7,14 @@ public class MainApplication extends Application {
     @Override
     public void start(Stage primaryStage) {
         SceneManager.setStage(primaryStage);
-
-        //switch to login
-        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "home.css");
+        // Show the loading screen then load the HomePage.
+        SceneManager.showLoadingScreenAndLoadMain(
+                "/ca/ucalgary/groupprojectgui/p3/LoadingScreen.fxml",
+                "/ca/ucalgary/groupprojectgui/p3/HomePage.fxml",
+                "Home Page",
+                "home.css"
+        );
+        primaryStage.show();
     }
 
     public static void main(String[] args) {
