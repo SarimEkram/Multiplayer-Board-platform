@@ -88,8 +88,8 @@ public class GameProcessor {
                 //Connect4Leaderboard.updatePlayer(loser, false);
                 break;
             case 3:
-                CheckersLeaderboard.updatePlayer(winner, true);
-                CheckersLeaderboard.updatePlayer(loser, false);
+                CheckersLeaderboard.updatePlayer(winner, true, gameType);
+                CheckersLeaderboard.updatePlayer(loser, false, gameType);
                 break;
         }
     }

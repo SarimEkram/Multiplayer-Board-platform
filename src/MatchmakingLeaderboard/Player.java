@@ -10,6 +10,7 @@ import MatchmakingLeaderboard.TicTacToe.Matchmaking.TicTacToeMatchmaking;
  */
 public class Player {
     private final double[] winRatio = new double[3];  // 1: TicTacToe, 2: Connect4, 3: Checkers
+    private String username;
     private final int[] wins = new int[3];
     private final int[] losses = new int[3];
     private int level;
@@ -25,8 +26,9 @@ public class Player {
      * @param userID userID of the player from database
      *
      */
-    public Player(int level, int userID) {
+    public Player(String username, int level, int userID) {
         this.level = level;
+        this.username = username;
         this.userID = userID;
         //this.spectate = spectate;
         for(int i = 0; i < 3; i++) {
@@ -39,6 +41,11 @@ public class Player {
         }
 
     }
+
+    public String getUsername() {
+        return this.username;
+    }
+
 
     public int getWins(int gameType) {
         validGame(gameType);

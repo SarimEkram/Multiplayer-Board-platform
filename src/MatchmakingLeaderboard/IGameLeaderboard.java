@@ -26,7 +26,7 @@ public interface IGameLeaderboard {
      *
      * @return List of top players.
      */
-    List<Player> getTopPlayers();
+    //List<Player> getTopPlayers();
 
 
     /**
@@ -35,4 +35,6 @@ public interface IGameLeaderboard {
     void displayLeaderboard();
 
     void sortLeaderboard();
+
+
 }
