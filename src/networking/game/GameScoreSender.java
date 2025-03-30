@@ -42,6 +42,7 @@ public class GameScoreSender extends GameNetworking{
                    if(ScoreValidator.isScoreValid(gameId,playerId,score, playerScore,gameScore)){
                        playerScore.put(playerId,score);  // storing player id and in hash map
                        gameScore.put(gameId,playerScore);
+                       System.out.println("Scores sent to player " + playerId  + "for game " + gameId);
 
                    }else {
                        System.out.println("Enter valid score");
