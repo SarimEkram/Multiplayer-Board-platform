@@ -147,7 +147,7 @@ public class Connect4 {
      */
     private static boolean winInDiagonalBackslash(int[][] board,int piece) { //D // same concept as winInDiagonalForwardSlash, but checks in the opposite (\) direction
         // Starts from the top-left of the board (row 0) and checks diagonals going down and to the right (\ direction)
-        for(int row = 0; row < board.length; row++) {
+        for(int row = 0; row <= board.length-4; row++) {
             // Only check up to column (totalColumns - 4) to avoid going out of bounds
             for (int col = 0; col <= board[0].length - 4; col++) {
                 // Checks for 4 matching pieces going down and to the right (\ direction)
