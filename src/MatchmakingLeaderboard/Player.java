@@ -172,10 +172,6 @@ public class Player {
         }
     }
 
-    public boolean getName() {
-
-        return false;
-    }
 
     public Object getWins() {
         return false;

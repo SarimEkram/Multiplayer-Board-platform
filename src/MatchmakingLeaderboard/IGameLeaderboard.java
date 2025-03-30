@@ -34,6 +34,9 @@ public interface IGameLeaderboard {
      */
     void displayLeaderboard();
 
+    static void updatePlayer(Player player, boolean Won, int gameType){
+
+    }
     void sortLeaderboard();
 
 

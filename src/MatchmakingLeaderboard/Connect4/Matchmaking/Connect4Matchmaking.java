@@ -33,7 +33,7 @@ public class Connect4Matchmaking extends AbstractConnect4Matchmaking{
         }
         try {
             while (true) {
-                this.joinQueue(new Player(56, 123456));
+                this.joinQueue(new Player("yoyo", 123456, 1));
                 this.matchmakingUp = true;
                 wait(2500);
             }

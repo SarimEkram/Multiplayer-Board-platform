@@ -19,7 +19,7 @@ public abstract class AbstractCheckersLeaderboard implements IGameLeaderboard {
 
 
     public void addPlayer(Player player, int gameType) {
-        if(player == null) {
+        if (player == null) {
             throw new NullPointerException("player is null");
         }
         if (!players.contains(player)) {
@@ -33,7 +33,7 @@ public abstract class AbstractCheckersLeaderboard implements IGameLeaderboard {
 
     //public abstract List<Player> getTopPlayers();
 
-    public Player findPLayerById(int playerId){
+    public Player findPLayerById(int playerId) {
         for (Player player : players) {
             if (player.getUserID() == playerId) {
                 return player;
@@ -41,7 +41,8 @@ public abstract class AbstractCheckersLeaderboard implements IGameLeaderboard {
         }
         return null;
     }
-
-
-    public abstract List<Player> getTopPlayers();
 }
+
+
+
+

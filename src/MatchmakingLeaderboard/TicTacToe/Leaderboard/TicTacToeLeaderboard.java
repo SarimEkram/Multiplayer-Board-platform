@@ -26,7 +26,7 @@ public class TicTacToeLeaderboard extends AbstractTicTacToeLeaderboard {
     }
 
     // Optionally, implement to return just the top N players
-    @Override
+    //@Override
     public List<Player> getTopPlayers() {
         return getScores().stream().limit(10).collect(Collectors.toList());
     }

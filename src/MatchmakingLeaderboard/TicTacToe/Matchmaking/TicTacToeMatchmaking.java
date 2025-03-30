@@ -36,7 +36,7 @@ public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
         try {
             while (true) {
                 // replace with a function to get players from database
-                this.joinQueue(new Player(56, 123456));
+                this.joinQueue(new Player("yoyo", 123456, 1));
                 this.matchmakingUp = true;
                 wait(2500);
             }
