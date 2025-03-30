@@ -63,3 +63,4 @@ public class Rank {
         return this.currentTier;
     }
 }
+

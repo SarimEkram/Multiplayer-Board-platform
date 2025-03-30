@@ -51,6 +51,7 @@ public class PlayerDatabase {
                 }
 
                 players.add(player);
+
             }
         } catch (IOException e) {
             e.printStackTrace();
