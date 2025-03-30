@@ -1,12 +1,8 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.TilePane;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -18,7 +14,6 @@ import javafx.scene.input.MouseEvent;
 import ca.ucalgary.groupprojectgui.p3.SceneManager;
 
 import java.io.IOException;
-import java.net.URL;
 
 public class HomePageController {
     @FXML private TextField gameSearchField;
@@ -121,9 +116,14 @@ public class HomePageController {
                 cssFile = "connect4.css";
                 break;
             case "Checkers":
-                fxmlFile = "/ca/ucalgary/groupprojectgui/p3/checkers_gui.fxml";
-                title = "Checkers";
-                cssFile = "connect4.css";
+                fxmlFile = "/ca/ucalgary/groupprojectgui/p3/checkers.fxml";
+                title = "Checkers Game";
+                cssFile = "checkers.css";
+                break;
+            case "Tic Tac Toe":
+                fxmlFile = "/ca/ucalgary/groupprojectgui/p3/ticTacToe.fxml";
+                title = "Tic Tac Toe";
+                cssFile = "ticTacToe.css";
                 break;
 
             default:
