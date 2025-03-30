@@ -47,7 +47,7 @@ public class Player {
 
     public void addWin(int gameType) {
         validGame(gameType);
-        wins[gameType-1]++;
+        this.wins[gameType-1]++;
         calculateRatio(gameType);
     }
     public int getLosses(int gameType) {
@@ -57,7 +57,7 @@ public class Player {
 
     public void addLoss(int gameType) {
         validGame(gameType);
-        losses[gameType-1]++;
+        this.losses[gameType-1]++;
         calculateRatio(gameType);
     }
 

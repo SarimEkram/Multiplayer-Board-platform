@@ -5,8 +5,8 @@ package MatchmakingLeaderboard;
  * Represents a player's rank based on ranking points.
  */
 public class Rank {
-    private int rankingPoints;
-    private RankTier currentTier;
+    private static int rankingPoints;
+    private static RankTier currentTier;
 
     public Rank(){
         this(0);
