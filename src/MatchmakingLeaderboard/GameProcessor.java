@@ -1,7 +1,7 @@
 package MatchmakingLeaderboard;
 
 import MatchmakingLeaderboard.TicTacToe.Leaderboard.TicTacToeLeaderboard;
-import MatchmakingLeaderboard.Connect4.Leaderboard.Connect4Leaderboard;
+//import MatchmakingLeaderboard.Connect4.Leaderboard.Connect4Leaderboard;
 import MatchmakingLeaderboard.Checkers.Leaderboard.CheckersLeaderboard;
 
 /**
@@ -50,6 +50,9 @@ public class GameProcessor {
         updateMMR(winner, loser, true, gameType);
         updateMMR(loser, winner, false, gameType);
         updateLeaderBoard(winner, loser, gameType);
+
+        PlayerDatabase.savePlayer(winner);
+        PlayerDatabase.savePlayer(loser);
     }
 
     /**
@@ -81,8 +84,8 @@ public class GameProcessor {
                 TicTacToeLeaderboard.updatePlayer(loser, false);
                 break;
             case 2:
-                Connect4Leaderboard.updatePlayer(winner, true);
-                Connect4Leaderboard.updatePlayer(loser, false);
+                //Connect4Leaderboard.updatePlayer(winner, true);
+                //Connect4Leaderboard.updatePlayer(loser, false);
                 break;
             case 3:
                 CheckersLeaderboard.updatePlayer(winner, true);
@@ -102,5 +105,8 @@ public class GameProcessor {
         p2.setMMR(p2.getMMR(gameType) + updateMMR2, gameType);
 
         updateLeaderBoard(p1, p2, gameType);
+
+        PlayerDatabase.savePlayer(p1);
+        PlayerDatabase.savePlayer(p2);
     }
 }

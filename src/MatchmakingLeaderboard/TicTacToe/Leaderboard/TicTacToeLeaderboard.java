@@ -35,7 +35,7 @@ public class TicTacToeLeaderboard extends AbstractTicTacToeLeaderboard {
     @Override
     public void displayLeaderboard() {
         System.out.println("Leaderboard:");
-        getScores().forEach(player -> System.out.println(player.getName() + ": " + playerScores.get(player)));
+        //getScores().forEach(player -> System.out.println(player.getName() + ": " + playerScores.get(player)));
     }
 
     // Sorting logic is integrated into the getScores method

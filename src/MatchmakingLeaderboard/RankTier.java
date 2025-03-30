@@ -25,20 +25,5 @@ public enum RankTier {
         return this.rankName;
     }
 
-    public RankTier getNextTier(){
-        int nextTier = this.ordinal() + 1;
-        if(nextTier < RankTier.values().length){
-            return RankTier.values()[nextTier];
-        }
-        return null;
-    }
-
-    public RankTier getPreviousTier(){
-        int previousTier = this.ordinal() - 1;
-        if(previousTier >= 0){
-            return RankTier.values()[previousTier];
-        }
-        return null;
-    }
 
 }
