@@ -32,4 +32,7 @@ public abstract class AbstractConnect4Leaderboard {
      * leaderboard entries in concrete classes.
      */
     public abstract void displayLeaderboard();
+
+    // Return a list of players sorted by scores in descending order
+    public abstract List<Player> getScores();
 }

@@ -165,6 +165,20 @@ public class Player {
         }
     }
 
+    public boolean getName() {
+
+        return false;
+    }
+
+    public Object getWins() {
+        return false;
+    }
+
+    public Object getLosses() {
+
+        return null;
+    }
+
 
     // --- General Info ---
     // public boolean isSpectate() {
