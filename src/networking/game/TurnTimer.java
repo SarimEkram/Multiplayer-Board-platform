@@ -1,4 +1,8 @@
 package networking.game;
+/**
+ * The TurnTimer class manages the timing for a player's turn in a game,
+ * ensuring players take actions within the allowed time limit.
+ */
 
 public class TurnTimer {
     private int turnDuration; // Time limit per turn in seconds
@@ -7,15 +11,22 @@ public class TurnTimer {
     private long remainingTime;
     private String playerId; // Unique identifier for the player
 
-
+    /**
+     * Constructs a TurnTimer instance for a player with a specified duration.
+     *
+     * @param playerId  The unique identifier for the player.
+     * @param duration  The time limit per turn in seconds.
+     */
     public TurnTimer(String playerId, int duration) {
         this.playerId = playerId;
         this.turnDuration = duration;
         this.isPaused = false;
         this.remainingTime = duration * 1000L;
     }
+    /**
+     * Starts the turn timer when the player's turn begins.
+     */
 
-    // Start the timer when the player's turn begins
     public void startTimer() {
         this.startTime = System.currentTimeMillis();
         this.isPaused = false;
@@ -23,13 +34,17 @@ public class TurnTimer {
     }
 
 
-    // Reset the timer when a player successfully makes a move
+    /**
+     * Resets the timer when a player successfully makes a move.
+     */
     public void resetTimer() {
         this.remainingTime = turnDuration * 1000L;
         System.out.println("Timer reset for player: " + playerId);
     }
 
-    // Pause the timer in case of network issues or reconnection
+    /**
+     * Pauses the timer in case of network issues or reconnection.
+     */
     public void pauseTimer() {
         if (!isPaused) {
             remainingTime -= (System.currentTimeMillis() - startTime);
@@ -39,7 +54,9 @@ public class TurnTimer {
     }
 
 
-    // Resume the timer after a network issue is resolved
+    /**
+     * Resumes the timer after a network issue is resolved.
+     */
     public void resumeTimer() {
         if (isPaused) {
             startTime = System.currentTimeMillis();
@@ -48,13 +65,19 @@ public class TurnTimer {
         }
     }
 
-    // Check if the player's turn has expired
+    /**
+     * Checks if the player's turn has expired.
+     *
+     * @return {@code true} if the player's time has expired, otherwise {@code false}.
+     */
     public boolean isTimeExpired() {
         long elapsedTime = System.currentTimeMillis() - startTime;
         return elapsedTime >= remainingTime;
     }
 
-    // Handle player disconnection when the timer expires
+    /**
+     * Handles the player's disconnection when the timer expires.
+     */
     public void handleTimerExpiry() {
         if (isTimeExpired()) {
             System.out.println("Player " + playerId + " timed out! Disconnecting...");
@@ -62,7 +85,9 @@ public class TurnTimer {
         }
     }
 
-    // Notify player when their time is about to expire
+    /**
+     * Notifies the player when their time is about to expire.
+     */
     public void notifyPlayer() {
         long elapsedTime = System.currentTimeMillis() - startTime;
         if (remainingTime - elapsedTime <= 10000) { // 10 seconds remaining
@@ -71,13 +96,17 @@ public class TurnTimer {
         }
     }
 
-    // Simulated method for disconnecting the inactive player via the networking system
+    /**
+     * Simulated method for disconnecting an inactive player via the networking system.
+     */
     private void disconnectPlayer() {
         // TODO: Implement network call to remove the player from the game session
         System.out.println("Network: Player " + playerId + " removed from session.");
     }
 
-    // Simulated method for sending a warning notification to the player
+    /**
+     * Simulated method for sending a warning notification to the player.
+     */
     private void sendWarningNotification() {
         // TODO: Implement server message or client UI alert
         System.out.println("Network: Warning sent to player " + playerId);
