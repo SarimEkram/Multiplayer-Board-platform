@@ -79,10 +79,11 @@
                         prefWidth="180" prefHeight="65"
                         styleClass="game-button"/>
                 <Button fx:id="tttBtn" text="Tic Tac Toe"
-                        onAction="#onCheckersClick"
+                        onAction="#onTicTacToeClick"
                         prefWidth="180" prefHeight="65"
                         styleClass="game-button"/>
                 <Button fx:id="checkersBtn" text="Checkers"
+                        onAction="#onCheckersClick"
                         prefWidth="180" prefHeight="65"
                         styleClass="game-button"/>
             </HBox>

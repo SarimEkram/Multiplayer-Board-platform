@@ -90,6 +90,10 @@ public class HomePageController {
     private void onCheckersClick(){
         launchGame("Checkers");
     }
+    @FXML
+    private void onTicTacToeClick(){
+        launchGame("Tic Tac Toe");
+    }
 
     @FXML
     private void handleQuickMatch() {
@@ -121,9 +125,9 @@ public class HomePageController {
                 cssFile = "checkers.css";
                 break;
             case "Tic Tac Toe":
-                fxmlFile = "/ca/ucalgary/groupprojectgui/p3/ticTacToe.fxml";
+                fxmlFile = "/ca/ucalgary/groupprojectgui/p3/TicTacToe.fxml";
                 title = "Tic Tac Toe";
-                cssFile = "ticTacToe.css";
+                cssFile = "TicTacToe.css";
                 break;
 
             default:
