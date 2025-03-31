@@ -6,22 +6,25 @@ public class UserLogout {
      * @param userId The ID of user who is logged in
      * @return logout status
      */
-    public boolean logoutUser(int userId){
+    public static boolean logoutUser(int userId){
         // Check if userId is valid
+        if (userId <= 0) {
+            return false;
+        }
         // Remove user session or authentication token
+        if (!endSession(userId)) {
+            return false;
+        }
+        if (!clearAuthTokens(userId)) {
+            return false;
+        }
         // If needed update session status in database
-        // if successful return true else false
-        return false;
-    }
+        User user = UserDatabase.getUserById(userId);
 
-    /**
-     * Check if user session is active
-     * @param userId The ID of user who is logged in
-     * @return Status of session
-     */
-    private boolean isUserLoggedIn(int userId){
-        // Look in database or session store if user is logged in
-        return false;
+        user.setOnlineStatus(false);
+
+        // if successful return true else false
+        return (!(UserDatabase.getUserById(userId).isOnline()));
     }
 
     /**
@@ -29,9 +32,11 @@ public class UserLogout {
      * @param userId The ID of user who is logged in
      * @return status whether session is ended or not
      */
-    private boolean endSession(int userId){
+    private static boolean endSession(int userId){
         // Remove session data from system
-        return false;
+        UserLogin.sessionData.remove(userId);
+
+        return !UserLogin.sessionData.containsKey(userId); // check for successful removal
     }
 
     /**
@@ -39,8 +44,10 @@ public class UserLogout {
      * @param userId The ID of user who is logged in
      * @return Status whether cookies/tokens cleared or not
      */
-    private boolean clearAuthTokens(int userId){
+    private static boolean clearAuthTokens(int userId){
         // Delete authentication tokens
-        return false;
+        UserLogin.authTokens.remove(userId);
+
+        return !UserLogin.authTokens.containsKey(userId);
     }
 }
