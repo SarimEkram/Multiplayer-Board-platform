@@ -21,7 +21,6 @@ public class TicTacToe {
      */
     public void start() {
         board.createBoard();
-        board.displayBoard();
     }
 
     /**
