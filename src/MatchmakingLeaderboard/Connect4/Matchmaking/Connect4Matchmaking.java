@@ -25,7 +25,7 @@ public class Connect4Matchmaking extends AbstractConnect4Matchmaking{
         }
 
         try {
-            queue = new MatchmakingQueue();
+            queue = new MatchmakingQueue(gameType);
             this.matchmakingUp = true;
         }catch (Exception e){
             this.matchmakingUp = false;

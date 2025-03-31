@@ -26,7 +26,7 @@ public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
         }
 
         try {
-            queue = new MatchmakingQueue();
+            queue = new MatchmakingQueue(gameType);
             this.matchmakingUp = true;
         }catch (Exception e){
             this.matchmakingUp = false;
