@@ -1,4 +1,5 @@
 package gameLogic.tictactoe;
+import java.lang.reflect.Method;
 import java.util.Scanner;
 
 public class TicTacToe {
@@ -7,6 +8,7 @@ public class TicTacToe {
     private char activePlayer;
     private static final char PLAYER_X = 'X';
     private static final char PLAYER_O = 'O';
+    private int callCount = 0;
 
 
     public TicTacToe(TicTacToeBoard board){
@@ -36,18 +38,17 @@ public class TicTacToe {
      */
 
     public char forfeitGame(char player) {
+        callCount++;
         if (player == PLAYER_X) {
            return PLAYER_O;
         }
         else{
             return PLAYER_X;
         }
+
     }
-    public boolean isGameOver() {
-        if(this.board.checkForWin(activePlayer) || this.board.boardFull() || ((forfeitGame(activePlayer) == PLAYER_O) || (forfeitGame(activePlayer) == PLAYER_X))) {
-            return true;
-        }
-        return false;
+    public boolean isGameOver(){
+        return this.board.checkForWin(activePlayer) || this.board.boardFull() || callCount != 0;
     }
     }
 
