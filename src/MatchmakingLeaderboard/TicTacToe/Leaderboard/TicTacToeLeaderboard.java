@@ -7,40 +7,56 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class TicTacToeLeaderboard extends AbstractTicTacToeLeaderboard {
-    // A map to hold player scores
-    private static Map<Player, Integer> playerScores = new HashMap<>();
+    private static final TicTacToeLeaderboard instance = new TicTacToeLeaderboard();
 
-    // Update the score for a player based on whether they won a game
-    public static void  updatePlayer(Player player, boolean won) {
-        int currentScore = playerScores.getOrDefault(player, 0);
-        playerScores.put(player, won ? currentScore + 1 : currentScore);
+    private TicTacToeLeaderboard(){
+
     }
-
-    // Return a list of players sorted by scores in descending order
+    public static TicTacToeLeaderboard getInstance() {
+        return instance;
+    }
     @Override
     public List<Player> getScores() {
-        return playerScores.entrySet().stream()
-                .sorted(Map.Entry.<Player, Integer>comparingByValue().reversed())
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
+        sortLeaderboard();
+        return new ArrayList<>(players);
     }
 
-    // Optionally, implement to return just the top N players
-    //@Override
-    public List<Player> getTopPlayers() {
-        return getScores().stream().limit(10).collect(Collectors.toList());
+    public static void updatePlayer(Player player, boolean Won, int gameType){
+        instance.addPlayer(player, gameType);
+        instance.sortLeaderboard();
     }
 
-    // Display all players and their scores
     @Override
     public void displayLeaderboard() {
-        System.out.println("Leaderboard:");
-        //getScores().forEach(player -> System.out.println(player.getName() + ": " + playerScores.get(player)));
+        PlayerDatabase.loadPlayersFromCSV();
+        List<Player> TicTacToePlayers = new ArrayList<>();
+
+        for(int currentID = 100000; currentID <= 999999; currentID++){
+            Player player = PlayerDatabase.getPlayerByUserID(currentID);
+            if(player != null && player.getMMR(gameType) > 0){
+                TicTacToePlayers.add(player);
+            }
+        }
+
+        //TicTacToePlayers.sort(p1,p2) -> Integer.compare(p2.getMMR(gameType), p1.getMMR(gameType)));
+        this.players = TicTacToePlayers;
+        sortLeaderboard();
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n Checkers Leaderboard \n");
+        sb.append(String.format("%-5s %-15s %-8s %-10s %-8s%n", "Rank", "Username", "Level", "Rank", "MMR"));
+        for (int i = 0; i < TicTacToePlayers.size(); i++) {
+            Player p = TicTacToePlayers.get(i);
+            sb.append(String.format("%-5d %-15s %-8d %-10s %-8d%n",
+                    i+1,
+                    p.getUsername(),
+                    p.getLevel(),
+                    p.getRank(gameType).getCurrentTier(),
+                    p.getMMR(gameType)));
+        }
     }
 
-    // Sorting logic is integrated into the getScores method
-    @Override
     public void sortLeaderboard() {
-        // This method can remain empty as sorting is handled in getScores.
+        players.sort((p1, p2) -> Integer.compare(p2.getMMR(gameType), p1.getMMR(gameType)));
     }
 }

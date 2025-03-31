@@ -48,7 +48,7 @@ public class Connect4Leaderboard extends AbstractConnect4Leaderboard{
             }
         }
 
-        //CheckersPlayers.sort(p1,p2) -> Integer.compare(p2.getMMR(gameType), p1.getMMR(gameType)));
+        //Connect4Players.sort(p1,p2) -> Integer.compare(p2.getMMR(gameType), p1.getMMR(gameType)));
         this.players = Connect4Players;
         sortLeaderboard();
 
