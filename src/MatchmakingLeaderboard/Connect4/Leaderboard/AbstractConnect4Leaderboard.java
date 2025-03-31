@@ -3,7 +3,7 @@ package MatchmakingLeaderboard.Connect4.Leaderboard;
 import MatchmakingLeaderboard.Player;
 import java.util.ArrayList;
 import java.util.List;
-
+import MatchmakingLeaderboard.IGameLeaderboard;
 /**
  * Abstract base class for Connect-4 leaderboard management.
  *

@@ -1,5 +1,6 @@
 package MatchmakingLeaderboard;
 
+import MatchmakingLeaderboard.Connect4.Leaderboard.Connect4Leaderboard;
 import MatchmakingLeaderboard.TicTacToe.Leaderboard.TicTacToeLeaderboard;
 //import MatchmakingLeaderboard.Connect4.Leaderboard.Connect4Leaderboard;
 import MatchmakingLeaderboard.Checkers.Leaderboard.CheckersLeaderboard;
@@ -80,12 +81,12 @@ public class GameProcessor {
     private static void updateLeaderBoard(Player winner, Player loser, int gameType) {
         switch (gameType) {
             case 1:
-                TicTacToeLeaderboard.updatePlayer(winner, true);
-                TicTacToeLeaderboard.updatePlayer(loser, false);
+                TicTacToeLeaderboard.updatePlayer(winner, true, gameType);
+                TicTacToeLeaderboard.updatePlayer(loser, false, gameType);
                 break;
             case 2:
-                //Connect4Leaderboard.updatePlayer(winner, true);
-                //Connect4Leaderboard.updatePlayer(loser, false);
+                Connect4Leaderboard.updatePlayer(winner, true, gameType);
+                Connect4Leaderboard.updatePlayer(loser, false, gameType);
                 break;
             case 3:
                 CheckersLeaderboard.updatePlayer(winner, true, gameType);
