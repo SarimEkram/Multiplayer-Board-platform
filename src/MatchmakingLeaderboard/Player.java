@@ -1,91 +1,203 @@
 package MatchmakingLeaderboard;
 
+import MatchmakingLeaderboard.Checkers.Matchmaking.CheckersMatchmaking;
+import MatchmakingLeaderboard.Connect4.Matchmaking.Connect4Matchmaking;
+import MatchmakingLeaderboard.TicTacToe.Matchmaking.TicTacToeMatchmaking;
+//import MatchmakingLeaderboard.Rank;
 /**
- * Player class that is used to represent Users pulled from database and used in matchmaking and leaderboard
- *
- * @author Manav Patel
+ * Player class that is used to represent Users pulled from database
+ * and used in matchmaking and leaderboard
  */
 public class Player {
-    private double winRatio;
+    private final double[] winRatio = new double[3];  // 1: TicTacToe, 2: Connect4, 3: Checkers
+    private String username;
+    private final int[] wins = new int[3];
+    private final int[] losses = new int[3];
     private int level;
     private int userID;
-    private boolean spectate;
+    //private boolean spectate;
+    private final Rank[] rank = new Rank[3];
+    private final int[] gameSignal = new int[3];
+    private final int[] mmr = new int[3];
 
     /**
-     * construct class for Player
-     * @param winRatio win ratio of player
+     * Constructs a Player object
      * @param level rank level of player
      * @param userID userID of the player from database
+     *
      */
-    public Player(double winRatio, int level, int userID, boolean spectate) {
-        this.winRatio = winRatio;
+    public Player(String username, int level, int userID) {
         this.level = level;
+        this.username = username;
         this.userID = userID;
-        this.spectate = spectate;
+        //this.spectate = spectate;
+        for(int i = 0; i < 3; i++) {
+            this.winRatio[i] = 0.0;
+            this.wins[i] = 0;
+            this.losses[i] = 0;
+            this.rank[i] = new Rank();
+            this.gameSignal[i] = 0;
+            this.mmr[i] = 0;
+        }
+
     }
 
-    public boolean isSpectate() {
-        return this.spectate;
+    public String getUsername() {
+        return this.username;
     }
 
-    public void setSpectate(boolean spectate) {
-        this.spectate = spectate;
+
+    public int getWins(int gameType) {
+        validGame(gameType);
+        return wins[gameType-1];
     }
 
-    /**
-     * get win ratio
-     * @return win ratio decimal
-     */
-    public double getWinRatio() {
-        return this.winRatio;
+    public void addWin(int gameType) {
+        validGame(gameType);
+        this.wins[gameType-1]++;
+        calculateRatio(gameType);
+    }
+    public int getLosses(int gameType) {
+        validGame(gameType);
+        return losses[gameType-1];
     }
 
-    /**
-     * set win ratio
-     */
-    public void setWinRatio(double winRatio) {
-        this.winRatio = winRatio;
+    public void addLoss(int gameType) {
+        validGame(gameType);
+        this.losses[gameType-1]++;
+        calculateRatio(gameType);
     }
 
-    /**
-     * get level
-     * @return level enum
-     */
+    private void validGame(int gameType){
+        if(gameType < 1 || gameType > 3) {
+            throw new IllegalArgumentException("Invalid game type");
+        }
+    }
+    // --- MMR ---
+    public int getMMR(int gameType){
+        validGame(gameType);
+        return mmr[gameType - 1];
+    }
+
+    public void setMMR(int mmr, int gameType){
+        validGame(gameType);
+        this.mmr[gameType - 1] = mmr;
+    }
+
+    // --- Win Ratio ---
+    public double getWinRatio(int gameSignal) {
+        validGame(gameSignal);
+        return winRatio[gameSignal - 1];
+    }
+
+    public void setWinRatio(int gameSignal, double ratio) {
+        validGame(gameSignal);
+        winRatio[gameSignal - 1] = ratio;
+        calculateRatio(gameSignal);
+    }
+
+    public void calculateRatio(int gameType) {
+        validGame(gameType);
+        int gameIndex = gameType - 1;
+        int totalGames = wins[gameIndex] + losses[gameIndex];
+
+        if(totalGames > 0){
+            winRatio[gameIndex] = (double) wins[gameIndex] / totalGames;
+        }
+        else{
+            winRatio[gameIndex] = 0.0;
+        }
+
+    }
+
+    // general info
     public int getLevel() {
         return this.level;
     }
 
-    /**
-     * set level
-     */
     public void setLevel(int level) {
         this.level = level;
     }
 
-    /**
-     * get User ID from database
-     * @return the unique ID
-     */
     public int getUserID() {
         return this.userID;
     }
 
-    /**
-     * set User ID
-     */
     public void setUserID(int userID) {
         this.userID = userID;
     }
 
+    public Rank getRank(int gameType) {
+        validGame(gameType);
+        return this.rank[gameType - 1];
+    }
+
+    public void setRank(Rank rank, int gameType) {
+        validGame(gameType);
+        this.rank[gameType - 1] = rank;
+    }
+
+    public int getGameSignal(int gameType) {
+        validGame(gameType);
+        return this.gameSignal[gameType-1];
+    }
+
+    public void setGameSignal(int Signal, int gameType) {
+        validGame(gameType);
+        if(Signal < 0 || Signal > 3) {
+            throw new IllegalArgumentException("Signal must be between 0 and 3");
+        }
+
+        gameSignal[gameType - 1] = Signal;
+    }
+
+
     /**
-     * function to
+     * Joins the player into matchmaking queue based on their game signal
+     * @throws Exception if there's an error during matchmaking
      */
-    public void joinMatch(){
+    public void joinMatch(int gameType) throws Exception {
+        if (this.getGameSignal(gameType) == 1) {
+            TicTacToeMatchmaking matchmaking = new TicTacToeMatchmaking();
+            matchmaking.joinQueue(this);
+            matchmaking.startMatchmaking();
+        } else if (this.getGameSignal(gameType) == 2) {
+            Connect4Matchmaking matchmaking = new Connect4Matchmaking();
+            matchmaking.joinQueue(this);
+            matchmaking.startMatchmaking();
+        } else if (this.getGameSignal(gameType) == 3) {
+            CheckersMatchmaking matchmaking = new CheckersMatchmaking();
+            matchmaking.joinQueue(this);
+            matchmaking.startMatchmaking();
+        }
     }
 
-    public void cancelMatch(){
+
+    public Object getWins() {
+        return false;
     }
 
-    public void spectateMatch(int gameid){
+    public Object getLosses() {
+
+        return null;
     }
+
+
+    // --- General Info ---
+    // public boolean isSpectate() {
+    //return this.spectate;}
+
+    //public void setSpectate(boolean spectate) {
+    //this.spectate = spectate;}
+
+    //public void cancelMatch() {
+        // Implementation needed}
+
+   // /**
+   //  * Allows player to spectate a specific game
+   //  * @param gameid the ID of the game to spectate
+   //  */
+   // public void spectateMatch(int gameid) {
+        // Implementation needed}
 }
+
