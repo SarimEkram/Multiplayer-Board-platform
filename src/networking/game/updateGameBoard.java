@@ -27,7 +27,7 @@ public class updateGameBoard<T> extends GameNetworking {
     /**
      * Fetch the game board state from the server and update the local board.
      *
-     * @return A boolean value, true if successful, false otherwise.
+     * @return A boolean value; true if successful, false otherwise.
      */
     public boolean fetchGameBoard() {
         // Search the server for the specific game using the gameId. Alternatively, the game board could also store gameId.
@@ -39,7 +39,7 @@ public class updateGameBoard<T> extends GameNetworking {
     /**
      * Upload the local game board state to the server.
      *
-     * @return A boolean value, true if successful, false otherwise.
+     * @return A boolean value; true if successful, false otherwise.
      */
     public boolean uploadGameBoard() {
         // Search the server for the specific game using the gameId. Alternatively, the game board could also store gameId.
