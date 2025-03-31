@@ -1,0 +1,272 @@
+package ca.ucalgary.groupprojectgui.p3.controllers;
+
+import ca.ucalgary.groupprojectgui.p3.SceneManager;
+import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.effect.BoxBlur;
+import javafx.scene.layout.*;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
+
+public class Connect4Controller {
+
+    @FXML
+    private StackPane boardContainer;
+
+    @FXML
+    private HBox player1DiscContainer;
+
+    @FXML
+    private HBox player2DiscContainer;
+
+    @FXML
+    private BorderPane mainGamePane;
+
+    @FXML
+    private TextArea chatArea;
+
+    @FXML
+    private TextField chatInput;
+
+    private GridPane boardGrid;
+    private Rectangle glowRect;
+
+    // Connect 4 board is 7 columns by 6 rows
+    private static final double ASPECT_RATIO = 7.0 / 6.0;
+
+    // We'll scale the board to 90% of the container’s size
+    private static final double BOARD_CONTAINER_SCALE = 0.9;
+
+    // Increased margin inside the rectangle so circles aren’t flush with the edges
+    private static final double BOARD_MARGIN = 20.0;
+
+    @FXML
+    public void initialize() {
+        // Create and add the player discs to the left sidebar
+        Circle redDisc = new Circle(25);
+        redDisc.getStyleClass().add("disc-red");
+        player1DiscContainer.getChildren().add(redDisc);
+
+        Circle cyanDisc = new Circle(25);
+        cyanDisc.getStyleClass().add("disc-cyan");
+        player2DiscContainer.getChildren().add(cyanDisc);
+
+        // Create the grid for the Connect 4 board
+        boardGrid = new GridPane();
+        boardGrid.setHgap(10);  // horizontal spacing between circles
+        boardGrid.setVgap(10);  // vertical spacing
+        boardGrid.setAlignment(Pos.CENTER);
+
+        // Populate the grid with circles
+        for (int row = 0; row < 6; row++) {
+            for (int col = 0; col < 7; col++) {
+                Circle slot = new Circle(30); // initial radius (will be updated)
+                slot.getStyleClass().add("empty-slot");
+                boardGrid.add(slot, col, row);
+            }
+        }
+
+        // Create the glow rectangle behind the grid
+        glowRect = new Rectangle();
+        glowRect.setArcWidth(30);
+        glowRect.setArcHeight(30);
+        glowRect.getStyleClass().add("glow-rect");
+
+        // Add the rectangle and the grid to the same StackPane
+        boardContainer.getChildren().addAll(glowRect, boardGrid);
+
+        // Listen for boardContainer resizing
+        boardContainer.widthProperty().addListener((obs, oldVal, newVal) -> updateBoardLayout());
+        boardContainer.heightProperty().addListener((obs, oldVal, newVal) -> updateBoardLayout());
+    }
+
+
+    @FXML
+    private void onLeaveGame() {
+        // Blur only the main game pane (not the entire StackPane)
+        BoxBlur blur = new BoxBlur(10, 10, 3);
+        mainGamePane.setEffect(blur);
+
+        // Grab the root (StackPane) so we can place our overlay on top
+        StackPane rootPane = (StackPane) mainGamePane.getScene().getRoot();
+
+        // Create a semi-transparent overlay
+        StackPane overlay = new StackPane();
+        overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
+        overlay.prefWidthProperty().bind(rootPane.widthProperty());
+        overlay.prefHeightProperty().bind(rootPane.heightProperty());
+
+        // Create your modal content
+        VBox modal = new VBox(15);
+        modal.setAlignment(Pos.CENTER);
+        modal.setPadding(new Insets(20));
+        modal.setStyle("-fx-background-color: rgba(0, 0, 0, 0.8); -fx-background-radius: 10;");
+        modal.setMinWidth(300);
+
+        Label prompt = new Label("Pause Menu");
+        prompt.setStyle("-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;");
+
+        // Example Buttons
+        Button resumeButton = new Button("Resume");
+        Button saveAndQuitButton = new Button("Save & Quit");
+        Button quitWithoutSavingButton = new Button("Quit Without Saving");
+        Button cancelButton = new Button("Cancel");
+
+        // A simple shared style, or you can style each button differently
+        String buttonStyle = "-fx-background-color: #5f27cd; " +
+                "-fx-text-fill: white; " +
+                "-fx-background-radius: 10; " +
+                "-fx-font-weight: bold;";
+        resumeButton.setStyle(buttonStyle);
+        saveAndQuitButton.setStyle(buttonStyle);
+        quitWithoutSavingButton.setStyle(buttonStyle);
+        cancelButton.setStyle(buttonStyle);
+
+        // Add them all to the modal
+        modal.getChildren().addAll(prompt, resumeButton, saveAndQuitButton, quitWithoutSavingButton, cancelButton);
+        overlay.getChildren().add(modal);
+
+        // Add overlay above the current UI
+        rootPane.getChildren().add(overlay);
+        overlay.toFront();
+
+        // Button actions
+        resumeButton.setOnAction(e -> {
+            // Simply remove the overlay and clear the blur
+            rootPane.getChildren().remove(overlay);
+            mainGamePane.setEffect(null);
+            // Logic for unpausing goes here, if any
+        });
+
+        saveAndQuitButton.setOnAction(e -> {
+            // Add your "save game" logic here
+            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "home.css");
+
+            // Then remove overlay, clear blur
+            rootPane.getChildren().remove(overlay);
+            mainGamePane.setEffect(null);
+            // Maybe load main menu or exit
+        });
+
+        quitWithoutSavingButton.setOnAction(e -> {
+            // Remove overlay, clear blur
+            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "home.css");
+
+            rootPane.getChildren().remove(overlay);
+            mainGamePane.setEffect(null);
+            // Go back to main menu or exit directly
+        });
+
+        cancelButton.setOnAction(e -> {
+            // “Cancel” here just closes the modal
+            rootPane.getChildren().remove(overlay);
+            mainGamePane.setEffect(null);
+        });
+    }
+
+
+    /**
+     * Dynamically update the glow rectangle and circle sizes,
+     * preserving a 7:6 aspect ratio and adding margin around the edges.
+     * The circles are scaled down by 20% to avoid looking too big.
+     */
+    private void updateBoardLayout() {
+        double containerWidth = boardContainer.getWidth();
+        double containerHeight = boardContainer.getHeight();
+
+        if (containerWidth <= 0 || containerHeight <= 0) {
+            return;
+        }
+
+        // Scale to 90% of the container so there's some outer padding
+        double maxUsableWidth = containerWidth * BOARD_CONTAINER_SCALE;
+        double maxUsableHeight = containerHeight * BOARD_CONTAINER_SCALE;
+
+        // Decide the boardWidth and boardHeight based on 7:6 ratio
+        double containerRatio = maxUsableWidth / maxUsableHeight;
+        double boardWidth, boardHeight;
+
+        if (containerRatio > ASPECT_RATIO) {
+            // Container is relatively wider, so limit by height
+            boardHeight = maxUsableHeight;
+            boardWidth = boardHeight * ASPECT_RATIO;
+        } else {
+            // Container is relatively taller (or equal ratio), so limit by width
+            boardWidth = maxUsableWidth;
+            boardHeight = boardWidth / ASPECT_RATIO;
+        }
+
+        // Set the glow rectangle size
+        glowRect.setWidth(boardWidth);
+        glowRect.setHeight(boardHeight);
+
+        // Calculate how much horizontal/vertical spacing the grid consumes
+        int columns = 7;
+        int rows = 6;
+        double totalHSpacing = boardGrid.getHgap() * (columns - 1);
+        double totalVSpacing = boardGrid.getVgap() * (rows - 1);
+
+        // Subtract the spacing + the BOARD_MARGIN from the rectangle to find the actual circle area
+        double circleAreaWidth = boardWidth - totalHSpacing - 2 * BOARD_MARGIN;
+        double circleAreaHeight = boardHeight - totalVSpacing - 2 * BOARD_MARGIN;
+
+        // Each cell dimension
+        double cellWidth = circleAreaWidth / columns;
+        double cellHeight = circleAreaHeight / rows;
+
+        // The circle's radius is half the smaller dimension of the cell,
+        // further reduced by 20% (multiply by 0.8)
+        double newRadius = (Math.min(cellWidth, cellHeight) / 2.0) * 0.7;
+
+        // Update every circle
+        boardGrid.getChildren().forEach(node -> {
+            if (node instanceof Circle) {
+                ((Circle) node).setRadius(Math.max(0, newRadius));
+            }
+        });
+    }
+
+    @FXML
+    private void onSendMessage() {
+        String message = chatInput.getText();
+        if (!message.trim().isEmpty()) {
+            chatArea.appendText("You: " + message + "\n");
+            chatInput.clear();
+        }
+    }
+
+    /**
+     * Example method to update a slot with a disc.
+     * This removes the "empty-slot" style and applies either "disc-red" or "disc-cyan".
+     *
+     * @param row       The row index (0-based)
+     * @param col       The column index (0-based)
+     * @param discColor "red" or "cyan"
+     */
+    public void dropDiscAt(int row, int col, String discColor) {
+        if (boardGrid == null) return;
+
+        boardGrid.getChildren().forEach(node -> {
+            Integer colIndex = GridPane.getColumnIndex(node);
+            Integer rowIndex = GridPane.getRowIndex(node);
+            if (colIndex == null) colIndex = 0;
+            if (rowIndex == null) rowIndex = 0;
+
+            if (colIndex == col && rowIndex == row && node instanceof Circle) {
+                Circle disc = (Circle) node;
+                disc.getStyleClass().clear();
+                if ("red".equalsIgnoreCase(discColor)) {
+                    disc.getStyleClass().add("disc-red");
+                } else if ("cyan".equalsIgnoreCase(discColor)) {
+                    disc.getStyleClass().add("disc-cyan");
+                }
+            }
+        });
+    }
+}

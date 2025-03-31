@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+
+<BorderPane fx:id="homePane"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.HomePageController"
+            styleClass="home-background"
+
+            prefWidth="1200" prefHeight="800">
+
+
+    <!-- TOP BAR -->
+    <!-- TOP HEADER: Logo + Search Bar -->
+    <!-- TOP HEADER: Logo + Centered Search Bar + Icons on Right -->
+    <top>
+        <HBox spacing="20" alignment="CENTER" styleClass="top-header">
+            <padding>
+                <Insets top="20" bottom="20" left="30" right="30" />
+            </padding>
+
+            <!-- Left: Logo -->
+            <Label text="🎮 OMG" styleClass="logo-label" />
+
+            <!-- Center: Spacer + SearchBar + Spacer -->
+            <Region HBox.hgrow="ALWAYS"/>
+            <StackPane alignment="CENTER_RIGHT" maxWidth="400">
+                <TextField fx:id="gameSearchField"
+                           promptText="Search games..."
+                           styleClass="search-text-field"
+                           prefWidth="400"/>
+                <Label text="🔍" mouseTransparent="true"
+                       style="-fx-font-size: 16px; -fx-text-fill: #bbbbbb; -fx-padding: 0 12 0 0;" />
+            </StackPane>
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <!-- Right: Icons -->
+            <HBox spacing="15" alignment="CENTER_RIGHT">
+                <Label text="❤️" styleClass="header-icon" />
+
+                <Label text="🔔" styleClass="header-icon" onMouseClicked="#openNotificationPanel"/>
+
+                <Label text="👤" styleClass="header-icon" />
+            </HBox>
+        </HBox>
+    </top>
+
+
+
+    <!-- LEFT SIDEBAR: Friends -->
+    <left>
+        <VBox spacing="10" prefWidth="250" styleClass="sidebar-left">
+            <padding>
+                <Insets top="20" left="15" right="15" bottom="20"/>
+            </padding>
+            <Label text="Friends Online" styleClass="sidebar-title"/>
+            <ListView fx:id="friendsList" styleClass="list-view"/>
+        </VBox>
+    </left>
+
+    <!-- CENTER: Main Content -->
+    <center>
+        <VBox alignment="TOP_CENTER" spacing="30">
+            <padding>
+                <Insets top="100" left="40" right="40" bottom="0"/>
+            </padding>
+
+            <!-- Title -->
+            <Label text="Choose a Game" styleClass="section-title"/>
+
+            <!-- Row of Game Buttons -->
+            <HBox fx:id="gameTilePane" alignment="CENTER" spacing="30">
+                <Button fx:id="connect4Btn" text="Connect 4"
+                        onAction="#onConnect4Click"
+                        prefWidth="180" prefHeight="65"
+                        styleClass="game-button"/>
+                <Button fx:id="tttBtn" text="Tic Tac Toe"
+                        onAction="#onTicTacToeClick"
+                        prefWidth="180" prefHeight="65"
+                        styleClass="game-button"/>
+                <Button fx:id="checkersBtn" text="Checkers"
+                        onAction="#onCheckersClick"
+                        prefWidth="180" prefHeight="65"
+                        styleClass="game-button"/>
+            </HBox>
+
+            <!-- Preview Image Below Buttons -->
+            <ImageView fx:id="previewImage"
+                       fitWidth="300"
+                       fitHeight="200"
+                       preserveRatio="true"
+                       visible="false"
+                       style="-fx-effect: dropshadow(gaussian, #ff00ff, 10, 0.5, 0, 0);"/>
+        </VBox>
+    </center>
+
+
+
+    <!-- RIGHT SIDEBAR: Quick Match or Stats -->
+
+</BorderPane>
