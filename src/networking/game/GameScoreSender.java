@@ -70,7 +70,11 @@ public class GameScoreSender extends GameNetworking{
         isconnected = false; // checking server connection status
         System.out.println("Disconnected from Server for sending scores."); // success message
 
-}
+}   /**
+     * Sends game updates to the server.
+     *
+     * @param update The update message to be sent.
+     */
     @Override
     public void sendGameUpdate(String update) {
         if (!isconnected) {
@@ -81,6 +85,10 @@ public class GameScoreSender extends GameNetworking{
         // Simulate server transmission logic here
     }
 
+
+    /**
+     * Receives game updates from the server.
+     */
     @Override
     public void receiveGameUpdate() {
         if (!isconnected) {
@@ -88,6 +96,6 @@ public class GameScoreSender extends GameNetworking{
             return;
         }
         System.out.println("Receiving game update...");
-        // Simulate update handling
+
     }
 }

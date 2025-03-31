@@ -29,22 +29,36 @@ public abstract class NetworkHandler {
 
     /**
      * Handles network-related errors, such as disconnections or timeouts.
+     * Logs the error and attempts to reconnect up to 3 times.
      *
      * @param errorMessage The error message or exception details.
      */
     public void handleNetworkError(String errorMessage) {
         System.err.println("[Network Error][" + gameId + "]: " + errorMessage);
-
         System.out.println("Attempting to reconnect session: " + gameId);
 
-        try {
-            Thread.sleep(2000); // Simulate retry delay
-            establishConnection();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            System.err.println("Reconnection attempt interrupted for game: " + gameId);
-        } catch (Exception e) {
-            System.err.println("Failed to reconnect for game " + gameId + ": " + e.getMessage());
+        int retries = 0;
+        final int maxRetries = 3;
+        final int retryDelayMillis = 2000;
+
+        while (retries < maxRetries) {
+            try {
+                Thread.sleep(retryDelayMillis); // Simulate delay before retry
+                System.out.println("Reconnection attempt " + (retries + 1) + "...");
+                establishConnection(); // Try to re-establish the connection
+                System.out.println("Reconnection successful for game: " + gameId);
+                return;
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+                System.err.println("Reconnection interrupted for game: " + gameId);
+                return;
+            } catch (Exception e) {
+                retries++;
+                System.err.println("Reconnection attempt " + retries + " failed: " + e.getMessage());
+            }
         }
+
+        System.err.println("All reconnection attempts failed for game: " + gameId);
     }
+
 }
