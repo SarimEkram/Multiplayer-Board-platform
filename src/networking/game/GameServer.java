@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public class GameServer<T> {
 
-    private Map<String, T> gameDatabase = new HashMap<>();
+    private final Map<String, T> gameDatabase = new HashMap<>();
 
     /**
      * Save a game state on the server.

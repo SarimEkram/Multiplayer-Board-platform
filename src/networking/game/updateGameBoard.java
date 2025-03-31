@@ -4,6 +4,11 @@ import gameLogic.checkers.CheckersBoard;
 import gameLogic.connect4.ConnectBoard;
 import gameLogic.tictactoe.TicTacToeBoard;
 
+/**
+ * A class that interacts with the server to send and receive game board (state) updates.
+ *
+ * @param <T> generic type parameter, allows to create objects with type safety
+ */
 public class updateGameBoard<T> {
 
     private final GameServer gameServer = new GameServer(); // An object to simulate the role of a server and database
@@ -43,10 +48,7 @@ public class updateGameBoard<T> {
      */
     public boolean uploadGameBoard() {
         boolean success = gameServer.saveGameState(gameId, board);
-        if (success)
-            return true;
-        else
-            return false;
+        return success;
     }
 }
 
