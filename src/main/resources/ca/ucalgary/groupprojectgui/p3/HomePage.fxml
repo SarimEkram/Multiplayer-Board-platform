@@ -44,7 +44,17 @@
 
                 <Label text="🔔" styleClass="header-icon" onMouseClicked="#openNotificationPanel"/>
 
-                <Label text="👤" styleClass="header-icon" />
+                <Label text="👥"
+                       fx:id="friendSearchIcon"
+                       onMouseClicked="#openFriendSearch"
+                       styleClass="header-icon" />
+
+
+                <Label text = "👤 "
+                       fx:id="ProfileIcon"
+                       onMouseClicked="#openManageProfile"
+                       styleClass="header-icon"/>
+
             </HBox>
         </HBox>
     </top>
@@ -52,15 +62,7 @@
 
 
     <!-- LEFT SIDEBAR: Friends -->
-    <left>
-        <VBox spacing="10" prefWidth="250" styleClass="sidebar-left">
-            <padding>
-                <Insets top="20" left="15" right="15" bottom="20"/>
-            </padding>
-            <Label text="Friends Online" styleClass="sidebar-title"/>
-            <ListView fx:id="friendsList" styleClass="list-view"/>
-        </VBox>
-    </left>
+
 
     <!-- CENTER: Main Content -->
     <center>
