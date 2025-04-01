@@ -1,6 +1,7 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.collections.FXCollections;
@@ -12,6 +13,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
 import ca.ucalgary.groupprojectgui.p3.SceneManager;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 
@@ -22,7 +26,7 @@ public class HomePageController {
 
 
     @FXML private Label welcomeLabel;
-    @FXML private ListView<String> friendsList;
+    //@FXML private ListView<String> friendsList;
     @FXML private ListView<String> recentScores;
     @FXML private Button quickMatchButton;
     @FXML private Button logoutButton;
@@ -40,10 +44,10 @@ public class HomePageController {
         //welcomeLabel.setText("Welcome, " + playerName + "!");
 
         // Simulate online friends
-        ObservableList<String> friends = FXCollections.observableArrayList(
-                "Player1 (Online)", "Player2 (Online)", "Player3 (Online)"
-        );
-        friendsList.setItems(friends);
+        //ObservableList<String> friends = FXCollections.observableArrayList(
+               // "Player1 (Online)", "Player2 (Online)", "Player3 (Online)"
+       // );
+        //friendsList.setItems(friends);
 
         // Simulate recent scores
         //ObservableList<String> scores = FXCollections.observableArrayList(
@@ -171,6 +175,61 @@ public class HomePageController {
             alert.showAndWait();
         }
     }
+    @FXML
+    private void openFriendSearch(MouseEvent event) {
+        // Build popup UI manually (no need for a separate FXML)
+        TextField searchField = new TextField();
+        searchField.setPromptText("Enter username...");
+
+        Button searchBtn = new Button("Search");
+        Label title = new Label("Search for a Friend");
+        title.setStyle("-fx-text-fill: white; -fx-font-size: 16px;");
+
+        VBox popupContent = new VBox(10, title, searchField, searchBtn);
+        popupContent.setStyle("-fx-background-color: #2b2b2b; -fx-padding: 20; -fx-background-radius: 10;");
+        popupContent.setPrefWidth(300);
+
+        // Logic on search click
+        searchBtn.setOnAction(e -> {
+            String input = searchField.getText().trim();
+            if (input.isEmpty()) {
+                showPopupAlert("Please enter a username.");
+            } else {
+                System.out.println("Searching for: " + input);
+                showPopupAlert("Searching for friend: " + input);
+            }
+        });
+
+        // Wrap in scene + stage
+        Stage popupStage = new Stage();
+        popupStage.setTitle("Search Friends");
+        popupStage.initModality(Modality.APPLICATION_MODAL);
+        popupStage.setScene(new Scene(popupContent));
+        popupStage.show();
+    }
+
+    private void showPopupAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+    @FXML
+    private void openManageProfile(MouseEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ca/ucalgary/groupprojectgui/p3/Manage Profile.fxml"));
+            Node profilePanel = loader.load();
+            homePane.setRight(profilePanel);  // or setCenter(profilePanel), depending on your layout
+        } catch (IOException e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText("Error");
+            alert.setContentText("Unable to load Manage Profile page.");
+            alert.showAndWait();
+        }
+    }
+
+
 
 
 
