@@ -18,13 +18,7 @@
     <!-- TOP HEADER: Logo + Search Bar -->
     <!-- TOP HEADER: Logo + Centered Search Bar + Icons on Right -->
     <top>
-
         <HBox spacing="20" alignment="CENTER" styleClass="top-header">
-            <Button text="Logout"
-                    fx:id="logoutButton"
-                    onAction="#handleLogout"
-                    styleClass="neon-outline-button"
-                    prefWidth="100" prefHeight="35" />
             <padding>
                 <Insets top="20" bottom="20" left="30" right="30" />
             </padding>
@@ -44,26 +38,17 @@
             </StackPane>
             <Region HBox.hgrow="ALWAYS"/>
 
-            <!-- Right: Icons -->
+            <!-- Right: Icons and Logout Button -->
             <HBox spacing="15" alignment="CENTER_RIGHT">
                 <Label text="❤️" styleClass="header-icon" />
-
                 <Label text="🔔" styleClass="header-icon" onMouseClicked="#openNotificationPanel"/>
-
-                <Label text="👥"
-                       fx:id="friendSearchIcon"
-                       onMouseClicked="#openFriendSearch"
-                       styleClass="header-icon" />
-
-
-                <Label text = "👤 "
-                       fx:id="ProfileIcon"
-                       onMouseClicked="#openManageProfile"
-                       styleClass="header-icon"/>
-
+                <Label text="👥" fx:id="friendSearchIcon" onMouseClicked="#openFriendSearch" styleClass="header-icon" />
+                <Label text="👤" fx:id="ProfileIcon" onMouseClicked="#openManageProfile" styleClass="header-icon"/>
+                <Button text="Logout" fx:id="logoutButton" onAction="#handleLogout" styleClass="neon-outline-button" prefWidth="100" prefHeight="35" />
             </HBox>
         </HBox>
     </top>
+
 
 
 

@@ -4,8 +4,6 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -107,22 +105,21 @@ public class HomePageController {
 
     @FXML
     private void handleLogout() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Logout");
-        alert.setHeaderText("Are you sure you want to logout?");
-        alert.setContentText("You will be returned to the login screen.");
-
-        // Explicitly set the buttons
-        ButtonType okButton = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
-        ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
-        alert.getButtonTypes().setAll(okButton, cancelButton);
-
-        alert.showAndWait().ifPresent(response -> {
-            if (response == okButton) {
-                SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/login.fxml", "Login Page", "login.css");
-            }
-        });
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ca/ucalgary/groupprojectgui/p3/LogoutConfirmationPanel.fxml"));
+            Node panel = loader.load();
+            homePane.setRight(panel); // or setCenter(panel) if you prefer it centered
+        } catch (IOException e) {
+            e.printStackTrace();
+            showPopupAlert("Couldn't load logout panel.");
+        }
     }
+
+
+
+
+
+
 
     @FXML
     public void launchGame(String gameName) {
@@ -243,6 +240,25 @@ public class HomePageController {
             alert.showAndWait();
         }
     }
+
+
+
+
+    public class LogoutConfirmationController {
+
+        @FXML
+        private void confirmLogout() {
+            System.out.println("User confirmed logout.");
+            // Do logout logic here (e.g., navigate to login screen)
+        }
+
+        @FXML
+        private void cancelLogout() {
+            System.out.println("User canceled logout.");
+            // Close/hide this popup
+        }
+    }
+
 
 
 
