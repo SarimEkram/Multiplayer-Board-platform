@@ -20,8 +20,12 @@ import java.io.IOException;
 public class HomePageController {
     @FXML private TextField gameSearchField;
     @FXML private HBox gameTilePane;
+    @FXML private ImageView img;
 
 
+
+    @FXML private ImageView rocketImage;
+    @FXML private ImageView UFOImage;
 
     @FXML private Label welcomeLabel;
     //@FXML private ListView<String> friendsList;
@@ -60,6 +64,24 @@ public class HomePageController {
         setupPreview(checkersBtn, "/ca/ucalgary/groupprojectgui/p3/images/chess_preview.jpg");
 
         setupGameSearch();
+        var logoUrl = getClass().getResource("/ca/ucalgary/groupprojectgui/p3/images/img.png");
+        if (logoUrl != null) {
+            img.setImage(new Image(logoUrl.toExternalForm()));
+        } else {
+            System.err.println("⚠️ Logo image not found.");
+        }
+        var rocketUrl = getClass().getResource("/ca/ucalgary/groupprojectgui/p3/images/rocket.png");
+        if (rocketUrl != null) {
+            rocketImage.setImage(new Image(rocketUrl.toExternalForm()));
+        } else {
+            System.err.println("🚀 Rocket image not found.");
+        }
+        var UFOUrl = getClass().getResource("/ca/ucalgary/groupprojectgui/p3/images/UFO.png");
+        if (UFOUrl != null) {
+            UFOImage.setImage(new Image(UFOUrl.toExternalForm()));
+        } else {
+            System.err.println("🚀 Rocket image not found.");
+        }
 
     }
 
@@ -258,13 +280,6 @@ public class HomePageController {
             // Close/hide this popup
         }
     }
-
-
-
-
-
-
-
 
 
 
