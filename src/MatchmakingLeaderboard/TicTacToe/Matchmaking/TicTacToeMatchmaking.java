@@ -6,15 +6,14 @@ import java.util.Random;
 
 public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
     int gameType = 1;
-    private boolean matchmakingUp = false;
+    private boolean matchmakingUp = true;
     private final double probabilityOfNetworkFailure = 0.125;
     private MatchmakingQueue queue;
 
-
     /**
      * Class that represents the players joining the matchmaking queue
-     * It continuously scans for player join signals from the database
-     *
+     * It continuously scans for player joins signals from the database and throws exceptions if
+     * matchmaking is down, thus preventing other players from joining
      */
     public TicTacToeMatchmaking() throws Exception {
         for (int j = 0; j < 10; j++) {
@@ -31,18 +30,6 @@ public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
         }catch (Exception e){
             this.matchmakingUp = false;
             throw new MatchmakingException("Matchmaking is Down");
-        }
-
-        try {
-            while (true) {
-                // replace with a function to get players from database
-                this.joinQueue(new Player("yoyo", 123456, 1));
-                this.matchmakingUp = true;
-                wait(2500);
-            }
-        }catch (Exception e){
-            this.matchmakingUp = false;
-            throw new MatchmakingException("Something went wrong!");
         }
     }
 
