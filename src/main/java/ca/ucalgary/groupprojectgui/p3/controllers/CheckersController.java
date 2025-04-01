@@ -1,5 +1,6 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
 
+import ca.ucalgary.groupprojectgui.p3.SceneManager;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -163,6 +164,8 @@ public class CheckersController {
         overlay.toFront();
 
         yesButton.setOnAction(e -> {
+
+            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "home.css");
             rootPane.getChildren().remove(overlay);
             mainGamePane.setEffect(null);
 

@@ -11,10 +11,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.shape.Line;
 
 public class TicTacToeController {
@@ -126,82 +123,50 @@ public class TicTacToeController {
      */
     @FXML
     private void onLeaveGame() {
-        // Blur only the main game pane (not the entire StackPane)
+        // Blur the main game pane
         BoxBlur blur = new BoxBlur(10, 10, 3);
         mainGamePane.setEffect(blur);
 
-        // Grab the root (StackPane) so we can place our overlay on top
+        // Get the root StackPane (to overlay the modal)
         StackPane rootPane = (StackPane) mainGamePane.getScene().getRoot();
 
-        // Create a semi-transparent overlay
+        // Create an overlay with a semi-transparent background
         StackPane overlay = new StackPane();
         overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
         overlay.prefWidthProperty().bind(rootPane.widthProperty());
         overlay.prefHeightProperty().bind(rootPane.heightProperty());
 
-        // Create your modal content
-        VBox modal = new VBox(15);
+        // Build the modal dialog
+        VBox modal = new VBox(20);
         modal.setAlignment(Pos.CENTER);
         modal.setPadding(new Insets(20));
         modal.setStyle("-fx-background-color: rgba(0, 0, 0, 0.8); -fx-background-radius: 10;");
         modal.setMinWidth(300);
-
-        Label prompt = new Label("Pause Menu");
-        prompt.setStyle("-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;");
-
-        // Example Buttons
-        Button resumeButton = new Button("Resume");
-        Button saveAndQuitButton = new Button("Save & Quit");
-        Button quitWithoutSavingButton = new Button("Quit Without Saving");
+        modal.setMinHeight(150);
+        Label prompt = new Label("Are you sure you want to leave the game?");
+        prompt.setStyle("-fx-text-fill: white; -fx-font-size: 16px;");
+        Button yesButton = new Button("Yes, Leave");
         Button cancelButton = new Button("Cancel");
-
-        // A simple shared style, or you can style each button differently
-        String buttonStyle = "-fx-background-color: #5f27cd; " +
-                "-fx-text-fill: white; " +
-                "-fx-background-radius: 10; " +
-                "-fx-font-weight: bold;";
-        resumeButton.setStyle(buttonStyle);
-        saveAndQuitButton.setStyle(buttonStyle);
-        quitWithoutSavingButton.setStyle(buttonStyle);
-        cancelButton.setStyle(buttonStyle);
-
-        // Add them all to the modal
-        modal.getChildren().addAll(prompt, resumeButton, saveAndQuitButton, quitWithoutSavingButton, cancelButton);
+        yesButton.setStyle("-fx-background-color: #5f27cd; -fx-text-fill: white; -fx-background-radius: 10;");
+        cancelButton.setStyle("-fx-background-color: #341f97; -fx-text-fill: white; -fx-background-radius: 10;");
+        HBox buttonBox = new HBox(10, yesButton, cancelButton);
+        buttonBox.setAlignment(Pos.CENTER);
+        modal.getChildren().addAll(prompt, buttonBox);
         overlay.getChildren().add(modal);
 
-        // Add overlay above the current UI
+        // Add the overlay on top of the UI
         rootPane.getChildren().add(overlay);
         overlay.toFront();
 
-        // Button actions
-        resumeButton.setOnAction(e -> {
-            // Simply remove the overlay and clear the blur
-            rootPane.getChildren().remove(overlay);
-            mainGamePane.setEffect(null);
-            // Logic for unpausing goes here, if any
-        });
+        yesButton.setOnAction(e -> {
 
-        saveAndQuitButton.setOnAction(e -> {
-            // Add your "save game" logic here
             SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "home.css");
-
-            // Then remove overlay, clear blur
             rootPane.getChildren().remove(overlay);
             mainGamePane.setEffect(null);
-            // Maybe load main menu or exit
-        });
 
-        quitWithoutSavingButton.setOnAction(e -> {
-            // Remove overlay, clear blur
-            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "home.css");
-
-            rootPane.getChildren().remove(overlay);
-            mainGamePane.setEffect(null);
-            // Go back to main menu or exit directly
         });
 
         cancelButton.setOnAction(e -> {
-            // “Cancel” here just closes the modal
             rootPane.getChildren().remove(overlay);
             mainGamePane.setEffect(null);
         });
