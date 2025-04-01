@@ -18,7 +18,13 @@
     <!-- TOP HEADER: Logo + Search Bar -->
     <!-- TOP HEADER: Logo + Centered Search Bar + Icons on Right -->
     <top>
+
         <HBox spacing="20" alignment="CENTER" styleClass="top-header">
+            <Button text="Logout"
+                    fx:id="logoutButton"
+                    onAction="#handleLogout"
+                    styleClass="neon-outline-button"
+                    prefWidth="100" prefHeight="35" />
             <padding>
                 <Insets top="20" bottom="20" left="30" right="30" />
             </padding>

@@ -104,12 +104,27 @@ public class HomePageController {
         System.out.println("Searching for quick match...");
     }
 
+
     @FXML
     private void handleLogout() {
-        System.out.println("Logging out...");
-        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/login.fxml", "Login Page", "login.css");
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Logout");
+        alert.setHeaderText("Are you sure you want to logout?");
+        alert.setContentText("You will be returned to the login screen.");
+
+        // Explicitly set the buttons
+        ButtonType okButton = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(okButton, cancelButton);
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == okButton) {
+                SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/login.fxml", "Login Page", "login.css");
+            }
+        });
     }
 
+    @FXML
     public void launchGame(String gameName) {
         System.out.println("Launching game: " + gameName);
 
@@ -228,6 +243,8 @@ public class HomePageController {
             alert.showAndWait();
         }
     }
+
+
 
 
 
