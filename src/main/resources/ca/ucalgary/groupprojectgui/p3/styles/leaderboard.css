@@ -1,0 +1,83 @@
+.root {
+    -fx-background-color: linear-gradient(to bottom right, #2a0845, #6441a5);
+    -fx-font-family: 'Nunito', sans-serif;
+}
+
+.leaderboard-card {
+    -fx-padding: 40;
+    -fx-background-color: rgba(255, 255, 255, 0.05);
+    -fx-background-radius: 20;
+    -fx-border-color: rgba(255, 255, 255, 0.2);
+    -fx-border-radius: 20;
+    -fx-effect: dropshadow(gaussian, #000000, 15, 0.2, 0, 0);
+}
+
+.logo-label {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+}
+
+.section-title {
+    -fx-text-fill: #eeeeee;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, #cc66ff, 10, 0.4, 0, 0);
+}
+
+.tab-pane {
+    -fx-tab-min-width: 150;
+    -fx-tab-max-width: 150;
+    -fx-background-color: transparent;
+    -fx-tab-background-color: #2a0845;
+    -fx-padding: 10;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+
+.tab-pane .tab-header-background {
+    -fx-background-color: transparent;
+}
+
+.tab-pane .tab {
+    -fx-background-insets: 0;
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 8 20;
+}
+
+.tab-pane .tab:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: linear-gradient(to right, #00c6ff, #0072ff);
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, #00ffff, 10, 0.4, 0, 0);
+}
+
+.tab-pane .tab-label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+
+.neon-outline-button {
+    -fx-text-fill: #cc99ff;
+    -fx-background-color: transparent;
+    -fx-border-color: #cc66ff;
+    -fx-border-width: 2;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-effect: dropshadow(gaussian, #cc66ff, 10, 0.3, 0, 0);
+    -fx-cursor: hand;
+}
+
+.neon-outline-button:hover {
+    -fx-text-fill: white;
+    -fx-border-color: white;
+    -fx-effect: dropshadow(gaussian, white, 12, 0.5, 0, 0);
+}

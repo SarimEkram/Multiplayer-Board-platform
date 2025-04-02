@@ -40,7 +40,7 @@ public class SceneManager {
 
             // Fade in the loading screen.
             loadingRoot.setOpacity(0);
-            FadeTransition fadeInLoading = new FadeTransition(Duration.millis(300), loadingRoot);
+            FadeTransition fadeInLoading = new FadeTransition(Duration.millis(100), loadingRoot);
             fadeInLoading.setFromValue(0);
             fadeInLoading.setToValue(1);
             fadeInLoading.play();
@@ -71,7 +71,7 @@ public class SceneManager {
                 }
 
                 // Start fade-out transition for the loading screen.
-                FadeTransition fadeOutLoading = new FadeTransition(Duration.millis(300), loadingRoot);
+                FadeTransition fadeOutLoading = new FadeTransition(Duration.millis(100), loadingRoot);
                 fadeOutLoading.setFromValue(1);
                 fadeOutLoading.setToValue(0);
                 fadeOutLoading.setOnFinished(event -> {
@@ -81,7 +81,7 @@ public class SceneManager {
 
                     // Fade in the main content.
                     mainRoot.setOpacity(0);
-                    FadeTransition fadeInMain = new FadeTransition(Duration.millis(300), mainRoot);
+                    FadeTransition fadeInMain = new FadeTransition(Duration.millis(100), mainRoot);
                     fadeInMain.setFromValue(0);
                     fadeInMain.setToValue(1);
                     fadeInMain.play();

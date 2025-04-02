@@ -10,6 +10,9 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.input.MouseEvent;
+
+
 
 import java.io.IOException;
 
@@ -33,14 +36,19 @@ public class NotificationPanelController {
     private Button closeButton;
 
     @FXML
-    private void hoverClose() {
+    private void hoverClose(MouseEvent event) {
         closeButton.setStyle("-fx-background-color: transparent; -fx-text-fill: red; -fx-font-size: 14px;");
     }
 
     @FXML
-    private void unhoverClose() {
+    private void unhoverClose(MouseEvent event) {
         closeButton.setStyle("-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 14px;");
     }
+
+
+
+
+
 
 
 

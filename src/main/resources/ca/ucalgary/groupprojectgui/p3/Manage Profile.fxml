@@ -6,7 +6,7 @@
 
 <StackPane xmlns:fx="http://javafx.com/fxml"
            fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.ManageProfileController"
-           prefWidth="1200" prefHeight="800"
+           prefWidth="350" prefHeight="600"
            stylesheets="@styles/manage_profile.css"
            styleClass="root">
 

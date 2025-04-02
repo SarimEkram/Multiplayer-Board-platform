@@ -11,7 +11,7 @@ public class MainApplication extends Application {
 
         SceneManager.switchTo(
 
-                "/ca/ucalgary/groupprojectgui/p3/HomePage.fxml",
+                "/ca/ucalgary/groupprojectgui/p3/Homepage.fxml",
                 "Home Page",
                 "home.css"
 

@@ -2,39 +2,52 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
 <?import javafx.geometry.Insets?>
+
 <VBox fx:id="notificationPanel"
       styleClass="notification-panel"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.NotificationPanelController"
-      spacing="10"
-      style="-fx-background-color: #1e1e1e; -fx-border-color: #555; -fx-border-radius: 10; -fx-background-radius: 10;"
-      maxWidth="250">
-
+      spacing="20"
+      alignment="TOP_CENTER"
+      maxWidth="400"
+      style="-fx-background-color: linear-gradient(to bottom right, #2b1055, #7597de);
+             -fx-background-radius: 20;
+             -fx-border-radius: 20;
+             -fx-border-color: #ffffff40;
+             -fx-border-width: 1.5;">
 
     <padding>
-        <Insets top="15" right="15" bottom="15" left="15"/>
+        <Insets top="30" right="30" bottom="30" left="30"/>
     </padding>
 
-    <!-- Title bar with Close Button -->
-    <HBox alignment="CENTER" spacing="10">
-        <Label text="🔔 Notifications"
-               style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;"
-               HBox.hgrow="ALWAYS"/>
+    <!-- Title and Close Button Row -->
+    <HBox alignment="CENTER_RIGHT">
         <Region HBox.hgrow="ALWAYS"/>
         <Button fx:id="closeButton"
                 text="❌"
                 onAction="#closePanel"
                 onMouseEntered="#hoverClose"
                 onMouseExited="#unhoverClose"
-                style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 14px;" />
-
-
-
+                style="-fx-background-color: transparent;
+                       -fx-font-size: 18px;
+                       -fx-text-fill: white;" />
     </HBox>
 
+    <Label text="🔔 Notifications"
+           style="-fx-font-size: 24px;
+                  -fx-font-weight: bold;
+                  -fx-text-fill: #ffffff;
+                  -fx-effect: dropshadow(gaussian, #ff00ff, 10, 0.5, 0, 0);" />
+
     <!-- Notification List -->
-    <ListView fx:id="notificationList" prefHeight="150" />
+    <ListView fx:id="notificationList"
+              prefHeight="200"
+              style="-fx-background-color: transparent;
+                     -fx-border-color: transparent;
+                     -fx-font-size: 16px;
+                     -fx-text-fill: white;" />
+
 </VBox>
+
 

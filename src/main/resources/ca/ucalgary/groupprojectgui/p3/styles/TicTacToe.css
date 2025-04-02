@@ -43,10 +43,10 @@
 /* === PLAYER PANEL & CHAT PANEL === */
 .sidebar {
     -fx-background-color: rgba(20, 10, 30, 0.5);
-    -fx-background-radius: 20;
+    -fx-background-radius: 15;
     -fx-border-color: rgba(255, 0, 255, 0.3);
     -fx-border-width: 2;
-    -fx-border-radius: 20;
+    -fx-border-radius: 15;
     -fx-effect: dropshadow(gaussian, black, 20, 0.5, 0, 0);
 }
 
@@ -78,9 +78,11 @@
 
 /* === CHAT AREA === */
 .chat-label {
-    -fx-text-fill: blueviolet;
+    -fx-text-fill: #ff66ff;
     -fx-font-size: 18px;
+    -fx-position: top;
     -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, #ff00ff, 6, 0.3, 0, 0);
 }
 
 .text-area {

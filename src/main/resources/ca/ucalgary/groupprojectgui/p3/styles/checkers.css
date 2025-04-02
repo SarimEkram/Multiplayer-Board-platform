@@ -111,6 +111,13 @@
     -fx-padding: 30;
 }
 
+.board-color-brown{
+    -fx-background-color: Brown
+}
+
+.board-color-white{
+    -fx-background-color: White
+}
 /* === SIDEBAR LEFT === */
 .sidebar-left {
     -fx-background-color: rgba(10, 0, 30, 0.75);
@@ -136,14 +143,29 @@
 }
 
 /* === CHECKERS PIECES === */
-.checker-red {
-    -fx-fill: radial-gradient(center 50% 50%, radius 60%, #ff4c4c, #aa0000);
-    -fx-effect: dropshadow(gaussian, red, 10, 0.5, 0, 0);
+/* Normal Checkers Pieces */
+.checker-white {
+    -fx-fill: radial-gradient(center 50% 50%, radius 60%, #ffffff, #cccccc);
+    -fx-effect: dropshadow(gaussian, gray, 8, 0.5, 0, 0);
 }
 
 .checker-black {
-    -fx-fill: radial-gradient(center 50% 50%, radius 60%, #1E90FF, #00008B);
-    -fx-effect: dropshadow(gaussian, #00008B, 10, 0.5, 0, 0);
+    -fx-fill: radial-gradient(center 50% 50%, radius 60%, #000000, #333333);
+    -fx-effect: dropshadow(gaussian, black, 8, 0.5, 0, 0);
+}
+
+/* Checker piece base styling */
+.checker-piece {
+    /* Example for white piece – you can have similar styles for black pieces */
+    -fx-fill: radial-gradient(center 50% 50%, radius 60%, #ffffff, #cccccc);
+    -fx-effect: dropshadow(gaussian, gray, 8, 0.5, 0, 0);
+}
+
+/* Crown styling */
+.crown {
+    -fx-fill: gold;              /* Base fill color for the crown */
+    -fx-stroke: darkgoldenrod;   /* Border color for the crown */
+    -fx-stroke-width: 1;         /* Border thickness */
 }
 
 /* Use the same styling for the turn indicator if needed */

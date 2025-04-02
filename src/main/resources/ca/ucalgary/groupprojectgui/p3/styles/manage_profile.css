@@ -51,3 +51,23 @@
     -fx-border-color: white;
     -fx-effect: dropshadow(gaussian, white, 12, 0.5, 0, 0);
 }
+
+
+
+
+
+/* Shared floating effect for both buttons */
+.neon-outline-button:hover,
+.danger-outline-button:hover {
+    -fx-translate-y: -4;
+    -fx-effect: dropshadow(gaussian, #00ffff, 10, 0.3, 0, 2);
+    -fx-cursor: hand;
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+}
+
+/* Red hover glow for danger button */
+.danger-outline-button:hover {
+    -fx-effect: dropshadow(gaussian, #ff4d4d, 12, 0.3, 0, 2);
+}
+

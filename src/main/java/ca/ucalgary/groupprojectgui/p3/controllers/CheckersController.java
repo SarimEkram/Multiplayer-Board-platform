@@ -1,5 +1,6 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
 
+import ca.ucalgary.groupprojectgui.p3.SceneManager;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -16,18 +17,31 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 
 public class CheckersController {
 
     @FXML
+    public Label player1CapturedLabel;
+
+    @FXML
+    public Label player2CapturedLabel;
+
+    @FXML
     private StackPane boardContainer;
 
     @FXML
-    private HBox player1DiscContainer;
+    private StackPane checkerPiece1;
 
     @FXML
-    private HBox player2DiscContainer;
+    private Circle checkerCircle;      // Player 1's circle
+
+    @FXML
+    private StackPane checkerPiece2;
+
+    @FXML
+    private Circle checkerCircle2;     // Player 2's circle
 
     @FXML
     private BorderPane mainGamePane;
@@ -50,14 +64,25 @@ public class CheckersController {
 
     @FXML
     public void initialize() {
-        // Initialize player discs (example pieces for display purposes)
-        Circle player1Piece = new Circle(25);
-        player1Piece.getStyleClass().add("disc-red");
-        player1DiscContainer.getChildren().add(player1Piece);
+        // The checker pieces are now defined in FXML.
+        // Optionally, you can add or update style classes if needed:
+        // Example: setting the base style classes for pieces:
+        if (checkerCircle != null) {
+            checkerCircle.getStyleClass().add("checker-white");
+        }
+        if (checkerCircle2 != null) {
+            checkerCircle2.getStyleClass().add("checker-black");
+        }
+        // Initially the crowns remain hidden.
+        Polygon crownShapeW = new Polygon();
+        crownShapeW.getPoints().addAll(10.0, 15.0, 15.0, 5.0, 20.0, 15.0, 25.0, 5.0, 30.0, 15.0, 0.0, 15.0);
+        crownShapeW.getStyleClass().add("crown-w");
+        crownShapeW.setVisible(false);
 
-        Circle player2Piece = new Circle(25);
-        player2Piece.getStyleClass().add("disc-black");
-        player2DiscContainer.getChildren().add(player2Piece);
+        Polygon crownShapeB = new Polygon();
+        crownShapeB.getPoints().addAll(10.0, 15.0, 15.0, 5.0, 20.0, 15.0, 25.0, 5.0, 30.0, 15.0, 0.0, 15.0);
+        crownShapeB.getStyleClass().add("crown-b");
+        crownShapeB.setVisible(false);
 
         // Initialize the checkers board grid
         boardGrid = new GridPane();
@@ -70,17 +95,36 @@ public class CheckersController {
         // Build an 8x8 grid of alternating colored squares
         for (int row = 0; row < BOARD_ROWS; row++) {
             for (int col = 0; col < BOARD_COLUMNS; col++) {
-                Rectangle square = new Rectangle();
+
+                StackPane cell = new StackPane(); // Use StackPane to layer pieces
+                cell.setPrefSize(50, 50); // Adjust size as needed
+
+                Rectangle square = new Rectangle(50, 50); // Set initial size
                 square.getStyleClass().add("board-square");
+
                 // Use alternating colors: light for even-sum cells, dark for odd-sum cells
                 if ((row + col) % 2 == 0) {
                     square.setFill(Color.BEIGE);
                 } else {
                     square.setFill(Color.BROWN);
                 }
-                boardGrid.add(square, col, row);
+
+                cell.getChildren().add(square); // Add the square to the StackPane
+
+
+                if (row < 3 && (row + col) % 2 == 1) {
+                    Circle checker = new Circle(20, Color.WHITE);
+                    cell.getChildren().add(checker);
+                }
+
+                else if (row > 4 && (row + col) % 2 == 1) {
+                    Circle checker = new Circle(20, Color.BLACK);
+                    cell.getChildren().add(checker);
+                }
+                boardGrid.add(cell, col, row);
             }
         }
+
 
         // Add the background and grid to the board container (StackPane allows overlays)
         boardContainer.getChildren().addAll(boardBackground, boardGrid);
@@ -163,6 +207,8 @@ public class CheckersController {
         overlay.toFront();
 
         yesButton.setOnAction(e -> {
+
+            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "home.css");
             rootPane.getChildren().remove(overlay);
             mainGamePane.setEffect(null);
 
