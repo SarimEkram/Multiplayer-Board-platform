@@ -10,12 +10,11 @@ import MatchmakingLeaderboard.TicTacToe.Matchmaking.TicTacToeMatchmaking;
  */
 public class Player {
     private final double[] winRatio = new double[3];  // 1: TicTacToe, 2: Connect4, 3: Checkers
-    private String username;
+    private final String username;
     private final int[] wins = new int[3];
     private final int[] losses = new int[3];
     private int level;
     private int userID;
-    //private boolean spectate;
     private final Rank[] rank = new Rank[3];
     private final int[] gameSignal = new int[3];
     private final int[] mmr = new int[3];
@@ -49,7 +48,7 @@ public class Player {
 
     public int getWins(int gameType) {
         validGame(gameType);
-        return wins[gameType-1];
+        return this.wins[gameType-1];
     }
 
     public void addWin(int gameType) {
@@ -59,7 +58,7 @@ public class Player {
     }
     public int getLosses(int gameType) {
         validGame(gameType);
-        return losses[gameType-1];
+        return this.losses[gameType-1];
     }
 
     public void addLoss(int gameType) {
@@ -76,7 +75,7 @@ public class Player {
     // --- MMR ---
     public int getMMR(int gameType){
         validGame(gameType);
-        return mmr[gameType - 1];
+        return this.mmr[gameType - 1];
     }
 
     public void setMMR(int mmr, int gameType){
@@ -87,26 +86,27 @@ public class Player {
     // --- Win Ratio ---
     public double getWinRatio(int gameSignal) {
         validGame(gameSignal);
-        return winRatio[gameSignal - 1];
+        return this.winRatio[gameSignal - 1];
     }
 
     public void setWinRatio(int gameSignal, double ratio) {
         validGame(gameSignal);
-        winRatio[gameSignal - 1] = ratio;
-        calculateRatio(gameSignal);
+        this.winRatio[gameSignal - 1] = ratio;
+
     }
 
     public void calculateRatio(int gameType) {
         validGame(gameType);
         int gameIndex = gameType - 1;
-        int totalGames = wins[gameIndex] + losses[gameIndex];
+        int totalGames = this.wins[gameIndex] + this.losses[gameIndex];
 
         if(totalGames > 0){
-            winRatio[gameIndex] = (double) wins[gameIndex] / totalGames;
+            setWinRatio (gameType,(double) wins[gameIndex] / totalGames);
         }
         else{
-            winRatio[gameIndex] = 0.0;
+            setWinRatio(gameType, 0.0);
         }
+
 
     }
 
@@ -148,7 +148,7 @@ public class Player {
             throw new IllegalArgumentException("Signal must be between 0 and 3");
         }
 
-        gameSignal[gameType - 1] = Signal;
+        this.gameSignal[gameType - 1] = Signal;
     }
 
 
@@ -172,32 +172,5 @@ public class Player {
         }
     }
 
-
-    public Object getWins() {
-        return false;
-    }
-
-    public Object getLosses() {
-
-        return null;
-    }
-
-
-    // --- General Info ---
-    // public boolean isSpectate() {
-    //return this.spectate;}
-
-    //public void setSpectate(boolean spectate) {
-    //this.spectate = spectate;}
-
-    //public void cancelMatch() {
-        // Implementation needed}
-
-   // /**
-   //  * Allows player to spectate a specific game
-   //  * @param gameid the ID of the game to spectate
-   //  */
-   // public void spectateMatch(int gameid) {
-        // Implementation needed}
 }
 
