@@ -1,4 +1,5 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
+import Authentication.UserDatabase;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -42,7 +43,9 @@ public class HomePageController {
     @FXML
     public void initialize() {
         // Simulate logged-in user
-        String playerName = "Generic Player";
+        int playerId = LoginController.playerid;
+        System.out.println(playerId);
+        //String playerName = UserDatabase.getUserById(playerId).getUsername();
         //welcomeLabel.setText("Welcome, " + playerName + "!");
 
         // Simulate online friends
@@ -179,6 +182,7 @@ public class HomePageController {
                 title,
                 cssFile
         );
+
     }
     private void setupGameSearch() {
         gameSearchField.textProperty().addListener((obs, oldVal, newVal) -> {

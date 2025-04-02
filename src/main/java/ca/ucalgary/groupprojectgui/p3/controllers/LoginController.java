@@ -1,9 +1,13 @@
 
 package ca.ucalgary.groupprojectgui.p3.controllers;
+import Authentication.User;
+import Authentication.UserDatabase;
 import ca.ucalgary.groupprojectgui.p3.SceneManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 public class LoginController {
+
+    public static int playerid;
     @FXML
     private TextField username;
     @FXML
@@ -24,6 +28,11 @@ public class LoginController {
             loginErrorMessageLabel.setManaged(false);
             System.out.println("Login attempted with: " + user + " / " + pass);
         }
+
+        User loginuser  = UserDatabase.getUserByUsername(username.getText());
+        int loginid = loginuser.getUserID();
+        playerid=loginid;
+
     }
     @FXML
     private void handleRegister() {

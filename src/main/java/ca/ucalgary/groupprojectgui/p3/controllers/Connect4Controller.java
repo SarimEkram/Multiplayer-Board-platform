@@ -1,5 +1,6 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
-
+import MatchmakingLeaderboard.Connect4.Matchmaking.Connect4Matchmaking;
+import MatchmakingLeaderboard.Player;
 import gameLogic.connect4.ConnectBoard;
 import gameLogic.connect4.Connect4;
 
@@ -60,7 +61,7 @@ public class Connect4Controller {
     private static final double BOARD_MARGIN = 20.0;
 
     @FXML
-    public void initialize() {
+    public void initialize() throws Exception {
         // Create and add the player discs to the left sidebar
         Circle redDisc = new Circle(25);
         redDisc.getStyleClass().add("disc-red");
@@ -102,6 +103,18 @@ public class Connect4Controller {
         // Listen for boardContainer resizing
         boardContainer.widthProperty().addListener((obs, oldVal, newVal) -> updateBoardLayout());
         boardContainer.heightProperty().addListener((obs, oldVal, newVal) -> updateBoardLayout());
+
+        int p1 = LoginController.playerid;
+
+        Connect4Matchmaking c4m = new Connect4Matchmaking();
+        Player p = new Player("hihi", 1, 123457);
+        Player p3 = new Player("dhfi",1, 123456 );
+
+        c4m.joinQueue(p);
+        c4m.joinQueue(p3);
+        int p2 = c4m.findMatch(p1);
+        System.out.println(p1);
+        System.out.println(p2);
     }
 
 

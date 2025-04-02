@@ -86,6 +86,25 @@ public class Connect4Matchmaking extends AbstractConnect4Matchmaking{
      * function to find matched players an unpopulated game simulation ready to play
      */
     @Override
+    public int findMatch(int playerid) {
+        Player player1 = PlayerDatabase.getPlayerByUserID(playerid);
+        Player player2 = null;
+        if (true) {
+            player2 = queue.getNextPlayer();
+            boolean iscompatible = checkPlayers(player1, player2);
+            while (iscompatible) {
+                iscompatible = checkPlayers(player1, player2);
+                player2 = queue.getNextPlayer();
+            }
+        }
+        return player2.getUserID();
+
+    }
+
+    /**
+     * function to find matched players an unpopulated game simulation ready to play
+     */
+    @Override
     public void findMatch(Player Player1, Player Player2) {
         System.out.println("Generate a request to the backend asking for an unpopulated game simulation");
     }
