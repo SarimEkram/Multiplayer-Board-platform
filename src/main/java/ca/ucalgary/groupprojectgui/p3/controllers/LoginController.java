@@ -68,5 +68,7 @@ public class LoginController {
     private void handleForgotPassword() {
         System.out.println("Forgot Password clicked.");
         // Navigate to the password recovery screen
+        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/resetPassword.fxml", "Forgot Password", "resetPassword.css");
+
     }
 }
