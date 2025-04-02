@@ -286,6 +286,14 @@ public class HomePageController {
     }
 
 
+    @FXML
+    private void onLeaderboardClick() {
+        System.out.println("Leaderboard button clicked!");
+        // Example navigation
+        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/Leaderboard.fxml", "Leaderboard","leaderboard");
+    }
+
+
 
 
 

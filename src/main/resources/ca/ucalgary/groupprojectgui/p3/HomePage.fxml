@@ -5,17 +5,12 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 
-
 <BorderPane fx:id="homePane"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.HomePageController"
             styleClass="home-background"
-
             prefWidth="1200" prefHeight="800">
 
-
-    <!-- TOP BAR -->
-    <!-- TOP HEADER: Logo + Search Bar -->
     <!-- TOP HEADER: Logo + Centered Search Bar + Icons on Right -->
     <top>
         <HBox spacing="20" alignment="CENTER" styleClass="top-header">
@@ -27,10 +22,7 @@
             <ImageView fx:id="img"
                        fitHeight="100"
                        preserveRatio="true"
-                       pickOnBounds="true"
-            />
-
-
+                       pickOnBounds="true"/>
 
             <!-- Center: Spacer + SearchBar + Spacer -->
             <Region HBox.hgrow="ALWAYS"/>
@@ -45,22 +37,28 @@
             </StackPane>
             <Region HBox.hgrow="ALWAYS"/>
 
-            <!-- Right: Icons and Logout Button -->
+            <!-- Right: Icons and Buttons -->
             <HBox spacing="15" alignment="CENTER_RIGHT">
                 <Label text="❤️" styleClass="header-icon" />
                 <Label text="🔔" styleClass="header-icon" onMouseClicked="#openNotificationPanel"/>
                 <Label text="👥" fx:id="friendSearchIcon" onMouseClicked="#openFriendSearch" styleClass="header-icon" />
                 <Label text="👤" fx:id="ProfileIcon" onMouseClicked="#openManageProfile" styleClass="header-icon"/>
-                <Button text="Logout" fx:id="logoutButton" onAction="#handleLogout" styleClass="neon-outline-button" prefWidth="100" prefHeight="35" />
+
+                <!-- NEW: Leaderboard Button -->
+                <Button fx:id="leaderboardBtn"
+                        text="🏆 Leaderboard"
+                        onAction="#onLeaderboardClick"
+                        styleClass="neon-outline-button"
+                        prefWidth="130" prefHeight="35"/>
+
+                <Button text="Logout"
+                        fx:id="logoutButton"
+                        onAction="#handleLogout"
+                        styleClass="neon-outline-button"
+                        prefWidth="100" prefHeight="35"/>
             </HBox>
         </HBox>
     </top>
-
-
-
-
-    <!-- LEFT SIDEBAR: Friends -->
-
 
     <!-- CENTER: Main Content -->
     <center>
@@ -88,7 +86,7 @@
                         styleClass="game-button"/>
             </HBox>
 
-            <!-- Preview Image Below Buttons -->
+            <!-- Preview Image -->
             <ImageView fx:id="previewImage"
                        fitWidth="300"
                        fitHeight="200"
@@ -98,10 +96,10 @@
         </VBox>
     </center>
 
+    <!-- BOTTOM DECORATIONS -->
     <bottom>
         <AnchorPane prefHeight="300">
-
-            <!-- 🚀 Rocket on left -->
+            <!-- 🚀 Rocket -->
             <ImageView fx:id="rocketImage"
                        fitHeight="250"
                        preserveRatio="true"
@@ -110,7 +108,7 @@
                        style="-fx-effect: dropshadow(gaussian, #ff00ff, 10, 0.5, 0, 0);"
                        styleClass="glow-rocket"/>
 
-            <!-- 🛸 UFO on right -->
+            <!-- 🛸 UFO -->
             <ImageView fx:id="UFOImage"
                        fitHeight="200"
                        preserveRatio="true"
@@ -118,16 +116,7 @@
                        AnchorPane.bottomAnchor="10.0"
                        style="-fx-effect: dropshadow(gaussian, #00ffff, 10, 0.5, 0, 0);"
                        styleClass="glow-UFO"/>
-
         </AnchorPane>
     </bottom>
-
-
-
-
-
-
-
-    <!-- RIGHT SIDEBAR: Quick Match or Stats -->
 
 </BorderPane>

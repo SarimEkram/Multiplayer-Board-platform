@@ -1,5 +1,6 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
 
+import ca.ucalgary.groupprojectgui.p3.SceneManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
@@ -39,7 +40,11 @@ public class LeaderboardController {
 
     @FXML
     private void handleBack() {
-        System.out.println("Back to homepage...");
-        // SceneManager.switchTo("/path/to/HomePage.fxml", "Home Page", "home.css");
-    }
+        SceneManager.switchTo(
+
+                "/ca/ucalgary/groupprojectgui/p3/HomePage.fxml",
+                "Home Page",
+                "home.css"
+
+        );    }
 }
