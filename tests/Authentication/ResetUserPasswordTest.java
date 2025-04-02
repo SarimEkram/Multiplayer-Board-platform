@@ -2,6 +2,10 @@ package Authentication;
 
 import org.junit.jupiter.api.Test;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.util.Base64;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ResetUserPasswordTest {
@@ -30,7 +34,14 @@ public class ResetUserPasswordTest {
         // Confirm the new password is hashed and updated in DB
         User updatedUser = UserDatabase.getUserByEmail(email);
         assertNotNull(updatedUser);
-        assertNotEquals(initialPassword, updatedUser.getPassword(), "Password should be hashed");
+        String newhashpassword = "";
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hash = md.digest(newPassword.getBytes(StandardCharsets.UTF_8));
+            newhashpassword = Base64.getEncoder().encodeToString(hash);
+        } catch (Exception e) {
+        }
+        assertEquals(newhashpassword, updatedUser.getPassword(), "Password should be hashed");
     }
 
     @Test

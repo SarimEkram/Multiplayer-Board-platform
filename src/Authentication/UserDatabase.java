@@ -150,4 +150,23 @@ public class UserDatabase {
             return false;
         }
     }
+
+    /**
+     * Deletes the entire CSV file and clears in-memory user data.
+     * @return true if file was deleted successfully
+     */
+    public static boolean deleteCSVFile() {
+        users.clear();  // Clear the in-memory user list
+        File file = new File(FILE_PATH);
+
+        System.out.println("Attempting to delete file: " + file.getAbsolutePath());
+        if (file.exists()) {
+            boolean deleted = file.delete();
+            System.out.println("CSV deleted: " + deleted);
+            return deleted;
+        } else {
+            System.out.println("CSV file does not exist.");
+            return false;
+        }
+    }
 }

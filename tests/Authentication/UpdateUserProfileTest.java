@@ -1,24 +1,33 @@
 package Authentication;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UpdateUserProfileTest {
 
+    @AfterAll
+    static void deleteDatabase() {
+        boolean deleted = UserDatabase.deleteCSVFile();
+    }
+
     @Test
     void testUpdateValidUsernameAndEmail() {
         // Create and save test user
         User user = new User(0, "oldName", "old@example.com", "pass123", 0.7, 2, false);
         UserDatabase.saveUser(user);
-        int userId = user.getUserID();
+        int id= user.getUserID();
+
 
         UpdateUserProfile updater = new UpdateUserProfile();
-        boolean result = updater.updateUser(userId, "newName", "new@example.com");
+        boolean result = updater.updateUser(id, "newName", "new@example.com");
+
 
         assertTrue(result, "User should be updated successfully");
 
-        User updated = UserDatabase.getUserById(userId);
+        User updated = UserDatabase.getUserById(id);
+
         assertEquals("newName", updated.getUsername());
         assertEquals("new@example.com", updated.getEmail());
     }
