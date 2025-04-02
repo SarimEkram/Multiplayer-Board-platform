@@ -108,7 +108,7 @@
 
 /* === BOARD === */
 .board-container {
-    -fx-padding: 30;
+    -fx-padding: 20;
 }
 
 .board-color-brown{
@@ -154,18 +154,11 @@
     -fx-effect: dropshadow(gaussian, black, 8, 0.5, 0, 0);
 }
 
-/* Checker piece base styling */
-.checker-piece {
-    /* Example for white piece – you can have similar styles for black pieces */
-    -fx-fill: radial-gradient(center 50% 50%, radius 60%, #ffffff, #cccccc);
-    -fx-effect: dropshadow(gaussian, gray, 8, 0.5, 0, 0);
-}
-
 /* Crown styling */
 .crown {
     -fx-fill: gold;              /* Base fill color for the crown */
     -fx-stroke: darkgoldenrod;   /* Border color for the crown */
-    -fx-stroke-width: 1;         /* Border thickness */
+    -fx-stroke-width: 2;         /* Border thickness */
 }
 
 /* Use the same styling for the turn indicator if needed */

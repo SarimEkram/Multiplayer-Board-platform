@@ -15,6 +15,7 @@
 
 <!-- Root is a StackPane so that overlays can appear on top -->
 <?import javafx.scene.shape.Polygon?>
+<?import javafx.scene.Cursor?>
 <StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.CheckersController">
     <!-- Main layout -->
@@ -23,6 +24,16 @@
         <!-- LEFT SIDEBAR -->
         <left>
             <BorderPane styleClass="sidebar-left">
+                <top>
+                    <ImageView fitHeight="118.0" fitWidth="167.0" preserveRatio="true" BorderPane.alignment="CENTER">
+                        <image>
+                            <Image backgroundLoading="true" url="@images/img.png" />
+                        </image>
+                        <cursor>
+                            <Cursor fx:constant="DEFAULT" />
+                        </cursor>
+                    </ImageView>
+                </top>
                 <center>
                     <VBox alignment="CENTER" spacing="40">
                         <VBox alignment="CENTER" spacing="10">
@@ -31,7 +42,7 @@
                             </ImageView>
                             <Label styleClass="player-label" text="(You) Vacant Mockingbird"/>
                             <StackPane fx:id="checkerPiece1">
-                                <Circle fx:id="checkerCircle" radius="30" styleClass="checker-piece"/>
+                                <Circle fx:id="checkerCircle1" radius="20" styleClass="checker-black"/>
                             </StackPane>
                             <Label fx:id="player1CapturedLabel" styleClass="score-label" text="Captured: 0" />
                         </VBox>
@@ -44,7 +55,7 @@
                             </ImageView>
                             <Label styleClass="player-label" text="Royal Mosquito"/>
                             <StackPane fx:id="checkerPiece2">
-                                <Circle fx:id="checkerCircle2" radius="30" styleClass="checker-piece"/>
+                                <Circle fx:id="checkerCircle2" radius="20" styleClass="checker-white"/>
                             </StackPane>
                             <Label fx:id="player2CapturedLabel" styleClass="score-label" text="Captured: 0" />
                         </VBox>
@@ -68,10 +79,9 @@
                         <center>
                             <VBox alignment="CENTER" spacing="5">
                                 <HBox alignment="CENTER" spacing="10">
-                                    <Circle fx:id="turnDisc" radius="25" styleClass="disc-red"/>
-                                    <Label styleClass="turn-label" text="YOUR TURN"/>
+                                    <Circle fx:id="turnPiece" radius="25" styleClass="checker-black"/>
+                                    <Label styleClass="turn-label" text="'s TURN"/>
                                 </HBox>
-                                <Label styleClass="timer-label" text="Elapsed: 00:00"/>
                             </VBox>
                         </center>
                         <padding>

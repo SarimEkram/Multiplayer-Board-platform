@@ -10,6 +10,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.BoxBlur;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -29,13 +31,16 @@ public class CheckersController {
     public Label player2CapturedLabel;
 
     @FXML
+    public Circle turnPiece;
+
+    @FXML
     private StackPane boardContainer;
 
     @FXML
     private StackPane checkerPiece1;
 
     @FXML
-    private Circle checkerCircle;      // Player 1's circle
+    private Circle checkerCircle1;      // Player 1's circle
 
     @FXML
     private StackPane checkerPiece2;
@@ -64,25 +69,15 @@ public class CheckersController {
 
     @FXML
     public void initialize() {
-        // The checker pieces are now defined in FXML.
-        // Optionally, you can add or update style classes if needed:
-        // Example: setting the base style classes for pieces:
-        if (checkerCircle != null) {
-            checkerCircle.getStyleClass().add("checker-white");
-        }
-        if (checkerCircle2 != null) {
-            checkerCircle2.getStyleClass().add("checker-black");
-        }
-        // Initially the crowns remain hidden.
-        Polygon crownShapeW = new Polygon();
-        crownShapeW.getPoints().addAll(10.0, 15.0, 15.0, 5.0, 20.0, 15.0, 25.0, 5.0, 30.0, 15.0, 0.0, 15.0);
-        crownShapeW.getStyleClass().add("crown-w");
-        crownShapeW.setVisible(false);
 
-        Polygon crownShapeB = new Polygon();
-        crownShapeB.getPoints().addAll(10.0, 15.0, 15.0, 5.0, 20.0, 15.0, 25.0, 5.0, 30.0, 15.0, 0.0, 15.0);
-        crownShapeB.getStyleClass().add("crown-b");
-        crownShapeB.setVisible(false);
+        Image crown;
+        crown = new Image(getClass().getResourceAsStream("/ca/ucalgary/groupprojectgui/p3/images/crown.png"));
+
+        // Initially the crowns remain hidden.
+        ImageView crownImage = new ImageView(crown);
+        crownImage.setFitWidth(45);  // Adjust width as needed
+        crownImage.setFitHeight(30);
+        crownImage.setVisible(false);
 
         // Initialize the checkers board grid
         boardGrid = new GridPane();
@@ -97,9 +92,9 @@ public class CheckersController {
             for (int col = 0; col < BOARD_COLUMNS; col++) {
 
                 StackPane cell = new StackPane(); // Use StackPane to layer pieces
-                cell.setPrefSize(50, 50); // Adjust size as needed
+                cell.setPrefSize(80, 80); // Adjust size as needed
 
-                Rectangle square = new Rectangle(50, 50); // Set initial size
+                Rectangle square = new Rectangle(80, 80); // Set initial size
                 square.getStyleClass().add("board-square");
 
                 // Use alternating colors: light for even-sum cells, dark for odd-sum cells
@@ -113,13 +108,13 @@ public class CheckersController {
 
 
                 if (row < 3 && (row + col) % 2 == 1) {
-                    Circle checker = new Circle(20, Color.WHITE);
-                    cell.getChildren().add(checker);
-                }
-
-                else if (row > 4 && (row + col) % 2 == 1) {
-                    Circle checker = new Circle(20, Color.BLACK);
-                    cell.getChildren().add(checker);
+                    Circle whitePiece = new Circle(35);
+                    whitePiece.getStyleClass().addAll(checkerCircle1.getStyleClass());
+                    cell.getChildren().add(whitePiece);
+                } else if (row > 4 && (row + col) % 2 == 1) {
+                    Circle blackPiece = new Circle(35);
+                    blackPiece.getStyleClass().addAll(checkerCircle2.getStyleClass());
+                    cell.getChildren().add(blackPiece);
                 }
                 boardGrid.add(cell, col, row);
             }

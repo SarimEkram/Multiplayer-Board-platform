@@ -32,9 +32,6 @@ public class TicTacToeController {
     private Label turnLabel;
 
     @FXML
-    private Label timerLabel;
-
-    @FXML
     private TextArea chatArea;
 
     @FXML
@@ -49,8 +46,6 @@ public class TicTacToeController {
         createBoard();
         gameName.setText("X-Tic-Tac-Toe-O");
         turnLabel.setText("Player X's Turn");
-        timerLabel.setText("Elapsed: 00:00");
-        // Timer logic can be added here if needed.
     }
 
     /**
