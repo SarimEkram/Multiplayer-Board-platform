@@ -50,7 +50,7 @@ public class SceneManager {
                 @Override
                 protected Parent call() throws Exception {
                     // Simulate delay (replace with real initialization if needed)
-                    Thread.sleep(2000);
+                    Thread.sleep(1000);
                     FXMLLoader mainLoader = new FXMLLoader(SceneManager.class.getResource(mainFXMLPath));
                     return mainLoader.load();
                 }

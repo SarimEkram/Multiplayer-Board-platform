@@ -13,7 +13,8 @@ import javafx.scene.effect.BoxBlur;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Line;
-
+import gameLogic.tictactoe.TicTacToe;
+import gameLogic.tictactoe.TicTacToeBoard;
 public class TicTacToeController {
 
     @FXML
@@ -32,25 +33,35 @@ public class TicTacToeController {
     private Label turnLabel;
 
     @FXML
-    private Label timerLabel;
-
-    @FXML
     private TextArea chatArea;
 
     @FXML
     private TextField chatInput;
 
+    private TicTacToeBoard logicBoard;
+    private TicTacToe gameLogic;
+
+    private GridPane grid;
+    private char currentPlayer;
+
     // Track the current player. True = Player X, False = Player O.
     private boolean playerXTurn = true;
 
+    //Prevents further interaction after game ends
+    private boolean gameOver = false;
+
     @FXML
     public void initialize() {
-        // Setup the game board on initialization
+
+        logicBoard = new TicTacToeBoard();
+        gameLogic = new TicTacToe(logicBoard);
+        gameLogic.start();
+        currentPlayer = 'X';
+
+        // Draw board
         createBoard();
         gameName.setText("X-Tic-Tac-Toe-O");
         turnLabel.setText("Player X's Turn");
-        timerLabel.setText("Elapsed: 00:00");
-        // Timer logic can be added here if needed.
     }
 
     /**
@@ -81,29 +92,48 @@ public class TicTacToeController {
      * @param col the column index of the clicked cell.
      * @param cell the StackPane representing the cell.
      */
+
+
     private void handleCellClick(int row, int col, StackPane cell) {
-        // If the cell is empty, add the player's marker.
-        if (cell.getChildren().isEmpty()) {
-            if (playerXTurn) {
-                // Draw an "X" marker using two lines
-                Line line1 = new Line(10, 10, 110, 110);
-                line1.getStyleClass().add("ttt-x");
-                Line line2 = new Line(110, 10, 10, 110);
-                line2.getStyleClass().add("ttt-x");
-                cell.getChildren().addAll(line1, line2);
-                turnLabel.setText("Player O's Turn");
+        //  Ignore if the game is over or cell is already filled
+        if (gameOver || !cell.getChildren().isEmpty() || !logicBoard.isCellEmpty(row, col)) return;
 
-            } else {
-                // Draw an "O" marker as a circle outline using a Circle node
-                javafx.scene.shape.Circle circle = new javafx.scene.shape.Circle(50, 50, 55);
-                circle.getStyleClass().add("ttt-o");
-                cell.getChildren().add(circle);
-                turnLabel.setText("Player X's Turn");
+        char symbol = playerXTurn ? 'X' : 'O';
+        logicBoard.placePiece(row, col, symbol);
 
-            }
-            playerXTurn = !playerXTurn;
-            // In a complete game, you would check for a win or draw here.
+        // Draw marker
+        if (playerXTurn) {
+            Line line1 = new Line(10, 10, 110, 110);
+            line1.getStyleClass().add("ttt-x");
+            Line line2 = new Line(110, 10, 10, 110);
+            line2.getStyleClass().add("ttt-x");
+            cell.getChildren().addAll(line1, line2);
+        } else {
+            javafx.scene.shape.Circle circle = new javafx.scene.shape.Circle(50, 50, 55);
+            circle.getStyleClass().add("ttt-o");
+            cell.getChildren().add(circle);
         }
+
+        // Check for win
+        if (logicBoard.checkForWin(symbol)) {
+            turnLabel.setText("Player " + symbol + " wins!");
+            gameOver = true;
+            boardContainer.setDisable(true);
+            return;
+        }
+
+        // Check for draw
+        if (logicBoard.boardFull()) {
+            turnLabel.setText("It's a tie!");
+            gameOver = true;
+            boardContainer.setDisable(true);
+            return;
+        }
+
+        // Next turn
+        playerXTurn = !playerXTurn;
+        gameLogic.changeActivePlayer();
+        turnLabel.setText(playerXTurn ? "Player X's Turn" : "Player O's Turn");
     }
 
     /**
