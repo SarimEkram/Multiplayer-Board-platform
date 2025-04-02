@@ -116,8 +116,37 @@ public class Connect4Controller {
             if (gameLogic.won(connectBoard.getBoard(), piece)) {
                 gameLogic.setGameOver(true);
                 turnLabel.setText("Player " + piece + " WINS!");
+
+                // Identify the winning and losing players based on current player's piece ID
+//                int winningPieceId = piece;
+//                int losingPieceId = (piece == connectBoard.piece1) ? connectBoard.piece2 : connectBoard.piece1;
+//
+//                // Update the winning player's statistics
+//                Player winningPlayer = PlayerDatabase.getPlayerByUserID(winningPieceId);
+//
+//                if (winningPlayer != null) {
+//                    winningPlayer.addWin();
+//                    PlayerDatabase.savePlayer(winningPlayer);  // Save the changes to the database
+//                }
+//
+//                // Update the losing player's statistics
+//                Player losingPlayer = PlayerDatabase.getPlayerByUserID(losingPieceId);
+//                if (losingPlayer != null) {
+//                    losingPlayer.addLoss();
+//                    PlayerDatabase.savePlayer(losingPlayer);  // Save the changes to the database
+//                }
+
             } else if (gameLogic.isFull(connectBoard.getBoard())) {
                 turnLabel.setText("TIE GAME");
+                // Update draw statistics for both players
+//                Player player1 = PlayerDatabase.getPlayerByUserID(connectBoard.piece1);
+//                Player player2 = PlayerDatabase.getPlayerByUserID(connectBoard.piece2);
+//                if (player1 != null && player2 != null) {
+//                    player1.addDraw();
+//                    player2.addDraw();
+//                    PlayerDatabase.savePlayer(player1);
+//                    PlayerDatabase.savePlayer(player2);
+//                }
             } else {
                 gameLogic.switchPlayer();
                 turnLabel.setText("TURN");
