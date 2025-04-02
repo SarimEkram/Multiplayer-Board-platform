@@ -1,5 +1,9 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
 
+import gameLogic.connect4.ConnectBoard;
+import gameLogic.connect4.Connect4;
+
+
 import ca.ucalgary.groupprojectgui.p3.SceneManager;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -34,8 +38,17 @@ public class Connect4Controller {
     @FXML
     private TextField chatInput;
 
+    @FXML
+    private Circle turnDisc;
+
+    @FXML
+    private Label turnLabel;
+
     private GridPane boardGrid;
     private Rectangle glowRect;
+
+    private ConnectBoard connectBoard;
+    private Connect4 gameLogic;
 
     // Connect 4 board is 7 columns by 6 rows
     private static final double ASPECT_RATIO = 7.0 / 6.0;
@@ -57,7 +70,10 @@ public class Connect4Controller {
         cyanDisc.getStyleClass().add("disc-cyan");
         player2DiscContainer.getChildren().add(cyanDisc);
 
-        // Create the grid for the Connect 4 board
+        // Create the grid for the Connect 4 board\
+        connectBoard = new ConnectBoard(1,2);
+        gameLogic = new Connect4(connectBoard);
+        
         boardGrid = new GridPane();
         boardGrid.setHgap(10);  // horizontal spacing between circles
         boardGrid.setVgap(10);  // vertical spacing
@@ -68,6 +84,8 @@ public class Connect4Controller {
             for (int col = 0; col < 7; col++) {
                 Circle slot = new Circle(30); // initial radius (will be updated)
                 slot.getStyleClass().add("empty-slot");
+                int finalCol = col;
+                slot.setOnMouseClicked(e -> handleMove(finalCol));
                 boardGrid.add(slot, col, row);
             }
         }
@@ -86,6 +104,37 @@ public class Connect4Controller {
         boardContainer.heightProperty().addListener((obs, oldVal, newVal) -> updateBoardLayout());
     }
 
+
+    private void handleMove(int column) {
+        if (gameLogic.isGameOver() || !gameLogic.canPlay(connectBoard.getBoard(), column)) return;
+
+        int piece = connectBoard.getCurrentPlayer();
+        int row = Connect4.play(connectBoard.getBoard(), column, piece);
+        if (row >= 0) {
+            dropDiscAt(row, column, piece == connectBoard.piece1 ? "red" : "cyan");
+
+            if (gameLogic.won(connectBoard.getBoard(), piece)) {
+                gameLogic.setGameOver(true);
+                turnLabel.setText("Player " + piece + " WINS!");
+            } else if (gameLogic.isFull(connectBoard.getBoard())) {
+                turnLabel.setText("TIE GAME");
+            } else {
+                gameLogic.switchPlayer();
+                turnLabel.setText("TURN");
+                updateTurnDisc();
+            }
+        }
+    }
+
+    private void updateTurnDisc() {
+        int currentPlayer = connectBoard.getCurrentPlayer();
+        turnDisc.getStyleClass().clear();
+        if (currentPlayer == connectBoard.piece1) {
+            turnDisc.getStyleClass().add("disc-red");
+        } else {
+            turnDisc.getStyleClass().add("disc-cyan");
+        }
+    }
 
     @FXML
     private void onLeaveGame() {

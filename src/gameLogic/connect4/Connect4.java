@@ -8,7 +8,6 @@ public class Connect4 {
      * Connect 4 instance is created in ConnectBoard
      */
     ConnectBoard board;
-
     private boolean gameOver = false;
 
     /**
@@ -41,7 +40,7 @@ public class Connect4 {
      * @return true if the column is empty
      */
 
-    private static boolean canPlay(int[][] board, int column) {
+    public static boolean canPlay(int[][] board, int column) {
         return board[0][column] == 0;
 
     }
@@ -199,7 +198,7 @@ public class Connect4 {
                 return true;
             }
         }
-        return winInAnyDiagonal(board, playerNumber); // Checks for a diagonal win in both directions
+        return winInAnyDiagonal(board, playerNumber);// Checks for a diagonal win in both directions
     }
 
     /**
@@ -221,8 +220,13 @@ public class Connect4 {
         gameOver = false;
     }
 
-    public boolean isGameOverByForfeit() { //D
+    public boolean isGameOver() { //D
         return gameOver; // Returns the current gameOver state, which will be true only after a forfeit
     }
+
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
+    }
+
 
 }
