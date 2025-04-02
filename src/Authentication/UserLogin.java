@@ -7,30 +7,28 @@ import java.util.*;
 
 public class UserLogin {
 
-
     /**
      * Verifies the user and return the login status
      * @param email User email that has been entered
      * @param password User password that has been entered
      * @return Status of login
      */
-    public static boolean loginUser(String email, String password){
+    public static int loginUser(String email, String password){
         // Check if email and password are not null
         if (!validateInput(email, password)){
-            return false;
+            return -1;
         }
         // Check in database, if user exist or not
         if (!userExist(email)){
-            return false;
+            return -1;
         }
         // Get saved password from database
         String savedPass = storedPassword(email);
         if (!verifyPassword(password, savedPass)){
-            return false;
+            return -1;
         }
 
         // login is successful
-
         User user = UserDatabase.getUserByEmail(email); // get user to update status and what not
 
         int userID = user.getUserID();
@@ -41,7 +39,7 @@ public class UserLogin {
 
         createAuthToken(userID);
 
-        return true;
+        return userID;
     }
 
     /**
