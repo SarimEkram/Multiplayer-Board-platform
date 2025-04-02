@@ -10,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * This class contains the tests for TicTacToeMatchmaking.java
- * Author: Your Name
  */
 public class TicTacToeMatchmakingTest {
     private TicTacToeMatchmaking matchmaking;
@@ -62,7 +61,7 @@ public class TicTacToeMatchmakingTest {
     }
 
     @Test
-    public void testCheckMatchmaking_Down() throws Exception {
+    public void testCheckMatchmaking_Down(){
         matchmaking = new TicTacToeMatchmaking();
         matchmaking.matchmakingUp = false;
         assertFalse(matchmaking.checkMatchmaking());

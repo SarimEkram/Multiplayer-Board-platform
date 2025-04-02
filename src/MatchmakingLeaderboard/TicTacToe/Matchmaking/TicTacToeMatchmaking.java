@@ -8,9 +8,12 @@ import java.util.Random;
 public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
     int gameType = 1;
     protected boolean matchmakingUp = true;
-    private final double probabilityOfNetworkFailure = 0.0025;
+    private final double probabilityOfNetworkFailure = 0.0125;
     private MatchmakingQueue queue;
 
+    /**
+     * Constructor class for TicTacToe Matchmaking
+     */
     public TicTacToeMatchmaking() {
         queue = new MatchmakingQueue(gameType);
     }
