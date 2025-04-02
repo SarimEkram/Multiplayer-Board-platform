@@ -78,7 +78,7 @@ public class Checkers {
      *
      * @return true if the red player has won, false otherwise
      */
-    private WINNER checkWin() {
+    public WINNER checkWin() {
         winner = WINNER.NONE;
         int redCount = 0;
         int blackCount = 0;
