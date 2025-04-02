@@ -1,5 +1,6 @@
 
 package ca.ucalgary.groupprojectgui.p3.controllers;
+import ca.ucalgary.groupprojectgui.p3.SceneManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 public class LoginController {
@@ -27,6 +28,7 @@ public class LoginController {
     @FXML
     private void handleRegister() {
         System.out.println("Register button clicked.");
+        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/UserRegistration.fxml", "User Registation", "UserRegistration.css");
         // Navigate to Register screen
     }
     @FXML
