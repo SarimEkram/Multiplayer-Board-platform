@@ -72,7 +72,7 @@ public class UserDatabase {
         // If not found, assign new ID and add to list
         if (!found) {
             user.setSuspendSave(true); // temporarily stop saving
-            user.setUserID(getNextUserID());
+            user.setUserID(generateUniqueUserID());
             user.setSuspendSave(false); // re-enable saving
             users.add(user);
         }
@@ -124,13 +124,6 @@ public class UserDatabase {
         }
         while (getUserById(userID)!=null);
         return userID;
-    }
-    /**
-     * Returns the next available user ID by finding the max ID + 1
-     * @return A new unique user ID
-     */
-    private static int getNextUserID() {
-        return users.stream().mapToInt(User::getUserID).max().orElse(0) + 1;
     }
 
     /**
