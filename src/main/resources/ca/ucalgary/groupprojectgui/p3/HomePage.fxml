@@ -24,7 +24,13 @@
             </padding>
 
             <!-- Left: Logo -->
-            <Label text="🎮 OMG" styleClass="logo-label" />
+            <ImageView fx:id="img"
+                       fitHeight="100"
+                       preserveRatio="true"
+                       pickOnBounds="true"
+            />
+
+
 
             <!-- Center: Spacer + SearchBar + Spacer -->
             <Region HBox.hgrow="ALWAYS"/>
@@ -32,32 +38,24 @@
                 <TextField fx:id="gameSearchField"
                            promptText="Search games..."
                            styleClass="search-text-field"
-                           prefWidth="400"/>
+                           prefWidth="800"
+                           prefHeight="50"/>
                 <Label text="🔍" mouseTransparent="true"
                        style="-fx-font-size: 16px; -fx-text-fill: #bbbbbb; -fx-padding: 0 12 0 0;" />
             </StackPane>
             <Region HBox.hgrow="ALWAYS"/>
 
-            <!-- Right: Icons -->
+            <!-- Right: Icons and Logout Button -->
             <HBox spacing="15" alignment="CENTER_RIGHT">
                 <Label text="❤️" styleClass="header-icon" />
-
                 <Label text="🔔" styleClass="header-icon" onMouseClicked="#openNotificationPanel"/>
-
-                <Label text="👥"
-                       fx:id="friendSearchIcon"
-                       onMouseClicked="#openFriendSearch"
-                       styleClass="header-icon" />
-
-
-                <Label text = "👤 "
-                       fx:id="ProfileIcon"
-                       onMouseClicked="#openManageProfile"
-                       styleClass="header-icon"/>
-
+                <Label text="👥" fx:id="friendSearchIcon" onMouseClicked="#openFriendSearch" styleClass="header-icon" />
+                <Label text="👤" fx:id="ProfileIcon" onMouseClicked="#openManageProfile" styleClass="header-icon"/>
+                <Button text="Logout" fx:id="logoutButton" onAction="#handleLogout" styleClass="neon-outline-button" prefWidth="100" prefHeight="35" />
             </HBox>
         </HBox>
     </top>
+
 
 
 
@@ -78,15 +76,15 @@
             <HBox fx:id="gameTilePane" alignment="CENTER" spacing="30">
                 <Button fx:id="connect4Btn" text="Connect 4"
                         onAction="#onConnect4Click"
-                        prefWidth="180" prefHeight="65"
+                        prefWidth="200" prefHeight="100"
                         styleClass="game-button"/>
                 <Button fx:id="tttBtn" text="Tic Tac Toe"
                         onAction="#onTicTacToeClick"
-                        prefWidth="180" prefHeight="65"
+                        prefWidth="200" prefHeight="100"
                         styleClass="game-button"/>
                 <Button fx:id="checkersBtn" text="Checkers"
                         onAction="#onCheckersClick"
-                        prefWidth="180" prefHeight="65"
+                        prefWidth="200" prefHeight="100"
                         styleClass="game-button"/>
             </HBox>
 
@@ -99,6 +97,34 @@
                        style="-fx-effect: dropshadow(gaussian, #ff00ff, 10, 0.5, 0, 0);"/>
         </VBox>
     </center>
+
+    <bottom>
+        <AnchorPane prefHeight="300">
+
+            <!-- 🚀 Rocket on left -->
+            <ImageView fx:id="rocketImage"
+                       fitHeight="250"
+                       preserveRatio="true"
+                       AnchorPane.leftAnchor="30.0"
+                       AnchorPane.bottomAnchor="10.0"
+                       style="-fx-effect: dropshadow(gaussian, #ff00ff, 10, 0.5, 0, 0);"
+                       styleClass="glow-rocket"/>
+
+            <!-- 🛸 UFO on right -->
+            <ImageView fx:id="UFOImage"
+                       fitHeight="200"
+                       preserveRatio="true"
+                       AnchorPane.rightAnchor="30.0"
+                       AnchorPane.bottomAnchor="10.0"
+                       style="-fx-effect: dropshadow(gaussian, #00ffff, 10, 0.5, 0, 0);"
+                       styleClass="glow-UFO"/>
+
+        </AnchorPane>
+    </bottom>
+
+
+
+
 
 
 
