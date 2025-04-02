@@ -14,6 +14,7 @@
 <?import javafx.scene.shape.Circle?>
 
 <!-- Root is a StackPane so that overlays can appear on top -->
+<?import javafx.scene.shape.Polygon?>
 <StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.CheckersController">
     <!-- Main layout -->
@@ -26,27 +27,25 @@
                     <VBox alignment="CENTER" spacing="40">
                         <VBox alignment="CENTER" spacing="10">
                             <ImageView fitHeight="70" fitWidth="70" preserveRatio="true">
-                                <image>
-                                    <Image backgroundLoading="true" url="@images/player1.png"/>
-                                </image>
+                                <Image backgroundLoading="true" url="@images/player1.png"/>
                             </ImageView>
                             <Label styleClass="player-label" text="(You) Vacant Mockingbird"/>
-                            <HBox fx:id="player1DiscContainer" alignment="CENTER"/>
+                            <StackPane fx:id="checkerPiece1">
+                                <Circle fx:id="checkerCircle" radius="30" styleClass="checker-piece"/>
+                            </StackPane>
                             <Label fx:id="player1CapturedLabel" styleClass="score-label" text="Captured: 0" />
                         </VBox>
                         <ImageView fitHeight="80" fitWidth="130" preserveRatio="true">
-                            <image>
-                                <Image backgroundLoading="true" url="@images/banner.png"/>
-                            </image>
+                            <Image backgroundLoading="true" url="@images/banner.png"/>
                         </ImageView>
                         <VBox alignment="CENTER" spacing="10">
                             <ImageView fitHeight="70" fitWidth="70" preserveRatio="true">
-                                <image>
-                                    <Image backgroundLoading="true" url="@images/player2.png"/>
-                                </image>
+                                <Image backgroundLoading="true" url="@images/player2.png"/>
                             </ImageView>
                             <Label styleClass="player-label" text="Royal Mosquito"/>
-                            <HBox fx:id="player2DiscContainer" alignment="CENTER"/>
+                            <StackPane fx:id="checkerPiece2">
+                                <Circle fx:id="checkerCircle2" radius="30" styleClass="checker-piece"/>
+                            </StackPane>
                             <Label fx:id="player2CapturedLabel" styleClass="score-label" text="Captured: 0" />
                         </VBox>
                     </VBox>
