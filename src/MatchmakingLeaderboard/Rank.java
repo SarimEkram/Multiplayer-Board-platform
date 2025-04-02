@@ -5,8 +5,8 @@ package MatchmakingLeaderboard;
  * Represents a player's rank based on ranking points.
  */
 public class Rank {
-    private static int rankingPoints;
-    private static RankTier currentTier;
+    private int rankingPoints;
+    private RankTier currentTier;
 
     public Rank(){
         this(0);
@@ -22,7 +22,7 @@ public class Rank {
     /**
      * Adjusts points and updates tier
      */
-    public static void adjustPoints(Player player,int points, int game) {
+    public void adjustPoints(Player player,int points, int game) {
         player.getRank(game).rankingPoints += points;
         player.getRank(game).rankingPoints = Math.max(0, player.getRank(game).rankingPoints);
         updateRankTier();
@@ -30,19 +30,19 @@ public class Rank {
     /**
      * updates the rank tier based on points
      */
-    private static void updateRankTier() {
+    private void updateRankTier() {
 
-        if (rankingPoints >= RankTier.DIAMOND.getThresholdPoints()){
-            currentTier = RankTier.DIAMOND;
+        if (this.rankingPoints >= RankTier.DIAMOND.getThresholdPoints()){
+            this.currentTier = RankTier.DIAMOND;
         }
-        else if (rankingPoints >= RankTier.GOLD.getThresholdPoints()) {
-            currentTier = RankTier.GOLD;
+        else if (this.rankingPoints >= RankTier.GOLD.getThresholdPoints()) {
+            this.currentTier = RankTier.GOLD;
         }
         else if (rankingPoints >= RankTier.SILVER.getThresholdPoints()){
-            currentTier = RankTier.SILVER;
+            this.currentTier = RankTier.SILVER;
         }
         else {
-            currentTier = RankTier.BRONZE;
+            this.currentTier = RankTier.BRONZE;
         }
 
     }

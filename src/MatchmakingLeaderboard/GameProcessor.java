@@ -43,7 +43,7 @@ public class GameProcessor {
     /**
      * Handles the end of a match with a winner and loser.
      */
-    public static void UpdateResults(Player winner, Player loser, int gameType) {
+    public void UpdateResults(Player winner, Player loser, int gameType) {
 
         winner.addWin(gameType);
         loser.addLoss(gameType);
@@ -59,7 +59,7 @@ public class GameProcessor {
     /**
      * Updates MMR for players based on game outcome.
      */
-    public static void updateMMR(Player p1, Player p2, boolean won, int gameType) {
+    public void updateMMR(Player p1, Player p2, boolean won, int gameType) {
         int updateMMR = MMRCalculator.calculateMMR(p1, p2, won, gameType);
         int newMMR = p1.getMMR(gameType) + updateMMR;
 
@@ -70,7 +70,7 @@ public class GameProcessor {
         p1.setMMR(newMMR,gameType);
 
         Rank rank = p1.getRank(gameType);
-        Rank.adjustPoints(p1,updateMMR,gameType);
+        rank.adjustPoints(p1,updateMMR,gameType);
     }
 
 
@@ -78,7 +78,7 @@ public class GameProcessor {
     /**
      * Updates the leaderboard after a match.
      */
-    private static void updateLeaderBoard(Player winner, Player loser, int gameType) {
+    private void updateLeaderBoard(Player winner, Player loser, int gameType) {
         switch (gameType) {
             case 1:
                 TicTacToeLeaderboard.updatePlayer(winner, true, gameType);
@@ -98,7 +98,7 @@ public class GameProcessor {
     /**
      * Handles the end of a draw match.
      */
-    public static void ProcessDraw(Player p1, Player p2, int gameType) {
+    public void ProcessDraw(Player p1, Player p2, int gameType) {
         int updateMMR1 = MMRCalculator.calculateDraw(p1, p2, gameType);
         int updateMMR2 = MMRCalculator.calculateDraw(p2, p1, gameType);
 
