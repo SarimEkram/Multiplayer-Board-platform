@@ -94,10 +94,10 @@ public class CheckersMatchmakingTest {
 
     @Test
     public void testCheckPlayers_NotCompatibleTwo() {
-        player1.setRank(new Rank(2500), 2);
-        player2.setRank(new Rank(500), 2);
-        player1.setGameSignal(2, gameType);
-        player2.setGameSignal(2, gameType);
+        player1.setRank(new Rank(2500), 3);
+        player2.setRank(new Rank(500), 3);
+        player1.setGameSignal(3, gameType);
+        player2.setGameSignal(3, gameType);
         player1.setLevel(27);
         player2.setLevel(26);
         assertFalse(matchmaking.checkPlayers(player1, player2));
