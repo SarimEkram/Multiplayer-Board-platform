@@ -104,7 +104,7 @@ public class Connect4Controller {
         boardContainer.widthProperty().addListener((obs, oldVal, newVal) -> updateBoardLayout());
         boardContainer.heightProperty().addListener((obs, oldVal, newVal) -> updateBoardLayout());
 
-        int p1 = LoginController.playerid;
+        int p1 = LoginController.loginId;
 
         Connect4Matchmaking c4m = new Connect4Matchmaking();
         Player p = new Player("hihi", 1, 123457);

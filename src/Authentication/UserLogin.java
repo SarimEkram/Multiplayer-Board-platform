@@ -14,7 +14,9 @@ public class UserLogin {
      * @param password User password that has been entered
      * @return Status of login
      */
-    public static boolean loginUser(String email, String password){
+    public static boolean loginUser(String userid, String password){
+        User user1 = UserDatabase.getUserByUsername(userid);
+        String email = user1.getEmail();
         // Check if email and password are not null
         if (!validateInput(email, password)){
             return false;

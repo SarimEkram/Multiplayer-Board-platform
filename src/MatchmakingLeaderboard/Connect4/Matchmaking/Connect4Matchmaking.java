@@ -88,15 +88,15 @@ public class Connect4Matchmaking extends AbstractConnect4Matchmaking{
     @Override
     public int findMatch(int playerid) {
         Player player1 = PlayerDatabase.getPlayerByUserID(playerid);
-        Player player2 = null;
-        if (true) {
-            player2 = queue.getNextPlayer();
-            boolean iscompatible = checkPlayers(player1, player2);
-            while (iscompatible) {
-                iscompatible = checkPlayers(player1, player2);
-                player2 = queue.getNextPlayer();
-            }
-        }
+        Player player2 = queue.getNextPlayer();
+//        if (true) {
+//            player2 = queue.getNextPlayer();
+//            boolean iscompatible = checkPlayers(player1, player2);
+//            while (iscompatible) {
+//                iscompatible = checkPlayers(player1, player2);
+//                player2 = queue.getNextPlayer();
+//            }
+//        }
         return player2.getUserID();
 
     }

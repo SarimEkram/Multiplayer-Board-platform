@@ -43,7 +43,7 @@ public class HomePageController {
     @FXML
     public void initialize() {
         // Simulate logged-in user
-        int playerId = LoginController.playerid;
+        int playerId = LoginController.loginId;
         System.out.println(playerId);
         //String playerName = UserDatabase.getUserById(playerId).getUsername();
         //welcomeLabel.setText("Welcome, " + playerName + "!");
