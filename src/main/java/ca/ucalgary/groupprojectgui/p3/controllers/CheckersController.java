@@ -4,11 +4,10 @@ import gameLogic.checkers.Checkers;
 import gameLogic.checkers.CheckersBoard;
 import gameLogic.checkers.CheckersPiece;
 import gameLogic.checkers.CheckersMove;
+import gameLogic.checkers.CheckersMove.Move;
 import ca.ucalgary.groupprojectgui.p3.SceneManager;
-import javafx.animation.FadeTransition;
 import javafx.animation.RotateTransition;
 import javafx.animation.ScaleTransition;
-import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -87,10 +86,10 @@ public class CheckersController {
     // UI cell mapping for board cells
     private StackPane[][] cellPanes = new StackPane[BOARD_ROWS][BOARD_COLUMNS];
 
-    // For tracking selection and highlighting moves
+    // For tracking selection and valid moves (using Move objects)
     private Position selectedPiecePosition = null;
     private boolean isPieceSelected = false;
-    private ArrayList<Position> validMovePositions = new ArrayList<>();
+    private ArrayList<Move> validMoves = new ArrayList<>();
 
     private static class Position {
         int row, col;
@@ -132,7 +131,7 @@ public class CheckersController {
                 }
                 cell.getChildren().add(square);
 
-                // Place initial pieces (using backend positions)
+                // Place initial pieces based on backend setup
                 if (row < 3 && (row + col) % 2 == 1) {
                     Circle whitePiece = new Circle(35);
                     whitePiece.getStyleClass().addAll(checkerCircle1.getStyleClass());
@@ -226,20 +225,22 @@ public class CheckersController {
 
     private void handleCellClick(int row, int col) {
         if (isPieceSelected) {
-            boolean isValidDestination = false;
-            for (Position pos : validMovePositions) {
-                if (pos.row == row && pos.col == col) {
-                    isValidDestination = true;
+            // Check if the clicked cell corresponds to one of the valid moves
+            Move selectedMove = null;
+            for (Move move : validMoves) {
+                if (move.destRow == row && move.destCol == col) {
+                    selectedMove = move;
                     break;
                 }
             }
-            if (isValidDestination) {
+            if (selectedMove != null) {
                 CheckersPiece selectedPiece = checkersBoard.board[selectedPiecePosition.row][selectedPiecePosition.col];
-                gameLogic.processMove(selectedPiece, selectedPiecePosition.row, selectedPiecePosition.col, row, col);
+                // Process the move using the detailed Move object
+                gameLogic.processMove(selectedPiece, selectedPiecePosition.row, selectedPiecePosition.col, selectedMove);
                 clearHighlights();
                 isPieceSelected = false;
                 selectedPiecePosition = null;
-                validMovePositions.clear();
+                validMoves.clear();
                 updateBoardUI();
                 Checkers.WINNER winner = gameLogic.checkWin();
                 if (winner != Checkers.WINNER.NONE) {
@@ -252,7 +253,7 @@ public class CheckersController {
                 clearHighlights();
                 isPieceSelected = false;
                 selectedPiecePosition = null;
-                validMovePositions.clear();
+                validMoves.clear();
             }
         }
         CheckersPiece piece = checkersBoard.board[row][col];
@@ -262,11 +263,12 @@ public class CheckersController {
             }
             selectedPiecePosition = new Position(row, col);
             isPieceSelected = true;
-            int[][] moves = CheckersMove.availableMoves(checkersBoard, piece, row, col);
-            for (int[] move : moves) {
-                Position pos = new Position(move[0], move[1]);
-                validMovePositions.add(pos);
-                highlightValidMoveCell(pos.row, pos.col);
+            validMoves.clear();
+            // Get available moves as an array of Move objects
+            Move[] moves = CheckersMove.availableMoves(checkersBoard, piece, row, col);
+            for (Move move : moves) {
+                validMoves.add(move);
+                highlightValidMoveCell(move.destRow, move.destCol);
             }
             highlightSelectedPieceCell(row, col);
         }
@@ -276,10 +278,9 @@ public class CheckersController {
         if (!isPieceSelected) {
             CheckersPiece piece = checkersBoard.board[row][col];
             if (piece != null && isPieceOfCurrentTurn(piece)) {
-                int[][] moves = CheckersMove.availableMoves(checkersBoard, piece, row, col);
-                for (int[] move : moves) {
-                    Position pos = new Position(move[0], move[1]);
-                    highlightValidMoveCell(pos.row, pos.col);
+                Move[] moves = CheckersMove.availableMoves(checkersBoard, piece, row, col);
+                for (Move move : moves) {
+                    highlightValidMoveCell(move.destRow, move.destCol);
                 }
                 highlightSelectedPieceCell(row, col);
             }
@@ -364,25 +365,17 @@ public class CheckersController {
                         crownView.setFitWidth(45);
                         crownView.setFitHeight(30);
                         cell.getChildren().add(crownView);
-
-                        // Only play the animation if it is the first time this piece is a king
                         if (!piece.hasAnimatedKing) {
                             ScaleTransition scale = new ScaleTransition(Duration.millis(500), crownView);
                             scale.setFromX(0);
                             scale.setFromY(0);
                             scale.setToX(1);
                             scale.setToY(1);
-
-// Rotate effect (makes it spin when appearing)
                             RotateTransition rotate = new RotateTransition(Duration.millis(500), crownView);
                             rotate.setByAngle(360);
-
-// Play both animations
                             scale.play();
                             rotate.play();
                             piece.setHasAnimatedKing(true);
-
-
                         }
                     }
                 }
@@ -409,8 +402,6 @@ public class CheckersController {
             String message = (winner == Checkers.WINNER.WHITE) ? "White wins!" : "Black wins!";
             turnLabel.setText(message);
             boardGrid.setDisable(true);
-
-            // Override the turn indicator with the winner's piece/color.
             turnPiece.getStyleClass().clear();
             if (winner == Checkers.WINNER.WHITE) {
                 turnPiece.getStyleClass().add("checker-white");
@@ -421,6 +412,4 @@ public class CheckersController {
             }
         }
     }
-
-
 }
