@@ -250,7 +250,8 @@ public class HomePageController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ca/ucalgary/groupprojectgui/p3/Manage Profile.fxml"));
             Node profilePanel = loader.load();
-            homePane.setCenter(profilePanel);
+            homePane.setRight(profilePanel);
+
             // or setCenter(profilePanel), depending on your layout
         } catch (IOException e) {
             e.printStackTrace();

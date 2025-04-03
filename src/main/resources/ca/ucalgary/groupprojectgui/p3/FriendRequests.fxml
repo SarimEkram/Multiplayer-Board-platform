@@ -5,20 +5,22 @@
 
 <StackPane xmlns:fx="http://javafx.com/fxml"
            fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.FriendRequestsController"
-           maxWidth="300"
+           prefWidth="325"
            style="-fx-background-color: linear-gradient(to bottom, #3a1c71, #d76d77, #ffaf7b); -fx-background-radius: 20; -fx-padding: 20;"
            alignment="TOP_RIGHT">
 
     <VBox spacing="15">
         <!-- Header -->
+        <!-- Title Bar -->
         <HBox alignment="CENTER_RIGHT">
             <Label text="👥 Friend Requests"
                    style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" />
             <Region HBox.hgrow="ALWAYS"/>
             <Button text="✖"
                     onAction="#closePanel"
-                    style="-fx-background-color: transparent; -fx-text-fill: white;" />
+                    style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 14px; -fx-cursor: hand;" />
         </HBox>
+
 
         <!-- Request List -->
         <VBox fx:id="requestsContainer" spacing="10" />

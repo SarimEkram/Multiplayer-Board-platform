@@ -5,6 +5,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 public class FriendRequestsController {
@@ -38,7 +39,9 @@ public class FriendRequestsController {
 
     @FXML
     private void closePanel() {
-        Node node = requestsContainer.getParent().getParent(); // VBox → StackPane
-        ((VBox) node.getParent()).getChildren().remove(node);  // Remove the VBox from its parent (StackPane or other)
+        // This assumes the panel was added to the right of the BorderPane (like NotificationPanel)
+        Node panel = requestsContainer.getParent().getParent(); // VBox > StackPane
+        ((Pane) panel.getParent()).getChildren().remove(panel);
     }
+
 }

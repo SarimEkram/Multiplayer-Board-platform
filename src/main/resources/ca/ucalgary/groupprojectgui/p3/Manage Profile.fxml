@@ -25,7 +25,7 @@
         <Button text="Delete Profile"
                 onAction="#handleDeleteProfile"
                 styleClass="danger-outline-button"
-                prefWidth="320" prefHeight="80"/>
+                prefWidth="325" />
     </VBox>
 
     <!-- Overlay UI: Title and Back Button -->
