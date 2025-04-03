@@ -2,6 +2,7 @@ package MatchmakingLeaderboard;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class PlayerDatabase {
     private static final String FILE_PATH = "playerdata.csv";
@@ -139,4 +140,15 @@ public class PlayerDatabase {
             return false;
         }
     }
+
+    public static List<Player> getPlayersForGame(int gameType) {
+        // Filter players who have a positive MMR for the specified game type,
+        // then sort them in descending order of their MMR.
+        return players.stream()
+                .filter(p -> p.getMMR(gameType) > 0) // Ensures only relevant players are considered.
+                .sorted((p1, p2) -> Integer.compare(p2.getMMR(gameType), p1.getMMR(gameType))) // Sorts players by MMR.
+                .collect(Collectors.toList()); // Collects the result into a list.
+    }
+
+
 }
