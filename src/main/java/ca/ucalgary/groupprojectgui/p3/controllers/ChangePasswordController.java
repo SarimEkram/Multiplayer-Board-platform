@@ -5,11 +5,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 public class ChangePasswordController {
-    @FXML
-    private Button submitAnswerButton;
-
-    @FXML private Label securityQuestionLabel;
-    @FXML private TextField securityAnswerField;
 
     @FXML private PasswordField newPasswordField;
     @FXML private PasswordField confirmPasswordField;
@@ -22,24 +17,7 @@ public class ChangePasswordController {
 
     @FXML
     private void handleVerify() {
-        // Simulate a security question being loaded from the system
-        securityQuestionLabel.setText("What was your first pet's name?");
-
-        // Reveal step 2 elements
-        securityQuestionLabel.setVisible(true);
-        securityQuestionLabel.setManaged(true);
-
-        securityAnswerField.setVisible(true);
-        securityAnswerField.setManaged(true);
-
-        submitAnswerButton.setVisible(true);
-        submitAnswerButton.setManaged(true);
-    }
-
-
-    @FXML
-    private void handleSubmitAnswer() {
-        // Show step 3 elements
+        // Show step 2 elements
         newPasswordField.setVisible(true);
         newPasswordField.setManaged(true);
 
