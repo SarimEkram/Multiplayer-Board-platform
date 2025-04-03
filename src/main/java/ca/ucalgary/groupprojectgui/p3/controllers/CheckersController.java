@@ -25,7 +25,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.control.Alert;
 
 
 import java.util.ArrayList;
@@ -64,6 +63,9 @@ public class CheckersController {
 
     @FXML
     private TextField chatInput;
+
+    @FXML
+    private Label winnerLabel;
 
     private StackPane[][] cellPanes = new StackPane[BOARD_ROWS][BOARD_COLUMNS];
     private Position selectedPiecePosition = null;
@@ -288,7 +290,7 @@ public class CheckersController {
 
                 // Update the UI after the move.
                 updateBoardUI();
-                showDialogAndCheckForWinner();
+                checkForWinnerAndShowLabel();
                 // Optionally, update any turn indicators in the UI here.
                 return;
             } else {
@@ -423,22 +425,18 @@ public class CheckersController {
      * Checks if the game has a winner.
      * If someone has won, shows a message and stops the game.
      */
-    private void showDialogAndCheckForWinner() {
+    private void checkForWinnerAndShowLabel() {
         Checkers.WINNER winner = gameLogic.checkWin();
         if (winner != Checkers.WINNER.NONE) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Game Over");
+            String message = (winner == Checkers.WINNER.WHITE)
+                    ? "White wins!"
+                    : "Black wins!";
+            winnerLabel.setText(message);
 
-            if (winner == Checkers.WINNER.WHITE) {
-                alert.setHeaderText("White wins!");
-            } else {
-                alert.setHeaderText("Black wins!");
-            }
-            alert.setContentText("Thanks for playing!");
-            alert.showAndWait();
-
+            // Optionally disable the board
             boardGrid.setDisable(true);
         }
     }
+
 
 }
