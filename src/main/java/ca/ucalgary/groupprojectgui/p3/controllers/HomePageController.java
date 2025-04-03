@@ -15,7 +15,8 @@ import ca.ucalgary.groupprojectgui.p3.SceneManager;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
+import javafx.animation.TranslateTransition;
+import javafx.util.Duration;
 import java.io.IOException;
 
 public class HomePageController {
@@ -24,7 +25,10 @@ public class HomePageController {
     @FXML private ImageView img;
 
 
-
+    @FXML private ImageView heartIcon;
+    @FXML private ImageView bellIcon;
+    @FXML private ImageView friendsIcon;
+    @FXML private ImageView profileIcon;
     @FXML private ImageView rocketImage;
     @FXML private ImageView UFOImage;
 
@@ -73,18 +77,27 @@ public class HomePageController {
         } else {
             System.err.println("⚠️ Logo image not found.");
         }
+
         var rocketUrl = getClass().getResource("/ca/ucalgary/groupprojectgui/p3/images/rocket.png");
         if (rocketUrl != null) {
             rocketImage.setImage(new Image(rocketUrl.toExternalForm()));
         } else {
             System.err.println("🚀 Rocket image not found.");
         }
+
         var UFOUrl = getClass().getResource("/ca/ucalgary/groupprojectgui/p3/images/UFO.png");
         if (UFOUrl != null) {
             UFOImage.setImage(new Image(UFOUrl.toExternalForm()));
         } else {
             System.err.println("🚀 Rocket image not found.");
         }
+        startUFOFloatAnimation();
+        startRocketFloatAnimation();
+        loadIcon(heartIcon, "/ca/ucalgary/groupprojectgui/p3/images/heart.png");
+        loadIcon(bellIcon, "/ca/ucalgary/groupprojectgui/p3/images/bell.png");
+        loadIcon(friendsIcon, "/ca/ucalgary/groupprojectgui/p3/images/friends.png");
+        loadIcon(profileIcon, "/ca/ucalgary/groupprojectgui/p3/images/profile.png");
+
 
     }
 
@@ -293,8 +306,29 @@ public class HomePageController {
         SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/Leaderboard.fxml", "Leaderboard","leaderboard");
     }
 
+    private void startUFOFloatAnimation() {
+        TranslateTransition floatUFO = new TranslateTransition(Duration.seconds(2), UFOImage);
+        floatUFO.setByY(-15);  // Move up
+        floatUFO.setAutoReverse(true);
+        floatUFO.setCycleCount(TranslateTransition.INDEFINITE);
+        floatUFO.play();
+    }
 
-
+    private void startRocketFloatAnimation() {
+        TranslateTransition floatRocket = new TranslateTransition(Duration.seconds(2.5), rocketImage);
+        floatRocket.setByY(-10);  // Slightly smaller motion than UFO
+        floatRocket.setAutoReverse(true);
+        floatRocket.setCycleCount(TranslateTransition.INDEFINITE);
+        floatRocket.play();
+    }
+    private void loadIcon(ImageView view, String path) {
+        var url = getClass().getResource(path);
+        if (url != null) {
+            view.setImage(new Image(url.toExternalForm()));
+        } else {
+            System.err.println("❌ Icon not found: " + path);
+        }
+    }
 
 
 

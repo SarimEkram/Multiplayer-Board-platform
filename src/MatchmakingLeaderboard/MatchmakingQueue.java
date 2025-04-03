@@ -11,6 +11,7 @@ public class MatchmakingQueue {
 
     private final Queue<Player> queue;
     private final int gameType; // 1 = TicTacToe, 2 = Connect4, 3 = Checkers
+    private boolean matchReady = false;
 
     public MatchmakingQueue(int gameType) {
         this.gameType = gameType;
@@ -46,10 +47,17 @@ public class MatchmakingQueue {
     }
 
     /**
+     * signals opponent players are ready to play
+     */
+    public void matchReady() {
+        this.matchReady = true;
+    }
+
+    /**
      * Checks if enough players are available for matchmaking.
      */
-    public boolean readyToMatch() {
-        return queue.size() >= 2;
+    public boolean readyToMatch(){
+        return this.matchReady;
     }
 
     /**

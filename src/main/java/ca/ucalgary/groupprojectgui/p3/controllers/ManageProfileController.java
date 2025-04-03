@@ -1,5 +1,6 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
 
+import Authentication.DeleteUserAccount;
 import ca.ucalgary.groupprojectgui.p3.SceneManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -28,8 +29,8 @@ public class ManageProfileController {
     private void handleChangePasswordButtonClick() {
         SceneManager.switchTo(
                 "/ca/ucalgary/groupprojectgui/p3/ChangePassword.fxml",
-                "Edit Profile",
-                "edit_profile.css"
+                "Change Password",
+                "change_password.css"
         );
     }
 
@@ -48,23 +49,32 @@ public class ManageProfileController {
         VBox contentBox = new VBox(confirmText);
         contentBox.setSpacing(15);
         contentBox.setStyle("-fx-alignment: center; -fx-padding: 20;");
-
         dialogPane.setContent(contentBox);
 
-        ButtonType yesBtn = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);        // styled as default
-        ButtonType noBtn = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);    // styled as cancel
+        ButtonType yesBtn = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
+        ButtonType noBtn = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
         dialogPane.getButtonTypes().setAll(yesBtn, noBtn);
-
 
         dialog.showAndWait().ifPresent(response -> {
             if (response == yesBtn) {
-                System.out.println("Account deletion confirmed. (Placeholder)");
+                int userId = LoginController.loginId;
+                if (DeleteUserAccount.deleteAccount(userId)) {
+                    showDialog("Success", "Your account has been successfully deleted.", Alert.AlertType.INFORMATION);
+                    SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/Login.fxml", "Login", "login.css");
+                } else {
+                    showDialog("Error", "Failed to delete account. Please try again.", Alert.AlertType.ERROR);
+                }
             } else {
-                System.out.println("Account deletion cancelled.");
+                showDialog("Cancelled", "Account deletion cancelled.", Alert.AlertType.INFORMATION);
             }
         });
     }
 
-
-
+    private void showDialog(String title, String content, Alert.AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
 }

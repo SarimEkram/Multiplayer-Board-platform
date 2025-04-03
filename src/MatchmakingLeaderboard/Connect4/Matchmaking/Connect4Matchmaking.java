@@ -45,12 +45,13 @@ public class Connect4Matchmaking extends AbstractConnect4Matchmaking{
     public void startMatchmaking(){
         if (checkMatchmaking()) {
             Player player1 = queue.getNextPlayer();
-            Player player2 = queue.getNextPlayer();
+            Player player2 = findOpponent(player1.getUserID());
             boolean iscompatible = checkPlayers(player1, player2);
             while (iscompatible) {
-                iscompatible = checkPlayers(player1, player2);
                 player2 = queue.getNextPlayer();
+                iscompatible = checkPlayers(player1, player2);
             }
+            queue.matchReady();
             if (queue.readyToMatch()) {
                 this.findMatch(player1, player2);
                 this.signalStartGame();
@@ -72,6 +73,18 @@ public class Connect4Matchmaking extends AbstractConnect4Matchmaking{
         queue.addPlayer(player);
     }
 
+    public Player findOpponent(int playerID) {
+        Player player1 = PlayerDatabase.getPlayerByUserID(playerID);
+
+        Player player2 = queue.getNextPlayer();
+
+        boolean iscompatible = checkPlayers(player1, player2);
+        while (!iscompatible) {
+            player2 = queue.getNextPlayer();
+            iscompatible = checkPlayers(player1, player2);
+        }
+        return player2;
+    }
     /**
      * Function used by player to leave the matchmaking queue
      *
@@ -145,7 +158,7 @@ public class Connect4Matchmaking extends AbstractConnect4Matchmaking{
      */
     @Override
     public boolean checkPlayers(Player player1, Player player2) {
-        if ((player1.getRank(gameType).getCurrentTier() == player2.getRank(gameType).getCurrentTier()) && (player1.getGameSignal(gameType) == player2.getGameSignal(gameType))){
+        if ((player1.getRank(gameType).getCurrentTier() == player2.getRank(gameType).getCurrentTier()) && (player1.getGameSignal(gameType) == player2.getGameSignal(gameType))&&(player1.getUserID()!= player2.getUserID())){
             return Math.abs((player1.getLevel() - player2.getLevel())) <= 10;
         }
         return false;
