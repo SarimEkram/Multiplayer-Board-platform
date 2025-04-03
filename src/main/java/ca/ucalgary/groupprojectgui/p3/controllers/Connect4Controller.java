@@ -1,5 +1,6 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
-
+import MatchmakingLeaderboard.Connect4.Matchmaking.Connect4Matchmaking;
+import MatchmakingLeaderboard.Player;
 import gameLogic.connect4.ConnectBoard;
 import gameLogic.connect4.Connect4;
 
@@ -44,6 +45,9 @@ public class Connect4Controller {
     @FXML
     private Label turnLabel;
 
+    private int player1Id;
+    private int player2Id;
+
     private GridPane boardGrid;
     private Rectangle glowRect;
 
@@ -60,7 +64,7 @@ public class Connect4Controller {
     private static final double BOARD_MARGIN = 20.0;
 
     @FXML
-    public void initialize() {
+    public void initialize() throws Exception {
         // Create and add the player discs to the left sidebar
         Circle redDisc = new Circle(25);
         redDisc.getStyleClass().add("disc-red");
@@ -102,6 +106,19 @@ public class Connect4Controller {
         // Listen for boardContainer resizing
         boardContainer.widthProperty().addListener((obs, oldVal, newVal) -> updateBoardLayout());
         boardContainer.heightProperty().addListener((obs, oldVal, newVal) -> updateBoardLayout());
+
+        int p1 = LoginController.loginId;
+
+        Connect4Matchmaking c4m = new Connect4Matchmaking();
+        Player p = new Player("hihi", 1, 123457);
+        Player p3 = new Player("dhfi",1, 123456 );
+
+        c4m.joinQueue(p);
+        c4m.joinQueue(p3);
+        int p2 = c4m.findMatch(p1);
+        this.player1Id = p1;
+        this.player2Id = p2;
+
     }
 
 
@@ -110,43 +127,45 @@ public class Connect4Controller {
 
         int piece = connectBoard.getCurrentPlayer();
         int row = Connect4.play(connectBoard.getBoard(), column, piece);
+
         if (row >= 0) {
             dropDiscAt(row, column, piece == connectBoard.piece1 ? "red" : "cyan");
 
             if (gameLogic.won(connectBoard.getBoard(), piece)) {
                 gameLogic.setGameOver(true);
-                turnLabel.setText("Player " + piece + " WINS!");
+                int winnerId = (piece == connectBoard.piece1) ? player1Id : player2Id;
+                turnLabel.setText("Player ID " + winnerId + " WINS!");
 
-                // Identify the winning and losing players based on current player's piece ID
-//                int winningPieceId = piece;
-//                int losingPieceId = (piece == connectBoard.piece1) ? connectBoard.piece2 : connectBoard.piece1;
-//
-//                // Update the winning player's statistics
-//                Player winningPlayer = PlayerDatabase.getPlayerByUserID(winningPieceId);
-//
-//                if (winningPlayer != null) {
-//                    winningPlayer.addWin();
-//                    PlayerDatabase.savePlayer(winningPlayer);  // Save the changes to the database
-//                }
-//
-//                // Update the losing player's statistics
-//                Player losingPlayer = PlayerDatabase.getPlayerByUserID(losingPieceId);
-//                if (losingPlayer != null) {
-//                    losingPlayer.addLoss();
-//                    PlayerDatabase.savePlayer(losingPlayer);  // Save the changes to the database
-//                }
+                // OPTIONAL: Update stats
+            /*
+            Player winner = PlayerDatabase.getPlayerByUserID(winnerId);
+            int loserId = (piece == connectBoard.piece1) ? player2Id : player1Id;
+            Player loser = PlayerDatabase.getPlayerByUserID(loserId);
+
+            if (winner != null) {
+                winner.addWin();
+                PlayerDatabase.savePlayer(winner);
+            }
+            if (loser != null) {
+                loser.addLoss();
+                PlayerDatabase.savePlayer(loser);
+            }
+            */
 
             } else if (gameLogic.isFull(connectBoard.getBoard())) {
                 turnLabel.setText("TIE GAME");
-                // Update draw statistics for both players
-//                Player player1 = PlayerDatabase.getPlayerByUserID(connectBoard.piece1);
-//                Player player2 = PlayerDatabase.getPlayerByUserID(connectBoard.piece2);
-//                if (player1 != null && player2 != null) {
-//                    player1.addDraw();
-//                    player2.addDraw();
-//                    PlayerDatabase.savePlayer(player1);
-//                    PlayerDatabase.savePlayer(player2);
-//                }
+
+                // OPTIONAL: Update draw stats
+            /*
+            Player player1 = PlayerDatabase.getPlayerByUserID(player1Id);
+            Player player2 = PlayerDatabase.getPlayerByUserID(player2Id);
+            if (player1 != null && player2 != null) {
+                player1.addDraw();
+                player2.addDraw();
+                PlayerDatabase.savePlayer(player1);
+                PlayerDatabase.savePlayer(player2);
+            }
+            */
             } else {
                 gameLogic.switchPlayer();
                 turnLabel.setText("TURN");

@@ -2,26 +2,32 @@ package MatchmakingLeaderboard.Connect4.Matchmaking;
 
 import MatchmakingLeaderboard.*;
 
+import java.io.IOException;
 import java.util.Random;
 
 public class Connect4Matchmaking extends AbstractConnect4Matchmaking{
     int gameType = 2;
-    private boolean matchmakingUp = false;
-    private final double probabilityOfNetworkFailure = 0.123;
+    protected boolean matchmakingUp = false;
+    private final double probabilityOfNetworkFailure = 0.0210;
     private MatchmakingQueue queue;
 
     /**
-     * Class that represents the players joining the matchmaking queue
-     * It continuously scans for player join signals from the database
-     *
+     * Constructor class for Connect4 Matchmaking
      */
-    public Connect4Matchmaking() throws Exception {
-        for (int j = 0; j < 10; j++) {
-            Random random = new Random();
-            double randomValue = random.nextDouble();
-            if (probabilityOfNetworkFailure <= randomValue) {
-                throw new NetworkFailureException("Network Error! Could not connect to servers");
-            }
+    public Connect4Matchmaking(){
+        queue = new MatchmakingQueue(gameType);
+    }
+
+    /**
+     * Class that represents the players joining the matchmaking queue
+     * It continuously scans for player joins signals from the database and throws exceptions if
+     * matchmaking is down, thus preventing other players from joining
+     */
+    public void matchmakingConnect() throws IOException {
+        Random random = new Random();
+        double randomValue = random.nextDouble();
+        if (probabilityOfNetworkFailure >= randomValue) {
+            throw new NetworkFailureException("Network Error! Could not connect to servers");
         }
 
         try {
@@ -30,16 +36,6 @@ public class Connect4Matchmaking extends AbstractConnect4Matchmaking{
         }catch (Exception e){
             this.matchmakingUp = false;
             throw new MatchmakingException("Matchmaking is Down");
-        }
-        try {
-            while (true) {
-                this.joinQueue(new Player("yoyo", 123456, 1));
-                this.matchmakingUp = true;
-                wait(2500);
-            }
-        }catch (Exception e){
-            this.matchmakingUp = false;
-            throw new MatchmakingException("Something went wrong!");
         }
     }
 
@@ -90,6 +86,25 @@ public class Connect4Matchmaking extends AbstractConnect4Matchmaking{
      * function to find matched players an unpopulated game simulation ready to play
      */
     @Override
+    public int findMatch(int playerid) {
+        Player player1 = PlayerDatabase.getPlayerByUserID(playerid);
+        Player player2 = queue.getNextPlayer();
+//        if (true) {
+//            player2 = queue.getNextPlayer();
+//            boolean iscompatible = checkPlayers(player1, player2);
+//            while (iscompatible) {
+//                iscompatible = checkPlayers(player1, player2);
+//                player2 = queue.getNextPlayer();
+//            }
+//        }
+        return player2.getUserID();
+
+    }
+
+    /**
+     * function to find matched players an unpopulated game simulation ready to play
+     */
+    @Override
     public void findMatch(Player Player1, Player Player2) {
         System.out.println("Generate a request to the backend asking for an unpopulated game simulation");
     }
@@ -130,8 +145,8 @@ public class Connect4Matchmaking extends AbstractConnect4Matchmaking{
      */
     @Override
     public boolean checkPlayers(Player player1, Player player2) {
-        if ((player1.getRank(gameType) == player2.getRank(gameType)) && (player1.getGameSignal(gameType) == player2.getGameSignal(gameType))){
-            return Math.abs((player1.getLevel() - player2.getLevel())) == 10;
+        if ((player1.getRank(gameType).getCurrentTier() == player2.getRank(gameType).getCurrentTier()) && (player1.getGameSignal(gameType) == player2.getGameSignal(gameType))){
+            return Math.abs((player1.getLevel() - player2.getLevel())) <= 10;
         }
         return false;
     }

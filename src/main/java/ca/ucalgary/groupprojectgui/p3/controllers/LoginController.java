@@ -1,39 +1,74 @@
-
 package ca.ucalgary.groupprojectgui.p3.controllers;
+
+import Authentication.User;
+import Authentication.UserDatabase;
+import Authentication.UserLogin;
 import ca.ucalgary.groupprojectgui.p3.SceneManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+
 public class LoginController {
+
     @FXML
-    private TextField username;
+    private TextField username;                  // User input for the username
     @FXML
-    private PasswordField password;
+    private PasswordField password;             // User input for the password
     @FXML
-    private Label loginErrorMessageLabel;
+    private Label loginErrorMessageLabel;       // Label to show error messages
+
+    public static int loginId;
+
     @FXML
     private void handleLogin() {
-        String user = username.getText();
-        String pass = password.getText();
-        // Placeholder: You would add actual validation logic here
+        String user = username.getText();       // Get username from input
+        String pass = password.getText();       // Get password from input
+
+        // Validate that neither the username nor the password is empty
         if (user.isEmpty() || pass.isEmpty()) {
             loginErrorMessageLabel.setText("Username or Password cannot be empty.");
             loginErrorMessageLabel.setVisible(true);
             loginErrorMessageLabel.setManaged(true);
-        } else {
+            return;
+        }
+
+
+
+        // Validate user credentials with the UserLogin class
+        boolean loginSuccessful = UserLogin.loginUser(user, pass);
+
+
+        if (loginSuccessful) {
+            // If login is successful, hide the error message
             loginErrorMessageLabel.setVisible(false);
             loginErrorMessageLabel.setManaged(false);
-            System.out.println("Login attempted with: " + user + " / " + pass);
+
+            User loginuser = UserDatabase.getUserByUsername(user);
+            loginId = loginuser.getUserID();
+
+            System.out.println("Login successful for: " + user);
+
+            // After successful login, switch to the home screen or another screen
+            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "Home.css");
+        } else {
+            // If login fails, display an error message
+            loginErrorMessageLabel.setText("Invalid username or password.");
+            loginErrorMessageLabel.setVisible(true);
+            loginErrorMessageLabel.setManaged(true);
         }
     }
+
     @FXML
     private void handleRegister() {
         System.out.println("Register button clicked.");
-        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/UserRegistration.fxml", "User Registation", "UserRegistration.css");
-        // Navigate to Register screen
+        // Navigate to the registration screen
+        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/UserRegistration.fxml", "User Registration", "UserRegistration.css");
     }
+
     @FXML
     private void handleForgotPassword() {
         System.out.println("Forgot Password clicked.");
-        // Navigate to Password Recovery screen
+        // Navigate to the password recovery screen
+        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/resetPassword.fxml", "Forgot Password", "resetPassword.css");
+
     }
 }
