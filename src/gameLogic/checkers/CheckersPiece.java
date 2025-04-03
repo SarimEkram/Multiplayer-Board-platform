@@ -9,7 +9,7 @@ public class CheckersPiece {
      * Enum representing the possible colours of a checkers piece.
      */
     public enum Colour {
-        RED, BLACK
+        WHITE, BLACK
     }
     
     /**

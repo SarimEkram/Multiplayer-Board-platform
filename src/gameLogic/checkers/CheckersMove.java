@@ -21,7 +21,7 @@ public class CheckersMove {
         List<int[]> movesList = new ArrayList<>();
 
         int direction;
-        if (piece.getColour() == CheckersPiece.Colour.RED) {
+        if (piece.getColour() == CheckersPiece.Colour.WHITE) {
             direction = -1;
         } else {
             direction = 1;
@@ -84,7 +84,7 @@ public class CheckersMove {
             int capturedCol = startCol + colDifference / 2;
             board.removePiece(capturedRow, capturedCol);
         }
-        if (piece.getColour() == CheckersPiece.Colour.RED && destRow == 0) {
+        if (piece.getColour() == CheckersPiece.Colour.WHITE && destRow == 0) {
             piece.promoteToKing();
         } else if (piece.getColour() == CheckersPiece.Colour.BLACK && destRow == 7) {
             piece.promoteToKing();

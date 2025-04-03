@@ -27,6 +27,8 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 
+import java.util.ArrayList;
+
 public class CheckersController {
 
     @FXML
@@ -61,6 +63,12 @@ public class CheckersController {
 
     @FXML
     private TextField chatInput;
+
+    private StackPane[][] cellPanes = new StackPane[BOARD_ROWS][BOARD_COLUMNS];
+    private Position selectedPiecePosition = null;
+    private boolean isPieceSelected = false;
+    private ArrayList<Position> validMovePositions = new ArrayList<>();
+
 
     // Checkers board is 8x8
     private static final int BOARD_ROWS = 8;
@@ -139,6 +147,10 @@ public class CheckersController {
                     blackPiece.getStyleClass().addAll(checkerCircle2.getStyleClass());
                     cell.getChildren().add(blackPiece);
                 }
+                cellPanes[row][col] = cell;
+                final int currentRow = row;
+                final int currentCol = col;
+                cell.setOnMouseClicked(e -> handleCellClick(currentRow, currentCol));
                 boardGrid.add(cell, col, row);
             }
         }
@@ -250,4 +262,162 @@ public class CheckersController {
             chatInput.clear();
         }
     }
+    private void handleCellClick(int row, int col) {
+        // If a piece is already selected, check if clicked cell is a valid move destination.
+        if (isPieceSelected) {
+            boolean isValidDestination = false;
+            for (Position pos : validMovePositions) {
+                if (pos.row == row && pos.col == col) {
+                    isValidDestination = true;
+                    break;
+                }
+            }
+
+            if (isValidDestination) {
+                // Get the selected piece.
+                CheckersPiece selectedPiece = checkersBoard.board[selectedPiecePosition.row][selectedPiecePosition.col];
+                // Call processMove so that the move is executed and turn is switched.
+                gameLogic.processMove(selectedPiece, selectedPiecePosition.row, selectedPiecePosition.col, row, col);
+
+                // Clear the selection and highlights.
+                clearHighlights();
+                isPieceSelected = false;
+                selectedPiecePosition = null;
+                validMovePositions.clear();
+
+                // Update the UI after the move.
+                updateBoardUI();
+                // Optionally, update any turn indicators in the UI here.
+                return;
+            } else {
+                // If clicked cell is not valid, cancel the selection.
+                clearHighlights();
+                isPieceSelected = false;
+                selectedPiecePosition = null;
+                validMovePositions.clear();
+            }
+        }
+
+        // If no piece is selected, check if the clicked cell contains a piece.
+        CheckersPiece piece = checkersBoard.board[row][col];
+        if (piece != null) {
+            // Only allow selection if the piece belongs to the current turn.
+            if (!isPieceOfCurrentTurn(piece)) {
+                return; // Ignore if it isn't the correct player's turn.
+            }
+            selectedPiecePosition = new Position(row, col);
+            isPieceSelected = true;
+
+            // Retrieve valid moves using backend logic.
+            int[][] moves = CheckersMove.availableMoves(checkersBoard, piece, row, col);
+            for (int[] move : moves) {
+                Position pos = new Position(move[0], move[1]);
+                validMovePositions.add(pos);
+                highlightValidMoveCell(pos.row, pos.col);
+            }
+            // Optionally, highlight the selected piece.
+            highlightSelectedPieceCell(row, col);
+        }
+    }
+
+
+
+    private boolean isPieceOfCurrentTurn(CheckersPiece piece) {
+        Checkers.Turn currentTurn = gameLogic.getTurn();
+        if (currentTurn == Checkers.Turn.WHITE && piece.getColour() == CheckersPiece.Colour.WHITE) {
+            return true;
+        } else if (currentTurn == Checkers.Turn.BLACK && piece.getColour() == CheckersPiece.Colour.BLACK) {
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * Highlights a cell by modifying its style.
+     */
+    private void highlightValidMoveCell(int row, int col) {
+        Rectangle tint = new Rectangle();
+        tint.setFill(Color.rgb(255, 255, 0, 0.3)); // Yellow tint for valid moves
+        tint.setMouseTransparent(true);
+        tint.widthProperty().bind(cellPanes[row][col].widthProperty());
+        tint.heightProperty().bind(cellPanes[row][col].heightProperty());
+        // Insert tint at index 1 so that board square remains at index 0 and piece is added later
+        if (cellPanes[row][col].getChildren().size() > 0) {
+            cellPanes[row][col].getChildren().add(1, tint);
+        } else {
+            cellPanes[row][col].getChildren().add(tint);
+        }
+    }
+
+    private void highlightSelectedPieceCell(int row, int col) {
+        Rectangle tint = new Rectangle();
+        tint.setFill(Color.rgb(0, 0, 255, 0.3)); // Blue tint for the selected piece
+        tint.setMouseTransparent(true);
+        tint.widthProperty().bind(cellPanes[row][col].widthProperty());
+        tint.heightProperty().bind(cellPanes[row][col].heightProperty());
+        // Insert at index 1 so that the piece (if added later) appears on top
+        if (cellPanes[row][col].getChildren().size() > 0) {
+            cellPanes[row][col].getChildren().add(1, tint);
+        } else {
+            cellPanes[row][col].getChildren().add(tint);
+        }
+    }
+
+    private void clearHighlights() {
+        for (int row = 0; row < BOARD_ROWS; row++) {
+            for (int col = 0; col < BOARD_COLUMNS; col++) {
+                cellPanes[row][col].getChildren().removeIf(node -> {
+                    if (node instanceof Rectangle) {
+                        Rectangle rect = (Rectangle) node;
+                        Color fill = (Color) rect.getFill();
+                        return fill.equals(Color.rgb(255, 255, 0, 0.3)) || fill.equals(Color.rgb(0, 0, 255, 0.3));
+                    }
+                    return false;
+                });
+            }
+        }
+    }
+
+
+
+    /**
+     * Updates the board UI to reflect the current backend state.
+     * This method redraws the pieces on the board.
+     */
+    private void updateBoardUI() {
+        for (int row = 0; row < BOARD_ROWS; row++) {
+            for (int col = 0; col < BOARD_COLUMNS; col++) {
+                StackPane cell = cellPanes[row][col];
+                // Remove any existing piece graphics (Circles, ImageViews, etc.)
+                cell.getChildren().removeIf(node -> node instanceof Circle || node instanceof ImageView);
+
+                CheckersPiece piece = checkersBoard.board[row][col];
+                if (piece != null) {
+                    Circle pieceCircle = new Circle(35);
+                    // Instead of using direct colors, we apply CSS style classes.
+                    if (piece.getColour() == CheckersPiece.Colour.WHITE) {
+                        // Use the CSS styles from the FXML for the "white" pieces (if that's how it's set up)
+                        pieceCircle.getStyleClass().addAll(checkerCircle2.getStyleClass());
+                    } else {
+                        // Use the CSS styles for the "black" pieces
+                        pieceCircle.getStyleClass().addAll(checkerCircle1.getStyleClass());
+                    }
+                    cell.getChildren().add(pieceCircle);
+
+                    // If the piece is a king, overlay the crown image.
+                    if (piece.isKing()) {
+                        Image crownImage = new Image(getClass().getResourceAsStream("/ca/ucalgary/groupprojectgui/p3/images/crown.png"));
+                        ImageView crownView = new ImageView(crownImage);
+                        crownView.setFitWidth(45);
+                        crownView.setFitHeight(30);
+                        cell.getChildren().add(crownView);
+                    }
+                }
+            }
+        }
+    }
+
+
+
 }
