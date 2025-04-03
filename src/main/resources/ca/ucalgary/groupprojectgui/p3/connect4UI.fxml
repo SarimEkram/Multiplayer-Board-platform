@@ -77,16 +77,14 @@
                                     </children>
                                 </StackPane>
                                 <!-- Game Controls -->
-                                <HBox fx:id="gameControls" alignment="CENTER" spacing="20">
-                                    <children>
-                                        <Button fx:id="newGameBtn" text="New Game"/>
-                                        <Button fx:id="resetBtn" text="Reset"/>
-                                        <Button fx:id="soundBtn" text="Sound: On"/>
-                                    </children>
-                                </HBox>
+<!--                                <HBox fx:id="gameControls" alignment="CENTER" spacing="20">-->
+<!--                                    <children>-->
+<!--                                        <Button fx:id="newGameBtn" text="New Game"/>-->
+<!--                                        <Button fx:id="resetBtn" text="Reset"/>-->
+<!--                                        <Button fx:id="soundBtn" text="Sound: On"/>-->
+<!--                                    </children>-->
+<!--                                </HBox>-->
                                 <!-- Current Turn Disc -->
-                                <Circle fx:id="turnDisc" radius="20" style="-fx-fill: gray;"/>
-                                <Label fx:id="turnLabel" text="TURN" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
                             </children>
                         </VBox>
 

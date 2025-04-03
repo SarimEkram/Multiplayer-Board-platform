@@ -1,6 +1,7 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
 
 import ca.ucalgary.groupprojectgui.p3.Fonts;
+import ca.ucalgary.groupprojectgui.p3.SceneManager;
 import gameLogic.connect4.Connect4;
 import gameLogic.connect4.ConnectBoard;
 import javafx.animation.PauseTransition;
@@ -69,6 +70,11 @@ public class Connect4Controller {
     private Player localPlayer;
     private Player opponentPlayer;
 
+    // Game state and scores
+    private boolean gameActive = true;
+    private int scorePlayer1 = 0;
+    private int scorePlayer2 = 0;
+
     // Used to track message count for alternating chat message styling
     private int messageCount = 0;
 
@@ -78,41 +84,35 @@ public class Connect4Controller {
         setupHeaderWithSpacing();
 
         // --- Matchmaking integration ---
-        // Instead of hard coding the player id, we retrieve the local player via the matchmaking system.
         matchmaking = new Connect4Matchmaking();
         try {
             matchmaking.matchmakingConnect();
-            // Simulate retrieving the local player from matchmaking.
-            // In a real application, matchmaking might provide a method such as getLocalPlayer().
+            // Retrieve local player from matchmaking (simulate here)
             localPlayer = new Player("LocalUser", 1, 123456);
-            // Get the local player ID from the localPlayer instance.
             player1Id = localPlayer.getUserID();
-            // Add the local player to the matchmaking queue.
             matchmaking.joinQueue(localPlayer);
 
-            // For demonstration, create an opponent player and add it to the queue.
+            // For demonstration, create an opponent and add to the queue.
             Player opponentTemp = new Player("OpponentUser", 1, 123457);
             matchmaking.joinQueue(opponentTemp);
 
-            // Find an opponent for the local player.
             opponentId = matchmaking.findMatch(player1Id);
-            // Retrieve the opponent from the player database.
             opponentPlayer = PlayerDatabase.getPlayerByUserID(opponentId);
         } catch (IOException e) {
             addMessage("SYSTEM", "Matchmaking error: " + e.getMessage(), true);
-            // You might want to disable online features or retry here.
         }
         // --- End of matchmaking integration ---
 
-        // Set names in the UI using data from matchmaking.
         name1.setText(localPlayer != null ? localPlayer.getUsername() : "Player 1");
         name2.setText(opponentPlayer != null ? opponentPlayer.getUsername() : "Player 2");
 
-        // Instantiate game logic with player identifiers.
-        // Here, we assume that the local player is PLAYER1 and the opponent is PLAYER2.
+        // Instantiate game logic. Local player is PLAYER1; opponent is PLAYER2.
         connectBoard = new ConnectBoard(PLAYER1_ID, PLAYER2_ID);
 
-        // Set up the GUI board (UI grid) and column selectors.
+        // Initialize scores on UI.
+        score1.setText("Score: " + scorePlayer1);
+        score2.setText("Score: " + scorePlayer2);
+
         setupBoard();
         setupColumnSelectors();
         updatePlayerTurn();
@@ -128,11 +128,9 @@ public class Connect4Controller {
         double gridWidth = COLUMNS * CELL_SIZE + (COLUMNS - 1) * hGap;
         double gridHeight = ROWS * CELL_SIZE + (ROWS - 1) * vGap;
 
-        // Main container for board layers
         StackPane boardContainer = new StackPane();
         boardContainer.setPrefSize(gridWidth, gridHeight);
 
-        // 1. Base layer: beautiful gradient background
         Rectangle gradientBackground = new Rectangle(gridWidth, gridHeight);
         gradientBackground.setArcHeight(20);
         gradientBackground.setArcWidth(20);
@@ -143,13 +141,11 @@ public class Connect4Controller {
                 new Stop(1, Color.rgb(255, 0, 255, 0.1))
         ));
 
-        // 2. Semi-transparent black overlay
         Rectangle blackOverlay = new Rectangle(gridWidth, gridHeight);
         blackOverlay.setArcHeight(20);
         blackOverlay.setArcWidth(20);
         blackOverlay.setFill(Color.rgb(0, 0, 0, 0.03));
 
-        // Border effects for the gradient layer
         gradientBackground.setStroke(new LinearGradient(
                 0, 0, 1, 1, true, CycleMethod.NO_CYCLE,
                 new Stop(0.3, Color.rgb(255, 0, 255, 0.3)),
@@ -157,7 +153,6 @@ public class Connect4Controller {
         ));
         gradientBackground.setStrokeWidth(2);
 
-        // Shadow effects
         InnerShadow innerShadow = new InnerShadow(BlurType.GAUSSIAN,
                 Color.rgb(0, 0, 0, 0.8), 25, 0, 0, 0);
         DropShadow outerGlow = new DropShadow(BlurType.GAUSSIAN,
@@ -165,20 +160,17 @@ public class Connect4Controller {
         innerShadow.setInput(outerGlow);
         gradientBackground.setEffect(innerShadow);
 
-        // Cells grid for tokens
         cellsGrid = new GridPane();
         cellsGrid.setHgap(hGap);
         cellsGrid.setVgap(vGap);
         cellsGrid.setAlignment(Pos.CENTER);
 
-        // Create UI cells (as Circle objects) and add them to the grid
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLUMNS; col++) {
                 Circle slot = new Circle(30);
                 slot.getStyleClass().add("empty-slot");
                 slot.setPickOnBounds(true);
 
-                // Default shadow effect
                 DropShadow defaultShadow = new DropShadow();
                 defaultShadow.setRadius(5);
                 defaultShadow.setColor(Color.rgb(255, 255, 255, 0.1));
@@ -186,32 +178,32 @@ public class Connect4Controller {
                 defaultShadow.setOffsetY(0);
                 slot.setEffect(defaultShadow);
 
-                // Hover effect shadow
                 DropShadow hoverShadow = new DropShadow();
                 hoverShadow.setRadius(25);
                 hoverShadow.setColor(Color.rgb(0, 255, 255, 0.8));
                 hoverShadow.setOffsetX(0);
                 hoverShadow.setOffsetY(0);
 
-                // Mouse event handlers for hover effects
                 slot.setOnMouseEntered(e -> slot.setEffect(hoverShadow));
                 slot.setOnMouseExited(e -> slot.setEffect(defaultShadow));
 
-                // Click handler: delegate move processing to handleMove
                 int finalCol = col;
-                slot.setOnMouseClicked(e -> handleMove(finalCol));
+                slot.setOnMouseClicked(e -> {
+                    if (gameActive) {
+                        handleMove(finalCol);
+                    }
+                });
 
                 cellsGrid.add(slot, col, row);
             }
         }
 
-        // Layer order: gradient → overlay → cells grid
         boardContainer.getChildren().addAll(gradientBackground, blackOverlay, cellsGrid);
         connect4Grid.getChildren().add(boardContainer);
     }
 
     /**
-     * Set up the column selectors (clickable areas above the board).
+     * Sets up the column selectors (clickable areas above the board).
      */
     private void setupColumnSelectors() {
         columnSelectors.getChildren().clear();
@@ -225,14 +217,12 @@ public class Connect4Controller {
             indicator.setStroke(Color.TRANSPARENT);
             indicator.setStrokeWidth(2);
 
-            // Add glow effect to the indicator
             DropShadow glow = new DropShadow(15, Color.TRANSPARENT);
             indicator.setEffect(glow);
 
             selector.getChildren().add(indicator);
             final int column = col;
 
-            // Hover effects for column selectors
             selector.setOnMouseEntered(e -> {
                 indicator.setFill(connectBoard.getCurrentPlayer() == PLAYER1_ID ?
                         Color.color(PLAYER1_COLOR.getRed(), PLAYER1_COLOR.getGreen(), PLAYER1_COLOR.getBlue(), 0.3) :
@@ -245,7 +235,11 @@ public class Connect4Controller {
                 glow.setColor(Color.TRANSPARENT);
             });
 
-            selector.setOnMouseClicked(e -> handleMove(column));
+            selector.setOnMouseClicked(e -> {
+                if (gameActive) {
+                    handleMove(column);
+                }
+            });
 
             columnSelectors.getChildren().add(selector);
         }
@@ -255,45 +249,105 @@ public class Connect4Controller {
      * Handles a move when a column is selected.
      */
     private void handleMove(int column) {
-        // Delegate move to game logic
         int row = connectBoard.playPiece(column);
         if (row < 0) {
             addMessage("SYSTEM", "Column " + (column + 1) + " is full!", true);
             return;
         }
 
-        // Determine the player that just played.
-        // Since playPiece switches the current player upon a valid move,
-        // the move was made by the opposite player.
         int lastPlayer = (connectBoard.getCurrentPlayer() == PLAYER1_ID) ? PLAYER2_ID : PLAYER1_ID;
         updateCell(row, column, lastPlayer);
         String playerName = (lastPlayer == PLAYER1_ID ? name1.getText() : name2.getText());
         addMessage(playerName, "Placed token in column " + (column + 1), false);
 
-        // Check if the game is over via game logic
         Connect4 logic = new Connect4(connectBoard);
         if (connectBoard.isGameOver() || logic.won(connectBoard.getBoard(), lastPlayer)) {
+            gameActive = false;
             if (logic.won(connectBoard.getBoard(), lastPlayer)) {
+                if (lastPlayer == PLAYER1_ID) {
+                    scorePlayer1++;
+                    score1.setText("Score: " + scorePlayer1);
+                } else {
+                    scorePlayer2++;
+                    score2.setText("Score: " + scorePlayer2);
+                }
                 addMessage("SYSTEM", playerName + " wins!", true);
+                showGameOverPopup(playerName, true);
             } else {
                 addMessage("SYSTEM", "It's a draw!", true);
+                showGameOverPopup("No one", false);
             }
-            // Optionally, highlight winning cells here
-
-            // Start a new game after a delay
-            PauseTransition delay = new PauseTransition(Duration.seconds(3));
-            delay.setOnFinished(e -> resetGame(false));
-            delay.play();
             return;
         }
         updatePlayerTurn();
     }
 
     /**
+     * Displays an in-scene pop-up overlay (using external CSS classes) showing the game result and current scores.
+     *
+     * @param winner the winning player's name (or "No one" for a draw)
+     * @param isWin  true if there's a win; false for a draw.
+     */
+    private void showGameOverPopup(String winner, boolean isWin) {
+        // Create an overlay pane that covers the current scene (assumes parent is a Pane)
+        StackPane overlay = new StackPane();
+        overlay.getStyleClass().add("popup-overlay");
+        overlay.setPrefSize(connect4Grid.getWidth(), connect4Grid.getHeight());
+
+        VBox popup = new VBox();
+        popup.getStyleClass().add("popup-dialog");
+        popup.setAlignment(Pos.CENTER);
+        popup.setSpacing(10);
+        popup.setPadding(new Insets(20));
+
+        Text title = new Text("Game Over");
+        title.getStyleClass().add("popup-title");
+
+        Text message = new Text();
+        message.getStyleClass().add("popup-message");
+        if (isWin) {
+            message.setText("Winner: " + winner + "\nScore:\n"
+                    + name1.getText() + ": " + scorePlayer1 + "\n"
+                    + name2.getText() + ": " + scorePlayer2);
+        } else {
+            message.setText("It's a draw!\nScore:\n"
+                    + name1.getText() + ": " + scorePlayer1 + "\n"
+                    + name2.getText() + ": " + scorePlayer2);
+        }
+
+        // Instead of an OK button, we now create a Main Menu button.
+        Button mainMenuButton = new Button("Main Menu");
+        mainMenuButton.getStyleClass().add("popup-button");
+        mainMenuButton.setOnAction(e -> {
+            // Remove the overlay from the scene.
+            ((Pane) connect4Grid.getParent()).getChildren().remove(overlay);
+            // Here, instead of resetting the game, navigate to the Main Menu.
+            // For example, you might call a method in your application to load the main menu scene.
+            goToMainMenu();
+        });
+
+        popup.getChildren().addAll(title, message, mainMenuButton);
+        overlay.getChildren().add(popup);
+
+        // Add the overlay to the parent container.
+        ((Pane) connect4Grid.getParent()).getChildren().add(overlay);
+    }
+
+    private void goToMainMenu() {
+        // Implement your logic to navigate back to the main menu.
+        // For example, switching scenes or showing a different pane.
+        SceneManager.switchTo(
+                "/ca/ucalgary/groupprojectgui/p3/HomePage.fxml",
+                "Home Page",
+                "home.css"
+
+        );
+    }
+
+    /**
      * Updates a single cell's UI after a move.
      */
     private void updateCell(int row, int col, int player) {
-        // The index is determined by row * COLUMNS + col.
         Circle cell = (Circle) cellsGrid.getChildren().get(row * COLUMNS + col);
         cell.setFill(player == PLAYER1_ID ? PLAYER1_COLOR : PLAYER2_COLOR);
         DropShadow glow = (DropShadow) cell.getEffect();
@@ -320,13 +374,11 @@ public class Connect4Controller {
      */
     private void resetGame(boolean fullReset) {
         connectBoard.clearBoard();
-
-        // Clear UI board: set each cell back to empty
+        gameActive = true;
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLUMNS; col++) {
                 Circle cell = (Circle) cellsGrid.getChildren().get(row * COLUMNS + col);
                 cell.setFill(EMPTY_COLOR);
-                // Reset cell effect to default shadow
                 DropShadow defaultShadow = new DropShadow();
                 defaultShadow.setRadius(5);
                 defaultShadow.setColor(Color.rgb(255, 255, 255, 0.1));
@@ -336,7 +388,6 @@ public class Connect4Controller {
             }
         }
         updatePlayerTurn();
-        // Optionally, update score labels here if needed.
     }
 
     /**
@@ -364,7 +415,6 @@ public class Connect4Controller {
             textContainer.getChildren().add(letter);
         }
 
-        // Underline styling
         Rectangle underline = new Rectangle(150, 2);
         underline.setFill(new LinearGradient(
                 0, 0, 1, 0, true, CycleMethod.NO_CYCLE,
@@ -433,13 +483,11 @@ public class Connect4Controller {
         chatMessages.getChildren().add(messageContainer);
         messageCount++;
 
-        // Auto-scroll to the bottom after layout pass
         if (chatScrollPane != null) {
             Platform.runLater(() -> chatScrollPane.setVvalue(1.0));
         }
     }
 
-    // Optionally, additional methods for handling game events can be added:
     public void onPlayerMove(String playerName, int column) {
         addMessage(playerName, "Played in column " + column, false);
     }
