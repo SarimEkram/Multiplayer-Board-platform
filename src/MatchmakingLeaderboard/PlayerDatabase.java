@@ -141,14 +141,10 @@ public class PlayerDatabase {
         }
     }
 
-    public static List<Player> getPlayersForGame(int gameType) {
-        // Filter players who have a positive MMR for the specified game type,
-        // then sort them in descending order of their MMR.
-        return players.stream()
-                .filter(p -> p.getMMR(gameType) > 0) // Ensures only relevant players are considered.
-                .sorted((p1, p2) -> Integer.compare(p2.getMMR(gameType), p1.getMMR(gameType))) // Sorts players by MMR.
-                .collect(Collectors.toList()); // Collects the result into a list.
+    public static List<Player> getAllPlayers() {
+        return new ArrayList<>(players);
     }
+
 
 
 }
