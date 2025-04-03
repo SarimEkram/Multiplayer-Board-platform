@@ -77,16 +77,15 @@
                                     </children>
                                 </StackPane>
                                 <!-- Game Controls -->
-<!--                                <HBox fx:id="gameControls" alignment="CENTER" spacing="20">-->
-<!--                                    <children>-->
-<!--                                        <Button fx:id="newGameBtn" text="New Game"/>-->
-<!--                                        <Button fx:id="resetBtn" text="Reset"/>-->
-<!--                                        <Button fx:id="soundBtn" text="Sound: On"/>-->
-<!--                                    </children>-->
-<!--                                </HBox>-->
-                                <!-- Current Turn Disc -->
+                                <HBox fx:id="gameControls" alignment="CENTER" spacing="20">
+                                    <children>
+                                        <Button fx:id="leaveGameBtn" text="Leave Game"/> <!-- New Leave Game button -->
+                                    </children>
+                                </HBox>
                             </children>
                         </VBox>
+
+
 
                         <!-- CHAT SIDEBAR -->
                         <VBox fx:id="chatSidebar" spacing="15" minWidth="250" prefWidth="350" maxWidth="400" maxHeight="-1">
@@ -130,3 +129,6 @@
         </Pane>
     </children>
 </StackPane>
+
+
+

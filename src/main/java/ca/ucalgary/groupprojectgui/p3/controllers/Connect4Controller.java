@@ -60,6 +60,8 @@ public class Connect4Controller {
     private static final int PLAYER1_ID = 1;
     private static final int PLAYER2_ID = 2;
 
+    @FXML private Button leaveGameBtn; // Add this if you wire it via FXML
+
     // Game logic instance
     private ConnectBoard connectBoard;
 
@@ -116,6 +118,10 @@ public class Connect4Controller {
         setupBoard();
         setupColumnSelectors();
         updatePlayerTurn();
+
+        if (leaveGameBtn != null) {
+            leaveGameBtn.setOnAction(e -> showLeaveGameConfirmationPopup());
+        }
     }
 
     /**
@@ -342,7 +348,60 @@ public class Connect4Controller {
                 "home.css"
 
         );
+
     }
+
+
+
+    /**
+     * Displays an in-scene confirmation overlay asking if the user wants to quit.
+     */
+    private void showLeaveGameConfirmationPopup() {
+        // Create an overlay pane that covers the current scene (assumes the board's parent is a Pane)
+        StackPane overlay = new StackPane();
+        overlay.getStyleClass().add("popup-overlay");
+        overlay.setPrefSize(connect4Grid.getWidth(), connect4Grid.getHeight());
+
+        VBox popup = new VBox();
+        popup.getStyleClass().add("popup-dialog");
+        popup.setAlignment(Pos.CENTER);
+        popup.setSpacing(15);
+        popup.setPadding(new Insets(20));
+
+        Text title = new Text("Confirm Quit");
+        title.getStyleClass().add("popup-title");
+
+        Text message = new Text("Are you sure you want to quit the game?");
+        message.getStyleClass().add("popup-message");
+
+        // "Yes" button – confirms leaving the game (navigates to Main Menu, for example)
+        Button yesButton = new Button("Yes");
+        yesButton.getStyleClass().add("popup-button");
+        yesButton.setOnAction(e -> {
+            // Remove overlay
+            ((Pane) connect4Grid.getParent()).getChildren().remove(overlay);
+            // Call your leave game logic; for example, navigate to the main menu.
+            goToMainMenu();
+        });
+
+        // "Cancel" button – cancels and removes the overlay.
+        Button cancelButton = new Button("Cancel");
+        cancelButton.getStyleClass().add("popup-button");
+        cancelButton.setOnAction(e -> {
+            ((Pane) connect4Grid.getParent()).getChildren().remove(overlay);
+        });
+
+        // Container for buttons (optional: horizontally arrange them)
+        HBox buttonBox = new HBox(15, yesButton, cancelButton);
+        buttonBox.setAlignment(Pos.CENTER);
+
+        popup.getChildren().addAll(title, message, buttonBox);
+        overlay.getChildren().add(popup);
+
+        // Add the overlay to the parent container (assumes the parent's type is Pane)
+        ((Pane) connect4Grid.getParent()).getChildren().add(overlay);
+    }
+
 
     /**
      * Updates a single cell's UI after a move.

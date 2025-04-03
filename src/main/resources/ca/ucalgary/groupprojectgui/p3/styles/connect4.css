@@ -501,6 +501,51 @@
 }
 
 
+/* Popup Overlay: covers the game area with a semi-transparent background */
+.popup-overlay {
+    -fx-background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black */
+    -fx-alignment: center;
+}
+
+/* Popup Dialog: container for the pop-up content */
+.popup-dialog {
+    -fx-background-color: #2b2b2b;
+    -fx-background-radius: 10;
+    -fx-padding: 20;
+    -fx-spacing: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.75), 10, 0.5, 0, 0);
+}
+
+/* Popup Title: styling for the title text */
+.popup-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-fill: #FFFFFF;
+}
+
+/* Popup Message: styling for the confirmation message text */
+.popup-message {
+    -fx-font-size: 16px;
+    -fx-fill: #E0E0E0;
+    -fx-text-alignment: center;
+}
+
+/* Popup Button: styling for both Yes and Cancel buttons */
+.popup-button {
+    -fx-background-color: #007ACC;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-background-radius: 5;
+    -fx-padding: 8 15 8 15;
+    -fx-cursor: hand;
+}
+
+/* Popup Button hover state */
+.popup-button:hover {
+    -fx-background-color: #005A9E;
+}
+
+
 
 
 
