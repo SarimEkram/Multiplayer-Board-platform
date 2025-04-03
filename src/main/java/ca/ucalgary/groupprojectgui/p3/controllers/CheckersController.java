@@ -154,6 +154,8 @@ public class CheckersController {
                 final int currentRow = row;
                 final int currentCol = col;
                 cell.setOnMouseClicked(e -> handleCellClick(currentRow, currentCol));
+                cell.setOnMouseEntered(e -> handleCellHoverEnter(currentRow, currentCol));
+                cell.setOnMouseExited(e -> handleCellHoverExit(currentRow, currentCol));
                 boardGrid.add(cell, col, row);
             }
         }
@@ -321,6 +323,26 @@ public class CheckersController {
             }
             // Optionally, highlight the selected piece.
             highlightSelectedPieceCell(row, col);
+        }
+    }
+
+    private void handleCellHoverEnter(int row, int col) {
+        if (!isPieceSelected) {
+            CheckersPiece piece = checkersBoard.board[row][col];
+            if (piece != null && isPieceOfCurrentTurn(piece)) {
+                int[][] moves = CheckersMove.availableMoves(checkersBoard, piece, row, col);
+                for (int[] move : moves) {
+                    Position pos = new Position(move[0], move[1]);
+                    highlightValidMoveCell(pos.row, pos.col);
+                }
+                highlightSelectedPieceCell(row, col);
+            }
+        }
+    }
+
+    private void handleCellHoverExit(int row, int col) {
+        if (!isPieceSelected) {
+            clearHighlights();
         }
     }
 
