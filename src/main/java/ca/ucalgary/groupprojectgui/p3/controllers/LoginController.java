@@ -34,10 +34,10 @@ public class LoginController {
 
 
         // Validate user credentials with the UserLogin class
-        boolean loginSuccessful = UserLogin.loginUser(user, pass);
+        int loginSuccessful = UserLogin.loginUser(user, pass);
 
 
-        if (loginSuccessful) {
+        if (loginSuccessful!=-1) {
             // If login is successful, hide the error message
             loginErrorMessageLabel.setVisible(false);
             loginErrorMessageLabel.setManaged(false);

@@ -9,7 +9,7 @@ public class UserLogin {
 
     /**
      * Verifies the user and return the login status
-     * @param email User email that has been entered
+     * @param userid Userid that has been entered
      * @param password User password that has been entered
      * @return Status of login
      */
