@@ -1,5 +1,10 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
 
+import gameLogic.checkers.Checkers;
+import gameLogic.checkers.CheckersBoard;
+import gameLogic.checkers.CheckersPiece;
+import gameLogic.checkers.CheckersMove;
+
 import ca.ucalgary.groupprojectgui.p3.SceneManager;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -67,8 +72,26 @@ public class CheckersController {
     private GridPane boardGrid;
     private Rectangle boardBackground;
 
-    @FXML
+    private CheckersBoard checkersBoard;
+    private Checkers gameLogic;
+
+    private Position selectedSquare = null;
+
+    private static class Position {
+        int row, col;
+
+        Position(int row, int col) {
+            this.row = row;
+            this.col = col;
+        }
+    }
+
+        @FXML
     public void initialize() {
+
+        checkersBoard = new CheckersBoard();
+        gameLogic = new Checkers(checkersBoard);
+        gameLogic.start();
 
         Image crown;
         crown = new Image(getClass().getResourceAsStream("/ca/ucalgary/groupprojectgui/p3/images/crown.png"));
@@ -136,6 +159,7 @@ public class CheckersController {
      * Dynamically update the board background and square sizes
      * so that the board fits nicely within the container.
      */
+
     private void updateBoardLayout() {
         double containerWidth = boardContainer.getWidth();
         double containerHeight = boardContainer.getHeight();
