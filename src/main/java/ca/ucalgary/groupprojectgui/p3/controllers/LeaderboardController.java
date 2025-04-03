@@ -52,6 +52,7 @@ public class LeaderboardController {
             entry.setStyle("-fx-text-fill: white; -fx-font-size: 16;");
             content.getChildren().add(entry);
             rank++;  // Increment the rank for the next player
+            //
         }
 
         // Create a ScrollPane and set its content to the VBox
