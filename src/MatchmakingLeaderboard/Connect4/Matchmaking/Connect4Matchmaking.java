@@ -49,12 +49,13 @@ public class Connect4Matchmaking extends AbstractConnect4Matchmaking{
     public void startMatchmaking(){
         if (checkMatchmaking()) {
             Player player1 = queue.getNextPlayer();
-            Player player2 = queue.getNextPlayer();
+            Player player2 = findOpponent(player1.getUserID());
             boolean iscompatible = checkPlayers(player1, player2);
             while (iscompatible) {
-                iscompatible = checkPlayers(player1, player2);
                 player2 = queue.getNextPlayer();
+                iscompatible = checkPlayers(player1, player2);
             }
+            queue.matchReady();
             if (queue.readyToMatch()) {
                 this.findMatch(player1, player2);
                 this.signalStartGame();
@@ -76,6 +77,16 @@ public class Connect4Matchmaking extends AbstractConnect4Matchmaking{
         queue.addPlayer(player);
     }
 
+    public Player findOpponent(int playerID) {
+        Player player1 = PlayerDatabase.getPlayerByUserID(playerID);
+        Player player2 = queue.getNextPlayer();
+        boolean iscompatible = checkPlayers(player1, player2);
+        while (iscompatible) {
+            iscompatible = checkPlayers(player1, player2);
+            player2 = queue.getNextPlayer();
+        }
+        return player2;
+    }
     /**
      * Function used by player to leave the matchmaking queue
      *
