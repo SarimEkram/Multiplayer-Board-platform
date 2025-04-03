@@ -1,5 +1,6 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
 
+import Authentication.DeleteUserAccount;
 import ca.ucalgary.groupprojectgui.p3.SceneManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -28,8 +29,8 @@ public class ManageProfileController {
     private void handleChangePasswordButtonClick() {
         SceneManager.switchTo(
                 "/ca/ucalgary/groupprojectgui/p3/ChangePassword.fxml",
-                "Edit Profile",
-                "edit_profile.css"
+                "Change Password",
+                "change_password.css"
         );
     }
 
@@ -55,16 +56,18 @@ public class ManageProfileController {
         ButtonType noBtn = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);    // styled as cancel
         dialogPane.getButtonTypes().setAll(yesBtn, noBtn);
 
-
         dialog.showAndWait().ifPresent(response -> {
             if (response == yesBtn) {
-                System.out.println("Account deletion confirmed. (Placeholder)");
+                int userId = LoginController.loginId;
+                if (DeleteUserAccount.deleteAccount(userId)) {
+                    System.out.println("Account deletion confirmed and completed.");
+                    SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/Login.fxml", "Login", "login.css"); // Redirect to login or another appropriate screen
+                } else {
+                    System.out.println("Failed to delete account. Please try again.");
+                }
             } else {
                 System.out.println("Account deletion cancelled.");
             }
         });
     }
-
-
-
 }
