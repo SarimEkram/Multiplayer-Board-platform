@@ -417,3 +417,45 @@
 .chat-message-odd {
     -fx-background-color: rgba(255, 0, 255, 0.05);
 }
+
+
+
+/* Remove the background of the viewport */
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Customize the vertical scroll bar */
+.scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-pref-width: 1px;
+}
+
+/* Style the thumb (the draggable part) */
+.scroll-bar:vertical .thumb {
+    -fx-background-color: linear-gradient(#ff00ff, #ff66ff);
+    -fx-background-insets: 0;
+    -fx-background-radius: 6px;
+}
+
+/* Hide the increment and decrement arrows */
+.scroll-bar:vertical .increment-button,
+.scroll-bar:vertical .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+
+/* Hide all scroll bars initially */
+.scroll-pane .scroll-bar {
+    -fx-opacity: 0;
+    -fx-background-color: transparent;
+}
+
+/* When hovering over the scroll pane, show the scroll bars */
+.scroll-pane:hover .scroll-bar {
+    -fx-opacity: 1;
+}
+
+
+

@@ -48,7 +48,6 @@ public class ManageProfileController {
         VBox contentBox = new VBox(confirmText);
         contentBox.setSpacing(15);
         contentBox.setStyle("-fx-alignment: center; -fx-padding: 20;");
-
         dialogPane.setContent(contentBox);
 
         ButtonType yesBtn = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);        // styled as default

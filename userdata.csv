@@ -3,3 +3,4 @@ userID,username,email,password,winRatio,level,onlineStatus
 2,tester,test@example.com,hashedpass123,0.5,2,false
 3,login,login@example.com,6guodY6Dl0CoyAr3A/dK7XQyCa9JNrQ/3nzhZsrGxe0=,0.5,2,false
 4,abcdef,abcdef@gmail.com,jZae727K08KaOmKSgOaGzww/XVqGr/PKEgIMkjrcbJI=,0.0,1,true
+5,abbbb,abcd@gmail,wFzfnDSFCrhXv+IAfJKjeRXqEokKhBmph+Gcizlid7Y=,0.0,1,false
