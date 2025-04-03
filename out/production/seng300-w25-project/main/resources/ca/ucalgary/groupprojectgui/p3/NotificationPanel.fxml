@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<VBox fx:id="notificationPanel"
+      styleClass="notification-panel"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.NotificationPanelController"
+      spacing="10"
+      style="-fx-background-color: #1e1e1e; -fx-border-color: #555; -fx-border-radius: 10; -fx-background-radius: 10;"
+      maxWidth="250">
+
+
+    <padding>
+        <Insets top="15" right="15" bottom="15" left="15"/>
+    </padding>
+
+    <!-- Title bar with Close Button -->
+    <HBox alignment="CENTER" spacing="10">
+        <Label text="🔔 Notifications"
+               style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;"
+               HBox.hgrow="ALWAYS"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="closeButton"
+                text="❌"
+                onAction="#closePanel"
+                onMouseEntered="#hoverClose"
+                onMouseExited="#unhoverClose"
+                style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 14px;" />
+
+
+
+    </HBox>
+
+    <!-- Notification List -->
+    <ListView fx:id="notificationList" prefHeight="150" />
+</VBox>
+

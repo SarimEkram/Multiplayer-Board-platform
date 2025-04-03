@@ -72,7 +72,7 @@ public class UserDatabase {
         // If not found, assign new ID and add to list
         if (!found) {
             user.setSuspendSave(true); // temporarily stop saving
-            user.setUserID(getNextUserID());
+            user.setUserID(generateUniqueUserID());
             user.setSuspendSave(false); // re-enable saving
             users.add(user);
         }
@@ -125,13 +125,6 @@ public class UserDatabase {
         while (getUserById(userID)!=null);
         return userID;
     }
-    /**
-     * Returns the next available user ID by finding the max ID + 1
-     * @return A new unique user ID
-     */
-    private static int getNextUserID() {
-        return users.stream().mapToInt(User::getUserID).max().orElse(0) + 1;
-    }
 
     /**
      * Writes all users in memory back to the CSV file.
@@ -154,6 +147,25 @@ public class UserDatabase {
             return true;
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Deletes the entire CSV file and clears in-memory user data.
+     * @return true if file was deleted successfully
+     */
+    public static boolean deleteCSVFile() {
+        users.clear();  // Clear the in-memory user list
+        File file = new File(FILE_PATH);
+
+        System.out.println("Attempting to delete file: " + file.getAbsolutePath());
+        if (file.exists()) {
+            boolean deleted = file.delete();
+            System.out.println("CSV deleted: " + deleted);
+            return deleted;
+        } else {
+            System.out.println("CSV file does not exist.");
             return false;
         }
     }
