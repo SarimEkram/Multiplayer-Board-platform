@@ -1,45 +1,65 @@
-//package Authentication;
-//
-//public class Main {
-//    public static void main(String[] args) {
-//        // Create and save a test user
-//        User testUser = new User(0, "tester", "test@example.com", "hashedpass123", 0.5, 2, false);
-//        UserDatabase.saveUser(testUser);
-//
-//        // Read the same user back from the CSV using email
-//        User loadedUser = UserDatabase.getUserByEmail("test@example.com");
-//
-//        // Print to verify
-//        if (loadedUser != null) {
-//            System.out.println("User read from CSV:");
-//            System.out.println("ID: " + loadedUser.getUserID());
-//            System.out.println("Username: " + loadedUser.getUsername());
-//            System.out.println("Email: " + loadedUser.getEmail());
-//            System.out.println("Level: " + loadedUser.getLevel());
-//            System.out.println("Win Ratio: " + loadedUser.getWinRatio());
-//        } else {
-//            System.out.println("User not found in CSV.");
-//        }
-//
-//        User loginTest = new User(0, "login", "login@example.com", UserLogin.hashPassword("login123456"), 0.5, 2, false);
-//        UserDatabase.saveUser(loginTest);
-//
-//        //correct password
-//        if (UserLogin.loginUser("login@example.com", "login123456")) {
-//            System.out.println("User logged in.");
-//        }
-//        //incorrect
-//        if (UserLogin.loginUser("login@example.com", "12323412341234")) {
-//            System.out.println("This should not print");
-//        }
-//        if (UserLogout.logoutUser(loginTest.getUserID())) {
-//            System.out.println("User logged out.");
-//        }
-//        System.out.println(loginTest.isOnline());
-//
-//        System.out.println(UserDatabase.getUserById(loginTest.getUserID()));
-//
-//        System.out.println(DeleteUserAccount.deleteAccount(loginTest.getUserID()));
-//    }
-//
-//}
+package Authentication;
+
+import java.util.Scanner;
+import java.util.Set;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int choice;
+
+        System.out.println("=== Friend System ===");
+
+        do {
+            System.out.println("\nChoose an option:");
+            System.out.println("1. Add Friend");
+            System.out.println("2. Remove Friend");
+            System.out.println("3. View Friend List");
+            System.out.println("4. Check Friendship");
+            System.out.println("5. Exit");
+            System.out.print("Enter your choice: ");
+
+            choice = scanner.nextInt();
+            switch (choice) {
+                case 1 -> {
+                    System.out.print("Enter your User ID: ");
+                    int userId = scanner.nextInt();
+                    System.out.print("Enter Friend's User ID to add: ");
+                    int friendId = scanner.nextInt();
+                    boolean added = FriendDatabase.addFriend(userId, friendId);
+                    System.out.println(added ? "Friend added successfully!" : "Failed to add friend.");
+                }
+                case 2 -> {
+                    System.out.print("Enter your User ID: ");
+                    int userId = scanner.nextInt();
+                    System.out.print("Enter Friend's User ID to remove: ");
+                    int friendId = scanner.nextInt();
+                    boolean removed = FriendDatabase.removeFriend(userId, friendId);
+                    System.out.println(removed ? "Friend removed successfully!" : "Failed to remove friend.");
+                }
+                case 3 -> {
+                    System.out.print("Enter your User ID: ");
+                    int userId = scanner.nextInt();
+                    Set<Integer> friends = FriendDatabase.getFriends(userId);
+                    if (friends.isEmpty()) {
+                        System.out.println("No friends found.");
+                    } else {
+                        System.out.println("Your friends: " + friends);
+                    }
+                }
+                case 4 -> {
+                    System.out.print("Enter your User ID: ");
+                    int userId = scanner.nextInt();
+                    System.out.print("Enter Friend's User ID to check: ");
+                    int friendId = scanner.nextInt();
+                    boolean areFriends = FriendDatabase.areFriends(userId, friendId);
+                    System.out.println(areFriends ? "You are friends." : "You are not friends.");
+                }
+                case 5 -> System.out.println("Exiting...");
+                default -> System.out.println("Invalid choice. Please try again.");
+            }
+        } while (choice != 5);
+
+        scanner.close();
+    }
+}
