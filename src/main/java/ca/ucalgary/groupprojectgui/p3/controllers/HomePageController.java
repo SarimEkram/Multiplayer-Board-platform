@@ -1,8 +1,6 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
-import Authentication.UserDatabase;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.fxml.FXML;
@@ -12,10 +10,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
 import ca.ucalgary.groupprojectgui.p3.SceneManager;
-import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-
+import javafx.animation.TranslateTransition;
+import javafx.util.Duration;
 import java.io.IOException;
 
 public class HomePageController {
@@ -24,7 +20,10 @@ public class HomePageController {
     @FXML private ImageView img;
 
 
-
+    @FXML private ImageView heartIcon;
+    @FXML private ImageView bellIcon;
+    @FXML private ImageView friendsIcon;
+    @FXML private ImageView profileIcon;
     @FXML private ImageView rocketImage;
     @FXML private ImageView UFOImage;
 
@@ -73,18 +72,27 @@ public class HomePageController {
         } else {
             System.err.println("⚠️ Logo image not found.");
         }
+
         var rocketUrl = getClass().getResource("/ca/ucalgary/groupprojectgui/p3/images/rocket.png");
         if (rocketUrl != null) {
             rocketImage.setImage(new Image(rocketUrl.toExternalForm()));
         } else {
             System.err.println("🚀 Rocket image not found.");
         }
+
         var UFOUrl = getClass().getResource("/ca/ucalgary/groupprojectgui/p3/images/UFO.png");
         if (UFOUrl != null) {
             UFOImage.setImage(new Image(UFOUrl.toExternalForm()));
         } else {
             System.err.println("🚀 Rocket image not found.");
         }
+        startUFOFloatAnimation();
+        startRocketFloatAnimation();
+        loadIcon(heartIcon, "/ca/ucalgary/groupprojectgui/p3/images/heart.png");
+        loadIcon(bellIcon, "/ca/ucalgary/groupprojectgui/p3/images/bell.png");
+        loadIcon(friendsIcon, "/ca/ucalgary/groupprojectgui/p3/images/friends.png");
+        loadIcon(profileIcon, "/ca/ucalgary/groupprojectgui/p3/images/profile.png");
+
 
     }
 
@@ -214,37 +222,22 @@ public class HomePageController {
         }
     }
     @FXML
-    private void openFriendSearch(MouseEvent event) {
-        // Build popup UI manually (no need for a separate FXML)
-        TextField searchField = new TextField();
-        searchField.setPromptText("Enter username...");
-
-        Button searchBtn = new Button("Search");
-        Label title = new Label("Search for a Friend");
-        title.setStyle("-fx-text-fill: white; -fx-font-size: 16px;");
-
-        VBox popupContent = new VBox(10, title, searchField, searchBtn);
-        popupContent.setStyle("-fx-background-color: #2b2b2b; -fx-padding: 20; -fx-background-radius: 10;");
-        popupContent.setPrefWidth(300);
-
-        // Logic on search click
-        searchBtn.setOnAction(e -> {
-            String input = searchField.getText().trim();
-            if (input.isEmpty()) {
-                showPopupAlert("Please enter a username.");
-            } else {
-                System.out.println("Searching for: " + input);
-                showPopupAlert("Searching for friend: " + input);
-            }
-        });
-
-        // Wrap in scene + stage
-        Stage popupStage = new Stage();
-        popupStage.setTitle("Search Friends");
-        popupStage.initModality(Modality.APPLICATION_MODAL);
-        popupStage.setScene(new Scene(popupContent));
-        popupStage.show();
+    private void openFriendRequests(MouseEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ca/ucalgary/groupprojectgui/p3/FriendRequests.fxml"));
+            Node panel = loader.load();
+            homePane.setRight(panel); // ✅ This works if the panel is a small StackPane/VBox
+        } catch (IOException e) {
+            e.printStackTrace();
+            showPopupAlert("Unable to load Friend Requests panel.");
+        }
     }
+
+
+
+
+
+
 
     private void showPopupAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -257,7 +250,8 @@ public class HomePageController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ca/ucalgary/groupprojectgui/p3/Manage Profile.fxml"));
             Node profilePanel = loader.load();
-            homePane.setCenter(profilePanel);  // or setCenter(profilePanel), depending on your layout
+            homePane.setCenter(profilePanel);
+            // or setCenter(profilePanel), depending on your layout
         } catch (IOException e) {
             e.printStackTrace();
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -293,8 +287,29 @@ public class HomePageController {
         SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/Leaderboard.fxml", "Leaderboard","leaderboard");
     }
 
+    private void startUFOFloatAnimation() {
+        TranslateTransition floatUFO = new TranslateTransition(Duration.seconds(2), UFOImage);
+        floatUFO.setByY(-15);  // Move up
+        floatUFO.setAutoReverse(true);
+        floatUFO.setCycleCount(TranslateTransition.INDEFINITE);
+        floatUFO.play();
+    }
 
-
+    private void startRocketFloatAnimation() {
+        TranslateTransition floatRocket = new TranslateTransition(Duration.seconds(2.5), rocketImage);
+        floatRocket.setByY(-10);  // Slightly smaller motion than UFO
+        floatRocket.setAutoReverse(true);
+        floatRocket.setCycleCount(TranslateTransition.INDEFINITE);
+        floatRocket.play();
+    }
+    private void loadIcon(ImageView view, String path) {
+        var url = getClass().getResource(path);
+        if (url != null) {
+            view.setImage(new Image(url.toExternalForm()));
+        } else {
+            System.err.println("❌ Icon not found: " + path);
+        }
+    }
 
 
 

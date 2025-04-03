@@ -55,7 +55,7 @@ public class Connect4Leaderboard extends AbstractConnect4Leaderboard{
 
         StringBuilder sb = new StringBuilder();
         sb.append("\n Connect4 Leaderboard \n");
-        sb.append(String.format("%-5s %-15s %-8s %-10s %-8s%n", "Rank", "Username", "Level", "Rank", "MMR"));
+        sb.append(String.format("%-5s %-15s %-8s %-10s %-8s%n", "Position", "Username", "Level", "Rank", "MMR"));
         for (int i = 0; i < Connect4Players.size(); i++) {
             Player p = Connect4Players.get(i);
             sb.append(String.format("%-5d %-15s %-8d %-10s %-8d%n",

@@ -47,7 +47,7 @@ public class TicTacToeLeaderboard extends AbstractTicTacToeLeaderboard {
 
         StringBuilder sb = new StringBuilder();
         sb.append("\n TicTacToe Leaderboard \n");
-        sb.append(String.format("%-5s %-15s %-8s %-10s %-8s%n", "Rank", "Username", "Level", "Rank", "MMR"));
+        sb.append(String.format("%-5s %-15s %-8s %-10s %-8s%n", "Position", "Username", "Level", "Rank", "MMR"));
         for (int i = 0; i < TicTacToePlayers.size(); i++) {
             Player p = TicTacToePlayers.get(i);
             sb.append(String.format("%-5d %-15s %-8d %-10s %-8d%n",

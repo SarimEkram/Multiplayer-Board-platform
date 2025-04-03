@@ -38,11 +38,36 @@
             <Region HBox.hgrow="ALWAYS"/>
 
             <!-- Right: Icons and Buttons -->
+            <!-- Right: Icons and Buttons -->
             <HBox spacing="15" alignment="CENTER_RIGHT">
-                <Label text="❤️" styleClass="header-icon" />
-                <Label text="🔔" styleClass="header-icon" onMouseClicked="#openNotificationPanel"/>
-                <Label text="👥" fx:id="friendSearchIcon" onMouseClicked="#openFriendSearch" styleClass="header-icon" />
-                <Label text="👤" fx:id="ProfileIcon" onMouseClicked="#openManageProfile" styleClass="header-icon"/>
+                <ImageView fx:id="heartIcon"
+                           fitHeight="24"
+                           fitWidth="24"
+                           pickOnBounds="true"
+                           styleClass="header-icon"
+                           onMouseClicked="#handleQuickMatch"/>
+
+                <ImageView fx:id="bellIcon"
+                           fitHeight="24"
+                           fitWidth="24"
+                           pickOnBounds="true"
+                           styleClass="header-icon"
+                           onMouseClicked="#openNotificationPanel"/>
+
+                <ImageView fx:id="friendsIcon"
+                           onMouseClicked="#openFriendRequests"
+                           fitHeight="24"
+                           fitWidth="24"
+                           pickOnBounds="true"
+                           styleClass="header-icon"/>
+
+
+                <ImageView fx:id="profileIcon"
+                           fitHeight="24"
+                           fitWidth="24"
+                           pickOnBounds="true"
+                           styleClass="header-icon"
+                           onMouseClicked="#openManageProfile"/>
 
                 <!-- NEW: Leaderboard Button -->
                 <Button fx:id="leaderboardBtn"
@@ -57,6 +82,7 @@
                         styleClass="neon-outline-button"
                         prefWidth="100" prefHeight="35"/>
             </HBox>
+
         </HBox>
     </top>
 

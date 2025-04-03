@@ -87,19 +87,44 @@ public class Connect4Controller {
 
         // --- Matchmaking integration ---
         matchmaking = new Connect4Matchmaking();
+
         try {
+
             matchmaking.matchmakingConnect();
             // Retrieve local player from matchmaking (simulate here)
-            localPlayer = new Player("LocalUser", 1, 123456);
+            //localPlayer = PlayerDatabase.getPlayerByUserID(LoginController.loginId);
+            Player localPlayer = new Player("hh",16,594336);
+
             player1Id = localPlayer.getUserID();
+
             matchmaking.joinQueue(localPlayer);
 
             // For demonstration, create an opponent and add to the queue.
-            Player opponentTemp = new Player("OpponentUser", 1, 123457);
-            matchmaking.joinQueue(opponentTemp);
+            Player player1 = new Player("Player1",10,123456);
+            Player player2 = new Player("Player2", 15, 987654);
 
-            opponentId = matchmaking.findMatch(player1Id);
-            opponentPlayer = PlayerDatabase.getPlayerByUserID(opponentId);
+            localPlayer.setRank(new Rank(6),2);
+            player1.setRank(new Rank(6), 2);
+            player2.setRank(new Rank(6), 2);
+            localPlayer.setGameSignal(1,2);
+            player1.setGameSignal(1, 2);
+            player2.setGameSignal(1, 2);
+            localPlayer.setLevel(25);
+            player1.setLevel(30);
+            player2.setLevel(26);
+
+            PlayerDatabase.savePlayer(localPlayer);
+            PlayerDatabase.savePlayer(player1);
+            PlayerDatabase.savePlayer(player2);
+
+            matchmaking.joinQueue(player1);
+            matchmaking.joinQueue(player2);
+
+            opponentPlayer = matchmaking.findOpponent(localPlayer.getUserID());
+
+            System.out.println(localPlayer.getUserID());
+            System.out.println(opponentPlayer.getUserID());
+
         } catch (IOException e) {
             addMessage("SYSTEM", "Matchmaking error: " + e.getMessage(), true);
         }
