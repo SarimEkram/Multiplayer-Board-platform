@@ -6,6 +6,10 @@ import gameLogic.checkers.CheckersPiece;
 import gameLogic.checkers.CheckersMove;
 
 import ca.ucalgary.groupprojectgui.p3.SceneManager;
+import javafx.animation.FadeTransition;
+import javafx.animation.RotateTransition;
+import javafx.animation.ScaleTransition;
+import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -25,6 +29,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 
 
 import java.util.ArrayList;
@@ -437,6 +442,26 @@ public class CheckersController {
                         crownView.setFitWidth(45);
                         crownView.setFitHeight(30);
                         cell.getChildren().add(crownView);
+
+                        // Only play the animation if it is the first time this piece is a king
+                        if (!piece.hasAnimatedKing) {
+                            ScaleTransition scale = new ScaleTransition(Duration.millis(500), crownView);
+                            scale.setFromX(0);
+                            scale.setFromY(0);
+                            scale.setToX(1);
+                            scale.setToY(1);
+
+// Rotate effect (makes it spin when appearing)
+                            RotateTransition rotate = new RotateTransition(Duration.millis(500), crownView);
+                            rotate.setByAngle(360);
+
+// Play both animations
+                            scale.play();
+                            rotate.play();
+                            piece.setHasAnimatedKing(true);
+
+
+                        }
                     }
                 }
             }

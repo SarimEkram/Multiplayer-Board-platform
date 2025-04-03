@@ -73,12 +73,14 @@ public class HomePageController {
         } else {
             System.err.println("⚠️ Logo image not found.");
         }
+
         var rocketUrl = getClass().getResource("/ca/ucalgary/groupprojectgui/p3/images/rocket.png");
         if (rocketUrl != null) {
             rocketImage.setImage(new Image(rocketUrl.toExternalForm()));
         } else {
             System.err.println("🚀 Rocket image not found.");
         }
+
         var UFOUrl = getClass().getResource("/ca/ucalgary/groupprojectgui/p3/images/UFO.png");
         if (UFOUrl != null) {
             UFOImage.setImage(new Image(UFOUrl.toExternalForm()));
