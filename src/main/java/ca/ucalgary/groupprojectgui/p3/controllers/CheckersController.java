@@ -241,8 +241,12 @@ public class CheckersController {
                 selectedPiecePosition = null;
                 validMovePositions.clear();
                 updateBoardUI();
-                updateTurnIndicator();
-                checkForWinnerAndShowLabel();
+                Checkers.WINNER winner = gameLogic.checkWin();
+                if (winner != Checkers.WINNER.NONE) {
+                    checkForWinnerAndShowLabel();
+                } else {
+                    updateTurnIndicator();
+                }
                 return;
             } else {
                 clearHighlights();
@@ -403,8 +407,20 @@ public class CheckersController {
         Checkers.WINNER winner = gameLogic.checkWin();
         if (winner != Checkers.WINNER.NONE) {
             String message = (winner == Checkers.WINNER.WHITE) ? "White wins!" : "Black wins!";
-            winnerLabel.setText(message);
+            turnLabel.setText(message);
             boardGrid.setDisable(true);
+
+            // Override the turn indicator with the winner's piece/color.
+            turnPiece.getStyleClass().clear();
+            if (winner == Checkers.WINNER.WHITE) {
+                turnPiece.getStyleClass().add("checker-white");
+                turnLabel.setText("White wins!");
+            } else {
+                turnPiece.getStyleClass().add("checker-black");
+                turnLabel.setText("Black wins!");
+            }
         }
     }
+
+
 }
