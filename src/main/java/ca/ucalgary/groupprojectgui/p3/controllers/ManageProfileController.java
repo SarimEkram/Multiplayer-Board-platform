@@ -52,22 +52,30 @@ public class ManageProfileController {
 
         dialogPane.setContent(contentBox);
 
-        ButtonType yesBtn = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);        // styled as default
-        ButtonType noBtn = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);    // styled as cancel
+        ButtonType yesBtn = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
+        ButtonType noBtn = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
         dialogPane.getButtonTypes().setAll(yesBtn, noBtn);
 
         dialog.showAndWait().ifPresent(response -> {
             if (response == yesBtn) {
                 int userId = LoginController.loginId;
                 if (DeleteUserAccount.deleteAccount(userId)) {
-                    System.out.println("Account deletion confirmed and completed.");
-                    SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/Login.fxml", "Login", "login.css"); // Redirect to login or another appropriate screen
+                    showDialog("Success", "Your account has been successfully deleted.", Alert.AlertType.INFORMATION);
+                    SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/Login.fxml", "Login", "login.css");
                 } else {
-                    System.out.println("Failed to delete account. Please try again.");
+                    showDialog("Error", "Failed to delete account. Please try again.", Alert.AlertType.ERROR);
                 }
             } else {
-                System.out.println("Account deletion cancelled.");
+                showDialog("Cancelled", "Account deletion cancelled.", Alert.AlertType.INFORMATION);
             }
         });
+    }
+
+    private void showDialog(String title, String content, Alert.AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }
