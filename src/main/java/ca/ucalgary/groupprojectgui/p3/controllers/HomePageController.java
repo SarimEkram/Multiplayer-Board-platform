@@ -25,7 +25,10 @@ public class HomePageController {
     @FXML private ImageView img;
 
 
-
+    @FXML private ImageView heartIcon;
+    @FXML private ImageView bellIcon;
+    @FXML private ImageView friendsIcon;
+    @FXML private ImageView profileIcon;
     @FXML private ImageView rocketImage;
     @FXML private ImageView UFOImage;
 
@@ -90,6 +93,10 @@ public class HomePageController {
         }
         startUFOFloatAnimation();
         startRocketFloatAnimation();
+        loadIcon(heartIcon, "/ca/ucalgary/groupprojectgui/p3/images/heart.png");
+        loadIcon(bellIcon, "/ca/ucalgary/groupprojectgui/p3/images/bell.png");
+        loadIcon(friendsIcon, "/ca/ucalgary/groupprojectgui/p3/images/friends.png");
+        loadIcon(profileIcon, "/ca/ucalgary/groupprojectgui/p3/images/profile.png");
 
 
     }
@@ -314,7 +321,14 @@ public class HomePageController {
         floatRocket.setCycleCount(TranslateTransition.INDEFINITE);
         floatRocket.play();
     }
-
+    private void loadIcon(ImageView view, String path) {
+        var url = getClass().getResource(path);
+        if (url != null) {
+            view.setImage(new Image(url.toExternalForm()));
+        } else {
+            System.err.println("❌ Icon not found: " + path);
+        }
+    }
 
 
 
