@@ -15,7 +15,8 @@ import ca.ucalgary.groupprojectgui.p3.SceneManager;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
+import javafx.animation.TranslateTransition;
+import javafx.util.Duration;
 import java.io.IOException;
 
 public class HomePageController {
@@ -87,6 +88,9 @@ public class HomePageController {
         } else {
             System.err.println("🚀 Rocket image not found.");
         }
+        startUFOFloatAnimation();
+        startRocketFloatAnimation();
+
 
     }
 
@@ -295,7 +299,21 @@ public class HomePageController {
         SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/Leaderboard.fxml", "Leaderboard","leaderboard");
     }
 
+    private void startUFOFloatAnimation() {
+        TranslateTransition floatUFO = new TranslateTransition(Duration.seconds(2), UFOImage);
+        floatUFO.setByY(-15);  // Move up
+        floatUFO.setAutoReverse(true);
+        floatUFO.setCycleCount(TranslateTransition.INDEFINITE);
+        floatUFO.play();
+    }
 
+    private void startRocketFloatAnimation() {
+        TranslateTransition floatRocket = new TranslateTransition(Duration.seconds(2.5), rocketImage);
+        floatRocket.setByY(-10);  // Slightly smaller motion than UFO
+        floatRocket.setAutoReverse(true);
+        floatRocket.setCycleCount(TranslateTransition.INDEFINITE);
+        floatRocket.play();
+    }
 
 
 
