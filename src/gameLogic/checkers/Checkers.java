@@ -8,6 +8,10 @@ public class Checkers {
 
     CheckersBoard board;
 
+    public Turn getTurn() {
+        return this.turn;
+    }
+
     private Turn turn;
     private WINNER winner;
 
@@ -15,14 +19,14 @@ public class Checkers {
      * Enum representing whose turn it is.
      */
     public enum Turn {
-        RED, BLACK
+        WHITE, BLACK
     }
 
     /**
      * Enum representing the winner of the game.
      */
     public enum WINNER {
-        RED, BLACK, NONE
+        WHITE, BLACK, NONE
     }
 
     /**
@@ -61,15 +65,16 @@ public class Checkers {
      * handles the GUI input for selected piece and destination location
      * and then switch turn once the function a turn has been done successfully
      */
-    public void movePiece(CheckersPiece piece) {
-        
+    public void processMove(CheckersPiece piece, int startRow, int startCol, int destRow, int destCol) {
+        CheckersMove.move(board, piece, startRow, startCol, destRow, destCol);
+        switchTurn();
     }
 
     private void switchTurn(){
-        if (this.turn == Turn.RED) {
+        if (this.turn == Turn.WHITE) {
             this.turn = Turn.BLACK;
         } else {
-            this.turn = Turn.RED;
+            this.turn = Turn.WHITE;
         }
     }
 
@@ -78,7 +83,7 @@ public class Checkers {
      *
      * @return true if the red player has won, false otherwise
      */
-    private WINNER checkWin() {
+    public WINNER checkWin() {
         winner = WINNER.NONE;
         int redCount = 0;
         int blackCount = 0;
@@ -86,7 +91,7 @@ public class Checkers {
             for (int j = 0; j < 8; j++) {
                 CheckersPiece p = this.board.board[i][j];
                 if (p != null) {
-                    if (p.getColour() == CheckersPiece.Colour.RED) 
+                    if (p.getColour() == CheckersPiece.Colour.WHITE)
                         redCount++;
                     else if (p.getColour() == CheckersPiece.Colour.BLACK) 
                         blackCount++;
@@ -96,7 +101,7 @@ public class Checkers {
         if (redCount == 0) {
             winner = WINNER.BLACK;
         } else if (blackCount == 0) {
-            winner = WINNER.RED;
+            winner = WINNER.WHITE;
         }
         
         return winner;

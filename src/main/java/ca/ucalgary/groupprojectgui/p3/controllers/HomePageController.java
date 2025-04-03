@@ -1,4 +1,5 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
+import Authentication.UserDatabase;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -42,7 +43,9 @@ public class HomePageController {
     @FXML
     public void initialize() {
         // Simulate logged-in user
-        String playerName = "Generic Player";
+        int playerId = LoginController.loginId;
+        System.out.println(playerId);
+        //String playerName = UserDatabase.getUserById(playerId).getUsername();
         //welcomeLabel.setText("Welcome, " + playerName + "!");
 
         // Simulate online friends
@@ -70,12 +73,14 @@ public class HomePageController {
         } else {
             System.err.println("⚠️ Logo image not found.");
         }
+
         var rocketUrl = getClass().getResource("/ca/ucalgary/groupprojectgui/p3/images/rocket.png");
         if (rocketUrl != null) {
             rocketImage.setImage(new Image(rocketUrl.toExternalForm()));
         } else {
             System.err.println("🚀 Rocket image not found.");
         }
+
         var UFOUrl = getClass().getResource("/ca/ucalgary/groupprojectgui/p3/images/UFO.png");
         if (UFOUrl != null) {
             UFOImage.setImage(new Image(UFOUrl.toExternalForm()));
@@ -179,6 +184,7 @@ public class HomePageController {
                 title,
                 cssFile
         );
+
     }
     private void setupGameSearch() {
         gameSearchField.textProperty().addListener((obs, oldVal, newVal) -> {
@@ -253,7 +259,7 @@ public class HomePageController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ca/ucalgary/groupprojectgui/p3/Manage Profile.fxml"));
             Node profilePanel = loader.load();
-            homePane.setRight(profilePanel);  // or setCenter(profilePanel), depending on your layout
+            homePane.setCenter(profilePanel);  // or setCenter(profilePanel), depending on your layout
         } catch (IOException e) {
             e.printStackTrace();
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -279,6 +285,14 @@ public class HomePageController {
             System.out.println("User canceled logout.");
             // Close/hide this popup
         }
+    }
+
+
+    @FXML
+    private void onLeaderboardClick() {
+        System.out.println("Leaderboard button clicked!");
+        // Example navigation
+        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/Leaderboard.fxml", "Leaderboard","leaderboard");
     }
 
 

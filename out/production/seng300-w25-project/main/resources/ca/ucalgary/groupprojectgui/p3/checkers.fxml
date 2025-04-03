@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+
+<!-- Root is a StackPane so that overlays can appear on top -->
+<StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.CheckersController">
+    <!-- Main layout -->
+    <BorderPane fx:id="mainGamePane" styleClass="main-background" stylesheets="@styles/connect4.css">
+
+        <!-- LEFT SIDEBAR -->
+        <left>
+            <BorderPane styleClass="sidebar-left">
+                <center>
+                    <VBox alignment="CENTER" spacing="40">
+                        <VBox alignment="CENTER" spacing="10">
+                            <ImageView fitHeight="70" fitWidth="70" preserveRatio="true">
+                                <image>
+                                    <Image backgroundLoading="true" url="@images/futuristic_background.jpg"/>
+                                </image>
+                            </ImageView>
+                            <Label styleClass="player-label" text="(You) Vacant Mockingbird"/>
+                            <HBox fx:id="player1DiscContainer" alignment="CENTER"/>
+                            <Label fx:id="player1CapturedLabel" styleClass="score-label" text="Captured: 0" />
+                        </VBox>
+                        <ImageView fitHeight="80" fitWidth="130" preserveRatio="true">
+                            <image>
+                                <Image backgroundLoading="true" url="@images/banner.png"/>
+                            </image>
+                        </ImageView>
+                        <VBox alignment="CENTER" spacing="10">
+                            <ImageView fitHeight="70" fitWidth="70" preserveRatio="true">
+                                <image>
+                                    <Image backgroundLoading="true" url="@images/futuristic_background.jpg"/>
+                                </image>
+                            </ImageView>
+                            <Label styleClass="player-label" text="Royal Mosquito"/>
+                            <HBox fx:id="player2DiscContainer" alignment="CENTER"/>
+                            <Label fx:id="player2CapturedLabel" styleClass="score-label" text="Captured: 0" />
+                        </VBox>
+                    </VBox>
+                </center>
+                <bottom>
+                    <Button fx:id="leaveGameButton" styleClass="leave-button" text="Leave Game"
+                            BorderPane.alignment="CENTER" onAction="#onLeaveGame"/>
+                </bottom>
+                <padding>
+                    <Insets top="40" right="10" bottom="20" left="10"/>
+                </padding>
+            </BorderPane>
+        </left>
+
+        <!-- CENTER: Nested BorderPane for Top Bar and Board -->
+        <center>
+            <BorderPane>
+                <top>
+                    <BorderPane styleClass="top-bar">
+                        <center>
+                            <VBox alignment="CENTER" spacing="5">
+                                <HBox alignment="CENTER" spacing="10">
+                                    <Circle fx:id="turnDisc" radius="25" styleClass="disc-red"/>
+                                    <Label styleClass="turn-label" text="YOUR TURN"/>
+                                </HBox>
+                                <Label styleClass="timer-label" text="Elapsed: 00:00"/>
+                            </VBox>
+                        </center>
+                        <padding>
+                            <Insets top="10" bottom="10" left="20" right="20"/>
+                        </padding>
+                    </BorderPane>
+                </top>
+                <center>
+                    <StackPane fx:id="boardContainer" alignment="CENTER" styleClass="board-container"/>
+                </center>
+            </BorderPane>
+        </center>
+
+        <!-- RIGHT SIDEBAR: Chat Panel -->
+        <right>
+            <VBox alignment="TOP_CENTER" spacing="15" styleClass="sidebar" prefWidth="300" maxWidth="300">
+                <padding>
+                    <Insets top="30" right="20" bottom="20" left="20"/>
+                </padding>
+                <Label styleClass="chat-label" text="CHAT"/>
+                <TextArea fx:id="chatArea" editable="false" nodeOrientation="LEFT_TO_RIGHT" styleClass="text-area" VBox.vgrow="ALWAYS"/>
+                <HBox alignment="BASELINE_CENTER" spacing="5">
+                    <TextField fx:id="chatInput" promptText="Type a message..." styleClass="text-field" HBox.hgrow="ALWAYS"/>
+                    <Button onAction="#onSendMessage" styleClass="send-button" text="Send"/>
+                </HBox>
+            </VBox>
+        </right>
+
+    </BorderPane>
+</StackPane>

@@ -2,48 +2,41 @@ package MatchmakingLeaderboard.TicTacToe.Matchmaking;
 
 import MatchmakingLeaderboard.*;
 
+import java.io.IOException;
 import java.util.Random;
 
 public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
     int gameType = 1;
-    private boolean matchmakingUp = false;
-    private final double probabilityOfNetworkFailure = 0.125;
+    protected boolean matchmakingUp = true;
+    private final double probabilityOfNetworkFailure = 0.0125;
     private MatchmakingQueue queue;
 
+    /**
+     * Constructor class for TicTacToe Matchmaking
+     */
+    public TicTacToeMatchmaking() {
+        queue = new MatchmakingQueue(gameType);
+    }
 
     /**
      * Class that represents the players joining the matchmaking queue
-     * It continuously scans for player join signals from the database
-     *
+     * It continuously scans for player joins signals from the database and throws exceptions if
+     * matchmaking is down, thus preventing other players from joining
      */
-    public TicTacToeMatchmaking() throws Exception {
-        for (int j = 0; j < 10; j++) {
-            Random random = new Random();
-            double randomValue = random.nextDouble();
-            if (probabilityOfNetworkFailure <= randomValue) {
-                throw new NetworkFailureException("Network Error! Could not connect to servers");
-            }
-        }
+    public void matchmakingConnect() throws IOException {
+    Random random = new Random();
+    double randomValue = random.nextDouble();
+        if (probabilityOfNetworkFailure >= randomValue) {
+        throw new NetworkFailureException("Network Error! Could not connect to servers");
+    }
 
         try {
-            queue = new MatchmakingQueue(gameType);
-            this.matchmakingUp = true;
-        }catch (Exception e){
-            this.matchmakingUp = false;
-            throw new MatchmakingException("Matchmaking is Down");
-        }
-
-        try {
-            while (true) {
-                // replace with a function to get players from database
-                this.joinQueue(new Player("yoyo", 123456, 1));
-                this.matchmakingUp = true;
-                wait(2500);
-            }
-        }catch (Exception e){
-            this.matchmakingUp = false;
-            throw new MatchmakingException("Something went wrong!");
-        }
+        queue = new MatchmakingQueue(gameType);
+        this.matchmakingUp = true;
+    }catch (Exception e){
+        this.matchmakingUp = false;
+        throw new MatchmakingException("Matchmaking is Down");
+    }
     }
 
     /**
@@ -51,18 +44,18 @@ public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
      */
     public void startMatchmaking(){
         if (checkMatchmaking()) {
-            Player player1 = queue.getNextPlayer();
-            Player player2 = queue.getNextPlayer();
-            boolean iscompatible = checkPlayers(player1, player2);
-            while (iscompatible) {
-                iscompatible = checkPlayers(player1, player2);
-                player2 = queue.getNextPlayer();
-            }
             if (queue.readyToMatch()) {
+                Player player1 = queue.getNextPlayer();
+                Player player2 = queue.getNextPlayer();
+                boolean iscompatible = checkPlayers(player1, player2);
+                while (iscompatible) {
+                    iscompatible = checkPlayers(player1, player2);
+                    player2 = queue.getNextPlayer();
+                }
                 this.findMatch(player1, player2);
                 this.signalStartGame();
             } else {
-                System.out.println("Matchmaking cancelled! Not enough players...please try again!");
+                System.out.println("Matchmaking cancelled! Not enough players...please try again later!");
             }
         } else {
             System.out.println("Matchmaking is down. Please try again in some time. The issue has been reported");
@@ -133,9 +126,25 @@ public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
      */
     @Override
     public boolean checkPlayers(Player player1, Player player2) {
-        if ((player1.getRank(gameType) == player2.getRank(gameType)) && (player1.getGameSignal(gameType) == player2.getGameSignal(gameType))){
-            return Math.abs((player1.getLevel() - player2.getLevel())) == 10;
+        if ((player1.getRank(gameType).getCurrentTier() == player2.getRank(gameType).getCurrentTier()) && (player1.getGameSignal(gameType) == player2.getGameSignal(gameType))){
+            return Math.abs((player1.getLevel() - player2.getLevel())) <= 10;
         }
         return false;
+    }
+
+    @Override
+    public int findMatch(int playerid) {
+        Player player1 = PlayerDatabase.getPlayerByUserID(playerid);
+        Player player2 = null;
+        if (checkMatchmaking()) {
+            player2 = queue.getNextPlayer();
+            boolean iscompatible = checkPlayers(player1, player2);
+            while (iscompatible) {
+                iscompatible = checkPlayers(player1, player2);
+                player2 = queue.getNextPlayer();
+            }
+        }
+        return player2.getUserID();
+
     }
 }

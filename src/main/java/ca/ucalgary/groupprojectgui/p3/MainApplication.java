@@ -1,17 +1,25 @@
 package ca.ucalgary.groupprojectgui.p3;
 
 import javafx.application.Application;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class MainApplication extends Application {
     @Override
     public void start(Stage primaryStage) {
+            // Verify fonts loaded
+            System.out.println("Loaded font families: " + Font.getFamilies());
+            System.out.println("Orbitron available: " +
+                    Font.getFamilies().contains("Orbitron"));
+            System.out.println("Rajdhani available: " +
+                    Font.getFamilies().contains("Rajdhani"));
+
+
         SceneManager.setStage(primaryStage);
         // Show the loading screen then load the HomePage.
-
         SceneManager.switchTo(
 
-                "/ca/ucalgary/groupprojectgui/p3/Homepage.fxml",
+                "/ca/ucalgary/groupprojectgui/p3/HomePage.fxml",
                 "Home Page",
                 "home.css"
 

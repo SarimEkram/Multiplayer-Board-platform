@@ -13,7 +13,7 @@
 
     <!-- Centered form -->
     <VBox spacing="20" alignment="CENTER">
-        <Label text="Edit Profile" styleClass="section-title"/>
+        <Label text="Edit Profile" fx:id="statusLabel" styleClass="section-title"/>
 
         <TextField fx:id="usernameField" promptText="Username" styleClass="form-field"/>
         <TextField fx:id="emailField" promptText="Email" styleClass="form-field"/>

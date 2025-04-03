@@ -2,27 +2,32 @@ package MatchmakingLeaderboard.Checkers.Matchmaking;
 
 import MatchmakingLeaderboard.*;
 
+import java.io.IOException;
 import java.util.Random;
 
 public class CheckersMatchmaking extends AbstractCheckersMatchmaking{
     int gameType = 3;
-    private boolean matchmakingUp = false;
-    private final double probabilityOfNetworkFailure = 0.117;
+    protected boolean matchmakingUp = false;
+    private final double probabilityOfNetworkFailure = 0.0117;
     private MatchmakingQueue queue;
 
+    /**
+     * Constructor class for Checkers Matchmaking
+     */
+    public CheckersMatchmaking(){
+        queue = new MatchmakingQueue(gameType);
+    }
 
     /**
      * Class that represents the players joining the matchmaking queue
-     * It continuously scans for player join signals from the database
-     *
+     * It continuously scans for player joins signals from the database and throws exceptions if
+     * matchmaking is down, thus preventing other players from joining
      */
-    public CheckersMatchmaking() throws Exception {
-        for (int j = 0; j < 10; j++) {
-            Random random = new Random();
-            double randomValue = random.nextDouble();
-            if (probabilityOfNetworkFailure <= randomValue) {
-                throw new NetworkFailureException("Network Error! Could not connect to servers");
-            }
+    public void matchmakingConnect() throws IOException {
+        Random random = new Random();
+        double randomValue = random.nextDouble();
+        if (probabilityOfNetworkFailure >= randomValue) {
+            throw new NetworkFailureException("Network Error! Could not connect to servers");
         }
 
         try {
@@ -32,18 +37,8 @@ public class CheckersMatchmaking extends AbstractCheckersMatchmaking{
             this.matchmakingUp = false;
             throw new MatchmakingException("Matchmaking is Down");
         }
-        try {
-            while (true) {
-                // replace with a function to get players from database
-                this.joinQueue(new Player("yoyo", 123456, 1));
-                this.matchmakingUp = true;
-                wait(2500);
-            }
-        }catch (Exception e){
-            this.matchmakingUp = false;
-            throw new MatchmakingException("Something went wrong!");
-        }
     }
+
 
     /**
      * function that simulates matchmaking for TicTacToe
@@ -132,9 +127,25 @@ public class CheckersMatchmaking extends AbstractCheckersMatchmaking{
      */
     @Override
     public boolean checkPlayers(Player player1, Player player2) {
-        if ((player1.getRank(gameType) == player2.getRank(gameType)) && (player1.getGameSignal(gameType) == player2.getGameSignal(gameType))){
-            return Math.abs((player1.getLevel() - player2.getLevel())) == 10;
+        if ((player1.getRank(gameType).getCurrentTier() == player2.getRank(gameType).getCurrentTier()) && (player1.getGameSignal(gameType) == player2.getGameSignal(gameType))){
+            return Math.abs((player1.getLevel() - player2.getLevel())) <= 10;
         }
         return false;
+    }
+
+    @Override
+    public int findMatch(int playerid) {
+        Player player1 = PlayerDatabase.getPlayerByUserID(playerid);
+        Player player2 = null;
+        if (checkMatchmaking()) {
+            player2 = queue.getNextPlayer();
+            boolean iscompatible = checkPlayers(player1, player2);
+            while (iscompatible) {
+                iscompatible = checkPlayers(player1, player2);
+                player2 = queue.getNextPlayer();
+            }
+        }
+        return player2.getUserID();
+
     }
 }

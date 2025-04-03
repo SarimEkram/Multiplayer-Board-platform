@@ -30,7 +30,7 @@ public class CheckersBoard {
         for (int i = 5; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if ((i + j) % 2 == 1) {
-                    this.board[i][j] = new CheckersPiece(CheckersPiece.Colour.RED);
+                    this.board[i][j] = new CheckersPiece(CheckersPiece.Colour.WHITE);
                 }
             }
         }

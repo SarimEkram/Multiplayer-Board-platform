@@ -51,6 +51,35 @@
     -fx-border-color: white;
     -fx-effect: dropshadow(gaussian, white, 12, 0.5, 0, 0);
 }
+/* YES - red destructive glow button */
+.dialog-pane .button:default {
+    -fx-background-color: linear-gradient(to right, #ff416c, #ff4b2b);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, #ff4b2b, 8, 0.4, 0, 0);
+}
+
+/* NO - purple glow outline */
+.dialog-pane .button:cancel {
+    -fx-background-color: transparent;
+    -fx-border-color: #cc66ff;
+    -fx-border-width: 2;
+    -fx-text-fill: #cc99ff;
+    -fx-font-weight: bold;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, #cc66ff, 10, 0.4, 0, 0);
+}
+
+.dialog-pane .button:cancel:hover {
+    -fx-text-fill: white;
+    -fx-border-color: white;
+    -fx-effect: dropshadow(gaussian, white, 12, 0.5, 0, 0);
+}
 
 
 
