@@ -39,11 +39,13 @@ public class HomePageController {
     @FXML private Button tttBtn;
     @FXML private Button checkersBtn;
 
+    public static int friendOpponentID;
+
     @FXML
     public void initialize() {
+        friendOpponentID = -1;// no friend is selected as opponent
         // Simulate logged-in user
         int playerId = LoginController.loginId;
-        System.out.println(playerId);
         //String playerName = UserDatabase.getUserById(playerId).getUsername();
         //welcomeLabel.setText("Welcome, " + playerName + "!");
 
