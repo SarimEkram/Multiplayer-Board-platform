@@ -18,7 +18,7 @@ public class CheckersMove {
      * @return an array with valid move positions
      */
     public static int[][] availableMoves(CheckersBoard board, CheckersPiece piece, int row, int col) {
-        List<int[]> movesList = new ArrayList<>();
+        List<int[]> movesList = new ArrayList<int[]>();
 
         int direction;
         if (piece.getColour() == CheckersPiece.Colour.RED) {
