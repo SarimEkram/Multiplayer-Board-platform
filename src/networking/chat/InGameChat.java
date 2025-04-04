@@ -1,10 +1,8 @@
-// TODO: Player Typing Indicator
-
 package networking.chat;
 
 import networking.NetworkHandler;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Handles real-time in-game chat between players during an active game session.
@@ -14,6 +12,8 @@ public class InGameChat extends NetworkHandler {
     private String gameId;       // Unique game session identifier
     private ChatManager chatManager;
     private boolean isConnected;
+
+    private Set<String> currentlyTyping; //  Track players who are typing
 
     /**
      * Initializes the in-game chat system for a given game session.
@@ -25,6 +25,7 @@ public class InGameChat extends NetworkHandler {
         this.gameId = gameId;
         this.chatManager = new ChatManager();
         this.isConnected = false;
+        this.currentlyTyping = new HashSet<>();
     }
 
     /**
@@ -40,6 +41,7 @@ public class InGameChat extends NetworkHandler {
         }
 
         chatManager.addMessage(playerId, message);
+        stopTyping(playerId); //  Remove typing status once message is sent
         System.out.println("Message sent: " + message);
     }
 
@@ -98,6 +100,30 @@ public class InGameChat extends NetworkHandler {
         }
 
         chatManager.addMessage(playerId, message);
+        stopTyping(playerId); // Remove typing status on receive
         System.out.println("New message received: " + message);
+    }
+
+    /**
+     * Marks a player as currently typing.
+     *
+     * @param playerId The ID of the player who is typing.
+     */
+    public void startTyping(String playerId) {
+        if (!currentlyTyping.contains(playerId)) {
+            currentlyTyping.add(playerId);
+            System.out.println(playerId + " is typing...");
+        }
+    }
+
+    /**
+     * Removes a player from the typing indicator.
+     *
+     * @param playerId The ID of the player who stopped typing.
+     */
+    public void stopTyping(String playerId) {
+        if (currentlyTyping.remove(playerId)) {
+            System.out.println(playerId + " stopped typing.");
+        }
     }
 }
