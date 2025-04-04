@@ -133,7 +133,7 @@ public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
     }
 
     @Override
-    public int findMatch(int playerid) {
+    public Player findOpponent(int playerid) {
         Player player1 = PlayerDatabase.getPlayerByUserID(playerid);
         Player player2 = null;
         if (checkMatchmaking()) {
@@ -144,7 +144,9 @@ public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
                 player2 = queue.getNextPlayer();
             }
         }
-        return player2.getUserID();
+        return player2;
 
     }
+
+
 }

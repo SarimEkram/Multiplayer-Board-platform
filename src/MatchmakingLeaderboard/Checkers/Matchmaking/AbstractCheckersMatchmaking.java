@@ -14,4 +14,6 @@ public abstract class AbstractCheckersMatchmaking implements IGameMatchmaking {
     public void matchmaking(){
         // Add the matchmaking logic
     }
+
+
 }

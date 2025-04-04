@@ -7,5 +7,5 @@ public abstract class AbstractConnect4Matchmaking implements IGameMatchmaking {
     public void matchmaking(){
     }
 
-    public abstract int findMatch(int playerid);
+    //public abstract Player findOpponent(int playerid);
 }

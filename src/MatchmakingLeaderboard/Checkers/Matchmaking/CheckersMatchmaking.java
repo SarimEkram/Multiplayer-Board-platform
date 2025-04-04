@@ -98,6 +98,7 @@ public class CheckersMatchmaking extends AbstractCheckersMatchmaking{
         System.out.println("Signal game system to start the game simulation and load matched players");
     }
 
+
     /**
      * function to check if the matchmaking system is up
      *
@@ -130,5 +131,10 @@ public class CheckersMatchmaking extends AbstractCheckersMatchmaking{
             return Math.abs((player1.getLevel() - player2.getLevel())) <= 10;
         }
         return false;
+    }
+
+    @Override
+    public void findMatch(Player Player1, Player Player2) {
+        System.out.println("Generate a request to the backend asking for an unpopulated game simulation");
     }
 }
