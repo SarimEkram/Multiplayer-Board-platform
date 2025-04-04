@@ -142,9 +142,4 @@ public class CheckersMatchmaking extends AbstractCheckersMatchmaking{
         System.out.println("Good");
         return false;
     }
-
-    @Override
-    public void findMatch(Player Player1, Player Player2) {
-        System.out.println("Generate a request to the backend asking for an unpopulated game simulation");
-    }
 }
