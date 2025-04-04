@@ -228,12 +228,13 @@ public class HomePageController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ca/ucalgary/groupprojectgui/p3/FriendRequests.fxml"));
             Node panel = loader.load();
-            homePane.setRight(panel); // ✅ This works if the panel is a small StackPane/VBox
+            homePane.setCenter(panel);
+
         } catch (IOException e) {
             e.printStackTrace();
-            showPopupAlert("Unable to load Friend Requests panel.");
         }
     }
+
 
 
 

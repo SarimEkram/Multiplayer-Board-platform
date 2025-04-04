@@ -1,47 +1,69 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
 
 import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.scene.input.MouseEvent;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class FriendRequestsController {
 
-    @FXML
-    private VBox requestsContainer;
+    @FXML private TextField searchField;
+    @FXML private VBox playersContainer;
+
+    private final List<String> allPlayers = List.of("MatrixMaster", "GlitchGamer", "SynthSamurai");
 
     @FXML
-    private void initialize() {
-        // Dummy data (simulate friend requests)
-        addFriendRequest("Player1");
-        addFriendRequest("Player2");
+    public void initialize() {
+        loadPlayerList(allPlayers);
+
+        searchField.textProperty().addListener((obs, oldText, newText) -> {
+            List<String> filtered = allPlayers.stream()
+                    .filter(name -> name.toLowerCase().contains(newText.toLowerCase()))
+                    .collect(Collectors.toList());
+            loadPlayerList(filtered);
+        });
     }
 
-    private void addFriendRequest(String username) {
-        HBox requestBox = new HBox(10);
-        requestBox.setStyle("-fx-background-color: rgba(255,255,255,0.1); -fx-padding: 10; -fx-background-radius: 10;");
+    private void loadPlayerList(List<String> players) {
+        playersContainer.getChildren().clear();
+        for (String player : players) {
+            playersContainer.getChildren().add(createPlayerEntry(player));
+        }
+    }
 
-        Label name = new Label(username);
-        name.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");
+    private HBox createPlayerEntry(String username) {
+        HBox entry = new HBox(10);
+        entry.getStyleClass().add("player-entry");
 
-        Button accept = new Button("✔");
-        Button decline = new Button("✖");
+        Label avatar = new Label(username.substring(0, 1).toUpperCase());
+        avatar.getStyleClass().add("avatar");
 
-        accept.setStyle("-fx-background-color: #00e676; -fx-text-fill: white;");
-        decline.setStyle("-fx-background-color: #ff1744; -fx-text-fill: white;");
+        Label nameLabel = new Label(username);
+        nameLabel.getStyleClass().add("username-label");
 
-        requestBox.getChildren().addAll(name, accept, decline);
-        requestsContainer.getChildren().add(requestBox);
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        Button addBtn = new Button("👤+");
+        addBtn.getStyleClass().add("add-icon");
+        addBtn.setOnAction(e -> sendFriendRequest(username));
+
+        entry.getChildren().addAll(avatar, nameLabel, spacer, addBtn);
+        return entry;
+    }
+
+    private void sendFriendRequest(String username) {
+        System.out.println("✅ Friend request sent to: " + username);
+        // logic to send actual friend request goes here
     }
 
     @FXML
-    private void closePanel() {
-        // This assumes the panel was added to the right of the BorderPane (like NotificationPanel)
-        Node panel = requestsContainer.getParent().getParent(); // VBox > StackPane
-        ((Pane) panel.getParent()).getChildren().remove(panel);
+    private void closePanel(MouseEvent event) {
+        StackPane root = (StackPane) playersContainer.getScene().getRoot();
+        root.getChildren().remove(playersContainer.getParent().getParent());
     }
-
 }
