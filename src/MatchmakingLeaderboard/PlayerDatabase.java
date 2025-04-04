@@ -37,7 +37,7 @@ public class PlayerDatabase {
                 for (int i = 0; i < 3; i++) {
                     player.setWinRatio(i + 1, Double.parseDouble(parts[2 + i]));
                     player.setMMR(Integer.parseInt(parts[6 + i]), i + 1);
-                    player.setGameSignal(Integer.parseInt(parts[9 + i]), i + 1); // ig little issue is here
+                    player.setGameSignal(Integer.parseInt(parts[9 + i]), i + 1);
 
                     int wins = Integer.parseInt(parts[12 + i]);
                     int losses = Integer.parseInt(parts[15 + i]);

@@ -96,7 +96,9 @@ public class Connect4Controller {
                 localPlayer = PlayerDatabase.getPlayerByUserID(LoginController.loginId);
 
 
+
                 player1Id = localPlayer.getUserID();
+
 
                 matchmaking.joinQueue(localPlayer);
 
