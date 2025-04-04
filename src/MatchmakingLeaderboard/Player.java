@@ -144,11 +144,11 @@ public class Player {
 
     public void setGameSignal(int Signal, int gameType) {
         validGame(gameType);
-        if(Signal < 0 || Signal > 2) {
-            throw new IllegalArgumentException("Signal must be between 0 and 2");
+        if(Signal < 0 || Signal > 3) {
+            throw new IllegalArgumentException("Signal must be between 0 and 3");
         }
 
-        this.gameSignal[gameType - 1] = Signal; // ig issue is here, ig it should be (this.gameSignal[Signal] = gameType)
+        this.gameSignal[gameType-1] = Signal;
     }
 
 
