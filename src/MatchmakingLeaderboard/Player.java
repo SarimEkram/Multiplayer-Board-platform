@@ -84,14 +84,14 @@ public class Player {
     }
 
     // --- Win Ratio ---
-    public double getWinRatio(int gameSignal) {
-        validGame(gameSignal);
-        return this.winRatio[gameSignal - 1];
+    public double getWinRatio(int gameType) {
+        validGame(gameType);
+        return this.winRatio[gameType - 1];
     }
 
-    public void setWinRatio(int gameSignal, double ratio) {
-        validGame(gameSignal);
-        this.winRatio[gameSignal - 1] = ratio;
+    public void setWinRatio(int gameType, double ratio) {
+        validGame(gameType);
+        this.winRatio[gameType - 1] = ratio;
 
     }
 
@@ -144,11 +144,11 @@ public class Player {
 
     public void setGameSignal(int Signal, int gameType) {
         validGame(gameType);
-        if(Signal < 0 || Signal > 3) {
-            throw new IllegalArgumentException("Signal must be between 0 and 3");
+        if(Signal < 0 || Signal > 2) {
+            throw new IllegalArgumentException("Signal must be between 0 and 2");
         }
 
-        this.gameSignal[gameType - 1] = Signal;
+        this.gameSignal[gameType - 1] = Signal; // ig issue is here, ig it should be (this.gameSignal[Signal] = gameType)
     }
 
 

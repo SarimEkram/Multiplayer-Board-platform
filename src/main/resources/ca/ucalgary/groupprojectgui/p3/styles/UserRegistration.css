@@ -1,64 +1,67 @@
-.root {
+.section-title {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, #ff99ff, 8, 0.5, 0, 1);
+}
+
+/* General panel background */
+.blue-panel {
     -fx-background-color: linear-gradient(to bottom right, #2a0845, #6441a5);
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-padding: 25;
+    -fx-effect: dropshadow(gaussian, #000000, 30, 0.3, 0, 0);
     -fx-font-family: 'Nunito', sans-serif;
 }
 
-.registration-card {
-    -fx-padding: 40;
-    -fx-background-color: rgba(255, 255, 255, 0.08); /* Slightly more visible than your example */
-    -fx-background-radius: 20;
-    -fx-border-color: rgba(255, 255, 255, 0.25); /* Lighter border for a softer appearance */
-    -fx-border-radius: 20;
-    -fx-effect: dropshadow(gaussian, #000000, 15, 0.2, 0, 0);
-}
-
-.title-label {
-    -fx-text-fill: #ffffff;
-    -fx-font-size: 32px;
-    -fx-font-weight: bold;
-}
-
-.input-field {
-    -fx-pref-width: 300;
-    -fx-pref-height: 40;
-    -fx-background-color: rgba(255, 255, 255, 0.1);
-    -fx-border-color: #cc66ff;
-    -fx-border-radius: 10;
-    -fx-background-radius: 10;
+/* Highlighted fields */
+.hf {
+    -fx-background-color: rgba(255, 255, 255, 0.08);
     -fx-text-fill: white;
-    -fx-prompt-text-fill: #bbbbbb;
     -fx-font-size: 14px;
+    -fx-border-color: #cc66ff;
+    -fx-border-width: 1;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-padding: 8 12;
 }
 
-.button-primary {
+/* Register button (blue neon) */
+.blue-btn {
     -fx-background-color: linear-gradient(to right, #00c6ff, #0072ff);
     -fx-text-fill: white;
     -fx-font-weight: bold;
-    -fx-background-radius: 12;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
     -fx-cursor: hand;
-    -fx-pref-width: 300;
-    -fx-pref-height: 45;
+    -fx-effect: dropshadow(gaussian, #00c6ff, 10, 0.4, 0, 0);
 }
 
-.button-primary:hover {
-    -fx-scale-x: 1.05;
-    -fx-scale-y: 1.05;
-    -fx-opacity: 0.9;
+.blue-btn:hover {
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
 }
 
-.link-button {
+/* Subtle login switch */
+.link-btn {
     -fx-background-color: transparent;
-    -fx-text-fill: #cccccc;
-    -fx-font-size: 14px;
+    -fx-text-fill: #cc99ff;
+    -fx-font-weight: bold;
+    -fx-underline: true;
     -fx-cursor: hand;
 }
 
-.link-button:hover {
+.link-btn:hover {
     -fx-text-fill: white;
 }
 
-.error-label {
-    -fx-text-fill: #ff5555;
+/* Error message */
+.label-error {
+    -fx-text-fill: #ff4b2b;
     -fx-font-size: 13px;
+    -fx-padding: 0 0 10 0;
+    -fx-alignment: center;
 }
+
 
