@@ -39,4 +39,39 @@ public class Connect4Test {
         // Shows it does not go out of bounds // no errors
         assertTrue(board.isGameOver());
     }
+
+    @Test
+    public void testVerticalWin() {
+        board.playPiece(3); // P1
+        board.playPiece(1); // P2
+        board.playPiece(3); // P1
+        board.playPiece(1); // P2
+        board.playPiece(3); // P1
+        board.playPiece(1); // P2
+        board.playPiece(3); // P1 wins vertically
+        assertTrue(board.isGameOver());
+    }
+
+    @Test
+    public void testVerticalWinAtLastColumn() {
+        board.playPiece(6); // P1
+        board.playPiece(5); // P2
+        board.playPiece(6); // P1
+        board.playPiece(5); // P2
+        board.playPiece(6); // P1
+        board.playPiece(5); // P2
+        board.playPiece(6); // P1 wins vertically in last column
+        // Shows it does not go out of bounds // no errors
+        assertTrue(board.isGameOver());
+    }
+
+    @Test
+    public void testForfeit() {
+        int winner = board.getGameLogic().forfeit(player1);
+        assertEquals(player2, winner);
+        assertTrue(board.getGameLogic().isGameOverByForfeit()); // P1 forfeits, P2 wins
+    }
+
+
+
 }
