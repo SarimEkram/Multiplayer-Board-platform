@@ -1,2 +1,11 @@
 userID,username,email,password,winRatio,level,onlineStatus
-594336,hh,hh@gmail.com,jZae727K08KaOmKSgOaGzww/XVqGr/PKEgIMkjrcbJI=,0.0,1,true
+183828,PlayerOne,unknown1@example.com,jZae727K08KaOmKSgOaGzww/XVqGr/PKEgIMkjrcbJI=r,0.7535353535353536,5,false
+127647,PlayerTwo,unknown2@example.com,jZae727K08KaOmKSgOaGzww/XVqGr/PKEgIMkjrcbJI=,0.611111111111111,3,false
+134546,PlayerThree,unknown3@example.com,jZae727K08KaOmKSgOaGzww/XVqGr/PKEgIMkjrcbJI=,0.625438596491228,7,false
+144558,PlayerFour,unknown4@example.com,jZae727K08KaOmKSgOaGzww/XVqGr/PKEgIMkjrcbJI=,0.7055555555555556,2,false
+156757,PlayerFive,unknown5@example.com,jZae727K08KaOmKSgOaGzww/XVqGr/PKEgIMkjrcbJI=,0.7595959595959596,8,false
+164455,PlayerSix,unknown6@example.com,jZae727K08KaOmKSgOaGzww/XVqGr/PKEgIMkjrcbJI=,0.7394319131161237,4,false
+176867,PlayerSeven,unknown7@example.com,jZae727K08KaOmKSgOaGzww/XVqGr/PKEgIMkjrcbJI=,0.7949776401788785,6,false
+186567,PlayerEight,unknown8@example.com,jZae727K08KaOmKSgOaGzww/XVqGr/PKEgIMkjrcbJI=,0.9841269841269842,9,false
+197676,PlayerNine,unknown9@example.com,jZae727K08KaOmKSgOaGzww/XVqGr/PKEgIMkjrcbJI=,0.19999999999999998,1,false
+107632,PlayerTen,unknown10@example.com,jZae727K08KaOmKSgOaGzww/XVqGr/PKEgIMkjrcbJI=,0.943792270531401,10,false

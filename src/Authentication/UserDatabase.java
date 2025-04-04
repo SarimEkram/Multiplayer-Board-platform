@@ -1,5 +1,8 @@
 package Authentication;
 
+import MatchmakingLeaderboard.Player;
+import MatchmakingLeaderboard.PlayerDatabase;
+
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -76,6 +79,8 @@ public class UserDatabase {
             user.setSuspendSave(false); // re-enable saving
             users.add(user);
         }
+        Player player = new Player(user.getUsername(), 0, user.getUserID());
+        PlayerDatabase.savePlayer(player);
         return saveAllToCSV();     // Save all users to file
     }
 
@@ -86,6 +91,7 @@ public class UserDatabase {
      */
     public static boolean deleteUser(int userId) {
         users.removeIf(u -> u.getUserID() == userId);
+        PlayerDatabase.deletePlayer(userId);
         return saveAllToCSV();
     }
 

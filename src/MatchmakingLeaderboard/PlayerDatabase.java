@@ -108,7 +108,7 @@ public class PlayerDatabase {
     private static boolean saveAllToCSV() {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_PATH))) {
             // CSV Header
-            bw.write("userID,username, level,winRatio1,winRatio2,winRatio3,mmr1,mmr2,mmr3,signal1,signal2,signal3,wins1,wins2,wins3,losses1,losses2,losses3,rank1,rank2,rank3\n");
+            bw.write("userID,username,level,winRatio1,winRatio2,winRatio3,mmr1,mmr2,mmr3,signal1,signal2,signal3,wins1,wins2,wins3,losses1,losses2,losses3,rank1,rank2,rank3\n");
 
             for (Player p : players) {
                 bw.write(p.getUserID() + "," +
