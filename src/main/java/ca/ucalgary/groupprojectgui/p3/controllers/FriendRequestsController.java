@@ -1,6 +1,7 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
 
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.input.MouseEvent;
@@ -64,8 +65,10 @@ public class FriendRequestsController {
     }
 
     @FXML
-    private void closePanel(MouseEvent event) {
-        StackPane root = (StackPane) playersContainer.getScene().getRoot();
-        root.getChildren().remove(playersContainer.getParent().getParent());
+    private void closePanel() {
+        // Find and remove the top-level panel
+        Node popup = playersContainer.getParent().getParent();
+        ((Pane) popup.getParent()).getChildren().remove(popup);
     }
+
 }
