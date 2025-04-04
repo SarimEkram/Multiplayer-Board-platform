@@ -82,3 +82,17 @@
     -fx-background-color: #4b0082;
     -fx-effect: dropshadow(gaussian, #ff00ff, 20, 0.6, 0, 0);
 }
+.list-view {
+    -fx-background-color: transparent;
+    -fx-control-inner-background: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+}
+
+.list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-border-color: transparent;
+}
