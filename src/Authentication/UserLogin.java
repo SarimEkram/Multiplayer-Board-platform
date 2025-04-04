@@ -15,6 +15,7 @@ public class UserLogin {
      */
     public static int loginUser(String userid, String password){
         User user1 = UserDatabase.getUserByUsername(userid);
+
         String email = user1.getEmail();
         // Check if email and password are not null
         if (!validateInput(email, password)){

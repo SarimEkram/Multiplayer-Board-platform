@@ -37,6 +37,26 @@ public class ResetUserPassword {
         return true;
     }
 
+
+    /**
+     *Verifies if the provided old password matches the stored password.
+     *
+     * @param email       The email of the user.
+     * @param oldPassword The old password entered by the user.
+     * @return true if the old password matches the stored password, false otherwise.
+     */
+    public boolean verifyOldPassword(String email, String oldPassword) {
+        if (email == null || oldPassword == null) return false;
+
+        User user = UserDatabase.getUserByEmail(email);
+        if (user == null) return false;
+
+        String storedHash = user.getPassword();
+        String inputHash = hashPassword(oldPassword);
+
+        return storedHash != null && storedHash.equals(inputHash);
+    }
+
     private String hashPassword(String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
