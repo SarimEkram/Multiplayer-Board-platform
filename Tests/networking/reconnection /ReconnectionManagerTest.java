@@ -105,5 +105,71 @@ public class ReconnectionManagerTest {
         String output = outContent.toString().trim();
         assertTrue(output.contains("Saved game state for player p2: state3"));
     }
+    // --- Tests for playerDisconnected ---
+
+    @Test
+    public void testPlayerDisconnected_WhenConnected() {
+        ReconnectionManager manager = new ReconnectionManager("game6");
+        Set<String> players = new HashSet<>(Arrays.asList("p1"));
+        manager.startGame(players);
+        outContent.reset();
+        manager.playerDisconnected("p1");
+        String output = outContent.toString().trim();
+        assertTrue(output.contains("Player p1 disconnected."));
+    }
+
+    @Test
+    public void testPlayerDisconnected_WhenNotConnected() {
+        ReconnectionManager manager = new ReconnectionManager("game7");
+        manager.playerDisconnected("p2");
+        String output = outContent.toString().trim();
+        assertTrue(output.contains("Player p2 was not connected."));
+    }
+
+    // --- Tests for attemptReconnection ---
+
+    @Test
+    public void testAttemptReconnection_Success() {
+        ReconnectionManager manager = new ReconnectionManager("game8");
+        // Setup: start game and disconnect a player with saved state.
+        Set<String> players = new HashSet<>(Arrays.asList("p1", "p2"));
+        manager.startGame(players);
+        manager.playerDisconnected("p1");
+        TestGameState state1 = new TestGameState("state1");
+        manager.saveGameState("p1", state1);
+        outContent.reset();
+        boolean result = manager.attemptReconnection("p1");
+        String output = outContent.toString().trim();
+        assertTrue(result);
+        assertTrue(output.contains("Reconnecting player p1..."));
+        assertTrue(output.contains("Restoring game state for player p1: state1"));
+        assertTrue(output.contains("Notifying player p2 that p1 has reconnected."));
+    }
+
+    @Test
+    public void testAttemptReconnection_NotMarkedAsDisconnected() {
+        ReconnectionManager manager = new ReconnectionManager("game9");
+        Set<String> players = new HashSet<>(Arrays.asList("p1"));
+        manager.startGame(players);
+        outContent.reset();
+        boolean result = manager.attemptReconnection("p1");
+        String output = outContent.toString().trim();
+        assertFalse(result);
+        assertTrue(output.contains("Player p1 is not marked as disconnected."));
+    }
+
+    @Test
+    public void testAttemptReconnection_SessionInactive() {
+        ReconnectionManager manager = new ReconnectionManager("game10");
+        Set<String> players = new HashSet<>(Arrays.asList("p1"));
+        manager.startGame(players);
+        manager.playerDisconnected("p1");
+        manager.endGame();
+        outContent.reset();
+        boolean result = manager.attemptReconnection("p1");
+        String output = outContent.toString().trim();
+        assertFalse(result);
+        assertTrue(output.contains("Game session is not active. Cannot reconnect player p1."));
+    }
 
 }
