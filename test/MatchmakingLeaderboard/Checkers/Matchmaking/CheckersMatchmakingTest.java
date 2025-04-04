@@ -71,10 +71,8 @@ public class CheckersMatchmakingTest {
 
     @Test
     public void testCheckPlayers_Compatible() {
-        player1.setRank(new Rank(6), gameType);
-        player2.setRank(new Rank(6), gameType);
-        player1.setGameSignal(1, gameType);
-        player2.setGameSignal(1, gameType);
+        player1.setRank(new Rank(6), gameType + 2);
+        player2.setRank(new Rank(6), gameType + 2);
         player1.setLevel(20);
         player2.setLevel(26);
 
@@ -83,10 +81,8 @@ public class CheckersMatchmakingTest {
 
     @Test
     public void testCheckPlayers_NotCompatibleOne() {
-        player1.setRank(new Rank(17), 2);
-        player2.setRank(new Rank(6), 2);
-        player1.setGameSignal(2, gameType);
-        player2.setGameSignal(2, gameType);
+        player1.setRank(new Rank(17), 3);
+        player2.setRank(new Rank(6), 3);
         player1.setLevel(38);
         player2.setLevel(26);
         assertFalse(matchmaking.checkPlayers(player1, player2));
@@ -96,8 +92,6 @@ public class CheckersMatchmakingTest {
     public void testCheckPlayers_NotCompatibleTwo() {
         player1.setRank(new Rank(2500), 3);
         player2.setRank(new Rank(500), 3);
-        player1.setGameSignal(3, gameType);
-        player2.setGameSignal(3, gameType);
         player1.setLevel(27);
         player2.setLevel(26);
         assertFalse(matchmaking.checkPlayers(player1, player2));
@@ -105,12 +99,11 @@ public class CheckersMatchmakingTest {
 
     @Test
     public void testCheckPlayers_NotCompatibleThree() {
-        player1.setRank(new Rank(2500), 2);
-        player2.setRank(new Rank(500), 2);
-        player1.setGameSignal(2, gameType+1);
-        player2.setGameSignal(3, gameType+2);
+        player1.setRank(new Rank(2500), 3);
+        player2.setRank(new Rank(500), 3);
         player1.setLevel(27);
         player2.setLevel(26);
+
         assertFalse(matchmaking.checkPlayers(player1, player2));
     }
 
