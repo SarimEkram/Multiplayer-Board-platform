@@ -3,93 +3,149 @@ package gameLogic.checkers;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Utility class for handling checkers moves.
- */
 public class CheckersMove {
 
-    /**
-     * return alll valid moves for a given checkers piece.
-     *
-     * @param board current state of checkers board
-     * @param piece the piece to check
-     * @param row current row of the piece
-     * @param col current col of the piece
-     * @return an array with valid move positions
-     */
-    public static int[][] availableMoves(CheckersBoard board, CheckersPiece piece, int row, int col) {
-        List<int[]> movesList = new ArrayList<int[]>();
+    public static class Move {
+        public int destRow, destCol;
+        public List<int[]> capturedPositions;
 
-        int direction;
-        if (piece.getColour() == CheckersPiece.Colour.RED) {
-            direction = -1;
-        } else {
-            direction = 1;
+        public Move(int destRow, int destCol, List<int[]> capturedPositions) {
+            this.destRow = destRow;
+            this.destCol = destCol;
+            this.capturedPositions = capturedPositions;
         }
+    }
 
+    public static Move[] availableMoves(CheckersBoard board, CheckersPiece piece, int row, int col) {
+        List<Move> jumpMoves = new ArrayList<>();
+        findJumps(board, piece, row, col, new ArrayList<>(), jumpMoves);
+
+        // Compute simple moves
+        List<Move> simpleMoves = new ArrayList<>();
+        int[][] directions;
         if (!piece.isKing()) {
-            if (isValidMove(board, row + direction, col - 1))
-                movesList.add(new int[]{row + direction, col - 1});
-            if (isValidMove(board, row + direction, col + 1))
-                movesList.add(new int[]{row + direction, col + 1});
+            if (piece.getColour() == CheckersPiece.Colour.WHITE) {
+                directions = new int[][]{{-1, -1}, {-1, 1}};
+            } else {
+                directions = new int[][]{{1, -1}, {1, 1}};
+            }
         } else {
-            int[] rowChanges = {1, 1, -1, -1};
-            int[] colChanges = {-1, 1, -1, 1};
-            for (int i = 0; i < 4; i++) {
-                int newRow = row + rowChanges[i];
-                int newCol = col + colChanges[i];
-                if (isValidMove(board, newRow, newCol))
-                    movesList.add(new int[]{newRow, newCol});
+            directions = new int[][]{{-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
+        }
+        for (int[] dir : directions) {
+            int newRow = row + dir[0];
+            int newCol = col + dir[1];
+            if (onBoard(newRow, newCol) && board.board[newRow][newCol] == null) {
+                simpleMoves.add(new Move(newRow, newCol, new ArrayList<>()));
             }
         }
 
-        int[][] movesArray = new int[movesList.size()][2];
-        for (int i = 0; i < movesList.size(); i++) {
-            movesArray[i] = movesList.get(i);
+        // Combine both simple moves and jump moves
+        List<Move> allMoves = new ArrayList<>();
+        // If you want standard checkers (force jump), you can skip adding simple moves if jumpMoves is not empty.
+        allMoves.addAll(simpleMoves);
+        allMoves.addAll(jumpMoves);
+
+        return allMoves.toArray(new Move[0]);
+    }
+
+    private static void findJumps(CheckersBoard board, CheckersPiece piece, int currentRow, int currentCol,
+                                  List<int[]> currentCaptures, List<Move> result) {
+        int[][] directions;
+        if (!piece.isKing()) {
+            if (piece.getColour() == CheckersPiece.Colour.WHITE) {
+                directions = new int[][]{{-1, -1}, {-1, 1}};
+            } else {
+                directions = new int[][]{{1, -1}, {1, 1}};
+            }
+        } else {
+            directions = new int[][]{{-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
         }
-        return movesArray;
+
+        boolean jumpFound = false;
+        for (int[] dir : directions) {
+            int jumpRow = currentRow + 2 * dir[0];
+            int jumpCol = currentCol + 2 * dir[1];
+            int midRow = currentRow + dir[0];
+            int midCol = currentCol + dir[1];
+
+            if (onBoard(jumpRow, jumpCol) && board.board[jumpRow][jumpCol] == null) {
+                CheckersPiece middlePiece = board.board[midRow][midCol];
+                if (middlePiece != null && middlePiece.getColour() != piece.getColour()) {
+                    jumpFound = true;
+                    List<int[]> newCaptures = new ArrayList<>(currentCaptures);
+                    newCaptures.add(new int[]{midRow, midCol});
+
+                    // Simulate the jump
+                    CheckersPiece captured = board.board[midRow][midCol];
+                    board.board[currentRow][currentCol] = null;
+                    board.board[midRow][midCol] = null;
+                    board.board[jumpRow][jumpCol] = piece;
+
+                    // ------------------------------------------------------------
+                    // 1) ADD the "partial" jump move here (so user sees single-jump)
+                    // ------------------------------------------------------------
+                    Move partialMove = new Move(jumpRow, jumpCol, newCaptures);
+                    if (!containsMove(result, partialMove)) {
+                        result.add(partialMove);
+                    }
+
+                    // 2) Then recurse to find further jumps
+                    findJumps(board, piece, jumpRow, jumpCol, newCaptures, result);
+
+                    // Backtrack
+                    board.board[currentRow][currentCol] = piece;
+                    board.board[midRow][midCol] = captured;
+                    board.board[jumpRow][jumpCol] = null;
+                }
+            }
+        }
+        // If no further jumps, but we have at least one capture, this is a final chain
+        if (!currentCaptures.isEmpty() && !jumpFound) {
+            Move finalMove = new Move(currentRow, currentCol, currentCaptures);
+            if (!containsMove(result, finalMove)) {
+                result.add(finalMove);
+            }
+        }
     }
 
-    /**
-     * check if the position is on the board nd empty
-     *
-     * @param toRow the target row to move
-     * @param toCol the target col to move
-     * @return true if the move is valid, false otherwise
-     */
-    private static boolean isValidMove(CheckersBoard board, int toRow, int toCol) {
-        boolean inBounds = (toRow >= 0 && toRow < 8 && toCol >= 0 && toCol < 8);
-        boolean isEmpty = inBounds && board.board[toRow][toCol] == null;
-        return isEmpty && inBounds;
+    // Helper to avoid duplicates in the result list
+    private static boolean containsMove(List<Move> moves, Move newMove) {
+        for (Move m : moves) {
+            if (m.destRow == newMove.destRow && m.destCol == newMove.destCol
+                    && sameCaptures(m.capturedPositions, newMove.capturedPositions)) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    /**
-     * Moves a piece on the board and handles captures and promotions
-     *
-     * @param startRow the row the piece is moving from
-     * @param startCol the column the piece is moving from
-     * @param destRow the row the piece is moving to
-     * @param destCol the column the piece is moving to
-     */
+    private static boolean sameCaptures(List<int[]> a, List<int[]> b) {
+        if (a.size() != b.size()) return false;
+        for (int i = 0; i < a.size(); i++) {
+            if (a.get(i)[0] != b.get(i)[0] || a.get(i)[1] != b.get(i)[1]) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-    public static void move(CheckersBoard board, CheckersPiece piece, int startRow, int startCol, int destRow, int destCol) {
-        board.board[destRow][destCol] = piece;
+    private static boolean onBoard(int row, int col) {
+        return row >= 0 && row < 8 && col >= 0 && col < 8;
+    }
+
+    public static void move(CheckersBoard board, CheckersPiece piece, int startRow, int startCol, Move move) {
+        board.board[move.destRow][move.destCol] = piece;
         board.board[startRow][startCol] = null;
-
-        int rowDifference = destRow - startRow;
-        int colDifference = destCol - startCol;
-
-        if (Math.abs(rowDifference) == 2 && Math.abs(colDifference) == 2) {
-            int capturedRow = startRow + rowDifference / 2;
-            int capturedCol = startCol + colDifference / 2;
-            board.removePiece(capturedRow, capturedCol);
+        // Remove each captured piece
+        for (int[] cap : move.capturedPositions) {
+            board.removePiece(cap[0], cap[1]);
         }
-        if (piece.getColour() == CheckersPiece.Colour.RED && destRow == 0) {
+        // King promotion
+        if (piece.getColour() == CheckersPiece.Colour.WHITE && move.destRow == 0) {
             piece.promoteToKing();
-        } else if (piece.getColour() == CheckersPiece.Colour.BLACK && destRow == 7) {
+        } else if (piece.getColour() == CheckersPiece.Colour.BLACK && move.destRow == 7) {
             piece.promoteToKing();
         }
-
     }
-
 }

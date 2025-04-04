@@ -1,0 +1,84 @@
+.blur-overlay {
+    -fx-background-color: rgba(0,0,0,0.6);
+    -fx-background-radius: 20;
+}
+
+.neon-border-panel {
+    -fx-border-color: linear-gradient(to right, #ff00cc, #3333ff);
+    -fx-border-width: 3px;
+    -fx-border-radius: 20;
+    -fx-effect: dropshadow(gaussian, #ff00ff, 15, 0.7, 0, 0);
+}
+
+.title-label {
+    -fx-text-fill: #00fff7;
+    -fx-font-size: 18px;
+    -fx-font-family: 'Orbitron', sans-serif;
+}
+
+.search-bar {
+    -fx-background-color: black;
+    -fx-text-fill: white;
+    -fx-border-color: #00ffcc;
+    -fx-border-radius: 10;
+}
+
+.player-entry {
+    -fx-background-color: #1a1a1a;
+    -fx-padding: 10;
+    -fx-background-radius: 10;
+}
+
+.player-entry:hover {
+    -fx-background-color: #8000ff;
+}
+
+.avatar {
+    -fx-background-color: #333;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 16;
+    -fx-alignment: center;
+    -fx-min-width: 32px;
+    -fx-min-height: 32px;
+    -fx-border-radius: 50%;
+    -fx-background-radius: 50%;
+}
+
+.username-label {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+}
+
+.add-icon {
+    -fx-background-color: #00ffcc;
+    -fx-text-fill: black;
+    -fx-cursor: hand;
+}
+
+.close-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ff0077;
+    -fx-font-size: 16px;
+}
+.neon-border-panel {
+    -fx-background-color: #0d0d0d;
+    -fx-background-radius: 20;
+    -fx-effect: dropshadow(gaussian, #ff00ff, 30, 0.6, 0, 0);
+    -fx-border-color: #ff00ff;
+    -fx-border-width: 2;
+    -fx-border-radius: 20;
+}
+.player-box {
+    -fx-background-color: #1e1e1e;
+    -fx-background-radius: 10;
+    -fx-padding: 10;
+    -fx-cursor: hand;
+    -fx-effect: none;
+    -fx-transition: all 0.3s;
+}
+
+.player-box:hover {
+    -fx-background-color: #4b0082;
+    -fx-effect: dropshadow(gaussian, #ff00ff, 20, 0.6, 0, 0);
+}

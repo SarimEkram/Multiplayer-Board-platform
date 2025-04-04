@@ -4,52 +4,73 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
- * Common matchmaking queue for players to join the game.
- * This will be used for multiple games.
+ * Common matchmaking queue for players, supports all games with separate queues.
+ * Each instance handles a single game's queue only.
  */
 public class MatchmakingQueue {
-    private Queue<Player> queue;
 
-    /**
-     * constructor initializes a new queue
-     */
-    public MatchmakingQueue() {
-        queue = new LinkedList<>();
+    private final Queue<Player> queue;
+    private final int gameType; // 1 = TicTacToe, 2 = Connect4, 3 = Checkers
+    private boolean matchReady = false;
+
+    public MatchmakingQueue(int gameType) {
+        this.gameType = gameType;
+
+        // choose the correct queue
+        switch (gameType) {
+            case 1 -> queue = new LinkedList<>(); // TicTacToe
+            case 2 -> queue = new LinkedList<>(); // Connect4
+            case 3 -> queue = new LinkedList<>(); // Checkers
+            default -> throw new IllegalArgumentException("Invalid game type: " + gameType);
+        }
     }
 
     /**
-     * Adds a player to the queue.
+     * Adds a player to this queue.
      */
     public void addPlayer(Player player) {
+        queue.offer(player);
     }
 
     /**
-     * Removes a player from the queue.
+     * Removes a player from this queue.
      */
     public void removePlayer(Player player) {
+        queue.remove(player);
     }
 
     /**
-     * removes the first player in the queue (who will match with another player).
-     * @return The player to match.
+     * Gets the next player in the queue.
      */
     public Player getNextPlayer() {
         return queue.poll();
     }
 
     /**
-     * Checks if there are enough players to create a match.
-     * @return true if there are enough players, false otherwise.
+     * signals opponent players are ready to play
      */
-    public boolean ReadyToMatch() {
-        return false;
+    public void matchReady() {
+        this.matchReady = true;
     }
 
     /**
-     * Get the number of players in the queue.
-     * @return The size of the queue.
+     * Checks if enough players are available for matchmaking.
+     */
+    public boolean readyToMatch(){
+        return this.matchReady;
+    }
+
+    /**
+     * Gets number of players currently in this queue.
      */
     public int getQueueSize() {
         return queue.size();
+    }
+
+    /**
+     * Gets the game type for this queue.
+     */
+    public int getGameType() {
+        return gameType;
     }
 }

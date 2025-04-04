@@ -1,0 +1,69 @@
+.root {
+    -fx-background-color: linear-gradient(to bottom right, #2a0845, #6441a5);
+    -fx-font-family: 'Nunito', sans-serif;
+}
+
+.login-card {
+    -fx-padding: 40;
+    -fx-background-color: rgba(255, 255, 255, 0.05);
+    -fx-background-radius: 20;
+    -fx-border-color: rgba(255, 255, 255, 0.2);
+    -fx-border-radius: 20;
+    -fx-effect: dropshadow(gaussian, #000000, 15, 0.2, 0, 0);
+}
+
+.logo-label {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+}
+
+.section-title {
+    -fx-text-fill: #eeeeee;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.form-field {
+    -fx-pref-width: 300;
+    -fx-pref-height: 40;
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-border-color: #cc66ff;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #bbbbbb;
+    -fx-font-size: 14px;
+}
+
+.primary-button {
+    -fx-background-color: linear-gradient(to right, #00c6ff, #0072ff);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 12;
+    -fx-cursor: hand;
+    -fx-pref-width: 300;
+    -fx-pref-height: 45;
+}
+
+.primary-button:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-opacity: 0.9;
+}
+
+.link-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #cccccc;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+}
+
+.link-button:hover {
+    -fx-text-fill: white;
+}
+
+.error-message {
+    -fx-text-fill: #ff5555;
+    -fx-font-size: 13px;
+}

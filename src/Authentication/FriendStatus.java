@@ -1,52 +1,37 @@
 package Authentication;
 
-public class FriendStatus {
+/**
+ * This class provides simple utilities to check the online status
+ * of a friend (another user) by accessing data from the UserDatabase.
+ */
+public class FriendStatus{
 
     /**
-     * Gets the current status of a friend (online/offline).
-     *
-     * @param friendId The ID of the friend
-     * @return true if the friend is online, false otherwise
+     * Checks whether a friend with the specific user ID is currently online.
+     * @param friendId The UserID of friend
+     * @return true if the friend is online, false if offline or if the friend does not exist
      */
-    public boolean isFriendOnline(int friendId) {
-        // Check if friendId is valid
-        // Look in database or session store to see if friend is online
-        return false;
+    public boolean isFriendOnline(int friendId){
+        User friend = UserDatabase.getUserById(friendId);
+        return (friend != null && friend.isOnline());
     }
 
     /**
-     * Retrieves the last seen timestamp of a friend.
-     *
-     * @param friendId The ID of the friend
-     * @return The last seen timestamp as a String, or null if not found
+     * Provides a status message indicating whether
+     * a friend is online or not
+     * @param friendId The UserID of friend
+     * @return A string message like "Friend is online", "Friend is not online", or "Friend not found"
      */
-    public String getFriendLastSeen(int friendId) {
-        // Fetch last seen timestamp from database
-        return null;
-    }
-
-    /**
-     * Retrieves the full friend status, including online status and last seen.
-     *
-     * @param friendId The ID of the friend
-     * @return A String message containing the friend's status
-     */
-    public String getFriendStatus(int friendId) {
-        // Fetch online status
-        boolean online = isFriendOnline(friendId);
-
-        // Fetch last seen timestamp
-        String lastSeen = getFriendLastSeen(friendId);
-
-        // Construct and return a status message
-        if (online) {
+    public String getFriendStatus(int friendId){
+        User friend = UserDatabase.getUserById(friendId);
+        if(friend == null){
+            return "Friend not found";
+        }
+        if(friend.isOnline()) {
             return "Friend is online";
-        } else {
-            if (lastSeen != null) {
-                return "Friend last seen at: " + lastSeen;
-            } else {
-                return "Friend last seen at: Unknown";
-            }
+        }
+        else{
+            return "Friend is not online";
         }
     }
 }

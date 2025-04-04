@@ -1,42 +1,49 @@
 package Authentication;
 
+import java.security.MessageDigest;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.time.LocalDateTime;
+import java.util.Base64;
+
 public class ResetUserPassword {
+    private static final Map<String, ResetTokenData> tokenStore = new HashMap<>();
 
-    /**
-     * Send password reset link or code to user's email
-     * @param email User's registered email
-     * @return Status of reset request
-     */
-    public boolean resetRequest(String email){
-        // Check if email is valid
-        // Look for email in database
-        // Generate reset token or code
-        // Send reset link to user's email
-        return false;
+    public String resetRequest(String email) {
+        User user = UserDatabase.getUserByEmail(email);
+        if (user == null) return null;
+
+        String token = UUID.randomUUID().toString();
+        LocalDateTime expiry = LocalDateTime.now().plusMinutes(30);
+
+        tokenStore.put(token, new ResetTokenData(user.getUserID(), token, expiry));
+        // In a real system, you'd email the token to the user
+        return token;
     }
 
-    /**
-     * Validates reset token
-     * @param token Password reset token
-     * @return Status of token
-     */
-    public boolean validateResetToken(String token){
-        // Check if token is in correct format
-        // Verify existence of token and check it's not expired
-        return false;
+    public boolean resetPassword(String token, String newPassword) {
+        ResetTokenData data = tokenStore.get(token);
+        if (data == null || data.isExpired()) {
+            return false;
+        }
+
+        User user = UserDatabase.getUserById(data.getUserId());
+        if (user == null || newPassword == null || newPassword.length() < 6) {
+            return false;
+        }
+
+        user.setPassword(hashPassword(newPassword));
+        tokenStore.remove(token);
+        return true;
     }
 
-    /**
-     * Resets the password
-     * @param token Password reset token
-     * @param newPassword New password entered by user
-     * @return Status if password reset is done or not
-     */
-    public boolean resetPassword(String token, String newPassword){
-        // Validate the token
-        // Validate new password(length, strength etc)
-        // Hash new password
-        // Store new hashed password to database
-        return false;
+    private String hashPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hash = md.digest(password.getBytes(StandardCharsets.UTF_8));
+            return Base64.getEncoder().encodeToString(hash);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

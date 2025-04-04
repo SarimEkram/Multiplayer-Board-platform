@@ -1,104 +1,75 @@
 package gameLogic.checkers;
 
-/**
- * Represents the main logic of a Checkers game.
- */
 public class Checkers {
 
-
     CheckersBoard board;
-
     private Turn turn;
     private WINNER winner;
 
-    /**
-     * Enum representing whose turn it is.
-     */
     public enum Turn {
-        RED, BLACK
+        WHITE, BLACK
     }
 
-    /**
-     * Enum representing the winner of the game.
-     */
     public enum WINNER {
-        RED, BLACK, NONE
+        WHITE, BLACK, NONE
     }
 
-    /**
-     * Constructs a new Checkers game with the specified board.
-     *
-     * @param board the board on which the game will be played
-     */
     public Checkers(CheckersBoard board) {
         this.board = board;
+        // Start with Black's turn, matching the FXML initial indicator.
         this.turn = Turn.BLACK;
         this.winner = WINNER.NONE;
     }
 
-    /**
-     * Starts the game and runs the game loop till someone wins.
-     */
-    public void start() {
-        this.board.placeAllPieces();
-        
+    public Turn getTurn() {
+        return this.turn;
     }
 
-    /**
-     * Ends the game.
-     */
-    public WINNER end( WINNER winner) {
+    public void start() {
+        this.board.placeAllPieces();
+    }
+
+    public WINNER end(WINNER winner) {
         return this.winner;
     }
 
-
     /**
-     * Moves the given checkers piece.
-     * If the piece is normal, performs a normal move; if it is a king, performs a king move.
-     *
-     * @param piece the checkers piece to be moved
-     * 
-     * handles the GUI input for selected piece and destination location
-     * and then switch turn once the function a turn has been done successfully
+     * Processes a move by applying the Move object (which includes multi-jump capture data)
+     * and then switching the turn.
      */
-    public void movePiece(CheckersPiece piece) {
-        
+    public void processMove(CheckersPiece piece, int startRow, int startCol, CheckersMove.Move move) {
+        CheckersMove.move(board, piece, startRow, startCol, move);
+        switchTurn();
     }
 
-    private void switchTurn(){
-        if (this.turn == Turn.RED) {
+    private void switchTurn() {
+        if (this.turn == Turn.WHITE) {
             this.turn = Turn.BLACK;
         } else {
-            this.turn = Turn.RED;
+            this.turn = Turn.WHITE;
         }
     }
 
-    /**
-     * Checks if the red player has won the game.
-     *
-     * @return true if the red player has won, false otherwise
-     */
     public WINNER checkWin() {
         winner = WINNER.NONE;
-        int redCount = 0;
+        int whiteCount = 0;
         int blackCount = 0;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                CheckersPiece p = this.board.board[i][j];
+                CheckersPiece p = board.board[i][j];
                 if (p != null) {
-                    if (p.getColour() == CheckersPiece.Colour.RED) 
-                        redCount++;
-                    else if (p.getColour() == CheckersPiece.Colour.BLACK) 
+                    if (p.getColour() == CheckersPiece.Colour.WHITE)
+                        whiteCount++;
+                    else if (p.getColour() == CheckersPiece.Colour.BLACK)
                         blackCount++;
                 }
             }
         }
-        if (redCount == 0) {
+        if (whiteCount == 0) {
             winner = WINNER.BLACK;
         } else if (blackCount == 0) {
-            winner = WINNER.RED;
+            winner = WINNER.WHITE;
         }
-        
         return winner;
     }
 }

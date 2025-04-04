@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.LoginController"
+           prefWidth="1200" prefHeight="800"
+           stylesheets="@styles/login.css"
+           styleClass="root">
+
+    <!-- Centered Login Box -->
+    <VBox alignment="CENTER" spacing="25" styleClass="login-card" maxWidth="420">
+
+        <!-- Logo / App Name -->
+        <Label text="🎮 OMG" styleClass="logo-label"/>
+
+        <!-- Login Title -->
+        <Label text="Login to Your Account" styleClass="section-title"/>
+
+        <!-- Error Message -->
+        <Label fx:id="loginErrorMessageLabel" text="" styleClass="error-message" visible="false" managed="false"/>
+
+        <!-- Username -->
+        <TextField fx:id="username" promptText="Username" styleClass="form-field"/>
+
+        <!-- Password -->
+        <PasswordField fx:id="password" promptText="Password" styleClass="form-field"/>
+
+        <!-- Sign In -->
+        <Button fx:id="loginButton" text="SIGN IN" onAction="#handleLogin" styleClass="primary-button"/>
+
+        <!-- Register + Forgot Links -->
+        <HBox alignment="CENTER" spacing="20">
+            <Button fx:id="registerButton" text="Register" onAction="#handleRegister" styleClass="link-button"/>
+            <Button fx:id="forgotPasswordButton" text="Forgot Password?" onAction="#handleForgotPassword" styleClass="link-button"/>
+        </HBox>
+
+    </VBox>
+</StackPane>

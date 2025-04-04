@@ -2,37 +2,26 @@ package Authentication;
 
 public class UserStatus {
 
-    /**
-     * Check the current status of user
-     * @param userId The ID of user who want to check status
-     * @return Status of user
-     */
+    // Checks if the specified user is currently online
+    // userId - The ID of the user to check
+    // Returns true if user exists and is online, false otherwise
     public boolean isUserOnline(int userId){
-        // Check if userId is valid
-        // Search in database or session store to check if user is online
-        return false;
+        User user = UserDatabase.getUserById(userId);
+        return (user!=null && user.isOnline());  // Check user exists and online status
     }
 
-    /**
-     * Updates the user's status
-     * @param userId The ID of user who want to check status
-     * @param status Current status of user
-     * @return true if status update was successful
-     */
+    // Updates the online status of the specified user
+    // userId - The ID of the user to update
+    // status - The new online status (true=online, false=offline)
+    // Returns true if update was successful, false if user not found
     public boolean updateUserStatus(int userId, boolean status){
-        // Check if userId is valid
-        // Update status in database or session store
-        return false;
-    }
+        User user = UserDatabase.getUserById(userId);
+        if(user == null){   // Return false if user doesn't exist
+            return false;
+        }
 
-    /**
-     * Fetch the user's last seen timestamp
-     * @param userId The ID of user who want to check status
-     * @return Last seen timestamp, if not found then null
-     */
-    public String getLastSeen(int userId){
-        // Fetch last seen timestamp from database
-        return null;
+        user.setOnlineStatus(status);   // Update the user's online status
+        return true;
     }
 }
 

@@ -1,69 +1,54 @@
 package networking.game;
 
-public class updateGameBoard extends GameNetworking {
+import gameLogic.checkers.CheckersBoard;
+import gameLogic.connect4.ConnectBoard;
+import gameLogic.tictactoe.TicTacToeBoard;
 
-    private String gameId; // Unique identifier for the game session
+/**
+ * A class that interacts with the server to send and receive game board (state) updates.
+ *
+ * @param <T> generic type parameter, allows to create objects with type safety
+ */
+public class updateGameBoard<T> {
 
-    //TODO: Create a field/parameter 'board' of the game board from the game logic team when available.
-    //TODO: If a default constructor is used, keep the parameters in the class methods for fetch and upload.
-    //TODO: If a constructor with fields is used, remove the parameters from the class methods.
+    private final GameServer gameServer = new GameServer(); // An object to simulate the role of a server and database
+    private final String gameId; // Unique identifier for the game session
+    private T board;
 
     /**
-     * A constructor to initialize gameId and board.
+     * A constructor to initialize gameId and board for Checkers.
      *
      * @param gameId A string to uniquely identify the current game from the server.
-     * @param //board The local game board object which we want to update.
+     * @param board The local game board object for CheckersBoard, ConnectBoard, or TicTacToeBoard; which we want to update.
      */
-    public updateGameBoard(String gameId /* , board */) {
-        super(gameId);
+    public updateGameBoard(String gameId, T board) {
         this.gameId = gameId;
-        // Initialize the board field.
+        this.board = board;
     }
 
     /**
      * Fetch the game board state from the server and update the local board.
      *
-     * @param gameId A string to uniquely identify the current game from the server.
-     * @param //board The local game board object which we want to update.
-     * @return A boolean value, true if successful, false otherwise.
+     * @return A boolean value; true if successful, false otherwise.
      */
-    public boolean fetchGameBoard(String gameId /* , board */) {
-        // Search the server for the specific game using the gameId. Alternatively, the game board could also store gameId.
-        // Fetch the current state of the game board from the server and update the local version of the game board.
-        // Return true if successful, false otherwise. Alternatively, could throw an exception if unsuccessful.
-        return true;
+    public boolean fetchGameBoard() {
+        T fetchedBoard = (T) gameServer.getGameState(gameId);
+        if (fetchedBoard != null) {     //If the fetched game board is not null, fetch is successful and return true
+            board = (T) fetchedBoard;
+            return true;
+        }
+        else
+            return false;
     }
 
     /**
      * Upload the local game board state to the server.
      *
-     * @param gameId A string to uniquely identify the current game from the server.
-     * @param //board The local game board object which we want to update.
-     * @return A boolean value, true if successful, false otherwise.
+     * @return A boolean value; true if successful, false otherwise.
      */
-    public boolean uploadGameBoard(String gameId /* , board */) {
-        // Search the server for the specific game using the gameId. Alternatively, the game board could also store gameId.
-        // Upload the local version of game board to the server.
-        // Return true if successful, false otherwise. Alternatively, could throw an exception if unsuccessful.
-        return true;
+    public boolean uploadGameBoard() {
+        boolean success = gameServer.saveGameState(gameId, board);
+        return success;
     }
-
-    /**
-     * Establishes a network connection.
-     * This method should handle setting up the connection using WebSockets, HTTP, or another networking protocol.
-     */
-    @Override
-    public void establishConnection() {
-
-    }
-
-    /**
-     * Closes the network connection.
-     * This method should handle safely closing the connection and cleaning up resources.
-     */
-    @Override
-    public void closeConnection() {
-
-    }
-
 }
+
