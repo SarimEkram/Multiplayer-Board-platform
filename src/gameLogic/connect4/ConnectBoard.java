@@ -80,6 +80,10 @@ public class ConnectBoard {
     }
 
 
+    public Connect4 getGameLogic() {
+        return gameLogic; // Added to allow access to gameLogic for testing
+    }
+
 
     /**
      * This function determines if the game is complete due to a win or tie by either player
