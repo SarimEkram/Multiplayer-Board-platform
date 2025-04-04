@@ -77,10 +77,8 @@ public class Connect4Matchmaking extends AbstractConnect4Matchmaking{
         Player player1 = PlayerDatabase.getPlayerByUserID(playerID);
 
         Player player2 = queue.getNextPlayer();
-        System.out.println("1");
         boolean iscompatible = checkPlayers(player1, player2);
         while (!iscompatible) {
-            System.out.println("2");
             player2 = queue.getNextPlayer();
             iscompatible = checkPlayers(player1, player2);
         }
