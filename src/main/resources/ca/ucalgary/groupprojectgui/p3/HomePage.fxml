@@ -60,9 +60,10 @@
                 <VBox alignment="TOP_CENTER" spacing="30" style="-fx-padding: 50;">
                     <Label text="Choose a Game" styleClass="section-title"/>
                     <HBox fx:id="gameTilePane" alignment="CENTER" spacing="30">
-                        <Button fx:id="connect4Btn" text="Connect 4" styleClass="game-button"/>
-                        <Button fx:id="tttBtn" text="Tic Tac Toe" styleClass="game-button"/>
-                        <Button fx:id="checkersBtn" text="Checkers" styleClass="game-button"/>
+                        <Button fx:id="connect4Btn" text="Connect 4" styleClass="game-button" onAction="#onConnect4Click"/>
+                        <Button fx:id="tttBtn" text="Tic Tac Toe" styleClass="game-button" onAction="#onTicTacToeClick"/>
+                        <Button fx:id="checkersBtn" text="Checkers" styleClass="game-button" onAction="#onCheckersClick"/>
+
                     </HBox>
                 </VBox>
             </center>
