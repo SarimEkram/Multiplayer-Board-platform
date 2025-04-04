@@ -7,7 +7,7 @@
 
 <VBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="480.0" styleClass="blue-panel"  xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.UserRegistrationController">
     <children>
-        <Label text="Sign Up">
+        <Label text="Sign Up" styleClass="section-title">
             <VBox.margin>
                 <Insets left="20.0" top="20.0" />
             </VBox.margin>
@@ -15,7 +15,9 @@
                 <Font size="24.0" />
             </font>
         </Label>
-        <Label fx:id="registerErrorMessageLabel" prefHeight="17.0" prefWidth="411.0" textFill="#c0380f">
+        <Label fx:id="registerErrorMessageLabel" styleClass="label-error"
+               alignment="CENTER"
+               maxWidth="Infinity">
             <VBox.margin>
                 <Insets left="15.0" />
             </VBox.margin>
