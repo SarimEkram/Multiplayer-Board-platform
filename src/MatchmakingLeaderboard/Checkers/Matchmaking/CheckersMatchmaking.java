@@ -12,7 +12,7 @@ public class CheckersMatchmaking extends AbstractCheckersMatchmaking{
     private MatchmakingQueue queue;
 
     /**
-     * Constructor class for Checkers Matchmaking
+     * Constructor class for checkers Matchmaking
      */
     public CheckersMatchmaking(){
         queue = new MatchmakingQueue(gameType);
@@ -39,19 +39,14 @@ public class CheckersMatchmaking extends AbstractCheckersMatchmaking{
         }
     }
 
-
     /**
      * function that simulates matchmaking for TicTacToe
      */
     public void startMatchmaking(){
         if (checkMatchmaking()) {
             Player player1 = queue.getNextPlayer();
-            Player player2 = queue.getNextPlayer();
-            boolean iscompatible = checkPlayers(player1, player2);
-            while (iscompatible) {
-                iscompatible = checkPlayers(player1, player2);
-                player2 = queue.getNextPlayer();
-            }
+            Player player2 = findOpponent(player1.getUserID());
+            queue.matchReady();
             if (queue.readyToMatch()) {
                 this.findMatch(player1, player2);
                 this.signalStartGame();
@@ -73,6 +68,18 @@ public class CheckersMatchmaking extends AbstractCheckersMatchmaking{
         queue.addPlayer(player);
     }
 
+    public Player findOpponent(int playerID) {
+        Player player1 = PlayerDatabase.getPlayerByUserID(playerID);
+
+        Player player2 = queue.getNextPlayer();
+
+        boolean iscompatible = checkPlayers(player1, player2);
+        while (!iscompatible) {
+            player2 = queue.getNextPlayer();
+            iscompatible = checkPlayers(player1, player2);
+        }
+        return player2;
+    }
     /**
      * Function used by player to leave the matchmaking queue
      *
@@ -84,19 +91,11 @@ public class CheckersMatchmaking extends AbstractCheckersMatchmaking{
     }
 
     /**
-     * function to find matched players an unpopulated game simulation ready to play
-     */
-    @Override
-    public void findMatch(Player Player1, Player Player2) {
-        System.out.println("Generate a request to the backend asking for an unpopulated game simulation");
-    }
-
-    /**
      * function to signal the game subsystem to start the game simulation
      */
     @Override
     public void signalStartGame() {
-        System.out.println("Signal game system to start the game simulation");
+        System.out.println("Signal game system to start the game simulation and load matched players");
     }
 
     /**
@@ -127,25 +126,9 @@ public class CheckersMatchmaking extends AbstractCheckersMatchmaking{
      */
     @Override
     public boolean checkPlayers(Player player1, Player player2) {
-        if ((player1.getRank(gameType).getCurrentTier() == player2.getRank(gameType).getCurrentTier()) && (player1.getGameSignal(gameType) == player2.getGameSignal(gameType))){
+        if ((player1.getRank(gameType).getCurrentTier() == player2.getRank(gameType).getCurrentTier()) && (player1.getGameSignal(gameType) == player2.getGameSignal(gameType))&&(player1.getUserID()!= player2.getUserID())){
             return Math.abs((player1.getLevel() - player2.getLevel())) <= 10;
         }
         return false;
-    }
-
-    @Override
-    public int findMatch(int playerid) {
-        Player player1 = PlayerDatabase.getPlayerByUserID(playerid);
-        Player player2 = null;
-        if (checkMatchmaking()) {
-            player2 = queue.getNextPlayer();
-            boolean iscompatible = checkPlayers(player1, player2);
-            while (iscompatible) {
-                iscompatible = checkPlayers(player1, player2);
-                player2 = queue.getNextPlayer();
-            }
-        }
-        return player2.getUserID();
-
     }
 }

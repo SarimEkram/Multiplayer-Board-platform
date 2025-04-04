@@ -25,7 +25,8 @@ public interface IGameMatchmaking {
      */
     void findMatch(Player Player1, Player Player2);
 
-    int findMatch(int playerid);
+    Player findOpponent(int playerID);
+
     /**
      * function to signal start of game once matchmaking is completed
      *
