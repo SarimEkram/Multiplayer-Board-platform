@@ -46,11 +46,11 @@ public class Connect4Matchmaking extends AbstractConnect4Matchmaking{
         if (checkMatchmaking()) {
             Player player1 = queue.getNextPlayer();
             Player player2 = findOpponent(player1.getUserID());
-            boolean iscompatible = checkPlayers(player1, player2);
-            while (iscompatible) {
-                player2 = queue.getNextPlayer();
-                iscompatible = checkPlayers(player1, player2);
-            }
+//            boolean iscompatible = checkPlayers(player1, player2);
+//            while (iscompatible) {
+//                player2 = queue.getNextPlayer();
+//                iscompatible = checkPlayers(player1, player2);
+//            }
             queue.matchReady();
             if (queue.readyToMatch()) {
                 this.findMatch(player1, player2);

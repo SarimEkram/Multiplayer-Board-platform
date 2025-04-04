@@ -79,8 +79,6 @@ public class UserDatabase {
             user.setSuspendSave(false); // re-enable saving
             users.add(user);
         }
-        Player player = new Player(user.getUsername(), 0, user.getUserID());
-        PlayerDatabase.savePlayer(player);
         return saveAllToCSV();     // Save all users to file
     }
 

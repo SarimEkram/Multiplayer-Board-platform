@@ -1,5 +1,8 @@
 package Authentication;
 
+import MatchmakingLeaderboard.Player;
+import MatchmakingLeaderboard.PlayerDatabase;
+
 import java.security.MessageDigest;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -40,6 +43,8 @@ public class UserRegistration {
         // Create a new user object
         User newUser = new User(userID, username, email, hashed, 0.0, 1, false);
 
+        Player player = new Player(newUser.getUsername(), 0, newUser.getUserID());
+        PlayerDatabase.savePlayer(player);
         //Save user info in database
         return UserDatabase.saveUser(newUser);
     }

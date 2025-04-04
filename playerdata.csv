@@ -1,4 +1,4 @@
-userID,username, level,winRatio1,winRatio2,winRatio3,mmr1,mmr2,mmr3,signal1,signal2,signal3,wins1,wins2,wins3,losses1,losses2,losses3,rank1,rank2,rank3
+userID,username,level,winRatio1,winRatio2,winRatio3,mmr1,mmr2,mmr3,signal1,signal2,signal3,wins1,wins2,wins3,losses1,losses2,losses3,rank1,rank2,rank3
 183828,PlayerOne,5,0.8333333333333334,0.7272727272727273,0.7,1200,1100,1000,1,2,3,10,8,7,2,3,3,800,700,600
 127647,PlayerTwo,3,0.5,0.4,0.9333333333333333,900,800,1300,1,2,3,5,4,14,5,6,1,500,400,900
 134546,PlayerThree,7,0.75,0.5263157894736842,0.6,1400,1200,1150,1,2,3,15,10,12,5,9,8,950,850,750

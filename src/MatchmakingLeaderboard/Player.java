@@ -35,7 +35,7 @@ public class Player {
             this.wins[i] = 0;
             this.losses[i] = 0;
             this.rank[i] = new Rank();
-            this.gameSignal[i] = 0;
+            this.gameSignal[i] = i+1;
             this.mmr[i] = 0;
         }
 
