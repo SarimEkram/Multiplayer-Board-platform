@@ -11,6 +11,7 @@ import javafx.scene.input.MouseEvent;
 
 import ca.ucalgary.groupprojectgui.p3.SceneManager;
 import javafx.animation.TranslateTransition;
+import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import java.io.IOException;
 
@@ -19,6 +20,7 @@ public class HomePageController {
     @FXML private HBox gameTilePane;
     @FXML private ImageView img;
 
+    @FXML private StackPane rightPanel;
 
     @FXML private ImageView heartIcon;
     @FXML private ImageView bellIcon;
@@ -209,29 +211,47 @@ public class HomePageController {
     }
 
     @FXML private BorderPane homePane;
+
     @FXML
     private void openNotificationPanel(MouseEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ca/ucalgary/groupprojectgui/p3/NotificationPanel.fxml"));
             Node panel = loader.load();
-            homePane.setRight(panel);
+            rightPanel.getChildren().clear(); // Remove any previous popup
+            rightPanel.getChildren().add(panel); // Add the new one
         } catch (IOException e) {
             e.printStackTrace();
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setHeaderText("Oops!");
-            alert.setContentText("Couldn't load the notification panel.");
-            alert.showAndWait();
         }
     }
+
     @FXML
     private void openFriendRequests(MouseEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ca/ucalgary/groupprojectgui/p3/FriendRequests.fxml"));
             Node panel = loader.load();
-            homePane.setRight(panel);
+            rightPanel.getChildren().clear(); // Remove any previous popup
+            rightPanel.getChildren().add(panel); // Add the new one
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+    @FXML
+    private void openManageProfile(MouseEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ca/ucalgary/groupprojectgui/p3/Manage Profile.fxml"));
+            Node profilePanel = loader.load();
+            rightPanel.getChildren().clear(); // Remove any previous popup
+            rightPanel.getChildren().add(profilePanel); // Add the new one
+
+
+            // or setCenter(profilePanel), depending on your layout
+        } catch (IOException e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText("Error");
+            alert.setContentText("Unable to load Manage Profile page.");
+            alert.showAndWait();
         }
     }
 
@@ -248,22 +268,7 @@ public class HomePageController {
         alert.setContentText(message);
         alert.showAndWait();
     }
-    @FXML
-    private void openManageProfile(MouseEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ca/ucalgary/groupprojectgui/p3/Manage Profile.fxml"));
-            Node profilePanel = loader.load();
-            homePane.setRight(profilePanel);
 
-            // or setCenter(profilePanel), depending on your layout
-        } catch (IOException e) {
-            e.printStackTrace();
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setHeaderText("Error");
-            alert.setContentText("Unable to load Manage Profile page.");
-            alert.showAndWait();
-        }
-    }
 
 
 

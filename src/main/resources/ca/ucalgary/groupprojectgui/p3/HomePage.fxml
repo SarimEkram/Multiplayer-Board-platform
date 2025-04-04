@@ -1,148 +1,101 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="homePane"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.HomePageController"
-            styleClass="home-background"
-            prefWidth="1200" prefHeight="800">
+<HBox fx:id="mainContainer"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.HomePageController"
+      styleClass="home-background"
+      prefWidth="1200" prefHeight="800"
+      spacing="40"
+      style="-fx-padding: 30;">
 
-    <!-- TOP HEADER: Logo + Centered Search Bar + Icons on Right -->
-    <top>
-        <HBox spacing="20" alignment="CENTER" styleClass="top-header">
-            <padding>
-                <Insets top="20" bottom="20" left="30" right="30" />
-            </padding>
+    <!-- LEFT: SIDEBAR PANEL -->
+    <VBox fx:id="sidebar"
+          alignment="TOP_CENTER"
+          spacing="20"
+          prefWidth="100"
+          styleClass="neon-sidebar"
+          style="-fx-background-radius: 20; -fx-padding: 25;">
 
-            <!-- Left: Logo -->
-            <ImageView fx:id="img"
-                       fitHeight="100"
-                       preserveRatio="true"
-                       pickOnBounds="true"/>
+        <ImageView fx:id="img" fitHeight="80" preserveRatio="true" pickOnBounds="true"/>
+        <ImageView fx:id="heartIcon" fitHeight="28" fitWidth="28" pickOnBounds="true" onMouseClicked="#handleQuickMatch"/>
+        <ImageView fx:id="bellIcon" fitHeight="28" fitWidth="28" pickOnBounds="true" onMouseClicked="#openNotificationPanel"/>
+        <ImageView fx:id="friendsIcon" fitHeight="28" fitWidth="28" pickOnBounds="true" onMouseClicked="#openFriendRequests"/>
+        <ImageView fx:id="profileIcon" fitHeight="28" fitWidth="28" pickOnBounds="true" onMouseClicked="#openManageProfile"/>
+        <Button fx:id="leaderboardBtn" text="🏆" onAction="#onLeaderboardClick" styleClass="neon-icon-button" prefWidth="50" prefHeight="35"/>
+        <Button fx:id="logoutButton" text="⎋" onAction="#handleLogout" styleClass="neon-icon-button" prefWidth="50" prefHeight="35"/>
+    </VBox>
 
-            <!-- Center: Spacer + SearchBar + Spacer -->
-            <Region HBox.hgrow="ALWAYS"/>
-            <StackPane alignment="CENTER_RIGHT" maxWidth="400">
-                <TextField fx:id="gameSearchField"
-                           promptText="Search games..."
-                           styleClass="search-text-field"
-                           prefWidth="800"
-                           prefHeight="50"/>
-                <Label text="🔍" mouseTransparent="true"
-                       style="-fx-font-size: 16px; -fx-text-fill: #bbbbbb; -fx-padding: 0 12 0 0;" />
-            </StackPane>
-            <Region HBox.hgrow="ALWAYS"/>
+    <!-- CENTER + RIGHT AREA -->
+    <HBox spacing="20">
 
-            <!-- Right: Icons and Buttons -->
-            <!-- Right: Icons and Buttons -->
-            <HBox spacing="15" alignment="CENTER_RIGHT">
-                <ImageView fx:id="heartIcon"
-                           fitHeight="24"
-                           fitWidth="24"
-                           pickOnBounds="true"
-                           styleClass="header-icon"
-                           onMouseClicked="#handleQuickMatch"/>
+        <!-- MAIN CONTENT AREA -->
+        <BorderPane fx:id="homePane"
+                    styleClass="main-glow-box"
+                    prefWidth="1000"
+                    style="-fx-padding: 40; -fx-background-radius: 20;">
 
-                <ImageView fx:id="bellIcon"
-                           fitHeight="24"
-                           fitWidth="24"
-                           pickOnBounds="true"
-                           styleClass="header-icon"
-                           onMouseClicked="#openNotificationPanel"/>
+            <!-- TOP: Search Field -->
+            <top>
+                <HBox spacing="20" alignment="CENTER" styleClass="top-header">
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <StackPane alignment="CENTER_RIGHT" maxWidth="400">
+                        <TextField fx:id="gameSearchField"
+                                   promptText="Search games..."
+                                   styleClass="search-text-field"
+                                   prefWidth="800"
+                                   prefHeight="50"/>
+                        <Label text="🔍" mouseTransparent="true"
+                               style="-fx-font-size: 16px; -fx-text-fill: #bbbbbb; -fx-padding: 0 12 0 0;" />
+                    </StackPane>
+                    <Region HBox.hgrow="ALWAYS"/>
+                </HBox>
+            </top>
 
-                <ImageView fx:id="friendsIcon"
-                           onMouseClicked="#openFriendRequests"
-                           fitHeight="24"
-                           fitWidth="24"
-                           pickOnBounds="true"
-                           styleClass="header-icon"/>
+            <!-- CENTER: Game UI -->
+            <center>
+                <VBox alignment="TOP_CENTER" spacing="30" style="-fx-padding: 50;">
+                    <Label text="Choose a Game" styleClass="section-title"/>
+                    <HBox fx:id="gameTilePane" alignment="CENTER" spacing="30">
+                        <Button fx:id="connect4Btn" text="Connect 4" styleClass="game-button"/>
+                        <Button fx:id="tttBtn" text="Tic Tac Toe" styleClass="game-button"/>
+                        <Button fx:id="checkersBtn" text="Checkers" styleClass="game-button"/>
+                    </HBox>
+                </VBox>
+            </center>
 
+            <!-- BOTTOM: Rocket + UFO -->
+            <bottom>
+                <AnchorPane prefHeight="300">
+                    <ImageView fx:id="rocketImage"
+                               fitHeight="250"
+                               preserveRatio="true"
+                               AnchorPane.leftAnchor="30.0"
+                               AnchorPane.bottomAnchor="10.0"
+                               styleClass="glow-rocket"/>
+                    <ImageView fx:id="UFOImage"
+                               fitHeight="200"
+                               preserveRatio="true"
+                               AnchorPane.rightAnchor="30.0"
+                               AnchorPane.bottomAnchor="10.0"
+                               styleClass="glow-UFO"/>
+                </AnchorPane>
+            </bottom>
 
-                <ImageView fx:id="profileIcon"
-                           fitHeight="24"
-                           fitWidth="24"
-                           pickOnBounds="true"
-                           styleClass="header-icon"
-                           onMouseClicked="#openManageProfile"/>
+        </BorderPane>
 
-                <!-- NEW: Leaderboard Button -->
-                <Button fx:id="leaderboardBtn"
-                        text="🏆 Leaderboard"
-                        onAction="#onLeaderboardClick"
-                        styleClass="neon-outline-button"
-                        prefWidth="130" prefHeight="35"/>
+        <!-- RIGHT: POPUP PANEL STACK -->
+        <StackPane fx:id="rightPanel"
+                   prefWidth="350"
+                   alignment="TOP_RIGHT"
+                   style="-fx-padding: 20;">
+            <!-- Popups like notifications will go here -->
+        </StackPane>
 
-                <Button text="Logout"
-                        fx:id="logoutButton"
-                        onAction="#handleLogout"
-                        styleClass="neon-outline-button"
-                        prefWidth="100" prefHeight="35"/>
-            </HBox>
+    </HBox>
 
-        </HBox>
-    </top>
+</HBox>
 
-    <!-- CENTER: Main Content -->
-    <center>
-        <VBox alignment="TOP_CENTER" spacing="30">
-            <padding>
-                <Insets top="100" left="40" right="40" bottom="0"/>
-            </padding>
-
-            <!-- Title -->
-            <Label text="Choose a Game" styleClass="section-title"/>
-
-            <!-- Row of Game Buttons -->
-            <HBox fx:id="gameTilePane" alignment="CENTER" spacing="30">
-                <Button fx:id="connect4Btn" text="Connect 4"
-                        onAction="#onConnect4Click"
-                        prefWidth="200" prefHeight="100"
-                        styleClass="game-button"/>
-                <Button fx:id="tttBtn" text="Tic Tac Toe"
-                        onAction="#onTicTacToeClick"
-                        prefWidth="200" prefHeight="100"
-                        styleClass="game-button"/>
-                <Button fx:id="checkersBtn" text="Checkers"
-                        onAction="#onCheckersClick"
-                        prefWidth="200" prefHeight="100"
-                        styleClass="game-button"/>
-            </HBox>
-
-            <!-- Preview Image -->
-            <ImageView fx:id="previewImage"
-                       fitWidth="300"
-                       fitHeight="200"
-                       preserveRatio="true"
-                       visible="false"
-                       style="-fx-effect: dropshadow(gaussian, #ff00ff, 10, 0.5, 0, 0);"/>
-        </VBox>
-    </center>
-
-    <!-- BOTTOM DECORATIONS -->
-    <bottom>
-        <AnchorPane prefHeight="300">
-            <!-- 🚀 Rocket -->
-            <ImageView fx:id="rocketImage"
-                       fitHeight="250"
-                       preserveRatio="true"
-                       AnchorPane.leftAnchor="30.0"
-                       AnchorPane.bottomAnchor="10.0"
-                       style="-fx-effect: dropshadow(gaussian, #ff00ff, 10, 0.5, 0, 0);"
-                       styleClass="glow-rocket"/>
-
-            <!-- 🛸 UFO -->
-            <ImageView fx:id="UFOImage"
-                       fitHeight="200"
-                       preserveRatio="true"
-                       AnchorPane.rightAnchor="30.0"
-                       AnchorPane.bottomAnchor="10.0"
-                       style="-fx-effect: dropshadow(gaussian, #00ffff, 10, 0.5, 0, 0);"
-                       styleClass="glow-UFO"/>
-        </AnchorPane>
-    </bottom>
-
-</BorderPane>
