@@ -228,7 +228,7 @@ public class HomePageController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ca/ucalgary/groupprojectgui/p3/FriendRequests.fxml"));
             Node panel = loader.load();
-            homePane.setCenter(panel);
+            homePane.setRight(panel);
 
         } catch (IOException e) {
             e.printStackTrace();

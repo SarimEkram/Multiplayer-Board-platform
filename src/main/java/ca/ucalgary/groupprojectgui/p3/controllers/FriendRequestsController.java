@@ -37,7 +37,9 @@ public class FriendRequestsController {
 
     private HBox createPlayerEntry(String username) {
         HBox entry = new HBox(10);
-        entry.getStyleClass().add("player-entry");
+        entry.getStyleClass().add("player-box");
+
+
 
         Label avatar = new Label(username.substring(0, 1).toUpperCase());
         avatar.getStyleClass().add("avatar");

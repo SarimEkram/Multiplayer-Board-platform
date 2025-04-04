@@ -69,3 +69,16 @@
     -fx-border-width: 2;
     -fx-border-radius: 20;
 }
+.player-box {
+    -fx-background-color: #1e1e1e;
+    -fx-background-radius: 10;
+    -fx-padding: 10;
+    -fx-cursor: hand;
+    -fx-effect: none;
+    -fx-transition: all 0.3s;
+}
+
+.player-box:hover {
+    -fx-background-color: #4b0082;
+    -fx-effect: dropshadow(gaussian, #ff00ff, 20, 0.6, 0, 0);
+}
