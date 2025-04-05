@@ -125,6 +125,8 @@ public class Connect4Controller {
             opponentPlayer = PlayerDatabase.getPlayerByUserID(HomePageController.friendOpponentID);
         }
         // --- End matchmaking integration ---
+        gameProcessor = new GameProcessor(localPlayer, opponentPlayer, gameType);
+
 
         // Update player names to uppercase and set font
         name1.setText(localPlayer != null ? localPlayer.getUsername().toUpperCase() : "PLAYER 1");
