@@ -59,48 +59,55 @@
             <center>
                 <VBox alignment="TOP_CENTER" spacing="30" style="-fx-padding: 50;">
                     <Label text="Choose a Game" styleClass="section-title"/>
-                    <HBox fx:id="gameTilePane" alignment="CENTER" spacing="30"/>
+                    <HBox fx:id="gameTilePane" alignment="CENTER" spacing="30">
                         <Button fx:id="connect4Btn" text="Connect 4" styleClass="game-button" onAction="#onConnect4Click"/>
                         <Button fx:id="tttBtn" text="Tic Tac Toe" styleClass="game-button" onAction="#onTicTacToeClick"/>
                         <Button fx:id="checkersBtn" text="Checkers" styleClass="game-button" onAction="#onCheckersClick"/>
 
-
+                    </HBox>
+                    <ImageView fx:id="previewImage"
+                               fitWidth="300"
+                               fitHeight="200"
+                               preserveRatio="true"
+                               visible="false"
+                               style="-fx-effect: dropshadow(gaussian, #ff00ff, 10, 0.5, 0, 0);"/>
                 </VBox>
             </center>
 
             <!-- BOTTOM: Rocket + UFO -->
-            <bottom>
-                <AnchorPane prefHeight="300">
-                    <ImageView fx:id="rocketImage"
-                               fitHeight="250"
-                               preserveRatio="true"
-                               AnchorPane.leftAnchor="30.0"
-                               AnchorPane.bottomAnchor="10.0"
-                               styleClass="glow-rocket"/>
-                    <ImageView fx:id="UFOImage"
-                               fitHeight="200"
-                               preserveRatio="true"
-                               AnchorPane.rightAnchor="30.0"
-                               AnchorPane.bottomAnchor="10.0"
-                               styleClass="glow-UFO"/>
-                </AnchorPane>
-            </bottom>
 
         </BorderPane>
 
         <!-- RIGHT: POPUP PANEL STACK -->
-        <StackPane fx:id="rightPanel"
-                   prefWidth="350"
-                   alignment="TOP_RIGHT"
-                   style="-fx-padding: 20;">
-            <!-- Popups like notifications will go here -->
-            <!-- Add the preview image here -->
-            <ImageView fx:id="previewImage"
-                       visible="false"
-                       managed="false"
-                       fitWidth="300"
-                       preserveRatio="true" />
-        </StackPane>
+        <!-- RIGHT: POPUP PANEL STACK with animated elements -->
+        <VBox fx:id="rightPanel"
+              prefWidth="350"
+              spacing="20"
+              alignment="CENTER"
+              style="-fx-padding: 20;">
+
+            <!-- TOP: Floating UFO -->
+            <ImageView fx:id="UFOImage"
+                       fitHeight="100"
+                       preserveRatio="true"
+                       styleClass="glow-UFO"/>
+
+            <!-- MIDDLE: Popup container where panels load -->
+            <StackPane fx:id="popupContainer"
+                       prefHeight="400"
+                       alignment="CENTER_RIGHT"
+                       maxWidth="350"
+                       style="-fx-background-color: transparent;">
+                <!-- Popups will be loaded here dynamically -->
+            </StackPane>
+
+            <!-- BOTTOM: Floating Rocket -->
+            <ImageView fx:id="rocketImage"
+                       fitHeight="120"
+                       preserveRatio="true"
+                       styleClass="glow-rocket"/>
+        </VBox>
+
 
     </HBox>
 

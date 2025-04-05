@@ -12,6 +12,7 @@ import javafx.scene.input.MouseEvent;
 import ca.ucalgary.groupprojectgui.p3.SceneManager;
 import javafx.animation.TranslateTransition;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import java.io.IOException;
 
@@ -19,8 +20,10 @@ public class HomePageController {
     @FXML private TextField gameSearchField;
     @FXML private HBox gameTilePane;
     @FXML private ImageView img;
+    @FXML private StackPane popupContainer;
+    @FXML private VBox rightPanel;
 
-    @FXML private StackPane rightPanel;
+
 
     @FXML private ImageView heartIcon;
     @FXML private ImageView bellIcon;
@@ -218,8 +221,7 @@ public class HomePageController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ca/ucalgary/groupprojectgui/p3/NotificationPanel.fxml"));
             Node panel = loader.load();
-            rightPanel.getChildren().clear(); // Remove any previous popup
-            rightPanel.getChildren().add(panel); // Add the new one
+            popupContainer.getChildren().setAll(panel); // replaces old popup
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -230,31 +232,23 @@ public class HomePageController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ca/ucalgary/groupprojectgui/p3/FriendRequests.fxml"));
             Node panel = loader.load();
-            rightPanel.getChildren().clear(); // Remove any previous popup
-            rightPanel.getChildren().add(panel); // Add the new one
-
+            popupContainer.getChildren().setAll(panel);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
     @FXML
     private void openManageProfile(MouseEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ca/ucalgary/groupprojectgui/p3/Manage Profile.fxml"));
-            Node profilePanel = loader.load();
-            rightPanel.getChildren().clear(); // Remove any previous popup
-            rightPanel.getChildren().add(profilePanel); // Add the new one
-
-
-            // or setCenter(profilePanel), depending on your layout
+            Node panel = loader.load();
+            popupContainer.getChildren().setAll(panel);
         } catch (IOException e) {
             e.printStackTrace();
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setHeaderText("Error");
-            alert.setContentText("Unable to load Manage Profile page.");
-            alert.showAndWait();
         }
     }
+
 
 
 
