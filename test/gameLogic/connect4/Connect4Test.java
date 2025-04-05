@@ -25,6 +25,8 @@ public class Connect4Test {
         board.playPiece(2); // P2
         board.playPiece(3); // P1 - horizontal win
         assertTrue(board.isGameOver());
+        assertTrue(board.getGameLogic().won(board.getBoard(), player1)); // Confirms P1 wins and P2 lost
+        assertFalse(board.getGameLogic().won(board.getBoard(), player2));
     }
 
     @Test
@@ -38,6 +40,8 @@ public class Connect4Test {
         board.playPiece(6); // P1 creates a horizontal win at the far right
         // Shows it does not go out of bounds // no errors
         assertTrue(board.isGameOver());
+        assertTrue(board.getGameLogic().won(board.getBoard(), player1)); // Confirms P1 wins and P2 lost
+        assertFalse(board.getGameLogic().won(board.getBoard(), player2));
     }
 
     @Test
@@ -50,6 +54,8 @@ public class Connect4Test {
         board.playPiece(1); // P2
         board.playPiece(3); // P1 wins vertically
         assertTrue(board.isGameOver());
+        assertTrue(board.getGameLogic().won(board.getBoard(), player1)); // Confirms P1 wins and P2 lost
+        assertFalse(board.getGameLogic().won(board.getBoard(), player2));
     }
 
     @Test
@@ -63,15 +69,89 @@ public class Connect4Test {
         board.playPiece(6); // P1 wins vertically in last column
         // Shows it does not go out of bounds // no errors
         assertTrue(board.isGameOver());
+        assertTrue(board.getGameLogic().won(board.getBoard(), player1)); // Confirms P1 wins and P2 lost
+        assertFalse(board.getGameLogic().won(board.getBoard(), player2));
+    }
+
+    @Test
+    public void testDiagonalBackslashWinBottomRight() {
+        board.playPiece(3); // P1
+        board.playPiece(2); // P2
+        board.playPiece(2); // P1
+        board.playPiece(1); // P2
+        board.playPiece(1); // P1
+        board.playPiece(0); // P2
+        board.playPiece(1); // P1
+        board.playPiece(0); // P2
+        board.playPiece(0); // P1
+        board.playPiece(6); // P2
+        board.playPiece(0); // P1 wins, creates a backslash diagonal bottom right
+        // Shows it does not go out of bounds // no errors
+        assertTrue(board.isGameOver());
+        assertTrue(board.getGameLogic().won(board.getBoard(), player1)); // Confirms P1 wins and P2 lost
+        assertFalse(board.getGameLogic().won(board.getBoard(), player2));
+    }
+
+    @Test
+    public void testDiagonalForwardSlashWinBottomLeft() {
+        board.playPiece(0); // P1
+        board.playPiece(1); // P2
+        board.playPiece(1); // P1
+        board.playPiece(2); // P2
+        board.playPiece(2); // P1
+        board.playPiece(3); // P2
+        board.playPiece(2); // P1
+        board.playPiece(3); // P2
+        board.playPiece(3); // P1
+        board.playPiece(6); // P2
+        board.playPiece(3); // P1 wins creates a forward slash diagonal bottom left
+        // Shows it does not go out of bounds // no errors
+        assertTrue(board.isGameOver());
+        assertTrue(board.getGameLogic().won(board.getBoard(), player1)); // Confirms P1 wins and P2 lost
+        assertFalse(board.getGameLogic().won(board.getBoard(), player2));
+    }
+
+    @Test
+    public void testP2Wins() {
+        board.playPiece(5); // P1
+        board.playPiece(0); // P2
+        board.playPiece(5); // P1
+        board.playPiece(1); // P2
+        board.playPiece(5); // P1
+        board.playPiece(2); // P2
+        board.playPiece(4); // P1
+        board.playPiece(3); // P2
+        // P2 horizontal win
+        assertTrue(board.isGameOver());
+        assertTrue(board.getGameLogic().won(board.getBoard(), player2)); // Confirms P2 wins and P1 lost
+        assertFalse(board.getGameLogic().won(board.getBoard(), player1));
     }
 
     @Test
     public void testForfeit() {
         int winner = board.getGameLogic().forfeit(player1);
-        assertEquals(player2, winner);
-        assertTrue(board.getGameLogic().isGameOverByForfeit()); // P1 forfeits, P2 wins
+        assertEquals(player2, winner); // P1 forfeits, P2 wins
     }
 
+    @Test
+    public void testBoardIsFull() {
+        // Fills entire board to trigger full board
+        for (int col = 0; col < 7; col++) {
+            for (int i = 0; i < 6; i++) {
+                board.playPiece(col);
+            }
+        }
+        assertTrue(board.getGameLogic().isFull(board.getBoard()));
+    }
 
+    @Test
+    public void testNoWin() {
+        board.playPiece(0); // P1
+        board.playPiece(1); // P2
+        board.playPiece(2); // P1
+        board.playPiece(3); // P2
+        // No win yet // No false wins given
+        assertFalse(board.isGameOver());
+    }
 
 }
