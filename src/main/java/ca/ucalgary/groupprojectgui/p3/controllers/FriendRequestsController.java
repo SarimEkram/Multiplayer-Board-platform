@@ -1,5 +1,14 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
 
+import Authentication.User;
+import Authentication.UserDatabase;
+import Authentication.FriendDatabase;
+import MatchmakingLeaderboard.Player;
+import MatchmakingLeaderboard.PlayerDatabase;
+import ca.ucalgary.groupprojectgui.p3.controllers.LoginController;
+import javafx.scene.control.Alert;
+
+
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -15,24 +24,31 @@ public class FriendRequestsController {
     @FXML private TextField searchField;
     @FXML private VBox playersContainer;
 
-    private final List<String> allPlayers = List.of("MatrixMaster", "GlitchGamer", "SynthSamurai");
+    private List<Player> allPlayers;
+
 
     @FXML
     public void initialize() {
+        allPlayers = PlayerDatabase.getAllPlayers();
         loadPlayerList(allPlayers);
 
         searchField.textProperty().addListener((obs, oldText, newText) -> {
-            List<String> filtered = allPlayers.stream()
-                    .filter(name -> name.toLowerCase().contains(newText.toLowerCase()))
+            List<Player> filtered = allPlayers.stream()
+                    .filter(name -> name.getUsername().toLowerCase().contains(newText.toLowerCase()))
                     .collect(Collectors.toList());
             loadPlayerList(filtered);
         });
     }
 
-    private void loadPlayerList(List<String> players) {
+    private void loadPlayerList(List<Player> players) {
         playersContainer.getChildren().clear();
-        for (String player : players) {
-            playersContainer.getChildren().add(createPlayerEntry(player));
+        int ok =0;
+        for (Player player : players) {
+            playersContainer.getChildren().add(createPlayerEntry(player.getUsername()));
+            if (ok >= 3){
+                return;
+            }
+            ok++;
         }
     }
 
@@ -60,8 +76,36 @@ public class FriendRequestsController {
     }
 
     private void sendFriendRequest(String username) {
-        System.out.println("✅ Friend request sent to: " + username);
-        // logic to send actual friend request goes here
+        int currentUserId = LoginController.loginId;
+        Player friendUser = PlayerDatabase.getPlayerByUsername(username);
+
+        if (friendUser == null) {
+            showAlert("Error", "User not found.");
+            return;
+        }
+
+        int friendId = friendUser.getUserID();
+
+        if (FriendDatabase.areFriends(currentUserId, friendId)) {
+            showAlert("Info", "You are already friends with this user.");
+            return;
+        }
+
+        boolean success = FriendDatabase.addFriend(currentUserId, friendId);
+
+        if (success) {
+            showAlert("Success", "Friend added successfully!");
+        } else {
+            showAlert("Error", "Failed to add friend.");
+        }
+    }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     @FXML
