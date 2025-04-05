@@ -1,7 +1,7 @@
 package MatchmakingLeaderboard;
 
 /**
- * Enum for different game types within the matchmaking leaderboard system.
+ * Enum for different game types within the matchmaking leaderboard system and other places
  */
 public enum GameType {
     TIC_TAC_TOE(1),
