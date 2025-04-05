@@ -12,9 +12,9 @@ public class LoginController {
     @FXML
     private TextField username;                  // User input for the username
     @FXML
-    private PasswordField password;             // User input for the password
+    private PasswordField password;              // User input for the password
     @FXML
-    private Label loginErrorMessageLabel;       // Label to show error messages
+    private Label loginErrorMessageLabel;        // Label to show error messages
 
     public static int loginId;
 
@@ -31,20 +31,25 @@ public class LoginController {
             return;
         }
 
-
+        // Check if the user exists in the database
+        User loginUser = UserDatabase.getUserByUsername(user);
+        if (loginUser == null) {
+            // If user does not exist, display an error message
+            loginErrorMessageLabel.setText("User does not exist.");
+            loginErrorMessageLabel.setVisible(true);
+            loginErrorMessageLabel.setManaged(true);
+            return;
+        }
 
         // Validate user credentials with the UserLogin class
         int loginSuccessful = UserLogin.loginUser(user, pass);
 
-
-        if (loginSuccessful!=-1) {
+        if (loginSuccessful != -1) {
             // If login is successful, hide the error message
             loginErrorMessageLabel.setVisible(false);
             loginErrorMessageLabel.setManaged(false);
 
-            User loginuser = UserDatabase.getUserByUsername(user);
-            loginId = loginuser.getUserID();
-
+            loginId = loginUser.getUserID();
             System.out.println("Login successful for: " + user);
 
             // After successful login, switch to the home screen or another screen
@@ -69,6 +74,5 @@ public class LoginController {
         System.out.println("Forgot Password clicked.");
         // Navigate to the password recovery screen
         SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/resetPassword.fxml", "Forgot Password", "resetPassword.css");
-
     }
 }

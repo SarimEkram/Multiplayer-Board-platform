@@ -7,43 +7,40 @@
 <StackPane xmlns:fx="http://javafx.com/fxml"
            fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.ManageProfileController"
            prefWidth="350" prefHeight="600"
-           stylesheets="@styles/manage_profile.css"
-           styleClass="root">
+           styleClass="profile-panel"
+           stylesheets="@styles/manage_profile.css">
 
-    <!-- Centered VBox for Main Buttons -->
-    <VBox alignment="CENTER" spacing="30">
-        <Button text="Edit Profile"
-                onAction="#handleEditProfileButtonClick"
-                styleClass="neon-outline-button"
-                prefWidth="320" prefHeight="80"/>
-
-        <Button text="Change Password"
-                onAction="#handleChangePasswordButtonClick"
-                styleClass="neon-outline-button"
-                prefWidth="320" prefHeight="80"/>
-
-        <Button text="Delete Profile"
-                onAction="#handleDeleteProfile"
-                styleClass="danger-outline-button"
-                prefWidth="325" />
-    </VBox>
-
-    <!-- Overlay UI: Title and Back Button -->
-    <AnchorPane pickOnBounds="false">
-
+    <VBox alignment="TOP_CENTER" spacing="30" maxWidth="300" prefHeight="580">
         <!-- Title -->
         <Label text="Manage Profile"
-               layoutX="40" layoutY="30"
-               style="-fx-font-family: 'Nunito';"
-               styleClass="section-title"/>
+               styleClass="section-title"
+               alignment="CENTER"/>
+
+        <!-- Buttons -->
+        <VBox spacing="20" alignment="CENTER">
+            <Button text="Edit Profile"
+                    onAction="#handleEditProfileButtonClick"
+                    styleClass="neon-outline-button"
+                    prefWidth="280" prefHeight="50"/>
+
+            <Button text="Change Password"
+                    onAction="#handleChangePasswordButtonClick"
+                    styleClass="neon-outline-button"
+                    prefWidth="280" prefHeight="50"/>
+
+            <Button text="Delete Profile"
+                    onAction="#handleDeleteProfile"
+                    styleClass="danger-outline-button"
+                    prefWidth="280" prefHeight="50"/>
+        </VBox>
+
+        <!-- Back Button Spacer -->
+        <Pane prefHeight="120"/>
 
         <!-- Back Button -->
         <Button text="← Back"
                 onAction="#handleBackButtonClick"
                 styleClass="neon-outline-button"
-                prefWidth="120" prefHeight="40"
-                AnchorPane.leftAnchor="30.0"
-                AnchorPane.bottomAnchor="30.0"/>
-    </AnchorPane>
-
+                prefWidth="140" prefHeight="40"/>
+    </VBox>
 </StackPane>

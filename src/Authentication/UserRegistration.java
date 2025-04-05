@@ -41,12 +41,12 @@ public class UserRegistration {
         String hashed = hashPassword(password);
 
         // Create a new user object
-        User newUser = new User(userID, username, email, hashed, 0.0, 1, false);
-
+        User newUser = new User(userID, username, email, hashed, 0.0, 0, false);
+        //Save user info in database
+        boolean success= UserDatabase.saveUser(newUser);
         Player player = new Player(newUser.getUsername(), 0, newUser.getUserID());
         PlayerDatabase.savePlayer(player);
-        //Save user info in database
-        return UserDatabase.saveUser(newUser);
+        return success;
     }
 
     /**

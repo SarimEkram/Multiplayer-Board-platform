@@ -77,7 +77,6 @@ public class Connect4Matchmaking extends AbstractConnect4Matchmaking{
         Player player1 = PlayerDatabase.getPlayerByUserID(playerID);
 
         Player player2 = queue.getNextPlayer();
-
         boolean iscompatible = checkPlayers(player1, player2);
         while (!iscompatible) {
             player2 = queue.getNextPlayer();
@@ -144,4 +143,6 @@ public class Connect4Matchmaking extends AbstractConnect4Matchmaking{
         }
         return false;
     }
+
+
 }

@@ -47,6 +47,9 @@ public class Connect4Controller {
 
     // Field for the inner cells grid
     private GridPane cellsGrid;
+    @FXML private TextField chatInput;
+    @FXML private TextArea chatArea;
+
 
     // Game constants
     private static final int ROWS = 6;
@@ -59,6 +62,12 @@ public class Connect4Controller {
     // Define player piece IDs
     private static final int PLAYER1_ID = 1;
     private static final int PLAYER2_ID = 2;
+
+    // game processor
+    private GameProcessor gameProcessor;
+
+    // game type
+    private final int gameType = 2;
 
     @FXML private Button leaveGameBtn; // Add this if you wire it via FXML
 
@@ -96,7 +105,9 @@ public class Connect4Controller {
                 localPlayer = PlayerDatabase.getPlayerByUserID(LoginController.loginId);
 
 
+
                 player1Id = localPlayer.getUserID();
+
 
                 matchmaking.joinQueue(localPlayer);
 
@@ -118,9 +129,16 @@ public class Connect4Controller {
         }
         // --- End of matchmaking integration ---
 
-        name1.setText(localPlayer != null ? localPlayer.getUsername() : "Player 1");
-        name2.setText(opponentPlayer != null ? opponentPlayer.getUsername() : "Player 2");
+        // a game processor object is being created to update win/loss/mmr and draws
+        gameProcessor = new GameProcessor(localPlayer, opponentPlayer, gameType);
 
+        name1.setText(localPlayer != null ? localPlayer.getUsername() : "Player 1");
+        name1.setPadding(new Insets(5, 10, 5, 10)); // top, right, bottom, left
+        name1.setFont(Fonts.rajdhaniRegular(16));
+
+        name2.setText(opponentPlayer != null ? opponentPlayer.getUsername() : "Player 2");
+        name2.setPadding(new Insets(5, 10, 5, 10));
+        name2.setFont(Fonts.rajdhaniRegular(16));
         // Instantiate game logic. Local player is PLAYER1; opponent is PLAYER2.
         connectBoard = new ConnectBoard(PLAYER1_ID, PLAYER2_ID);
 
@@ -286,13 +304,22 @@ public class Connect4Controller {
                 if (lastPlayer == PLAYER1_ID) {
                     scorePlayer1++;
                     score1.setText("Score: " + scorePlayer1);
+                    //added this for win/loss
+                    // First player os the winner, second player is the loser
+                    gameProcessor.UpdateResults(localPlayer, opponentPlayer, gameType);
+
                 } else {
                     scorePlayer2++;
                     score2.setText("Score: " + scorePlayer2);
+                    //added this for win/loss
+                    // First player os the winner, second player is the loser
+                    gameProcessor.UpdateResults(opponentPlayer, localPlayer, gameType);
                 }
                 addMessage("SYSTEM", playerName + " wins!", true);
                 showGameOverPopup(playerName, true);
             } else {
+                // added this for draw
+                gameProcessor.ProcessDraw(localPlayer, opponentPlayer, gameType);
                 addMessage("SYSTEM", "It's a draw!", true);
                 showGameOverPopup("No one", false);
             }
@@ -364,6 +391,19 @@ public class Connect4Controller {
 
     }
 
+    @FXML
+    private void onSendMessage() {
+        String message = chatInput.getText();
+        if (message == null || message.trim().isEmpty()) {
+            return; // Do nothing if input is empty
+        }
+        // Use your addMessage method to add a new message to the VBox chatMessages.
+        addMessage("You", message, false);
+        chatInput.clear();
+
+        // Optionally scroll the ScrollPane to the bottom
+        Platform.runLater(() -> chatScrollPane.setVvalue(1.0));
+    }
 
 
     /**
@@ -567,4 +607,7 @@ public class Connect4Controller {
     public void onGameEvent(String message) {
         addMessage("SYSTEM", message, true);
     }
+
+
+
 }

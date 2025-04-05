@@ -84,14 +84,14 @@ public class Player {
     }
 
     // --- Win Ratio ---
-    public double getWinRatio(int gameSignal) {
-        validGame(gameSignal);
-        return this.winRatio[gameSignal - 1];
+    public double getWinRatio(int gameType) {
+        validGame(gameType);
+        return this.winRatio[gameType - 1];
     }
 
-    public void setWinRatio(int gameSignal, double ratio) {
-        validGame(gameSignal);
-        this.winRatio[gameSignal - 1] = ratio;
+    public void setWinRatio(int gameType, double ratio) {
+        validGame(gameType);
+        this.winRatio[gameType - 1] = ratio;
 
     }
 
@@ -148,7 +148,7 @@ public class Player {
             throw new IllegalArgumentException("Signal must be between 0 and 3");
         }
 
-        this.gameSignal[gameType - 1] = Signal;
+        this.gameSignal[gameType-1] = Signal;
     }
 
 

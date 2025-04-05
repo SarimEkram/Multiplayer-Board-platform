@@ -33,7 +33,7 @@ public class PlayerTest {
             assertEquals(0, player.getLosses(i));
             assertEquals(0.0, player.getWinRatio(i));
             assertEquals(0, player.getMMR(i));
-            assertEquals(0, player.getGameSignal(i));
+            assertEquals(i, player.getGameSignal(i));
             assertNotNull(player.getRank(i));
         }
     }

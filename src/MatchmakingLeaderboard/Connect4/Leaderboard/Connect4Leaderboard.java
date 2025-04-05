@@ -12,7 +12,7 @@ import java.util.List;
 public class Connect4Leaderboard extends AbstractConnect4Leaderboard {
 
     private static final Connect4Leaderboard instance = new Connect4Leaderboard();
-    private static final int GAME_TYPE = 3;
+    private static final int GAME_TYPE = 2;
 
     private Connect4Leaderboard() {
     }

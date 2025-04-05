@@ -107,8 +107,6 @@ public class Connect4MatchmakingTest {
     public void testCheckPlayers_NotCompatibleThree() {
         player1.setRank(new Rank(2500), 2);
         player2.setRank(new Rank(500), 2);
-        player1.setGameSignal(2, gameType+1);
-        player2.setGameSignal(3, gameType+2);
         player1.setLevel(27);
         player2.setLevel(26);
         assertFalse(matchmaking.checkPlayers(player1, player2));

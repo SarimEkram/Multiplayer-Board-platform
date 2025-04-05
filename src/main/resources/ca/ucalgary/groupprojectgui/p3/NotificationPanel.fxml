@@ -4,50 +4,48 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<VBox fx:id="notificationPanel"
-      styleClass="notification-panel"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.NotificationPanelController"
-      spacing="20"
-      alignment="TOP_CENTER"
-      maxWidth="400"
-      style="-fx-background-color: linear-gradient(to bottom right, #2b1055, #7597de);
-             -fx-background-radius: 20;
-             -fx-border-radius: 20;
-             -fx-border-color: #ffffff40;
-             -fx-border-width: 1.5;">
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.NotificationPanelController"
+           alignment="TOP_RIGHT"
+           styleClass="blur-overlay"
+           stylesheets="@styles/friend_popup.css">
 
     <padding>
-        <Insets top="30" right="30" bottom="30" left="30"/>
+        <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
 
-    <!-- Title and Close Button Row -->
-    <HBox alignment="CENTER_RIGHT">
-        <Region HBox.hgrow="ALWAYS"/>
-        <Button fx:id="closeButton"
-                text="✖"
-                onAction="#closePanel"
-                onMouseEntered="#hoverClose"
-                onMouseExited="#unhoverClose"
-                style="-fx-background-color: transparent;
-                       -fx-font-size: 18px;
-                       -fx-text-fill: white;" />
-    </HBox>
+    <VBox fx:id="notificationPanel"
+          spacing="15"
+          alignment="TOP_CENTER"
+          maxWidth="400"
+          styleClass="neon-border-panel"
+          style="-fx-padding: 20;
+                 -fx-background-radius: 20;
+                 -fx-background-color: #0d0d0d;
+                 -fx-effect: dropshadow(gaussian, #ff00ff, 40, 0.5, 0, 0);
+                 -fx-border-color: #ff00ff;
+                 -fx-border-width: 2;
+                 -fx-border-radius: 20;">
 
-    <Label text="🔔 Notifications"
-           style="-fx-font-size: 24px;
-                  -fx-font-weight: bold;
-                  -fx-text-fill: #ffffff;
-                  -fx-effect: dropshadow(gaussian, #ff00ff, 10, 0.5, 0, 0);" />
+        <!-- Header -->
+        <HBox alignment="CENTER_LEFT">
+            <Label text="🔔 NOTIFICATIONS" styleClass="title-label"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button fx:id="closeButton"
+                    text="✖"
+                    onAction="#closePanel"
+                    styleClass="close-button"/>
+        </HBox>
 
-    <!-- Notification List -->
-    <ListView fx:id="notificationList"
-              prefHeight="200"
-              style="-fx-background-color: transparent;
-                     -fx-border-color: transparent;
-                     -fx-font-size: 16px;
-                     -fx-text-fill: white;" />
+        <!-- Notification List -->
+        <ListView fx:id="notificationList"
+                  prefHeight="200"
+                  style="-fx-background-color: transparent;
+                 -fx-control-inner-background: transparent;
+                 -fx-border-color: transparent;
+                 -fx-text-fill: white;"
+        />
 
-</VBox>
 
-
+    </VBox>
+</StackPane>

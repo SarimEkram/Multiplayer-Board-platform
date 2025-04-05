@@ -1,148 +1,131 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="homePane"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.HomePageController"
-            styleClass="home-background"
-            prefWidth="1200" prefHeight="800">
 
-    <!-- TOP HEADER: Logo + Centered Search Bar + Icons on Right -->
-    <top>
-        <HBox spacing="20" alignment="CENTER" styleClass="top-header">
-            <padding>
-                <Insets top="20" bottom="20" left="30" right="30" />
-            </padding>
-
-            <!-- Left: Logo -->
-            <ImageView fx:id="img"
-                       fitHeight="100"
-                       preserveRatio="true"
-                       pickOnBounds="true"/>
-
-            <!-- Center: Spacer + SearchBar + Spacer -->
-            <Region HBox.hgrow="ALWAYS"/>
-            <StackPane alignment="CENTER_RIGHT" maxWidth="400">
-                <TextField fx:id="gameSearchField"
-                           promptText="Search games..."
-                           styleClass="search-text-field"
-                           prefWidth="800"
-                           prefHeight="50"/>
-                <Label text="🔍" mouseTransparent="true"
-                       style="-fx-font-size: 16px; -fx-text-fill: #bbbbbb; -fx-padding: 0 12 0 0;" />
-            </StackPane>
-            <Region HBox.hgrow="ALWAYS"/>
-
-            <!-- Right: Icons and Buttons -->
-            <!-- Right: Icons and Buttons -->
-            <HBox spacing="15" alignment="CENTER_RIGHT">
-                <ImageView fx:id="heartIcon"
-                           fitHeight="24"
-                           fitWidth="24"
-                           pickOnBounds="true"
-                           styleClass="header-icon"
-                           onMouseClicked="#handleQuickMatch"/>
-
-                <ImageView fx:id="bellIcon"
-                           fitHeight="24"
-                           fitWidth="24"
-                           pickOnBounds="true"
-                           styleClass="header-icon"
-                           onMouseClicked="#openNotificationPanel"/>
-
-                <ImageView fx:id="friendsIcon"
-                           onMouseClicked="#openFriendRequests"
-                           fitHeight="24"
-                           fitWidth="24"
-                           pickOnBounds="true"
-                           styleClass="header-icon"/>
+<HBox fx:id="mainContainer"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.HomePageController"
+      styleClass="home-background"
+      prefWidth="1200" prefHeight="800"
+      spacing="40"
+      style="-fx-padding: 30;">
 
 
-                <ImageView fx:id="profileIcon"
-                           fitHeight="24"
-                           fitWidth="24"
-                           pickOnBounds="true"
-                           styleClass="header-icon"
-                           onMouseClicked="#openManageProfile"/>
+    <!-- LEFT: SIDEBAR PANEL -->
+    <VBox fx:id="sidebar"
+          alignment="TOP_CENTER"
+          spacing="20"
+          prefWidth="100"
+          styleClass="neon-sidebar"
+          style="-fx-background-radius: 20; -fx-padding: 25;">
 
-                <!-- NEW: Leaderboard Button -->
-                <Button fx:id="leaderboardBtn"
-                        text="🏆 Leaderboard"
-                        onAction="#onLeaderboardClick"
-                        styleClass="neon-outline-button"
-                        prefWidth="130" prefHeight="35"/>
 
-                <Button text="Logout"
-                        fx:id="logoutButton"
-                        onAction="#handleLogout"
-                        styleClass="neon-outline-button"
-                        prefWidth="100" prefHeight="35"/>
-            </HBox>
+        <ImageView fx:id="img" fitHeight="80" preserveRatio="true" pickOnBounds="true"/>
+        <ImageView fx:id="heartIcon" fitHeight="28" fitWidth="28" pickOnBounds="true" onMouseClicked="#handleQuickMatch"/>
+        <ImageView fx:id="bellIcon" fitHeight="28" fitWidth="28" pickOnBounds="true" onMouseClicked="#openNotificationPanel"/>
+        <ImageView fx:id="friendsIcon" fitHeight="28" fitWidth="28" pickOnBounds="true" onMouseClicked="#openFriendRequests"/>
+        <ImageView fx:id="profileIcon" fitHeight="28" fitWidth="28" pickOnBounds="true" onMouseClicked="#openManageProfile"/>
+        <Button fx:id="leaderboardBtn" text="🏆" onAction="#onLeaderboardClick" styleClass="neon-icon-button" prefWidth="50" prefHeight="35"/>
+        <Button fx:id="logoutButton" text="⎋" onAction="#handleLogout" styleClass="neon-icon-button" prefWidth="50" prefHeight="35"/>
+    </VBox>
 
-        </HBox>
-    </top>
 
-    <!-- CENTER: Main Content -->
-    <center>
-        <VBox alignment="TOP_CENTER" spacing="30">
-            <padding>
-                <Insets top="100" left="40" right="40" bottom="0"/>
-            </padding>
+    <!-- CENTER + RIGHT AREA -->
+    <HBox spacing="20">
 
-            <!-- Title -->
-            <Label text="Choose a Game" styleClass="section-title"/>
 
-            <!-- Row of Game Buttons -->
-            <HBox fx:id="gameTilePane" alignment="CENTER" spacing="30">
-                <Button fx:id="connect4Btn" text="Connect 4"
-                        onAction="#onConnect4Click"
-                        prefWidth="200" prefHeight="100"
-                        styleClass="game-button"/>
-                <Button fx:id="tttBtn" text="Tic Tac Toe"
-                        onAction="#onTicTacToeClick"
-                        prefWidth="200" prefHeight="100"
-                        styleClass="game-button"/>
-                <Button fx:id="checkersBtn" text="Checkers"
-                        onAction="#onCheckersClick"
-                        prefWidth="200" prefHeight="100"
-                        styleClass="game-button"/>
-            </HBox>
+        <!-- MAIN CONTENT AREA -->
+        <BorderPane fx:id="homePane"
+                    styleClass="main-glow-box"
+                    prefWidth="1000"
+                    style="-fx-padding: 40; -fx-background-radius: 20;">
 
-            <!-- Preview Image -->
-            <ImageView fx:id="previewImage"
-                       fitWidth="300"
-                       fitHeight="200"
-                       preserveRatio="true"
-                       visible="false"
-                       style="-fx-effect: dropshadow(gaussian, #ff00ff, 10, 0.5, 0, 0);"/>
+
+            <!-- TOP: Search Field -->
+            <top>
+                <HBox spacing="20" alignment="CENTER" styleClass="top-header">
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <StackPane alignment="CENTER_RIGHT" maxWidth="400">
+                        <TextField fx:id="gameSearchField"
+                                   promptText="Search games..."
+                                   styleClass="search-text-field"
+                                   prefWidth="800"
+                                   prefHeight="50"/>
+                        <Label text="🔍" mouseTransparent="true"
+                               style="-fx-font-size: 16px; -fx-text-fill: #bbbbbb; -fx-padding: 0 12 0 0;" />
+                    </StackPane>
+                    <Region HBox.hgrow="ALWAYS"/>
+                </HBox>
+            </top>
+
+
+            <!-- CENTER: Game UI -->
+            <center>
+                <VBox alignment="TOP_CENTER" spacing="30" style="-fx-padding: 30;">
+                    <Label text="Choose a Game" styleClass="section-title"/>
+
+
+                    <HBox fx:id="gameTilePane" alignment="CENTER" spacing="40">
+
+
+                        <!-- CONNECT 4 CARD -->
+                        <VBox alignment="TOP_CENTER" spacing="15" styleClass="game-card">
+                            <Label text="Connect 4" styleClass="game-title"/>
+                            <ImageView fx:id="connect4Image" fitWidth="220" fitHeight="130" preserveRatio="true" styleClass="game-preview"/>
+                            <Label text="Classic vertical strategy game with a neon twist. Connect four of your pieces to win!"
+                                   wrapText="true" maxWidth="250" styleClass="game-description"/>
+                            <Button fx:id="connect4Btn" text="PLAY NOW" onAction="#onConnect4Click" styleClass="play-now-button"/>
+                        </VBox>
+
+
+                        <!-- TIC TAC TOE CARD -->
+                        <VBox alignment="TOP_CENTER" spacing="15" styleClass="game-card">
+                            <Label text="Tic Tac Toe" styleClass="game-title"/>
+                            <ImageView fx:id="tttImage" fitWidth="220" fitHeight="130" preserveRatio="true" styleClass="game-preview"/>
+                            <Label text="Battle in a grid of 3x3. Outsmart your opponent in a retro showdown!"
+                                   wrapText="true" maxWidth="250" styleClass="game-description"/>
+                            <Button fx:id="tttBtn" text="PLAY NOW" onAction="#onTicTacToeClick" styleClass="play-now-button"/>
+                        </VBox>
+
+
+                        <!-- CHECKERS CARD -->
+                        <VBox alignment="TOP_CENTER" spacing="15" styleClass="game-card">
+                            <Label text="Checkers" styleClass="game-title"/>
+                            <ImageView fx:id="checkersImage" fitWidth="220" fitHeight="130" preserveRatio="true" styleClass="game-preview"/>
+                            <Label text="Jump your way to victory in this classic game with a neon twist."
+                                   wrapText="true" maxWidth="250" styleClass="game-description"/>
+                            <Button fx:id="checkersBtn" text="PLAY NOW" onAction="#onCheckersClick" styleClass="play-now-button"/>
+                        </VBox>
+
+
+                    </HBox>
+                </VBox>
+            </center>
+
+
+        </BorderPane>
+
+
+        <!-- RIGHT: POPUP PANEL STACK -->
+        <VBox fx:id="rightPanel"
+              prefWidth="350"
+              spacing="20"
+              alignment="CENTER"
+              style="-fx-padding: 20;">
+
+            <StackPane fx:id="popupContainer"
+                       prefHeight="1300"
+                       alignment="CENTER_RIGHT"
+                       maxWidth="500"
+                       style="-fx-background-color: transparent;"/>
         </VBox>
-    </center>
 
-    <!-- BOTTOM DECORATIONS -->
-    <bottom>
-        <AnchorPane prefHeight="300">
-            <!-- 🚀 Rocket -->
-            <ImageView fx:id="rocketImage"
-                       fitHeight="250"
-                       preserveRatio="true"
-                       AnchorPane.leftAnchor="30.0"
-                       AnchorPane.bottomAnchor="10.0"
-                       style="-fx-effect: dropshadow(gaussian, #ff00ff, 10, 0.5, 0, 0);"
-                       styleClass="glow-rocket"/>
 
-            <!-- 🛸 UFO -->
-            <ImageView fx:id="UFOImage"
-                       fitHeight="200"
-                       preserveRatio="true"
-                       AnchorPane.rightAnchor="30.0"
-                       AnchorPane.bottomAnchor="10.0"
-                       style="-fx-effect: dropshadow(gaussian, #00ffff, 10, 0.5, 0, 0);"
-                       styleClass="glow-UFO"/>
-        </AnchorPane>
-    </bottom>
 
-</BorderPane>
+    </HBox>
+
+
+</HBox>

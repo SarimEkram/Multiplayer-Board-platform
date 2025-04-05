@@ -98,6 +98,7 @@ public class CheckersMatchmaking extends AbstractCheckersMatchmaking{
         System.out.println("Signal game system to start the game simulation and load matched players");
     }
 
+
     /**
      * function to check if the matchmaking system is up
      *
@@ -119,6 +120,14 @@ public class CheckersMatchmaking extends AbstractCheckersMatchmaking{
     }
 
     /**
+     * function to find matched players an unpopulated game simulation ready to play
+     */
+    @Override
+    public void findMatch(Player Player1, Player Player2) {
+        System.out.println("Generate a request to the backend asking for an unpopulated game simulation");
+    }
+
+    /**
      * function to check if the two players are comparable in their skills and stats
      * @param player1 the first player added to queue chronologically
      * @param player2 the second player added to queue chronologically
@@ -127,8 +136,10 @@ public class CheckersMatchmaking extends AbstractCheckersMatchmaking{
     @Override
     public boolean checkPlayers(Player player1, Player player2) {
         if ((player1.getRank(gameType).getCurrentTier() == player2.getRank(gameType).getCurrentTier()) && (player1.getGameSignal(gameType) == player2.getGameSignal(gameType))&&(player1.getUserID()!= player2.getUserID())){
+            System.out.println("Bad");
             return Math.abs((player1.getLevel() - player2.getLevel())) <= 10;
         }
+        System.out.println("Good");
         return false;
     }
 }
