@@ -15,7 +15,6 @@
 
 <!-- Root is a StackPane so that overlays can appear on top -->
 
-<?import javafx.scene.Cursor?>
 <StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.TicTacToeController">
     <!-- Main layout -->
     <BorderPane fx:id="mainGamePane" styleClass="main-background" stylesheets="@styles/TicTacToe.css">
@@ -25,7 +24,7 @@
             <BorderPane styleClass="sidebar-left">
                 <top>
                     <ImageView fitHeight="118.0" fitWidth="167.0" preserveRatio="true" BorderPane.alignment="CENTER">
-                        <Image backgroundLoading="true" url="@images/img.png"/>
+                        <Image backgroundLoading="true" url="@images/img.png" />
                     </ImageView>
                 </top>
                 <center>
@@ -37,7 +36,7 @@
                                     <Image backgroundLoading="true" url="@images/player1.png" />
                                 </image>
                             </ImageView>
-                            <Label styleClass="player-label" text="Player X" />
+                            <Label fx:id="localPlayerLabel" styleClass="player-label" text="Player X" />
                         </VBox>
                         <ImageView fitHeight="80" fitWidth="130" preserveRatio="true">
                             <image>
@@ -51,7 +50,7 @@
                                     <Image backgroundLoading="true" url="@images/player2.png" />
                                 </image>
                             </ImageView>
-                            <Label styleClass="player-label" text="Player O" />
+                            <Label fx:id="opponentLabel" styleClass="player-label" text="Player O" />
                         </VBox>
                     </VBox>
                 </center>
