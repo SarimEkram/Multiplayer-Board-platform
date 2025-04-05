@@ -67,6 +67,7 @@
 
 #avatar1 {
     -fx-background-color: #111;
+    -fx-max-width: 70px;
     -fx-border-radius: 50%;
     -fx-background-radius: 50%;
     -fx-alignment: center;
@@ -78,19 +79,15 @@
     -fx-padding: 5;
     -fx-text-fill: #ff00ff;
     -fx-border-color: #ff00ff;
-}
 
-#name1 {
-    -fx-font-size: 18px;
-    -fx-letter-spacing: 1px;
-    -fx-font-weight: 600;
 }
-
 #score1 {
     -fx-font-family: 'Orbitron', sans-serif;
     -fx-font-size: 16px;
     -fx-font-weight: 700;
     -fx-padding: 5 0 0 0;
+    -fx-text-fill: #fff;
+
 }
 
 /* VS Badge */
@@ -126,17 +123,13 @@
     -fx-border-color: #00ffff;
 }
 
-#name2 {
-    -fx-font-size: 18px;
-    -fx-letter-spacing: 1px;
-    -fx-font-weight: 600;
-}
-
 #score2 {
     -fx-font-family: 'Orbitron', sans-serif;
     -fx-font-size: 16px;
     -fx-font-weight: 700;
     -fx-padding: 5 0 0 0;
+    -fx-text-fill: #fff;
+
 }
 
 /* Game Stats */
@@ -548,5 +541,59 @@
 
 
 
+
+
+
+#avatar1,
+#avatar2 {
+    -fx-pref-width: 70px;
+    -fx-pref-height: 70px;
+    -fx-min-width: 70px;
+    -fx-min-height: 70px;
+    -fx-max-width: 70px;
+    -fx-max-height: 70px;
+    -fx-background-color: #111;
+    -fx-border-radius: 50%;
+    -fx-background-radius: 50%;
+    -fx-alignment: center;
+    -fx-font-family: 'Orbitron', sans-serif;
+    -fx-font-size: 24;
+    -fx-font-weight: bold;
+    -fx-border-width: 2;
+    -fx-padding: 5;
+}
+
+.player-name {
+    -fx-letter-spacing: 1px;
+    -fx-text-fill: #fff;
+
+}
+
+.avatar {
+    -fx-pref-width: 70px;
+    -fx-pref-height: 70px;
+    -fx-background-color: #111;
+    -fx-border-radius: 50%;
+    -fx-background-radius: 50%;
+    -fx-alignment: center;
+    -fx-border-width: 2;
+    -fx-padding: 5;
+}
+
+#player1DiscContainer {
+    -fx-alignment: center; /* Ensures the VBox itself is centered */
+}
+
+#name1, #score1 {
+    -fx-alignment: center;        /* Horizontal alignment of the label’s content */
+    -fx-text-alignment: center;   /* Text alignment within the label */
+    -fx-pref-width: 100;          /* Give enough width to see the centering effect */
+}
+.time-label, .moves-label {
+    -fx-text-fill: #fff;
+    -fx-font-family: 'Orbitron', sans-serif;
+    -fx-font-size: 16px;
+    -fx-effect: dropshadow(gaussian, rgba(0,255,255,0.8), 10, 0.5, 0, 0);
+}
 
 

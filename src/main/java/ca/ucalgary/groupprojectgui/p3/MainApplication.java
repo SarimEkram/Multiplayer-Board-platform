@@ -7,12 +7,17 @@ import javafx.stage.Stage;
 public class MainApplication extends Application {
     @Override
     public void start(Stage primaryStage) {
-            // Verify fonts loaded
+        Font sampleFont = Fonts.rajdhaniRegular(12);
+
+
+        // Verify fonts loaded
             System.out.println("Loaded font families: " + Font.getFamilies());
             System.out.println("Orbitron available: " +
                     Font.getFamilies().contains("Orbitron"));
             System.out.println("Rajdhani available: " +
                     Font.getFamilies().contains("Rajdhani"));
+
+        System.out.println(Font.getFamilies());
 
 
         SceneManager.setStage(primaryStage);
