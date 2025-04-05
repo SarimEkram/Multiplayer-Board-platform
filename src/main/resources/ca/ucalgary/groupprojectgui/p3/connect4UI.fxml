@@ -107,8 +107,8 @@
                                 <!-- Chat Input Area -->
                                 <HBox fx:id="chatInputArea" alignment="CENTER" spacing="10">
                                     <children>
-                                        <TextField fx:id="chatInput" HBox.hgrow="ALWAYS" promptText="Type message..."/>
-                                        <Button fx:id="sendBtn" text="SEND" />
+                                        <TextField fx:id="chatInput" HBox.hgrow="ALWAYS" promptText="Type message..." onAction="#onSendMessage"/>
+                                        <Button fx:id="sendBtn" text="SEND" onAction="#onSendMessage" />
                                     </children>
                                 </HBox>
                             </children>

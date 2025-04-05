@@ -47,6 +47,9 @@ public class Connect4Controller {
 
     // Field for the inner cells grid
     private GridPane cellsGrid;
+    @FXML private TextField chatInput;
+    @FXML private TextArea chatArea;
+
 
     // Game constants
     private static final int ROWS = 6;
@@ -370,6 +373,19 @@ public class Connect4Controller {
 
     }
 
+    @FXML
+    private void onSendMessage() {
+        String message = chatInput.getText();
+        if (message == null || message.trim().isEmpty()) {
+            return; // Do nothing if input is empty
+        }
+        // Use your addMessage method to add a new message to the VBox chatMessages.
+        addMessage("You", message, false);
+        chatInput.clear();
+
+        // Optionally scroll the ScrollPane to the bottom
+        Platform.runLater(() -> chatScrollPane.setVvalue(1.0));
+    }
 
 
     /**
@@ -573,4 +589,7 @@ public class Connect4Controller {
     public void onGameEvent(String message) {
         addMessage("SYSTEM", message, true);
     }
+
+
+
 }
