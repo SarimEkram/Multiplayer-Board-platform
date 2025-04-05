@@ -1,5 +1,9 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
 
+import MatchmakingLeaderboard.GameProcessor;
+import MatchmakingLeaderboard.Player;
+import MatchmakingLeaderboard.PlayerDatabase;
+import MatchmakingLeaderboard.TicTacToe.Matchmaking.TicTacToeMatchmaking;
 import ca.ucalgary.groupprojectgui.p3.SceneManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,6 +19,9 @@ import javafx.scene.layout.*;
 import javafx.scene.shape.Line;
 import gameLogic.tictactoe.TicTacToe;
 import gameLogic.tictactoe.TicTacToeBoard;
+
+import java.io.IOException;
+
 public class TicTacToeController {
 
     @FXML
@@ -37,6 +44,11 @@ public class TicTacToeController {
 
     @FXML
     private TextField chatInput;
+    @FXML
+    private Label localPlayerLabel;
+    @FXML
+    private Label opponentLabel;
+    private GameProcessor gameProcessor;
 
     private TicTacToeBoard logicBoard;
     private TicTacToe gameLogic;
@@ -49,19 +61,58 @@ public class TicTacToeController {
 
     //Prevents further interaction after game ends
     private boolean gameOver = false;
+    private TicTacToeMatchmaking matchmaking;
+    private Player localPlayer;
+    private int player1Id;       // Local player's ID (from matchmaking)
+    private int opponentId;      // Opponent's player ID
+    private Player opponentPlayer;
 
     @FXML
     public void initialize() {
 
-        logicBoard = new TicTacToeBoard();
-        gameLogic = new TicTacToe(logicBoard);
-        gameLogic.start();
-        currentPlayer = 'X';
-
         // Draw board
         createBoard();
         gameName.setText("X-Tic-Tac-Toe-O");
-        turnLabel.setText("Player X's Turn");
+        // --- Matchmaking integration ---
+        matchmaking = new TicTacToeMatchmaking();
+
+        if (HomePageController.friendOpponentID==-1) {
+            try {
+
+                matchmaking.matchmakingConnect();
+
+                localPlayer = PlayerDatabase.getPlayerByUserID(LoginController.loginId);
+
+                player1Id = localPlayer.getUserID();
+
+                matchmaking.joinQueue(localPlayer);
+
+                for (Player player : PlayerDatabase.getAllPlayers()) {
+                    if (player.getGameSignal(1) == 1)
+                        matchmaking.joinQueue(player);
+                }
+
+                opponentPlayer = matchmaking.findOpponent(localPlayer.getUserID());
+
+            } catch (IOException e) {
+                // This needs to be implemented
+                // addMessage("SYSTEM", "Matchmaking error: " + e.getMessage(), true);
+            }
+        }else {
+            localPlayer = PlayerDatabase.getPlayerByUserID(LoginController.loginId);
+            opponentPlayer = PlayerDatabase.getPlayerByUserID(HomePageController.friendOpponentID);
+        }
+
+        // --- End of matchmaking integration ---
+
+        logicBoard = new TicTacToeBoard();
+        gameLogic = new TicTacToe(logicBoard);
+        gameLogic.start();
+        gameProcessor = new GameProcessor(localPlayer, opponentPlayer, 1);
+        currentPlayer = 'X';
+        turnLabel.setText("X: "+localPlayer.getUsername()+"'s Turn");
+        localPlayerLabel.setText("X: "+ localPlayer.getUsername());
+        opponentLabel.setText("O: "+ opponentPlayer.getUsername());
     }
 
     /**
@@ -116,10 +167,21 @@ public class TicTacToeController {
 
         // Check for win
         if (logicBoard.checkForWin(symbol)) {
-            turnLabel.setText("Player " + symbol + " wins!");
-            gameOver = true;
-            boardContainer.setDisable(true);
-            return;
+            if (symbol == 'X'){
+                turnLabel.setText(localPlayer.getUsername()+ " " + symbol + " wins!");
+                gameOver = true;
+                boardContainer.setDisable(true);
+                gameProcessor.UpdateResults(localPlayer,opponentPlayer,1);
+                return;
+            }
+            else {
+                turnLabel.setText(opponentPlayer.getUsername()+ " " + symbol + " wins!");
+                gameOver = true;
+                boardContainer.setDisable(true);
+                gameProcessor.UpdateResults(opponentPlayer,localPlayer,1);
+                return;
+            }
+
         }
 
         // Check for draw
@@ -127,13 +189,14 @@ public class TicTacToeController {
             turnLabel.setText("It's a tie!");
             gameOver = true;
             boardContainer.setDisable(true);
+            gameProcessor.ProcessDraw(localPlayer, opponentPlayer, 1);
             return;
         }
 
         // Next turn
         playerXTurn = !playerXTurn;
         gameLogic.changeActivePlayer();
-        turnLabel.setText(playerXTurn ? "Player X's Turn" : "Player O's Turn");
+        turnLabel.setText(playerXTurn ? "X: "+localPlayer.getUsername()+"'s Turn" : "O: "+opponentPlayer.getUsername()+"'s Turn");
     }
 
     /**
@@ -185,6 +248,7 @@ public class TicTacToeController {
         overlay.getChildren().add(modal);
 
         // Add the overlay on top of the UI
+
         rootPane.getChildren().add(overlay);
         overlay.toFront();
 
