@@ -185,6 +185,7 @@ public class TicTacToeController {
         overlay.getChildren().add(modal);
 
         // Add the overlay on top of the UI
+
         rootPane.getChildren().add(overlay);
         overlay.toFront();
 
