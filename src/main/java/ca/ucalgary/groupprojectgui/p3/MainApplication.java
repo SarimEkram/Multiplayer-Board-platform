@@ -24,9 +24,9 @@ public class MainApplication extends Application {
         // Show the loading screen then load the HomePage.
         SceneManager.switchTo(
 
-                "/ca/ucalgary/groupprojectgui/p3/login.fxml",
+                "/ca/ucalgary/groupprojectgui/p3/HomePage.fxml",
                 "login Page",
-                "login.css"
+                "Home.css"
 
         );
         primaryStage.show();
