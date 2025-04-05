@@ -145,6 +145,17 @@ public class PlayerDatabase {
         return new ArrayList<>(players);
     }
 
+    /**
+     * Retrieves a player by their username.
+     * @param username The username of the player
+     * @return Player object or null if not found
+     */
+    public static Player getPlayerByUsername(String username) {
+        return players.stream()
+                .filter(p -> p.getUsername().equalsIgnoreCase(username))
+                .findFirst()
+                .orElse(null);
+    }
 
 
 }
