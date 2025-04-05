@@ -52,7 +52,7 @@
                                 <!-- Row for time and moves placed just above the board -->
                                 <HBox alignment="CENTER" spacing="20">
                                     <children>
-                                        <Label fx:id="timeElapsed" text="TIME: 18:19" styleClass="time-label"/>
+                                        <Label fx:id="timeElapsed" text="TIME: 00:00" styleClass="time-label"/>
                                         <Region HBox.hgrow="ALWAYS" />
                                         <Label fx:id="movesCount" text="MOVES: 0" styleClass="moves-label"/>
                                     </children>
