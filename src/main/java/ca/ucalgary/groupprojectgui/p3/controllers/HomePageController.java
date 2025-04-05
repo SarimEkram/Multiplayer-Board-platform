@@ -219,15 +219,7 @@ public class HomePageController {
 
     @FXML
     private void handleLogout() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ca/ucalgary/groupprojectgui/p3/LogoutConfirmationPanel.fxml"));
-            Node panel = loader.load();
-            rightPanel.getChildren().clear(); // Remove any previous popup
-            rightPanel.getChildren().add(panel);
-        } catch (IOException e) {
-            e.printStackTrace();
-            showPopupAlert("Couldn't load logout panel.");
-        }
+       SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/LogoutConfirmationPanel.fxml","Confirm Logout",null);
     }
 
     @FXML
