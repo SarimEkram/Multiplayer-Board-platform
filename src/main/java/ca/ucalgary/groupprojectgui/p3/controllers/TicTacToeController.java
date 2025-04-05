@@ -1,5 +1,6 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
 
+import MatchmakingLeaderboard.GameProcessor;
 import MatchmakingLeaderboard.Player;
 import MatchmakingLeaderboard.PlayerDatabase;
 import MatchmakingLeaderboard.TicTacToe.Matchmaking.TicTacToeMatchmaking;
@@ -47,6 +48,7 @@ public class TicTacToeController {
     private Label localPlayerLabel;
     @FXML
     private Label opponentLabel;
+    private GameProcessor gameProcessor;
 
     private TicTacToeBoard logicBoard;
     private TicTacToe gameLogic;
@@ -106,6 +108,7 @@ public class TicTacToeController {
         logicBoard = new TicTacToeBoard();
         gameLogic = new TicTacToe(logicBoard);
         gameLogic.start();
+        gameProcessor = new GameProcessor(localPlayer, opponentPlayer, 1);
         currentPlayer = 'X';
         turnLabel.setText("X: "+localPlayer.getUsername()+"'s Turn");
         localPlayerLabel.setText("X: "+ localPlayer.getUsername());
@@ -168,12 +171,14 @@ public class TicTacToeController {
                 turnLabel.setText(localPlayer.getUsername()+ " " + symbol + " wins!");
                 gameOver = true;
                 boardContainer.setDisable(true);
+                gameProcessor.UpdateResults(localPlayer,opponentPlayer,1);
                 return;
             }
             else {
                 turnLabel.setText(opponentPlayer.getUsername()+ " " + symbol + " wins!");
                 gameOver = true;
                 boardContainer.setDisable(true);
+                gameProcessor.UpdateResults(opponentPlayer,localPlayer,1);
                 return;
             }
 
@@ -184,6 +189,7 @@ public class TicTacToeController {
             turnLabel.setText("It's a tie!");
             gameOver = true;
             boardContainer.setDisable(true);
+            gameProcessor.ProcessDraw(localPlayer, opponentPlayer, 1);
             return;
         }
 
