@@ -121,8 +121,12 @@ public class Connect4Controller {
         // --- End of matchmaking integration ---
 
         name1.setText(localPlayer != null ? localPlayer.getUsername() : "Player 1");
-        name2.setText(opponentPlayer != null ? opponentPlayer.getUsername() : "Player 2");
+        name1.setPadding(new Insets(5, 10, 5, 10)); // top, right, bottom, left
+        name1.setFont(Fonts.rajdhaniRegular(16));
 
+        name2.setText(opponentPlayer != null ? opponentPlayer.getUsername() : "Player 2");
+        name2.setPadding(new Insets(5, 10, 5, 10));
+        name2.setFont(Fonts.rajdhaniRegular(16));
         // Instantiate game logic. Local player is PLAYER1; opponent is PLAYER2.
         connectBoard = new ConnectBoard(PLAYER1_ID, PLAYER2_ID);
 
