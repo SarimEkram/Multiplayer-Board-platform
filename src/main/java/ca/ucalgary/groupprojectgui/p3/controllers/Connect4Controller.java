@@ -63,6 +63,12 @@ public class Connect4Controller {
     private static final int PLAYER1_ID = 1;
     private static final int PLAYER2_ID = 2;
 
+    // game processor
+    private GameProcessor gameProcessor;
+
+    // game type
+    private final int gameType = 2;
+
     @FXML private Button leaveGameBtn; // Add this if you wire it via FXML
 
     // Game logic instance
@@ -122,6 +128,9 @@ public class Connect4Controller {
             opponentPlayer = PlayerDatabase.getPlayerByUserID(HomePageController.friendOpponentID);
         }
         // --- End of matchmaking integration ---
+
+        // a game processor object is being created to update win/loss/mmr and draws
+        gameProcessor = new GameProcessor(localPlayer, opponentPlayer, gameType);
 
         name1.setText(localPlayer != null ? localPlayer.getUsername() : "Player 1");
         name1.setPadding(new Insets(5, 10, 5, 10)); // top, right, bottom, left
@@ -295,13 +304,22 @@ public class Connect4Controller {
                 if (lastPlayer == PLAYER1_ID) {
                     scorePlayer1++;
                     score1.setText("Score: " + scorePlayer1);
+                    //added this for win/loss
+                    // First player os the winner, second player is the loser
+                    gameProcessor.UpdateResults(localPlayer, opponentPlayer, gameType);
+
                 } else {
                     scorePlayer2++;
                     score2.setText("Score: " + scorePlayer2);
+                    //added this for win/loss
+                    // First player os the winner, second player is the loser
+                    gameProcessor.UpdateResults(opponentPlayer, localPlayer, gameType);
                 }
                 addMessage("SYSTEM", playerName + " wins!", true);
                 showGameOverPopup(playerName, true);
             } else {
+                // added this for draw
+                gameProcessor.ProcessDraw(localPlayer, opponentPlayer, gameType);
                 addMessage("SYSTEM", "It's a draw!", true);
                 showGameOverPopup("No one", false);
             }

@@ -12,7 +12,7 @@ import java.util.List;
 public class CheckersLeaderboard extends AbstractCheckersLeaderboard {
 
     private static final CheckersLeaderboard instance = new CheckersLeaderboard();
-    private static final int GAME_TYPE = 2;
+    private static final int GAME_TYPE = 3;
 
     private CheckersLeaderboard() {
     }

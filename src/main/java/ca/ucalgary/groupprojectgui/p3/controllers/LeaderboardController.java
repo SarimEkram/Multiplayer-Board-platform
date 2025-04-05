@@ -23,8 +23,8 @@ public class LeaderboardController {
     private ImageView gameLogo;
 
     private static final int GAME_TIC_TAC_TOE = 1;
-    private static final int GAME_CHECKERS = 2;
-    private static final int GAME_CONNECT_4 = 3;
+    private static final int GAME_CHECKERS = 3;
+    private static final int GAME_CONNECT_4 = 2;
 
     @FXML
     private void initialize() {
