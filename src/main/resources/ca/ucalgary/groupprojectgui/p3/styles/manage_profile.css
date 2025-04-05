@@ -2,6 +2,15 @@
     -fx-background-color: linear-gradient(to bottom right, #2a0845, #6441a5);
     -fx-font-family: 'Nunito', sans-serif;
 }
+.profile-panel {
+    -fx-background-color: rgba(30, 0, 60, 0.85);
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-border-width: 3;
+    -fx-border-color: linear-gradient(to right, #cc66ff, #00ffff);
+    -fx-effect: dropshadow(gaussian, #cc66ff, 18, 0.6, 0, 0);
+    -fx-padding: 25;
+}
 
 
 /* Title style */
