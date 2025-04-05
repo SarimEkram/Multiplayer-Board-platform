@@ -26,7 +26,7 @@ public class ScoreValidator  {
             System.out.println("Score already exists for player " + playerId); // error message
             return false;
         }else {
-            if(score <0 || score > 1 || !gameScore.containsKey(gameID) ){ // checking if score is between 0 and 1
+            if(score <0 || score > 1 || !gameScore.containsKey(gameID) ){ // checking if score is between 0(lose) and 1(win)
                 System.out.println("Error: Score must be between 0 and 1");
                 return false;
             }
