@@ -1,5 +1,6 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
 
+import ca.ucalgary.groupprojectgui.p3.Fonts;
 import gameLogic.checkers.Checkers;
 import gameLogic.checkers.CheckersBoard;
 import gameLogic.checkers.CheckersPiece;
@@ -8,28 +9,31 @@ import gameLogic.checkers.CheckersMove.Move;
 import ca.ucalgary.groupprojectgui.p3.SceneManager;
 import javafx.animation.RotateTransition;
 import javafx.animation.ScaleTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.effect.BoxBlur;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 
+import java.net.URL;
 import java.util.ArrayList;
+
+import static javafx.scene.paint.Color.rgb;
 
 public class CheckersController {
 
@@ -41,6 +45,16 @@ public class CheckersController {
 
     @FXML
     public Circle turnPiece;
+
+    @FXML
+    public VBox chatMessages;
+
+    @FXML
+    public ScrollPane chatScrollPane;
+
+    @FXML
+    public Label chatHeader;
+    public Button leaveGame;
 
     @FXML
     private Label turnLabel; // Turn indicator label
@@ -62,9 +76,6 @@ public class CheckersController {
 
     @FXML
     private BorderPane mainGamePane;
-
-    @FXML
-    private TextArea chatArea;
 
     @FXML
     private TextField chatInput;
@@ -91,6 +102,8 @@ public class CheckersController {
     private boolean isPieceSelected = false;
     private ArrayList<Move> validMoves = new ArrayList<>();
 
+    private int messageCount = 0;
+
     private static class Position {
         int row, col;
         Position(int row, int col) {
@@ -101,6 +114,8 @@ public class CheckersController {
 
     @FXML
     public void initialize() {
+        initializeChat();
+        setupHeaderWithSpacing();
         checkersBoard = new CheckersBoard();
         gameLogic = new Checkers(checkersBoard);
         gameLogic.start();
@@ -121,8 +136,8 @@ public class CheckersController {
         for (int row = 0; row < BOARD_ROWS; row++) {
             for (int col = 0; col < BOARD_COLUMNS; col++) {
                 StackPane cell = new StackPane();
-                cell.setPrefSize(80, 80);
-                Rectangle square = new Rectangle(80, 80);
+                cell.setPrefSize(72, 72);
+                Rectangle square = new Rectangle(72, 72);
                 square.getStyleClass().add("board-square");
                 if ((row + col) % 2 == 0) {
                     square.setFill(Color.BEIGE);
@@ -133,11 +148,11 @@ public class CheckersController {
 
                 // Place initial pieces based on backend setup
                 if (row < 3 && (row + col) % 2 == 1) {
-                    Circle whitePiece = new Circle(35);
+                    Circle whitePiece = new Circle(32);
                     whitePiece.getStyleClass().addAll(checkerCircle1.getStyleClass());
                     cell.getChildren().add(whitePiece);
                 } else if (row > 4 && (row + col) % 2 == 1) {
-                    Circle blackPiece = new Circle(35);
+                    Circle blackPiece = new Circle(32);
                     blackPiece.getStyleClass().addAll(checkerCircle2.getStyleClass());
                     cell.getChildren().add(blackPiece);
                 }
@@ -155,9 +170,11 @@ public class CheckersController {
         boardContainer.getChildren().addAll(boardBackground, boardGrid);
         boardContainer.widthProperty().addListener((obs, oldVal, newVal) -> updateBoardLayout());
         boardContainer.heightProperty().addListener((obs, oldVal, newVal) -> updateBoardLayout());
-
-        chatArea.setEditable(false);
         updateTurnIndicator();
+
+        if (leaveGame != null) {
+            leaveGame.setOnAction(e -> onLeaveGame());
+        }
     }
 
     private void updateBoardLayout() {
@@ -176,51 +193,54 @@ public class CheckersController {
         }
     }
 
-    @FXML
     private void onLeaveGame() {
-        BoxBlur blur = new BoxBlur(10, 10, 3);
-        mainGamePane.setEffect(blur);
-        StackPane rootPane = (StackPane) mainGamePane.getScene().getRoot();
-        StackPane overlay = new StackPane();
-        overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
-        overlay.prefWidthProperty().bind(rootPane.widthProperty());
-        overlay.prefHeightProperty().bind(rootPane.heightProperty());
-        VBox modal = new VBox(20);
-        modal.setAlignment(Pos.CENTER);
-        modal.setPadding(new Insets(20));
-        modal.setStyle("-fx-background-color: rgba(0, 0, 0, 0.8); -fx-background-radius: 10;");
-        modal.setMinWidth(300);
-        modal.setMinHeight(150);
-        Label prompt = new Label("Are you sure you want to leave the game?");
-        prompt.setStyle("-fx-text-fill: white; -fx-font-size: 16px;");
-        Button yesButton = new Button("Yes, Leave");
-        Button cancelButton = new Button("Cancel");
-        yesButton.setStyle("-fx-background-color: #5f27cd; -fx-text-fill: white; -fx-background-radius: 10;");
-        cancelButton.setStyle("-fx-background-color: #341f97; -fx-text-fill: white; -fx-background-radius: 10;");
-        HBox buttonBox = new HBox(10, yesButton, cancelButton);
-        buttonBox.setAlignment(Pos.CENTER);
-        modal.getChildren().addAll(prompt, buttonBox);
-        overlay.getChildren().add(modal);
-        rootPane.getChildren().add(overlay);
-        overlay.toFront();
-        yesButton.setOnAction(e -> {
-            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "home.css");
-            rootPane.getChildren().remove(overlay);
-            mainGamePane.setEffect(null);
-        });
-        cancelButton.setOnAction(e -> {
-            rootPane.getChildren().remove(overlay);
-            mainGamePane.setEffect(null);
-        });
-    }
+        // Assume the boardContainer’s parent is a Pane
+        Pane parent = (Pane) boardContainer.getParent();
 
-    @FXML
-    private void onSendMessage() {
-        String message = chatInput.getText();
-        if (!message.trim().isEmpty()) {
-            chatArea.appendText("You: " + message + "\n");
-            chatInput.clear();
-        }
+        // Create an overlay pane that covers the current scene
+        StackPane overlay = new StackPane();
+        overlay.getStyleClass().add("popup-overlay");
+        overlay.setPrefSize(parent.getWidth(), parent.getHeight());
+
+        // Create the popup dialog
+        VBox popup = new VBox();
+        popup.getStyleClass().add("popup-dialog");
+        popup.setAlignment(Pos.CENTER);
+        popup.setSpacing(15);
+        popup.setPadding(new Insets(20));
+
+        Text title = new Text("Confirm Quit");
+        title.getStyleClass().add("popup-title");
+
+        Text message = new Text("Are you sure you want to quit the game?");
+        message.getStyleClass().add("popup-message");
+
+        // "Yes" button – confirms leaving the game
+        Button yesButton = new Button("Yes");
+        yesButton.getStyleClass().add("popup-button");
+        yesButton.setOnAction(e -> {
+            // Remove overlay
+            parent.getChildren().remove(overlay);
+            // Navigate to the main menu (or Home Page)
+            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "home.css");
+        });
+
+        // "Cancel" button – cancels and removes the overlay
+        Button cancelButton = new Button("Cancel");
+        cancelButton.getStyleClass().add("popup-button");
+        cancelButton.setOnAction(e -> {
+            parent.getChildren().remove(overlay);
+        });
+
+        // Arrange buttons in an HBox
+        HBox buttonBox = new HBox(15, yesButton, cancelButton);
+        buttonBox.setAlignment(Pos.CENTER);
+
+        popup.getChildren().addAll(title, message, buttonBox);
+        overlay.getChildren().add(popup);
+
+        // Add the overlay to the parent container
+        parent.getChildren().add(overlay);
     }
 
     private void handleCellClick(int row, int col) {
@@ -352,7 +372,7 @@ public class CheckersController {
                 cell.getChildren().removeIf(node -> node instanceof Circle || node instanceof ImageView);
                 CheckersPiece piece = checkersBoard.board[row][col];
                 if (piece != null) {
-                    Circle pieceCircle = new Circle(35);
+                    Circle pieceCircle = new Circle(32);
                     if (piece.getColour() == CheckersPiece.Colour.WHITE) {
                         pieceCircle.getStyleClass().addAll(checkerCircle2.getStyleClass());
                     } else {
@@ -410,6 +430,101 @@ public class CheckersController {
                 turnPiece.getStyleClass().add("checker-black");
                 turnLabel.setText("Black wins!");
             }
+        }
+    }
+
+    private void setupHeaderWithSpacing() {
+        chatHeader.setText("");
+        chatHeader.setAlignment(Pos.CENTER);
+        chatHeader.setMaxWidth(Double.MAX_VALUE);
+
+        VBox container = new VBox();
+        container.setAlignment(Pos.CENTER);
+        container.setPadding(new Insets(0, 0, 10, 0));
+
+        HBox textContainer = new HBox(2);
+        textContainer.setAlignment(Pos.CENTER);
+
+        String headerText = "OMG NETWORK";
+        for (char c : headerText.toCharArray()) {
+            Text letter = new Text(String.valueOf(c));
+            letter.setFont(Fonts.orbitron(FontWeight.NORMAL, 24));
+            letter.setFill(Color.WHITE);
+            letter.setEffect(new DropShadow(5, rgb(0, 255, 255)));
+            letter.setEffect(new DropShadow(10, rgb(0, 255, 255)));
+            textContainer.getChildren().add(letter);
+        }
+
+        Rectangle underline = new Rectangle(150, 2);
+        underline.setFill(new LinearGradient(
+                0, 0, 1, 0, true, CycleMethod.NO_CYCLE,
+                new Stop(0, Color.TRANSPARENT),
+                new Stop(0.3, rgb(255, 0, 255)),
+                new Stop(0.7, rgb(0, 255, 255)),
+                new Stop(1, Color.TRANSPARENT)
+        ));
+
+        VBox.setMargin(underline, new Insets(5, 0, 0, 0));
+        container.getChildren().addAll(textContainer, underline);
+
+        chatHeader.setGraphic(container);
+        chatHeader.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+    }
+
+    /**
+     * Initializes the chat view and adds initial messages.
+     */
+    private void initializeChat() {
+        try {
+            URL cssUrl = getClass().getResource("/ca/ucalgary/groupprojectgui/p3/styles/connect4.css");
+            if (cssUrl != null) {
+                chatMessages.getStylesheets().add(cssUrl.toExternalForm());
+            }
+            addMessage("SYSTEM", "Welcome to Neon Connect 4", true);
+            addMessage("SYSTEM", "Game initialized", true);
+        } catch (Exception e) {
+            System.err.println("Error initializing chat: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Adds a message to the chat view.
+     *
+     * @param sender   the sender of the message
+     * @param text     the message text
+     * @param isSystem flag to indicate if this is a system message
+     */
+    public void addMessage(String sender, String text, boolean isSystem) {
+        if (chatMessages == null) {
+            System.err.println("Cannot add message - chatMessages is null");
+            return;
+        }
+
+        HBox messageContainer = new HBox(5);
+        messageContainer.getStyleClass().add("chat-message");
+        messageContainer.getStyleClass().add(messageCount % 2 == 0 ? "chat-message-even" : "chat-message-odd");
+
+        Label senderLabel = new Label(sender + ":");
+        senderLabel.getStyleClass().add("sender-label");
+        senderLabel.setFont(Fonts.rajdhani(FontWeight.BOLD, 14));
+
+        Label messageLabel = new Label(text);
+        messageLabel.getStyleClass().add(isSystem ? "system-message" : "player-message");
+        messageLabel.setFont(Fonts.rajdhaniRegular(14));
+
+        if (isSystem) {
+            messageLabel.setTextFill(Color.YELLOW);
+            messageLabel.setEffect(new DropShadow(5, Color.YELLOW));
+        } else {
+            messageLabel.setTextFill(Color.WHITE);
+        }
+
+        messageContainer.getChildren().addAll(senderLabel, messageLabel);
+        chatMessages.getChildren().add(messageContainer);
+        messageCount++;
+
+        if (chatScrollPane != null) {
+            Platform.runLater(() -> chatScrollPane.setVvalue(1.0));
         }
     }
 }
