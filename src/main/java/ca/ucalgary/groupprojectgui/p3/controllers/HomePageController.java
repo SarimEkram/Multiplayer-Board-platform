@@ -7,6 +7,7 @@ import MatchmakingLeaderboard.Player;
 import MatchmakingLeaderboard.PlayerDatabase;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -158,35 +159,59 @@ public class HomePageController {
         Player friendUser = PlayerDatabase.getPlayerByUsername(username);
 
         if (friendUser == null) {
-            showAlert("Error", "User not found.");
+            showOverlayAlert("Error", "User not found.");
             return;
         }
 
         int friendId = friendUser.getUserID();
 
         if (FriendDatabase.areFriends(currentUserId, friendId)) {
-            showAlert("Info", "You are already friends with this user.");
+            showOverlayAlert("Info", "You are already friends with this user.");
             return;
         }
 
         boolean success = FriendDatabase.addFriend(currentUserId, friendId);
 
         if (success) {
-            showAlert("Success", "Friend added successfully!");
+            showOverlayAlert("Success", "Friend added successfully!");
         } else {
-            showAlert("Error", "Failed to add friend.");
+            showOverlayAlert("Error", "Failed to add friend.");
         }
     }
 
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+    /**
+     * Displays an overlay popup on top of the current window.
+     */
+    private void showOverlayAlert(String title, String message) {
+        VBox overlay = new VBox(10);
+        overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.7); -fx-padding: 20; -fx-background-radius: 10;");
+        overlay.setMaxWidth(300);
+        overlay.setAlignment(Pos.CENTER);
+        overlay.setMaxHeight(100);
+
+        Label titleLabel = new Label(title);
+        titleLabel.setStyle("-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;");
+        Label messageLabel = new Label(message);
+        messageLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");
+        messageLabel.setWrapText(true);
+        messageLabel.setMaxWidth(280);
+
+        Button closeButton = new Button("Close");
+        closeButton.setOnAction(e -> {
+            popupContainer.getChildren().remove(overlay);
+            popupContainer.setVisible(false);  // hide container when closed
+        });
+
+        overlay.getChildren().addAll(titleLabel, messageLabel, closeButton);
+
+        popupContainer.getChildren().clear();
+        popupContainer.getChildren().add(overlay);
+        StackPane.setAlignment(overlay, Pos.CENTER);
+
+        popupContainer.setVisible(true);  // make container visible
     }
 
-    @FXML
+
     private void closePanel() {
         // Find and remove the top-level panel for friend requests
         Node popup = playersContainer.getParent().getParent();
@@ -219,7 +244,7 @@ public class HomePageController {
 
     @FXML
     private void handleLogout() {
-       SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/LogoutConfirmationPanel.fxml","Confirm Logout",null);
+        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/LogoutConfirmationPanel.fxml", "Confirm Logout", null);
     }
 
     @FXML
@@ -272,20 +297,9 @@ public class HomePageController {
         });
     }
 
-
-
-
     @FXML
     private void openManageProfile(MouseEvent event) {
         SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/ManageProfile.fxml", "Manage Profile", "ManageProfile.css");
-
-    }
-
-    private void showPopupAlert(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 
     @FXML
