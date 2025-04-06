@@ -20,6 +20,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.BoxBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -133,28 +134,21 @@ public class CheckersController {
 
         matchmaking = new CheckersMatchmaking();
 
-        if (HomePageController.friendOpponentID==-1) {
+        if (HomePageController.friendOpponentID == -1) {
             try {
-
                 matchmaking.matchmakingConnect();
-
                 localPlayer = PlayerDatabase.getPlayerByUserID(LoginController.loginId);
-
                 player1Id = localPlayer.getUserID();
-
                 matchmaking.joinQueue(localPlayer);
-
                 for (Player player : PlayerDatabase.getAllPlayers()) {
                     if (player.getGameSignal(3) == 3)
                         matchmaking.joinQueue(player);
                 }
-
                 opponentPlayer = matchmaking.findOpponent(localPlayer.getUserID());
-
             } catch (IOException e) {
-                 addMessage("SYSTEM", "Matchmaking error: " + e.getMessage(), true);
+                addMessage("SYSTEM", "Matchmaking error: " + e.getMessage(), true);
             }
-        }else {
+        } else {
             localPlayer = PlayerDatabase.getPlayerByUserID(LoginController.loginId);
             opponentPlayer = PlayerDatabase.getPlayerByUserID(HomePageController.friendOpponentID);
         }
@@ -169,12 +163,9 @@ public class CheckersController {
         player2Name.setText(opponentPlayer.getUsername());
 
         gameProcessor = new GameProcessor(localPlayer, opponentPlayer, 3);
-
-
-
-
     }
-    private void createBoard(){
+
+    private void createBoard() {
         Image crown = new Image(getClass().getResourceAsStream("/ca/ucalgary/groupprojectgui/p3/images/crown.png"));
         ImageView crownImage = new ImageView(crown);
         crownImage.setFitWidth(45);
@@ -249,52 +240,34 @@ public class CheckersController {
     }
 
     private void onLeaveGame() {
-        // Assume the boardContainer’s parent is a Pane
         Pane parent = (Pane) boardContainer.getParent();
-
-        // Create an overlay pane that covers the current scene
         StackPane overlay = new StackPane();
         overlay.getStyleClass().add("popup-overlay");
         overlay.setPrefSize(parent.getWidth(), parent.getHeight());
-
-        // Create the popup dialog
         VBox popup = new VBox();
         popup.getStyleClass().add("popup-dialog");
         popup.setAlignment(Pos.CENTER);
         popup.setSpacing(15);
         popup.setPadding(new Insets(20));
-
         Text title = new Text("Confirm Quit");
         title.getStyleClass().add("popup-title");
-
         Text message = new Text("Are you sure you want to quit the game?");
         message.getStyleClass().add("popup-message");
-
-        // "Yes" button – confirms leaving the game
         Button yesButton = new Button("Yes");
         yesButton.getStyleClass().add("popup-button");
         yesButton.setOnAction(e -> {
-            // Remove overlay
             parent.getChildren().remove(overlay);
-            // Navigate to the main menu (or Home Page)
             SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "home.css");
         });
-
-        // "Cancel" button – cancels and removes the overlay
         Button cancelButton = new Button("Cancel");
         cancelButton.getStyleClass().add("popup-button");
         cancelButton.setOnAction(e -> {
             parent.getChildren().remove(overlay);
         });
-
-        // Arrange buttons in an HBox
         HBox buttonBox = new HBox(15, yesButton, cancelButton);
         buttonBox.setAlignment(Pos.CENTER);
-
         popup.getChildren().addAll(title, message, buttonBox);
         overlay.getChildren().add(popup);
-
-        // Add the overlay to the parent container
         parent.getChildren().add(overlay);
     }
 
@@ -310,14 +283,31 @@ public class CheckersController {
             }
             if (selectedMove != null) {
                 CheckersPiece selectedPiece = checkersBoard.board[selectedPiecePosition.row][selectedPiecePosition.col];
-                // Process the move using the detailed Move object
                 gameLogic.processMove(selectedPiece, selectedPiecePosition.row, selectedPiecePosition.col, selectedMove);
                 clearHighlights();
                 isPieceSelected = false;
                 selectedPiecePosition = null;
                 validMoves.clear();
                 updateBoardUI();
+                // First, check standard win by piece count.
                 Checkers.WINNER winner = gameLogic.checkWin();
+                // Then check if the current turn has any valid moves.
+                if (winner == Checkers.WINNER.NONE) {
+                    if (!hasAnyValidMovesForTurn(gameLogic.getTurn())) {
+                        // No moves available: current turn loses; opponent wins.
+                        if (gameLogic.getTurn() == Checkers.Turn.WHITE) {
+                            turnPiece.getStyleClass().clear();
+                            turnPiece.getStyleClass().add("checker-black");
+                            turnLabel.setText(opponentPlayer.getUsername() + " wins!");
+                        } else {
+                            turnPiece.getStyleClass().clear();
+                            turnPiece.getStyleClass().add("checker-white");
+                            turnLabel.setText(opponentPlayer.getUsername() + " wins!");
+                        }
+                        boardGrid.setDisable(true);
+                        return;
+                    }
+                }
                 if (winner != Checkers.WINNER.NONE) {
                     checkForWinnerAndShowLabel();
                 } else {
@@ -339,7 +329,6 @@ public class CheckersController {
             selectedPiecePosition = new Position(row, col);
             isPieceSelected = true;
             validMoves.clear();
-            // Get available moves as an array of Move objects
             Move[] moves = CheckersMove.availableMoves(checkersBoard, piece, row, col);
             for (Move move : moves) {
                 validMoves.add(move);
@@ -374,6 +363,25 @@ public class CheckersController {
             return true;
         } else if (currentTurn == Checkers.Turn.BLACK && piece.getColour() == CheckersPiece.Colour.BLACK) {
             return true;
+        }
+        return false;
+    }
+
+    // Helper method: returns true if at least one piece of the specified turn has valid moves.
+    private boolean hasAnyValidMovesForTurn(Checkers.Turn turn) {
+        for (int row = 0; row < BOARD_ROWS; row++) {
+            for (int col = 0; col < BOARD_COLUMNS; col++) {
+                CheckersPiece piece = checkersBoard.board[row][col];
+                if (piece != null) {
+                    if ((turn == Checkers.Turn.WHITE && piece.getColour() == CheckersPiece.Colour.WHITE) ||
+                            (turn == Checkers.Turn.BLACK && piece.getColour() == CheckersPiece.Colour.BLACK)) {
+                        CheckersMove.Move[] moves = CheckersMove.availableMoves(checkersBoard, piece, row, col);
+                        if (moves.length > 0) {
+                            return true;
+                        }
+                    }
+                }
+            }
         }
         return false;
     }
@@ -474,26 +482,20 @@ public class CheckersController {
     private void checkForWinnerAndShowLabel() {
         Checkers.WINNER winner = gameLogic.checkWin();
         if (winner != Checkers.WINNER.NONE) {
-            // Determine the winner and update UI accordingly
             if (winner == Checkers.WINNER.WHITE) {
-                // Opponent (WHITE) wins
                 turnLabel.setText(opponentPlayer.getUsername() + " wins!");
                 turnPiece.getStyleClass().clear();
-                turnPiece.getStyleClass().add("checker-white"); // Indicate white player's victory
-
-                gameProcessor.UpdateResults(opponentPlayer, localPlayer,3);
+                turnPiece.getStyleClass().add("checker-white");
+                gameProcessor.UpdateResults(opponentPlayer, localPlayer, 3);
             } else {
-                // Local player (BLACK) wins
                 turnLabel.setText(localPlayer.getUsername() + " wins!");
                 turnPiece.getStyleClass().clear();
-                turnPiece.getStyleClass().add("checker-black"); // Indicate black player's victory
-
+                turnPiece.getStyleClass().add("checker-black");
                 gameProcessor.UpdateResults(localPlayer, opponentPlayer, 3);
             }
-            boardGrid.setDisable(true); // Disable further interaction with the board
+            boardGrid.setDisable(true);
         }
     }
-
 
     private void setupHeaderWithSpacing() {
         chatHeader.setText("");
