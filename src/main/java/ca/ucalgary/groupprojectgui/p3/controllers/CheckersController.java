@@ -1,6 +1,7 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
 
 import MatchmakingLeaderboard.Checkers.Matchmaking.CheckersMatchmaking;
+import MatchmakingLeaderboard.GameProcessor;
 import MatchmakingLeaderboard.Player;
 import MatchmakingLeaderboard.PlayerDatabase;
 import ca.ucalgary.groupprojectgui.p3.Fonts;
@@ -115,6 +116,7 @@ public class CheckersController {
     private ArrayList<Move> validMoves = new ArrayList<>();
 
     private int messageCount = 0;
+    private GameProcessor gameProcessor;
 
     private static class Position {
         int row, col;
@@ -165,6 +167,8 @@ public class CheckersController {
         createBoard();
         player1Name.setText(localPlayer.getUsername());
         player2Name.setText(opponentPlayer.getUsername());
+
+        gameProcessor = new GameProcessor(localPlayer, opponentPlayer, 3);
 
 
 
@@ -476,11 +480,15 @@ public class CheckersController {
                 turnLabel.setText(opponentPlayer.getUsername() + " wins!");
                 turnPiece.getStyleClass().clear();
                 turnPiece.getStyleClass().add("checker-white"); // Indicate white player's victory
+
+                gameProcessor.UpdateResults(opponentPlayer, localPlayer,3);
             } else {
                 // Local player (BLACK) wins
                 turnLabel.setText(localPlayer.getUsername() + " wins!");
                 turnPiece.getStyleClass().clear();
                 turnPiece.getStyleClass().add("checker-black"); // Indicate black player's victory
+
+                gameProcessor.UpdateResults(localPlayer, opponentPlayer, 3);
             }
             boardGrid.setDisable(true); // Disable further interaction with the board
         }
