@@ -16,6 +16,20 @@ public class Connect4Test {
     }
 
     @Test
+    public void testPlayValidMove() { // Checks if a valid move lands
+        int row = Connect4.play(board.getBoard(), 1, player1);
+        assertEquals(5, row); // Expecting it to land at bottom row
+        assertEquals(player1, board.getBoard()[5][1]);
+    }
+
+    @Test
+    public void testSwitchPlayer() { // test if current player changes after calling switchPlayer
+        int initialPlayer = board.getCurrentPlayer();
+        board.getGameLogic().switchPlayer();
+        assertNotEquals(initialPlayer, board.getCurrentPlayer());
+    }
+
+    @Test
     public void testHorizontalWin() {
         board.playPiece(0); // P1
         board.playPiece(0); // P2
@@ -112,7 +126,7 @@ public class Connect4Test {
     }
 
     @Test
-    public void testP2Wins() {
+    public void testP2Wins() { // checks if P2 can get a win
         board.playPiece(5); // P1
         board.playPiece(0); // P2
         board.playPiece(5); // P1
