@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.Random;
 
 public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
-    int gameType = 1;
+    GameType gameType = GameType.TIC_TAC_TOE;
     protected boolean matchmakingUp = true;
     private final double probabilityOfNetworkFailure = 0.0125;
     private MatchmakingQueue queue;

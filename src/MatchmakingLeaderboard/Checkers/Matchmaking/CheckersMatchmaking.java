@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.Random;
 
 public class CheckersMatchmaking extends AbstractCheckersMatchmaking{
-    int gameType = 3;
+    GameType gameType = GameType.CHECKERS;
     protected boolean matchmakingUp = false;
     private final double probabilityOfNetworkFailure = 0.0117;
     private MatchmakingQueue queue;

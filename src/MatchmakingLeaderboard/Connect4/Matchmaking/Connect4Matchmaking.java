@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.Random;
 
 public class Connect4Matchmaking extends AbstractConnect4Matchmaking{
-    int gameType = 2;
+    GameType gameType = GameType.CONNECT_FOUR;
     protected boolean matchmakingUp = false;
     private final double probabilityOfNetworkFailure = 0.0210;
     private MatchmakingQueue queue;

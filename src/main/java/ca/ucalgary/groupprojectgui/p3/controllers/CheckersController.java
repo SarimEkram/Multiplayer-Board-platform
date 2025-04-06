@@ -2,6 +2,7 @@ package ca.ucalgary.groupprojectgui.p3.controllers;
 
 import MatchmakingLeaderboard.Checkers.Matchmaking.CheckersMatchmaking;
 import MatchmakingLeaderboard.GameProcessor;
+import MatchmakingLeaderboard.GameType;
 import MatchmakingLeaderboard.Player;
 import MatchmakingLeaderboard.PlayerDatabase;
 import ca.ucalgary.groupprojectgui.p3.Fonts;
@@ -107,7 +108,7 @@ public class CheckersController {
 
     private int messageCount = 0;
     private GameProcessor gameProcessor;
-    private final int gameType = 3;
+    private final GameType gameType = GameType.CHECKERS;
     private Timeline timeline;
     private int secondsElapsed = 0;
 
@@ -135,7 +136,7 @@ public class CheckersController {
                 player1Id = localPlayer.getUserID();
                 matchmaking.joinQueue(localPlayer);
                 for (Player player : PlayerDatabase.getAllPlayers()) {
-                    if (player.getGameSignal(gameType) == gameType)
+                    if (player.getGameSignal(gameType) == gameType.getGameCode())
                         matchmaking.joinQueue(player);
                 }
                 opponentPlayer = matchmaking.findOpponent(localPlayer.getUserID());
