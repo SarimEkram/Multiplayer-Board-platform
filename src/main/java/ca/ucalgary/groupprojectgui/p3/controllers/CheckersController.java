@@ -1,5 +1,8 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
 
+import MatchmakingLeaderboard.Checkers.Matchmaking.CheckersMatchmaking;
+import MatchmakingLeaderboard.Player;
+import MatchmakingLeaderboard.PlayerDatabase;
 import ca.ucalgary.groupprojectgui.p3.Fonts;
 import gameLogic.checkers.Checkers;
 import gameLogic.checkers.CheckersBoard;
@@ -15,7 +18,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.effect.BoxBlur;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -30,6 +32,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -38,10 +41,10 @@ import static javafx.scene.paint.Color.rgb;
 public class CheckersController {
 
     @FXML
-    public Label player1CapturedLabel;
+    public Label whiteCaptured;
 
     @FXML
-    public Label player2CapturedLabel;
+    public Label blackCaptured;
 
     @FXML
     public Circle turnPiece;
@@ -79,9 +82,18 @@ public class CheckersController {
 
     @FXML
     private TextField chatInput;
+    @FXML
+    private Label player1Name;
+    @FXML
+    private Label player2Name;
 
     @FXML
     private Label winnerLabel;
+    private CheckersMatchmaking matchmaking;
+    private Player localPlayer;
+    private int player1Id;       // Local player's ID (from matchmaking)
+    private int opponentId;      // Opponent's player ID
+    private Player opponentPlayer;
 
     // Board constants
     private static final int BOARD_ROWS = 8;
@@ -116,10 +128,49 @@ public class CheckersController {
     public void initialize() {
         initializeChat();
         setupHeaderWithSpacing();
+
+        matchmaking = new CheckersMatchmaking();
+
+        if (HomePageController.friendOpponentID==-1) {
+            try {
+
+                matchmaking.matchmakingConnect();
+
+                localPlayer = PlayerDatabase.getPlayerByUserID(LoginController.loginId);
+
+                player1Id = localPlayer.getUserID();
+
+                matchmaking.joinQueue(localPlayer);
+
+                for (Player player : PlayerDatabase.getAllPlayers()) {
+                    if (player.getGameSignal(3) == 3)
+                        matchmaking.joinQueue(player);
+                }
+
+                opponentPlayer = matchmaking.findOpponent(localPlayer.getUserID());
+
+            } catch (IOException e) {
+                 addMessage("SYSTEM", "Matchmaking error: " + e.getMessage(), true);
+            }
+        }else {
+            localPlayer = PlayerDatabase.getPlayerByUserID(LoginController.loginId);
+            opponentPlayer = PlayerDatabase.getPlayerByUserID(HomePageController.friendOpponentID);
+        }
+
+        // --- End of matchmaking integration ---
+
         checkersBoard = new CheckersBoard();
         gameLogic = new Checkers(checkersBoard);
         gameLogic.start();
+        createBoard();
+        player1Name.setText(localPlayer.getUsername());
+        player2Name.setText(opponentPlayer.getUsername());
 
+
+
+
+    }
+    private void createBoard(){
         Image crown = new Image(getClass().getResourceAsStream("/ca/ucalgary/groupprojectgui/p3/images/crown.png"));
         ImageView crownImage = new ImageView(crown);
         crownImage.setFitWidth(45);
@@ -419,19 +470,22 @@ public class CheckersController {
     private void checkForWinnerAndShowLabel() {
         Checkers.WINNER winner = gameLogic.checkWin();
         if (winner != Checkers.WINNER.NONE) {
-            String message = (winner == Checkers.WINNER.WHITE) ? "White wins!" : "Black wins!";
-            turnLabel.setText(message);
-            boardGrid.setDisable(true);
-            turnPiece.getStyleClass().clear();
+            // Determine the winner and update UI accordingly
             if (winner == Checkers.WINNER.WHITE) {
-                turnPiece.getStyleClass().add("checker-white");
-                turnLabel.setText("White wins!");
+                // Opponent (WHITE) wins
+                turnLabel.setText(opponentPlayer.getUsername() + " wins!");
+                turnPiece.getStyleClass().clear();
+                turnPiece.getStyleClass().add("checker-white"); // Indicate white player's victory
             } else {
-                turnPiece.getStyleClass().add("checker-black");
-                turnLabel.setText("Black wins!");
+                // Local player (BLACK) wins
+                turnLabel.setText(localPlayer.getUsername() + " wins!");
+                turnPiece.getStyleClass().clear();
+                turnPiece.getStyleClass().add("checker-black"); // Indicate black player's victory
             }
+            boardGrid.setDisable(true); // Disable further interaction with the board
         }
     }
+
 
     private void setupHeaderWithSpacing() {
         chatHeader.setText("");
@@ -480,7 +534,7 @@ public class CheckersController {
             if (cssUrl != null) {
                 chatMessages.getStylesheets().add(cssUrl.toExternalForm());
             }
-            addMessage("SYSTEM", "Welcome to Neon Connect 4", true);
+            addMessage("SYSTEM", "Welcome to Neon Checkers", true);
             addMessage("SYSTEM", "Game initialized", true);
         } catch (Exception e) {
             System.err.println("Error initializing chat: " + e.getMessage());

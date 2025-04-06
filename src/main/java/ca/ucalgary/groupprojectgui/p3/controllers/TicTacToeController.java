@@ -168,14 +168,14 @@ public class TicTacToeController {
         // Check for win
         if (logicBoard.checkForWin(symbol)) {
             if (symbol == 'X'){
-                turnLabel.setText(localPlayer.getUsername()+ " " + symbol + " wins!");
+                turnLabel.setText(symbol+ ": "+ localPlayer.getUsername()+  " wins!");
                 gameOver = true;
                 boardContainer.setDisable(true);
                 gameProcessor.UpdateResults(localPlayer,opponentPlayer,1);
                 return;
             }
             else {
-                turnLabel.setText(opponentPlayer.getUsername()+ " " + symbol + " wins!");
+                turnLabel.setText(symbol+": "+ opponentPlayer.getUsername()+" wins!");
                 gameOver = true;
                 boardContainer.setDisable(true);
                 gameProcessor.UpdateResults(opponentPlayer,localPlayer,1);

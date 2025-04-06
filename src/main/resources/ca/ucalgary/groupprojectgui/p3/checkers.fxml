@@ -45,8 +45,8 @@
                                         <HBox fx:id="player1Container" alignment="CENTER" HBox.hgrow="ALWAYS" style="-fx-alignment: center-left;">
                                             <children>
                                                 <Label fx:id="avatar1" text="P1"/>
-                                                <Label fx:id="name1" text="Neon"/>
-                                                <Label fx:id="player2CapturedLabel" text="CAPTURED: 0"/>
+                                                <Label fx:id="player1Name" text="Neon"/>
+                                                <Label fx:id="blackCaptured" text="CAPTURED: 0"/>
                                                 <StackPane fx:id="checkerPiece1">
                                                     <Circle fx:id="checkerCircle1" radius="20" styleClass="checker-black"/>
                                                 </StackPane>
@@ -56,8 +56,8 @@
                                         <HBox fx:id="player2Container" alignment="CENTER" HBox.hgrow="ALWAYS" style="-fx-alignment: center-right;">
                                             <children>
                                                 <Label fx:id="avatar2" text="P2"/>
-                                                <Label fx:id="name2" text="Cyber"/>
-                                                <Label fx:id="player1CapturedLabel" text="CAPTURED: 0"/>
+                                                <Label fx:id="player2Name" text="Cyber"/>
+                                                <Label fx:id="whiteCaptured" text="CAPTURED: 0"/>
                                                 <StackPane fx:id="checkerPiece2">
                                                     <Circle fx:id="checkerCircle2" radius="20" styleClass="checker-white"/>
                                                 </StackPane>
