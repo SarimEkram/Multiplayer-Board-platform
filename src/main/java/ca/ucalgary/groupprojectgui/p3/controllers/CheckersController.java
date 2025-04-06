@@ -118,6 +118,7 @@ public class CheckersController {
 
     private int messageCount = 0;
     private GameProcessor gameProcessor;
+    private final int gameType = 3;
 
     private static class Position {
         int row, col;
@@ -141,7 +142,7 @@ public class CheckersController {
                 player1Id = localPlayer.getUserID();
                 matchmaking.joinQueue(localPlayer);
                 for (Player player : PlayerDatabase.getAllPlayers()) {
-                    if (player.getGameSignal(3) == 3)
+                    if (player.getGameSignal(gameType) == gameType)
                         matchmaking.joinQueue(player);
                 }
                 opponentPlayer = matchmaking.findOpponent(localPlayer.getUserID());
@@ -162,7 +163,7 @@ public class CheckersController {
         player1Name.setText(localPlayer.getUsername());
         player2Name.setText(opponentPlayer.getUsername());
 
-        gameProcessor = new GameProcessor(localPlayer, opponentPlayer, 3);
+        gameProcessor = new GameProcessor(localPlayer, opponentPlayer, gameType);
     }
 
     private void createBoard() {
@@ -486,12 +487,12 @@ public class CheckersController {
                 turnLabel.setText(opponentPlayer.getUsername() + " wins!");
                 turnPiece.getStyleClass().clear();
                 turnPiece.getStyleClass().add("checker-white");
-                gameProcessor.UpdateResults(opponentPlayer, localPlayer, 3);
+                gameProcessor.UpdateResults(opponentPlayer, localPlayer, gameType);
             } else {
                 turnLabel.setText(localPlayer.getUsername() + " wins!");
                 turnPiece.getStyleClass().clear();
                 turnPiece.getStyleClass().add("checker-black");
-                gameProcessor.UpdateResults(localPlayer, opponentPlayer, 3);
+                gameProcessor.UpdateResults(localPlayer, opponentPlayer, gameType);
             }
             boardGrid.setDisable(true);
         }
