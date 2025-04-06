@@ -66,6 +66,7 @@ public class TicTacToeController {
     private int player1Id;       // Local player's ID (from matchmaking)
     private int opponentId;      // Opponent's player ID
     private Player opponentPlayer;
+    private final int gameType = 1;
 
     @FXML
     public void initialize() {
@@ -88,7 +89,7 @@ public class TicTacToeController {
                 matchmaking.joinQueue(localPlayer);
 
                 for (Player player : PlayerDatabase.getAllPlayers()) {
-                    if (player.getGameSignal(1) == 1)
+                    if (player.getGameSignal(gameType) == gameType)
                         matchmaking.joinQueue(player);
                 }
 
@@ -108,7 +109,7 @@ public class TicTacToeController {
         logicBoard = new TicTacToeBoard();
         gameLogic = new TicTacToe(logicBoard);
         gameLogic.start();
-        gameProcessor = new GameProcessor(localPlayer, opponentPlayer, 1);
+        gameProcessor = new GameProcessor(localPlayer, opponentPlayer, gameType);
         currentPlayer = 'X';
         turnLabel.setText("X: "+localPlayer.getUsername()+"'s Turn");
         localPlayerLabel.setText("X: "+ localPlayer.getUsername());
@@ -171,14 +172,14 @@ public class TicTacToeController {
                 turnLabel.setText(symbol+ ": "+ localPlayer.getUsername()+  " wins!");
                 gameOver = true;
                 boardContainer.setDisable(true);
-                gameProcessor.UpdateResults(localPlayer,opponentPlayer,1);
+                gameProcessor.UpdateResults(localPlayer,opponentPlayer,gameType);
                 return;
             }
             else {
                 turnLabel.setText(symbol+": "+ opponentPlayer.getUsername()+" wins!");
                 gameOver = true;
                 boardContainer.setDisable(true);
-                gameProcessor.UpdateResults(opponentPlayer,localPlayer,1);
+                gameProcessor.UpdateResults(opponentPlayer,localPlayer,gameType);
                 return;
             }
 
@@ -189,7 +190,7 @@ public class TicTacToeController {
             turnLabel.setText("It's a tie!");
             gameOver = true;
             boardContainer.setDisable(true);
-            gameProcessor.ProcessDraw(localPlayer, opponentPlayer, 1);
+            gameProcessor.ProcessDraw(localPlayer, opponentPlayer, gameType);
             return;
         }
 
