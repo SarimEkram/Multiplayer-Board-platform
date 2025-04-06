@@ -66,6 +66,7 @@ public class PlayerDatabase {
     /**
      * Saves or updates a player in memory and writes all players to the CSV.
      *
+     *
      * @param player the player to save
      * @return true if successful
      */

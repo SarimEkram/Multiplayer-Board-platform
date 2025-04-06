@@ -7,6 +7,7 @@ import MatchmakingLeaderboard.TicTacToe.Matchmaking.TicTacToeMatchmaking;
 /**
  * Player class that is used to represent Users pulled from database
  * and used in matchmaking and leaderboard
+ *
  */
 public class Player {
     private final double[] winRatio = new double[GameType.values().length];  // 1: TicTacToe, 2: Connect4, 3: Checkers
