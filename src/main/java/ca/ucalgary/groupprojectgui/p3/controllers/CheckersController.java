@@ -59,6 +59,7 @@ public class CheckersController {
     public Label gameTitle;
     public Label timeElapsed;
     public TextField chatInput;
+    public Label localPlayerLabel;
 
     @FXML
     private Label turnLabel; // Turn indicator label
@@ -563,7 +564,7 @@ public class CheckersController {
         mainMenuButton.getStyleClass().add("popup-button");
         mainMenuButton.setOnAction(e -> {
             boardGrid.getChildren().remove(overlay);
-            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "home.css");
+            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "Home.css");
         });
 
         popup.getChildren().addAll(title, message, mainMenuButton);
