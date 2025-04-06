@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.Random;
 
 public class CheckersMatchmaking extends AbstractCheckersMatchmaking{
-    int gameType = 3;
     protected boolean matchmakingUp = false;
     private final double probabilityOfNetworkFailure = 0.0117;
     private MatchmakingQueue queue;
@@ -15,7 +14,7 @@ public class CheckersMatchmaking extends AbstractCheckersMatchmaking{
      * Constructor class for checkers Matchmaking
      */
     public CheckersMatchmaking(){
-        queue = new MatchmakingQueue(gameType);
+        queue = new MatchmakingQueue(GameType.CHECKERS);
     }
 
     /**
@@ -31,7 +30,7 @@ public class CheckersMatchmaking extends AbstractCheckersMatchmaking{
         }
 
         try {
-            queue = new MatchmakingQueue(gameType);
+            queue = new MatchmakingQueue(GameType.CHECKERS);
             this.matchmakingUp = true;
         }catch (Exception e){
             this.matchmakingUp = false;
@@ -135,11 +134,9 @@ public class CheckersMatchmaking extends AbstractCheckersMatchmaking{
      */
     @Override
     public boolean checkPlayers(Player player1, Player player2) {
-        if ((player1.getRank(gameType).getCurrentTier() == player2.getRank(gameType).getCurrentTier()) && (player1.getGameSignal(gameType) == player2.getGameSignal(gameType))&&(player1.getUserID()!= player2.getUserID())){
-            System.out.println("Bad");
+        if ((player1.getRank(GameType.CHECKERS).getCurrentTier() == player2.getRank(GameType.CHECKERS).getCurrentTier()) && (player1.getGameSignal(GameType.CHECKERS) == player2.getGameSignal(GameType.CHECKERS))&&(player1.getUserID()!= player2.getUserID())){
             return Math.abs((player1.getLevel() - player2.getLevel())) <= 10;
         }
-        System.out.println("Good");
         return false;
     }
 }

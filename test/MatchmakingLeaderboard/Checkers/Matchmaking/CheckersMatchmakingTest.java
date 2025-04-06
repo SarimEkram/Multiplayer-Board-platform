@@ -14,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CheckersMatchmakingTest {
     private CheckersMatchmaking matchmaking;
     private Player player1, player2;
-    private int gameType = 1;
 
     @BeforeEach
     public void setup(){
@@ -71,8 +70,8 @@ public class CheckersMatchmakingTest {
 
     @Test
     public void testCheckPlayers_Compatible() {
-        player1.setRank(new Rank(6), gameType + 2);
-        player2.setRank(new Rank(6), gameType + 2);
+        player1.setRank(new Rank(6), GameType.CHECKERS);
+        player2.setRank(new Rank(6), GameType.CHECKERS);
         player1.setLevel(20);
         player2.setLevel(26);
 
@@ -81,8 +80,8 @@ public class CheckersMatchmakingTest {
 
     @Test
     public void testCheckPlayers_NotCompatibleOne() {
-        player1.setRank(new Rank(17), 3);
-        player2.setRank(new Rank(6), 3);
+        player1.setRank(new Rank(17), GameType.CHECKERS);
+        player2.setRank(new Rank(6), GameType.CHECKERS);
         player1.setLevel(38);
         player2.setLevel(26);
         assertFalse(matchmaking.checkPlayers(player1, player2));
@@ -90,8 +89,8 @@ public class CheckersMatchmakingTest {
 
     @Test
     public void testCheckPlayers_NotCompatibleTwo() {
-        player1.setRank(new Rank(2500), 3);
-        player2.setRank(new Rank(500), 3);
+        player1.setRank(new Rank(2500), GameType.CHECKERS);
+        player2.setRank(new Rank(500), GameType.CHECKERS);
         player1.setLevel(27);
         player2.setLevel(26);
         assertFalse(matchmaking.checkPlayers(player1, player2));
@@ -99,8 +98,8 @@ public class CheckersMatchmakingTest {
 
     @Test
     public void testCheckPlayers_NotCompatibleThree() {
-        player1.setRank(new Rank(2500), 3);
-        player2.setRank(new Rank(500), 3);
+        player1.setRank(new Rank(2500), GameType.CHECKERS);
+        player2.setRank(new Rank(500), GameType.CHECKERS);
         player1.setLevel(27);
         player2.setLevel(26);
 

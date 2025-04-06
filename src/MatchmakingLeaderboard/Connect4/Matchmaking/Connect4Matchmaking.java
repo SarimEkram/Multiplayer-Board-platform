@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.Random;
 
 public class Connect4Matchmaking extends AbstractConnect4Matchmaking{
-    int gameType = 2;
     protected boolean matchmakingUp = false;
     private final double probabilityOfNetworkFailure = 0.0210;
     private MatchmakingQueue queue;
@@ -15,7 +14,7 @@ public class Connect4Matchmaking extends AbstractConnect4Matchmaking{
      * Constructor class for Connect4 Matchmaking
      */
     public Connect4Matchmaking(){
-        queue = new MatchmakingQueue(gameType);
+        queue = new MatchmakingQueue(GameType.CONNECT_FOUR);
     }
 
     /**
@@ -31,7 +30,7 @@ public class Connect4Matchmaking extends AbstractConnect4Matchmaking{
         }
 
         try {
-            queue = new MatchmakingQueue(gameType);
+            queue = new MatchmakingQueue(GameType.CONNECT_FOUR);
             this.matchmakingUp = true;
         }catch (Exception e){
             this.matchmakingUp = false;
@@ -138,7 +137,7 @@ public class Connect4Matchmaking extends AbstractConnect4Matchmaking{
      */
     @Override
     public boolean checkPlayers(Player player1, Player player2) {
-        if ((player1.getRank(gameType).getCurrentTier() == player2.getRank(gameType).getCurrentTier()) && (player1.getGameSignal(gameType) == player2.getGameSignal(gameType))&&(player1.getUserID()!= player2.getUserID())){
+        if ((player1.getRank(GameType.CONNECT_FOUR).getCurrentTier() == player2.getRank(GameType.CONNECT_FOUR).getCurrentTier()) && (player1.getGameSignal(GameType.CONNECT_FOUR) == player2.getGameSignal(GameType.CONNECT_FOUR))&&(player1.getUserID()!= player2.getUserID())){
             return Math.abs((player1.getLevel() - player2.getLevel())) <= 10;
         }
         return false;

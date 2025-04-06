@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.Random;
 
 public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
-    int gameType = 1;
     protected boolean matchmakingUp = true;
     private final double probabilityOfNetworkFailure = 0.0125;
     private MatchmakingQueue queue;
@@ -15,7 +14,7 @@ public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
      * Constructor class for TicTacToe Matchmaking
      */
     public TicTacToeMatchmaking() {
-        queue = new MatchmakingQueue(gameType);
+        queue = new MatchmakingQueue(GameType.TIC_TAC_TOE);
     }
 
     /**
@@ -31,7 +30,7 @@ public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
     }
 
         try {
-        queue = new MatchmakingQueue(gameType);
+        queue = new MatchmakingQueue(GameType.TIC_TAC_TOE);
         this.matchmakingUp = true;
     }catch (Exception e){
         this.matchmakingUp = false;
@@ -140,7 +139,7 @@ public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
      */
     @Override
     public boolean checkPlayers(Player player1, Player player2) {
-        if ((player1.getRank(gameType).getCurrentTier() == player2.getRank(gameType).getCurrentTier()) && (player1.getGameSignal(gameType) == player2.getGameSignal(gameType)) && (player1.getUserID()!= player2.getUserID())){
+        if ((player1.getRank(GameType.TIC_TAC_TOE).getCurrentTier() == player2.getRank(GameType.TIC_TAC_TOE).getCurrentTier()) && (player1.getGameSignal(GameType.TIC_TAC_TOE) == player2.getGameSignal(GameType.TIC_TAC_TOE)) && (player1.getUserID()!= player2.getUserID())){
             return Math.abs((player1.getLevel() - player2.getLevel())) <= 10;
         }
         return false;

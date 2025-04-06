@@ -14,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TicTacToeMatchmakingTest {
     private TicTacToeMatchmaking matchmaking;
     private Player player1, player2;
-    private int gameType = 1;
 
     @BeforeEach
     public void setup(){
@@ -69,10 +68,10 @@ public class TicTacToeMatchmakingTest {
 
     @Test
     public void testCheckPlayers_Compatible() {
-        player1.setRank(new Rank(6), gameType);
-        player2.setRank(new Rank(6), gameType);
-        player1.setGameSignal(1, gameType);
-        player2.setGameSignal(1, gameType);
+        player1.setRank(new Rank(6), GameType.TIC_TAC_TOE);
+        player2.setRank(new Rank(6), GameType.TIC_TAC_TOE);
+        player1.setGameSignal(1, GameType.TIC_TAC_TOE);
+        player2.setGameSignal(1, GameType.TIC_TAC_TOE);
         player1.setLevel(20);
         player2.setLevel(26);
 
@@ -81,10 +80,10 @@ public class TicTacToeMatchmakingTest {
 
     @Test
     public void testCheckPlayers_NotCompatibleOne() {
-        player1.setRank(new Rank(17), 1);
-        player2.setRank(new Rank(6), 1);
-        player1.setGameSignal(1, gameType);
-        player2.setGameSignal(1, gameType);
+        player1.setRank(new Rank(17), GameType.TIC_TAC_TOE);
+        player2.setRank(new Rank(6), GameType.TIC_TAC_TOE);
+        player1.setGameSignal(1, GameType.TIC_TAC_TOE);
+        player2.setGameSignal(1, GameType.TIC_TAC_TOE);
         player1.setLevel(38);
         player2.setLevel(26);
         assertFalse(matchmaking.checkPlayers(player1, player2));
@@ -92,10 +91,10 @@ public class TicTacToeMatchmakingTest {
 
     @Test
     public void testCheckPlayers_NotCompatibleTwo() {
-        player1.setRank(new Rank(2500), 1);
-        player2.setRank(new Rank(500), 1);
-        player1.setGameSignal(1, gameType);
-        player2.setGameSignal(1, gameType);
+        player1.setRank(new Rank(2500), GameType.TIC_TAC_TOE);
+        player2.setRank(new Rank(500), GameType.TIC_TAC_TOE);
+        player1.setGameSignal(1, GameType.TIC_TAC_TOE);
+        player2.setGameSignal(1, GameType.TIC_TAC_TOE);
         player1.setLevel(27);
         player2.setLevel(26);
         assertFalse(matchmaking.checkPlayers(player1, player2));
@@ -103,10 +102,10 @@ public class TicTacToeMatchmakingTest {
 
     @Test
     public void testCheckPlayers_NotCompatibleThree() {
-        player1.setRank(new Rank(2500), 1);
-        player2.setRank(new Rank(500), 1);
-        player1.setGameSignal(2, gameType+1);
-        player2.setGameSignal(1, gameType);
+        player1.setRank(new Rank(2500), GameType.TIC_TAC_TOE);
+        player2.setRank(new Rank(500), GameType.TIC_TAC_TOE);
+        player1.setGameSignal(2, GameType.CONNECT_FOUR);
+        player2.setGameSignal(1, GameType.TIC_TAC_TOE);
         player1.setLevel(27);
         player2.setLevel(26);
         assertFalse(matchmaking.checkPlayers(player1, player2));
