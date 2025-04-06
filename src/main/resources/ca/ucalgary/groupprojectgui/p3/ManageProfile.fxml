@@ -6,11 +6,12 @@
 
 <StackPane xmlns:fx="http://javafx.com/fxml"
            fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.ManageProfileController"
-           prefWidth="350" prefHeight="600"
-           styleClass="profile-panel"
+           prefWidth="1200" prefHeight="800"
+           styleClass="root"
            stylesheets="@styles/manage_profile.css">
 
-    <VBox alignment="TOP_CENTER" spacing="30" maxWidth="300" prefHeight="580">
+    <!-- Centered glowing profile box -->
+    <VBox alignment="CENTER" spacing="30" styleClass="profile-panel" maxWidth="400" maxHeight="550">
         <!-- Title -->
         <Label text="Manage Profile"
                styleClass="section-title"
@@ -21,26 +22,24 @@
             <Button text="Edit Profile"
                     onAction="#handleEditProfileButtonClick"
                     styleClass="neon-outline-button"
-                    prefWidth="280" prefHeight="50"/>
+                    prefWidth="300" prefHeight="50"/>
 
             <Button text="Change Password"
                     onAction="#handleChangePasswordButtonClick"
                     styleClass="neon-outline-button"
-                    prefWidth="280" prefHeight="50"/>
+                    prefWidth="300" prefHeight="50"/>
 
             <Button text="Delete Profile"
                     onAction="#handleDeleteProfile"
                     styleClass="danger-outline-button"
-                    prefWidth="280" prefHeight="50"/>
+                    prefWidth="300" prefHeight="50"/>
         </VBox>
-
-        <!-- Back Button Spacer -->
-        <Pane prefHeight="120"/>
 
         <!-- Back Button -->
         <Button text="← Back"
                 onAction="#handleBackButtonClick"
                 styleClass="neon-outline-button"
-                prefWidth="140" prefHeight="40"/>
+                prefWidth="140" prefHeight="40"
+                style="-fx-margin-top: 40px;"/>
     </VBox>
 </StackPane>
