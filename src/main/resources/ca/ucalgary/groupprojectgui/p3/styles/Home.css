@@ -384,4 +384,67 @@
     -fx-border-color: transparent;
 }
 
+/* ================= Right Sidebar (Friends Panel) ================= */
+.right-sidebar {
+    -fx-background-color: #000000; /* Dark background */
+    -fx-background-radius: 20;
+    -fx-padding: 25;
+}
+
+/* Header for the friends panel */
+.friends-header {
+    -fx-text-fill: #00ffff; /* Neon aqua text */
+    -fx-font-size: 20;
+    -fx-font-weight: bold;
+}
+
+/* Container for friend list items */
+.friends-list-container {
+    -fx-padding: 10;
+    -fx-spacing: 10;
+}
+
+/* Individual friend item styling */
+.friend-item {
+    -fx-background-color: #1a0033; /* Deep purple background */
+    -fx-background-radius: 10;
+    -fx-padding: 10;
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* Change background on hover */
+.friend-item:hover {
+    -fx-background-color: #37006e; /* Brighter purple on hover */
+}
+
+/* Styling for friend's initial/avatar */
+.friend-initial {
+    -fx-background-color: #8000ff;  /* Neon purple */
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 16;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER;
+    -fx-min-width: 35;
+    -fx-min-height: 35;
+    -fx-background-radius: 17.5; /* Makes it circular */
+}
+
+/* Friend name styling */
+.friend-name {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 14;
+    -fx-font-weight: bold;
+}
+
+/* Remove button styling */
+.remove-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 14;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}
+.remove-button:hover {
+    -fx-text-fill: #ff4d4d; /* Red on hover */
+}
 

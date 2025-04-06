@@ -24,8 +24,8 @@
 
             <ImageView fx:id="img" fitHeight="80" preserveRatio="true" pickOnBounds="true"/>
             <ImageView fx:id="heartIcon" fitHeight="28" fitWidth="28" pickOnBounds="true" onMouseClicked="#handleQuickMatch"/>
-            <ImageView fx:id="bellIcon" fitHeight="28" fitWidth="28" pickOnBounds="true" />
-            <ImageView fx:id="friendsIcon" fitHeight="28" fitWidth="28" pickOnBounds="true" />
+            <ImageView fx:id="bellIcon" fitHeight="28" fitWidth="28" pickOnBounds="true"/>
+            <ImageView fx:id="friendsIcon" fitHeight="28" fitWidth="28" pickOnBounds="true"/>
             <ImageView fx:id="profileIcon" fitHeight="28" fitWidth="28" pickOnBounds="true" onMouseClicked="#openManageProfile"/>
             <Button fx:id="leaderboardBtn" text="🏆" onAction="#onLeaderboardClick" styleClass="neon-icon-button" prefWidth="50" prefHeight="35"/>
             <Button fx:id="logoutButton" text="⎋" onAction="#handleLogout" styleClass="neon-icon-button" prefWidth="50" prefHeight="35"/>
@@ -33,7 +33,6 @@
 
         <!-- CENTER + RIGHT AREA -->
         <HBox spacing="20" fillHeight="true" HBox.hgrow="ALWAYS">
-
             <!-- CENTER: MAIN CONTENT AREA -->
             <BorderPane fx:id="homePane"
                         styleClass="main-glow-box"
@@ -52,7 +51,7 @@
                                        prefWidth="800"
                                        prefHeight="50"/>
                             <Label text="🔍" mouseTransparent="true"
-                                   style="-fx-font-size: 16px; -fx-text-fill: #bbbbbb; -fx-padding: 0 12 0 0;" />
+                                   style="-fx-font-size: 16px; -fx-text-fill: #bbbbbb; -fx-padding: 0 12 0 0;"/>
                         </StackPane>
                         <Region HBox.hgrow="ALWAYS"/>
                     </HBox>
@@ -93,27 +92,54 @@
             </BorderPane>
 
             <!-- RIGHT: FRIENDS PANEL -->
-            <VBox fx:id="friendsPanel" spacing="20" styleClass="right-sidebar"
-                  style="-fx-background-radius: 20; -fx-padding: 25;" prefWidth="300">
+            <VBox fx:id="friendsPanel" spacing="20" styleClass="right-sidebar" prefWidth="300">
                 <!-- Header -->
                 <HBox alignment="CENTER_LEFT">
-                    <Label text="ADD FRIEND" styleClass="title-label"/>
+                    <Label text="Friends" styleClass="friends-header"/>
                     <Region HBox.hgrow="ALWAYS"/>
                     <Button text="✖" styleClass="close-button"/>
                 </HBox>
 
-                <!-- Search Bar -->
-                <TextField fx:id="searchField"
-                           promptText="Search players..."
-                           styleClass="search-bar"
-                           prefWidth="360"/>
-
-                <!-- Player list -->
-                <VBox fx:id="playersContainer"
-                      spacing="10"
-                      style="-fx-padding: 10;"
-                      VBox.vgrow="ALWAYS"/>
+                <!-- Friend list container -->
+                <VBox fx:id="playersContainer" styleClass="friends-list-container" VBox.vgrow="ALWAYS">
+                    <!-- Friend Item 1 -->
+                    <HBox alignment="CENTER_LEFT" spacing="15" styleClass="friend-item">
+                        <Label text="C" styleClass="friend-initial"/>
+                        <Label text="CyberWarrior" styleClass="friend-name"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="✖" styleClass="remove-button" onAction="#handleRemoveFriend"/>
+                    </HBox>
+                    <!-- Friend Item 2 -->
+                    <HBox alignment="CENTER_LEFT" spacing="15" styleClass="friend-item">
+                        <Label text="N" styleClass="friend-initial"/>
+                        <Label text="NeonNinja" styleClass="friend-name"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="✖" styleClass="remove-button" onAction="#handleRemoveFriend"/>
+                    </HBox>
+                    <!-- Friend Item 3 -->
+                    <HBox alignment="CENTER_LEFT" spacing="15" styleClass="friend-item">
+                        <Label text="Q" styleClass="friend-initial"/>
+                        <Label text="QuantumQueen" styleClass="friend-name"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="✖" styleClass="remove-button" onAction="#handleRemoveFriend"/>
+                    </HBox>
+                    <!-- Friend Item 4 -->
+                    <HBox alignment="CENTER_LEFT" spacing="15" styleClass="friend-item">
+                        <Label text="P" styleClass="friend-initial"/>
+                        <Label text="PixelPirate" styleClass="friend-name"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="✖" styleClass="remove-button" onAction="#handleRemoveFriend"/>
+                    </HBox>
+                    <!-- Friend Item 5 -->
+                    <HBox alignment="CENTER_LEFT" spacing="15" styleClass="friend-item">
+                        <Label text="D" styleClass="friend-initial"/>
+                        <Label text="DigitalDragon" styleClass="friend-name"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="✖" styleClass="remove-button" onAction="#handleRemoveFriend"/>
+                    </HBox>
+                </VBox>
             </VBox>
+
         </HBox>
     </HBox>
 

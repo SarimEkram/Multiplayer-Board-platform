@@ -5,8 +5,10 @@ import Authentication.UserDatabase;
 import Authentication.FriendDatabase;
 import MatchmakingLeaderboard.Player;
 import MatchmakingLeaderboard.PlayerDatabase;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -18,13 +20,16 @@ import javafx.scene.layout.*;
 import javafx.util.Duration;
 import javafx.animation.TranslateTransition;
 import ca.ucalgary.groupprojectgui.p3.SceneManager;
+import javafx.stage.Popup;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class HomePageController {
-
+    @FXML
+    private VBox playersContainer;
     // Fields for game/home page
     @FXML private TextField gameSearchField;
     @FXML private HBox gameTilePane;
@@ -56,7 +61,7 @@ public class HomePageController {
 
     // Fields for Friend Requests functionality
     @FXML private TextField searchField;
-    @FXML private VBox playersContainer;
+
     private List<Player> allPlayers;
 
     public static int friendOpponentID;
@@ -334,4 +339,63 @@ public class HomePageController {
             // Close/hide this popup
         }
     }
+    @FXML
+    public void handleRemoveFriend(ActionEvent event) {
+        // Get the remove button and the associated friend item.
+        Button removeButton = (Button) event.getSource();
+        HBox friendItem = (HBox) removeButton.getParent();
+        Label friendLabel = (Label) friendItem.getChildren().get(0);
+        String friendName = friendLabel.getText();
+
+        // Create a Popup instance.
+        Popup popup = new Popup();
+
+        // Create a container for the pop-up content.
+        VBox popupContent = new VBox(10);
+        popupContent.setAlignment(Pos.CENTER);
+        popupContent.setStyle(
+                "-fx-background-color: #333333; " +
+                        "-fx-padding: 10; " +
+                        "-fx-border-color: #00ffff; " +
+                        "-fx-border-width: 2; " +
+                        "-fx-background-radius: 5; " +
+                        "-fx-border-radius: 5;"
+        );
+
+        // Create the confirmation message.
+        Label message = new Label("Remove friend: " + friendName + "?");
+        message.setStyle("-fx-text-fill: white;");
+
+        // Create Yes and No buttons.
+        HBox buttonBox = new HBox(10);
+        buttonBox.setAlignment(Pos.CENTER);
+        Button yesButton = new Button("Yes");
+        Button noButton = new Button("No");
+        buttonBox.getChildren().addAll(yesButton, noButton);
+
+        popupContent.getChildren().addAll(message, buttonBox);
+        popup.getContent().add(popupContent);
+
+        // Position the popup near the friend item.
+        // Convert the friendItem's bounds to screen coordinates.
+        Bounds bounds = friendItem.localToScreen(friendItem.getBoundsInLocal());
+        // Adjust x/y offsets as needed.
+        popup.show(removeButton.getScene().getWindow(), bounds.getMinX() + 50, bounds.getMinY() + 20);
+
+        // Set action handlers for the buttons.
+        yesButton.setOnAction(e -> {
+            // Remove the friend item from the display.
+            playersContainer.getChildren().remove(friendItem);
+            popup.hide();
+            System.out.println("Removed friend: " + friendName);
+        });
+
+        noButton.setOnAction(e -> {
+            popup.hide();
+            System.out.println("Removal canceled for friend: " + friendName);
+        });
+    }
+
+
+
 }
