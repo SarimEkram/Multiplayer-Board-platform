@@ -1,4 +1,4 @@
-package networking.game.tests;
+package networking.game;
 
 import networking.game.TurnTimer;
 import org.junit.jupiter.api.*;

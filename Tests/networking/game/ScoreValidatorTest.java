@@ -1,4 +1,4 @@
-package networking.game.tests;
+package networking.game;
 
 import networking.game.ScoreValidator;
 import org.junit.jupiter.api.*;
