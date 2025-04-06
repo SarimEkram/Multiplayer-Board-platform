@@ -42,13 +42,13 @@ public class FriendRequestsController {
 
     private void loadPlayerList(List<Player> players) {
         playersContainer.getChildren().clear();
-        int ok =0;
+        int displayedCount =0;
         for (Player player : players) {
             playersContainer.getChildren().add(createPlayerEntry(player.getUsername()));
-            if (ok >= 3){
+            if (displayedCount >= 3){
                 return;
             }
-            ok++;
+            displayedCount++;
         }
     }
 
