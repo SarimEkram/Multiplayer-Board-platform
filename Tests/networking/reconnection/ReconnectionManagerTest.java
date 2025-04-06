@@ -12,29 +12,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Dummy GameState class for testing.
- */
-class GameState {
-    // Empty base class; override toString() in subclass as needed.
-}
-
-/**
- * Test implementation of GameState.
- */
-class TestGameState extends GameState {
-    private final String state;
-
-    public TestGameState(String state) {
-        this.state = state;
-    }
-
-    @Override
-    public String toString() {
-        return state;
-    }
-}
-
 public class ReconnectionManagerTest {
 
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
