@@ -377,7 +377,7 @@ public class HomePageController {
         VBox popupContent = new VBox(15);
         popupContent.setAlignment(Pos.CENTER);
         popupContent.setStyle(
-                "-fx-background-color: linear-gradient(to bottom, #444, #222);" +
+                "-fx-background-color: radial-gradient(radius 100%, #111, #333);" +
                         "-fx-padding: 15;" +
                         "-fx-border-color: #00ffff;" +
                         "-fx-border-width: 2;" +
@@ -385,6 +385,7 @@ public class HomePageController {
                         "-fx-border-radius: 10;" +
                         "-fx-effect: dropshadow(gaussian, rgba(0,255,255,0.75), 10, 0.5, 0, 0);"
         );
+
 
         // Create the confirmation message.
         Label message = new Label("Remove friend: " + friendName + "?");
