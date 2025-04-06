@@ -30,7 +30,7 @@ public class Rank {
     /**
      * updates the rank tier based on points
      */
-    private void updateRankTier() {
+    public void updateRankTier() {
 
         if (this.rankingPoints >= RankTier.DIAMOND.getThresholdPoints()){
             this.currentTier = RankTier.DIAMOND;

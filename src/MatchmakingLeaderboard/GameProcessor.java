@@ -4,6 +4,7 @@ import MatchmakingLeaderboard.Connect4.Leaderboard.Connect4Leaderboard;
 import MatchmakingLeaderboard.TicTacToe.Leaderboard.TicTacToeLeaderboard;
 //import MatchmakingLeaderboard.Connect4.Leaderboard.Connect4Leaderboard;
 import MatchmakingLeaderboard.Checkers.Leaderboard.CheckersLeaderboard;
+import MatchmakingLeaderboard.Rank;
 
 /**
  * Keeps track of what happens after the game completes.
@@ -50,12 +51,32 @@ public class GameProcessor {
 
         updateMMR(winner, loser, true, gameType);
         updateMMR(loser, winner, false, gameType);
+
         updateLeaderBoard(winner, loser, gameType);
+
+        updateLevel(winner, gameType);
+        updateLevel(loser, gameType);
 
         PlayerDatabase.savePlayer(winner);
         PlayerDatabase.savePlayer(loser);
     }
 
+    /**
+     * Updates level for a player
+     * @param player
+     * @param gameType
+     */
+    public void updateLevel(Player player, int gameType) {
+        int newMMR = player.getMMR(gameType);
+        int newLevel = newMMR/100;
+        if(newLevel == 0){
+            player.setLevel(1);
+        }
+
+        player.setLevel(newLevel);
+
+        //player.getRank(gameType).updateRankTier();
+    }
     /**
      * Updates MMR for players based on game outcome.
      */
