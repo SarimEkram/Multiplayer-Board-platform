@@ -60,10 +60,6 @@
     -fx-effect: dropshadow(gaussian, rgba(255,0,255,0.2), 15, 0, 0, 0);
 }
 
-/* Player 1 */
-#player1 {
-    -fx-alignment: center;
-}
 
 #avatar1 {
     -fx-background-color: #111;
@@ -80,17 +76,10 @@
     -fx-border-color: #ff00ff;
 }
 
-#name1 {
+#player1Name {
     -fx-font-size: 18px;
     -fx-letter-spacing: 1px;
     -fx-font-weight: 600;
-}
-
-#score1 {
-    -fx-font-family: 'Orbitron', sans-serif;
-    -fx-font-size: 16px;
-    -fx-font-weight: 700;
-    -fx-padding: 5 0 0 0;
 }
 
 /* VS Badge */
@@ -104,11 +93,6 @@
     -fx-font-weight: 700;
     -fx-text-fill: #000;
     -fx-rotate: -5;
-}
-
-/* Player 2 */
-#player2 {
-    -fx-alignment: center;
 }
 
 #avatar2 {
@@ -126,18 +110,12 @@
     -fx-border-color: #00ffff;
 }
 
-#name2 {
+#player2Name {
     -fx-font-size: 18px;
     -fx-letter-spacing: 1px;
     -fx-font-weight: 600;
 }
 
-#score2 {
-    -fx-font-family: 'Orbitron', sans-serif;
-    -fx-font-size: 16px;
-    -fx-font-weight: 700;
-    -fx-padding: 5 0 0 0;
-}
 
 /* Game Stats */
 #gameStats {
@@ -147,16 +125,6 @@
 }
 
 #timeElapsed {
-    -fx-background-color: rgba(0,0,0,0.5);
-    -fx-padding: 10 20;
-    -fx-background-radius: 5;
-    -fx-border-color: rgba(0,255,255,0.3);
-    -fx-border-width: 1;
-    -fx-effect: dropshadow(gaussian, rgba(0,255,255,0.2), 10, 0, 0, 0), innershadow(gaussian, rgba(255,0,255,0.2), 5, 0, 0, 0);
-    -fx-text-fill: #fff;
-}
-
-#movesCount {
     -fx-background-color: rgba(0,0,0,0.5);
     -fx-padding: 10 20;
     -fx-background-radius: 5;
@@ -185,45 +153,6 @@
     -fx-alignment: center;
 }
 
-#newGameBtn {
-    -fx-background-color: rgba(0,0,0,0.5);
-    -fx-border-color: white;
-    -fx-border-radius: 5;
-    -fx-padding: 12 25;
-    -fx-font-family: 'Orbitron', sans-serif;
-    -fx-font-size: 16px;
-    -fx-font-weight: 700;
-    -fx-letter-spacing: 1px;
-    -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(0,255,255,0.4), 10, 0, 0, 0);
-}
-
-#resetBtn {
-    -fx-background-color: rgba(0,0,0,0.5);
-    -fx-border-color: white;
-    -fx-border-radius: 5;
-    -fx-padding: 12 25;
-    -fx-font-family: 'Orbitron', sans-serif;
-    -fx-font-size: 16px;
-    -fx-font-weight: 700;
-    -fx-letter-spacing: 1px;
-    -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(0,255,255,0.4), 10, 0, 0, 0);
-}
-
-#soundBtn {
-    -fx-background-color: rgba(0,0,0,0.5);
-    -fx-border-color: white;
-    -fx-border-radius: 5;
-    -fx-padding: 12 25;
-    -fx-font-family: 'Orbitron', sans-serif;
-    -fx-font-size: 16px;
-    -fx-font-weight: 700;
-    -fx-letter-spacing: 1px;
-    -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(0,255,255,0.4), 10, 0, 0, 0);
-}
-
 /* Chat Sidebar */
 #chatSidebar {
     -fx-background-color: rgba(10, 5, 20, 0.85);
@@ -233,27 +162,6 @@
     -fx-border-color: rgba(0,255,255,0.3);
     -fx-border-width: 1;
 }
-
-/*!* Chat Header *!*/
-/*#chatHeader {*/
-/*    -fx-font-family: 'Orbitron', sans-serif;*/
-/*    -fx-font-size:60px;*/
-/*    -fx-text-fill: #fff;*/
-/*    -fx-effect: dropshadow(gaussian, #00ffff, 10, 0.1, 0, 0);*/
-/*    -fx-padding: 0 0 10 0;*/
-/*    -fx-alignment: CENTER;*/
-/*}*/
-
-/*#chatHeader {*/
-
-/*    -fx-text-fill: #fff;*/
-/*    -fx-effect: dropshadow(gaussian, #00ffff, 10, 0.3, 0, 0);*/
-
-/*    -fx-padding: 0 0 10 0;  !* Equivalent to padding-bottom: 10px *!*/
-/*    -fx-letter-spacing: 10px; !* Adjust this value as needed *!*/
-
-
-/*}*/
 
 
 /* Chat Messages Container */
@@ -265,7 +173,6 @@
     -fx-border-color: rgba(255, 0, 255, 0.2);
     -fx-border-width: 1;
     -fx-background-radius: 5;
-    /*-fx-effect: innershadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0, 0, 0);*/
     -fx-effect: dropshadow(gaussian, rgba(255,0,255,0.2), 15, 0, 0, 0);
 
 }
@@ -299,13 +206,13 @@
 }
 
 /* Corner Accents */
-/* Removed fixed sizes for responsiveness */
 #topLeft,
 #topRight,
 #bottomLeft,
 #bottomRight {
     -fx-background-color: transparent;
 }
+
 .chat-message {
     -fx-padding: 8px;
     -fx-border-width: 0 0 0 3px;
@@ -456,6 +363,20 @@
 .scroll-pane:hover .scroll-bar {
     -fx-opacity: 1;
 }
+
+#leaveGame {
+    -fx-background-color: linear-gradient(to bottom right, #ff00ff, #00ffff);
+    -fx-text-fill: #000;
+    -fx-font-family: 'Orbitron', sans-serif;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-letter-spacing: 1px;
+    -fx-padding: 12 18;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+
 /* Popup Overlay: covers the game board with a semi-transparent background */
 .popup-overlay {
     -fx-background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black */
@@ -546,18 +467,69 @@
 }
 
 
+#avatar1,
+#avatar2 {
+    -fx-pref-width: 70px;
+    -fx-pref-height: 70px;
+    -fx-min-width: 70px;
+    -fx-min-height: 70px;
+    -fx-max-width: 70px;
+    -fx-max-height: 70px;
+    -fx-background-color: #111;
+    -fx-border-radius: 50%;
+    -fx-background-radius: 50%;
+    -fx-alignment: center;
+    -fx-font-family: 'Orbitron', sans-serif;
+    -fx-font-size: 24;
+    -fx-font-weight: bold;
+    -fx-border-width: 2;
+    -fx-padding: 5;
+}
 
+.player-name {
+    -fx-letter-spacing: 1px;
+    -fx-text-fill: #fff;
 
+}
+
+.avatar {
+    -fx-pref-width: 70px;
+    -fx-pref-height: 70px;
+    -fx-background-color: #111;
+    -fx-border-radius: 50%;
+    -fx-background-radius: 50%;
+    -fx-alignment: center;
+    -fx-border-width: 2;
+    -fx-padding: 5;
+}
+
+#player1DiscContainer {
+    -fx-alignment: center; /* Ensures the VBox itself is centered */
+}
+
+#player1Name {
+    -fx-alignment: center;        /* Horizontal alignment of the label’s content */
+    -fx-text-alignment: center;   /* Text alignment within the label */
+    -fx-pref-width: 100;          /* Give enough width to see the centering effect */
+}
+.time-label, .moves-label {
+    -fx-text-fill: #fff;
+    -fx-font-family: 'Orbitron', sans-serif;
+    -fx-font-size: 16px;
+    -fx-effect: dropshadow(gaussian, rgba(0,255,255,0.8), 10, 0.5, 0, 0);
+}
 
 
 
 /* === CHECKERS BOARD SQUARES === */
 .square-light {
-    -fx-fill: #f0d9b5;
+    -fx-fill: radial-gradient(center 50% 50%, radius 100%, #f0d9b5, #e6c49f);
+    -fx-effect: dropshadow(gaussian, rgba(0,255,255,0.3), 10, 0, 0, 0);
 }
 
 .square-dark {
-    -fx-fill: #b58863;
+    -fx-fill: radial-gradient(center 50% 50%, radius 100%, #b58863, #a67644);
+    -fx-effect: dropshadow(gaussian, rgba(255,0,255,0.3), 10, 0, 0, 0);
 }
 
 /* === CHECKERS PIECES === */

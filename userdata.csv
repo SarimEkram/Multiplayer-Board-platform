@@ -1,5 +1,5 @@
 userID,username,email,password,winRatio,level,onlineStatus
-183828,PlayerOne,unknown1@example.com,jZae727K08KaOmKSgOaGzww/XVqGr/PKEgIMkjrcbJI=,0.7535353535353536,5,false
+183828,PlayerOne,unknown1@example.com,jZae727K08KaOmKSgOaGzww/XVqGr/PKEgIMkjrcbJI=,0.7535353535353536,5,true
 127647,PlayerTwo,unknown2@example.com,jZae727K08KaOmKSgOaGzww/XVqGr/PKEgIMkjrcbJI=,0.611111111111111,3,true
 134546,PlayerThree,unknown3@example.com,jZae727K08KaOmKSgOaGzww/XVqGr/PKEgIMkjrcbJI=,0.625438596491228,7,false
 144558,PlayerFour,unknown4@example.com,jZae727K08KaOmKSgOaGzww/XVqGr/PKEgIMkjrcbJI=,0.7055555555555556,2,false

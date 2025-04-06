@@ -48,6 +48,7 @@ public class Connect4Controller {
     @FXML private Button resetBtn;
     @FXML private Button soundBtn;
     @FXML private Button leaveGameBtn;
+    @FXML public Label gameTitle;
 
     // Time and Moves labels (controlled UI elements)
     @FXML private Label timeElapsed;
@@ -102,6 +103,8 @@ public class Connect4Controller {
         // Initialize chat view and header
         initializeChat();
         setupHeaderWithSpacing();
+
+        gameTitle.setText("OMG CONNECT 4");
 
         // --- Matchmaking integration ---
         matchmaking = new Connect4Matchmaking();

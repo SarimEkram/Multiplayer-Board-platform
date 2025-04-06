@@ -11,8 +11,10 @@ import gameLogic.checkers.CheckersPiece;
 import gameLogic.checkers.CheckersMove;
 import gameLogic.checkers.CheckersMove.Move;
 import ca.ucalgary.groupprojectgui.p3.SceneManager;
+import javafx.animation.KeyFrame;
 import javafx.animation.RotateTransition;
 import javafx.animation.ScaleTransition;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -43,12 +45,6 @@ import static javafx.scene.paint.Color.rgb;
 public class CheckersController {
 
     @FXML
-    public Label whiteCaptured;
-
-    @FXML
-    public Label blackCaptured;
-
-    @FXML
     public Circle turnPiece;
 
     @FXML
@@ -60,6 +56,9 @@ public class CheckersController {
     @FXML
     public Label chatHeader;
     public Button leaveGame;
+    public Label gameTitle;
+    public Label timeElapsed;
+    public TextField chatInput;
 
     @FXML
     private Label turnLabel; // Turn indicator label
@@ -68,22 +67,11 @@ public class CheckersController {
     private StackPane boardContainer;
 
     @FXML
-    private StackPane checkerPiece1;
-
-    @FXML
     private Circle checkerCircle1;      // Player 1's circle
-
-    @FXML
-    private StackPane checkerPiece2;
 
     @FXML
     private Circle checkerCircle2;      // Player 2's circle
 
-    @FXML
-    private BorderPane mainGamePane;
-
-    @FXML
-    private TextField chatInput;
     @FXML
     private Label player1Name;
     @FXML
@@ -100,7 +88,7 @@ public class CheckersController {
     // Board constants
     private static final int BOARD_ROWS = 8;
     private static final int BOARD_COLUMNS = 8;
-    private static final double BOARD_MARGIN = 20.0;
+    private static final double BOARD_MARGIN = 15.0;
 
     private GridPane boardGrid;
     private Rectangle boardBackground;
@@ -119,6 +107,8 @@ public class CheckersController {
     private int messageCount = 0;
     private GameProcessor gameProcessor;
     private final int gameType = 3;
+    private Timeline timeline;
+    private int secondsElapsed = 0;
 
     private static class Position {
         int row, col;
@@ -132,6 +122,8 @@ public class CheckersController {
     public void initialize() {
         initializeChat();
         setupHeaderWithSpacing();
+
+        gameTitle.setText("OMG CHECKERS");
 
         matchmaking = new CheckersMatchmaking();
 
@@ -160,10 +152,17 @@ public class CheckersController {
         gameLogic = new Checkers(checkersBoard);
         gameLogic.start();
         createBoard();
-        player1Name.setText(localPlayer.getUsername());
-        player2Name.setText(opponentPlayer.getUsername());
+        player1Name.setText(localPlayer != null ? localPlayer.getUsername().toUpperCase() : "PLAYER 1");
+        player1Name.setPadding(new Insets(5, 10, 5, 10));
+        player1Name.setFont(Fonts.rajdhaniBold(16));
+
+        player2Name.setText(opponentPlayer != null ? opponentPlayer.getUsername().toUpperCase() : "PLAYER 2");
+        player2Name.setPadding(new Insets(5, 10, 5, 10));
+        player2Name.setFont(Fonts.rajdhaniBold(16));
 
         gameProcessor = new GameProcessor(localPlayer, opponentPlayer, gameType);
+
+        startTimer();
     }
 
     private void createBoard() {
@@ -183,26 +182,45 @@ public class CheckersController {
         for (int row = 0; row < BOARD_ROWS; row++) {
             for (int col = 0; col < BOARD_COLUMNS; col++) {
                 StackPane cell = new StackPane();
-                cell.setPrefSize(72, 72);
-                Rectangle square = new Rectangle(72, 72);
+                cell.setPrefSize(68, 68);
+                Rectangle square = new Rectangle(68, 68);
                 square.getStyleClass().add("board-square");
                 if ((row + col) % 2 == 0) {
-                    square.setFill(Color.BEIGE);
+                    square.setFill(Color.valueOf("#16858c"));
+                    square.setStroke(Color.rgb(0, 255, 255, 0.3)); // Cyan border
+                    square.setStrokeWidth(2);
                 } else {
-                    square.setFill(Color.BROWN);
+                    square.setFill(Color.valueOf("#a7759c"));  // Or Color.GRAY if preferred
+                    square.setStroke(Color.rgb(255, 0, 255, 0.3)); // Magenta border
+                    square.setStrokeWidth(2);
                 }
                 cell.getChildren().add(square);
 
                 // Place initial pieces based on backend setup
                 if (row < 3 && (row + col) % 2 == 1) {
-                    Circle whitePiece = new Circle(32);
+                    Circle whitePiece = new Circle(31);
                     whitePiece.getStyleClass().addAll(checkerCircle1.getStyleClass());
                     cell.getChildren().add(whitePiece);
                 } else if (row > 4 && (row + col) % 2 == 1) {
-                    Circle blackPiece = new Circle(32);
+                    Circle blackPiece = new Circle(31);
                     blackPiece.getStyleClass().addAll(checkerCircle2.getStyleClass());
                     cell.getChildren().add(blackPiece);
                 }
+                square.setStrokeWidth(2);
+
+                DropShadow shadow = new DropShadow();
+                shadow.setRadius(3);
+                shadow.setOffsetX(1);
+                shadow.setOffsetY(1);
+                shadow.setColor(Color.rgb(0, 0, 0, 0.25));
+                square.setEffect(shadow);
+
+                // Padding between tiles using margin
+                GridPane.setMargin(square, new javafx.geometry.Insets(1));
+
+                // Optional hover effect: scale transition
+                square.setOnMouseEntered(e -> animateHover(square, 1.05));
+                square.setOnMouseExited(e -> animateHover(square, 1.0));
 
                 cellPanes[row][col] = cell;
                 final int currentRow = row;
@@ -212,6 +230,7 @@ public class CheckersController {
                 cell.setOnMouseExited(e -> handleCellHoverExit(currentRow, currentCol));
                 boardGrid.add(cell, col, row);
             }
+
         }
 
         boardContainer.getChildren().addAll(boardBackground, boardGrid);
@@ -222,6 +241,21 @@ public class CheckersController {
         if (leaveGame != null) {
             leaveGame.setOnAction(e -> onLeaveGame());
         }
+
+    }
+
+    private void startTimer() {
+        if (timeline != null) {
+            timeline.stop();
+        }
+        timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+            secondsElapsed++;
+            int minutes = secondsElapsed / 60;
+            int seconds = secondsElapsed % 60;
+            timeElapsed.setText(String.format("TIME: %02d:%02d", minutes, seconds));
+        }));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
     }
 
     private void updateBoardLayout() {
@@ -239,9 +273,15 @@ public class CheckersController {
             }
         }
     }
+    private void animateHover(Rectangle square, double scale) {
+        ScaleTransition st = new ScaleTransition(Duration.millis(150), square);
+        st.setToX(scale);
+        st.setToY(scale);
+        st.play();
+    }
 
     private void onLeaveGame() {
-        Pane parent = (Pane) boardContainer.getParent();
+        Pane parent = (Pane) boardGrid.getParent();
         StackPane overlay = new StackPane();
         overlay.getStyleClass().add("popup-overlay");
         overlay.setPrefSize(parent.getWidth(), parent.getHeight());
@@ -250,6 +290,7 @@ public class CheckersController {
         popup.setAlignment(Pos.CENTER);
         popup.setSpacing(15);
         popup.setPadding(new Insets(20));
+
         Text title = new Text("Confirm Quit");
         title.getStyleClass().add("popup-title");
         Text message = new Text("Are you sure you want to quit the game?");
@@ -311,6 +352,8 @@ public class CheckersController {
                 }
                 if (winner != Checkers.WINNER.NONE) {
                     checkForWinnerAndShowLabel();
+                    stopTimer(); // Stop timer when game ends
+                    return;
                 } else {
                     updateTurnIndicator();
                 }
@@ -436,7 +479,7 @@ public class CheckersController {
                 cell.getChildren().removeIf(node -> node instanceof Circle || node instanceof ImageView);
                 CheckersPiece piece = checkersBoard.board[row][col];
                 if (piece != null) {
-                    Circle pieceCircle = new Circle(32);
+                    Circle pieceCircle = new Circle(31);
                     if (piece.getColour() == CheckersPiece.Colour.WHITE) {
                         pieceCircle.getStyleClass().addAll(checkerCircle2.getStyleClass());
                     } else {
@@ -484,18 +527,48 @@ public class CheckersController {
         Checkers.WINNER winner = gameLogic.checkWin();
         if (winner != Checkers.WINNER.NONE) {
             if (winner == Checkers.WINNER.WHITE) {
-                turnLabel.setText(opponentPlayer.getUsername() + " wins!");
-                turnPiece.getStyleClass().clear();
-                turnPiece.getStyleClass().add("checker-white");
+                showGameOverPopup(opponentPlayer.getUsername(), true);
                 gameProcessor.UpdateResults(opponentPlayer, localPlayer, gameType);
             } else {
-                turnLabel.setText(localPlayer.getUsername() + " wins!");
-                turnPiece.getStyleClass().clear();
-                turnPiece.getStyleClass().add("checker-black");
+                showGameOverPopup(localPlayer.getUsername(), true);
                 gameProcessor.UpdateResults(localPlayer, opponentPlayer, gameType);
             }
             boardGrid.setDisable(true);
         }
+    }
+
+    private void showGameOverPopup(String winner, boolean isWin) {
+        StackPane overlay = new StackPane();
+        overlay.getStyleClass().add("popup-overlay");
+        overlay.setPrefSize(boardGrid.getWidth(), boardGrid.getHeight());
+
+        VBox popup = new VBox();
+        popup.getStyleClass().add("popup-dialog");
+        popup.setAlignment(Pos.CENTER);
+        popup.setSpacing(10);
+        popup.setPadding(new Insets(20));
+
+        Text title = new Text("Game Over");
+        title.getStyleClass().add("popup-title");
+
+        Text message = new Text();
+        message.getStyleClass().add("popup-message");
+        if (isWin) {
+            message.setText("Winner: " + winner);
+        } else {
+            message.setText("It's a draw!");
+        }
+
+        Button mainMenuButton = new Button("Main Menu");
+        mainMenuButton.getStyleClass().add("popup-button");
+        mainMenuButton.setOnAction(e -> {
+            boardGrid.getChildren().remove(overlay);
+            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "home.css");
+        });
+
+        popup.getChildren().addAll(title, message, mainMenuButton);
+        overlay.getChildren().add(popup);
+        ((Pane) boardGrid.getParent()).getChildren().add(overlay);
     }
 
     private void setupHeaderWithSpacing() {
@@ -541,7 +614,7 @@ public class CheckersController {
      */
     private void initializeChat() {
         try {
-            URL cssUrl = getClass().getResource("/ca/ucalgary/groupprojectgui/p3/styles/connect4.css");
+            URL cssUrl = getClass().getResource("/ca/ucalgary/groupprojectgui/p3/styles/checkers.css");
             if (cssUrl != null) {
                 chatMessages.getStylesheets().add(cssUrl.toExternalForm());
             }
@@ -550,6 +623,23 @@ public class CheckersController {
         } catch (Exception e) {
             System.err.println("Error initializing chat: " + e.getMessage());
         }
+    }
+
+    private void stopTimer() {
+        if (timeline != null) {
+            timeline.stop();
+        }
+    }
+
+    @FXML
+    private void onSendMessage() {
+        String message = chatInput.getText();
+        if (message == null || message.trim().isEmpty()) {
+            return;
+        }
+        addMessage("You", message, false);
+        chatInput.clear();
+        Platform.runLater(() -> chatScrollPane.setVvalue(1.0));
     }
 
     /**

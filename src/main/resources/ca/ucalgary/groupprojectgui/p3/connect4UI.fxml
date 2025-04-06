@@ -23,7 +23,7 @@
                         <VBox fx:id="gameArea" alignment="TOP_CENTER" maxHeight="-1" maxWidth="-1" spacing="15" HBox.hgrow="ALWAYS">
                             <children>
                                 <!-- Game Title -->
-                                <Label fx:id="gameTitle" text="OMG Connect 4" />
+                                <Label fx:id="gameTitle" text="GAME NAME" />
                                 <!-- Player Info -->
                                 <HBox fx:id="playerInfo" alignment="CENTER" spacing="20">
                                     <children>
