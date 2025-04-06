@@ -6,7 +6,7 @@ import MatchmakingLeaderboard.TicTacToe.Matchmaking.TicTacToeMatchmaking;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-//import static org.mockito.Mockito.*;
+import static MatchmakingLeaderboard.GameType.*;
 
 public class PlayerTest {
     private Player player;
@@ -28,56 +28,56 @@ public class PlayerTest {
         assertEquals(5, player.getLevel());
         assertEquals(123456, player.getUserID());
 
-        for (int i = 1; i <= 3; i++) {
-            assertEquals(0, player.getWins(i));
-            assertEquals(0, player.getLosses(i));
-            assertEquals(0.0, player.getWinRatio(i));
-            assertEquals(0, player.getMMR(i));
-            assertEquals(i, player.getGameSignal(i));
-            assertNotNull(player.getRank(i));
+        for (GameType gameType : GameType.values()) {
+            assertEquals(0, player.getWins(gameType));
+            assertEquals(0, player.getLosses(gameType));
+            assertEquals(0.0, player.getWinRatio(gameType));
+            assertEquals(0, player.getMMR(gameType));
+            assertEquals(gameType.getGameCode(), player.getGameSignal(gameType));
+            assertNotNull(player.getRank(gameType));
         }
     }
 
     /**
-     * Tests win addition and win ratio calculation for game type 1 (TicTacToe)
+     * Tests win addition and win ratio calculation for TIC_TAC_TOE
      */
     @Test
     void testAddWinAndCalculateRatio() {
-        player.addWin(1); // TicTacToe
-        assertEquals(1, player.getWins(1));
-        assertEquals(0, player.getLosses(1));
-        assertEquals(1.0, player.getWinRatio(1));
+        player.addWin(TIC_TAC_TOE);
+        assertEquals(1, player.getWins(TIC_TAC_TOE));
+        assertEquals(0, player.getLosses(TIC_TAC_TOE));
+        assertEquals(1.0, player.getWinRatio(TIC_TAC_TOE));
 
-        player.addLoss(1);
-        assertEquals(1, player.getWins(1));
-        assertEquals(1, player.getLosses(1));
-        assertEquals(0.5, player.getWinRatio(1));
+        player.addLoss(TIC_TAC_TOE);
+        assertEquals(1, player.getWins(TIC_TAC_TOE));
+        assertEquals(1, player.getLosses(TIC_TAC_TOE));
+        assertEquals(0.5, player.getWinRatio(TIC_TAC_TOE));
     }
 
     /**
-     * Tests loss addition and win ratio calculation for game type 2 (Connect4)
+     * Tests loss addition and win ratio calculation for CONNECT_FOUR
      */
     @Test
     void testAddLossAndCalculateRatio() {
-        player.addLoss(2); // Connect4
-        assertEquals(0, player.getWins(2));
-        assertEquals(1, player.getLosses(2));
-        assertEquals(0.0, player.getWinRatio(2));
+        player.addLoss(CONNECT_FOUR);
+        assertEquals(0, player.getWins(CONNECT_FOUR));
+        assertEquals(1, player.getLosses(CONNECT_FOUR));
+        assertEquals(0.0, player.getWinRatio(CONNECT_FOUR));
 
-        player.addWin(2);
-        player.addWin(2);
-        assertEquals(2, player.getWins(2));
-        assertEquals(1, player.getLosses(2));
-        assertEquals(2.0/3, player.getWinRatio(2));
+        player.addWin(CONNECT_FOUR);
+        player.addWin(CONNECT_FOUR);
+        assertEquals(2, player.getWins(CONNECT_FOUR));
+        assertEquals(1, player.getLosses(CONNECT_FOUR));
+        assertEquals(2.0/3, player.getWinRatio(CONNECT_FOUR));
     }
 
     /**
-     * Tests MMR setting/getting for game type 3 (Checkers)
-      */
+     * Tests MMR setting/getting for CHECKERS
+     */
     @Test
     void testSetMMR() {
-        player.setMMR(1500, 3); // Checkers
-        assertEquals(1500, player.getMMR(3));
+        player.setMMR(1500, CHECKERS);
+        assertEquals(1500, player.getMMR(CHECKERS));
     }
 
     /**
@@ -85,10 +85,11 @@ public class PlayerTest {
      */
     @Test
     void testSetGameSignal() {
-        player.setGameSignal(2, 1); // TicTacToe signal 2
-        assertEquals(2, player.getGameSignal(1));
+        player.setGameSignal(2, TIC_TAC_TOE);
+        assertEquals(2, player.getGameSignal(TIC_TAC_TOE));
 
-        assertThrows(IllegalArgumentException.class, () -> player.setGameSignal(4, 1));
+        assertThrows(IllegalArgumentException.class, () ->
+                player.setGameSignal(4, TIC_TAC_TOE));
     }
 
     /**
@@ -96,9 +97,10 @@ public class PlayerTest {
      */
     @Test
     void testInvalidGameType() {
-        assertThrows(IllegalArgumentException.class, () -> player.getWins(0));
-        assertThrows(IllegalArgumentException.class, () -> player.getWins(4));
-        assertThrows(IllegalArgumentException.class, () -> player.setMMR(1000, 0));
+        // Testing with invalid game codes (though now impossible with enum type)
+        // These tests might be removed since compiler prevents invalid types
+        assertThrows(IllegalArgumentException.class, () ->
+                player.getWins(null));
     }
 
     /**
@@ -107,34 +109,32 @@ public class PlayerTest {
     @Test
     void testSetAndGetRank() {
         Rank newRank = new Rank();
-        player.setRank(newRank, 2);
-        newRank.adjustPoints(player, 100, 2);
-        assertEquals(100, player.getRank(2).getRankingPoints());
+        player.setRank(newRank, CONNECT_FOUR);
+        newRank.adjustPoints(player, 100, CONNECT_FOUR);
+        assertEquals(100, player.getRank(CONNECT_FOUR).getRankingPoints());
     }
 
-
-//    @Test
-//    void testJoinMatch() throws Exception {
-//        // Using mocks to test joinMatch without actual implementations
-//        TicTacToeMatchmaking mockTicTacToe = mock(TicTacToeMatchmaking.class);
-//        Connect4Matchmaking mockConnect4 = mock(Connect4Matchmaking.class);
-//        CheckersMatchmaking mockCheckers = mock(CheckersMatchmaking.class);
-//
-//        player.setGameSignal(1, 1);
-//        assertEquals(1, player.getGameSignal(1));
-//    }
-
     /**
-     * test of other basic setters
+     * Test of other basic setters
      */
     @Test
     void testSetters() {
         player.setLevel(10);
         assertEquals(10, player.getLevel());
 
-        player.setUserID(123456);
-        assertEquals(123456, player.getUserID());
+        player.setUserID(654321);
+        assertEquals(654321, player.getUserID());
     }
 
-
+    /**
+     * Tests joinMatch functionality (without actual implementations)
+     */
+    @Test
+    void testJoinMatch() {
+        // This would ideally use mocks as in your commented code
+        assertDoesNotThrow(() -> {
+            player.setGameSignal(1, TIC_TAC_TOE);
+            player.joinMatch(TIC_TAC_TOE);
+        });
+    }
 }

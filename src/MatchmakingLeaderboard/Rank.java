@@ -22,7 +22,7 @@ public class Rank {
     /**
      * Adjusts points and updates tier
      */
-    public void adjustPoints(Player player,int points, int game) {
+    public void adjustPoints(Player player,int points, GameType game) {
         player.getRank(game).rankingPoints += points;
         player.getRank(game).rankingPoints = Math.max(0, player.getRank(game).rankingPoints);
         updateRankTier();

@@ -1,7 +1,7 @@
 package MatchmakingLeaderboard.TicTacToe.Leaderboard;
 
 import MatchmakingLeaderboard.IGameLeaderboard;
-//import MatchmakingLeaderboard.IGameMatchmaking;
+import MatchmakingLeaderboard.GameType;
 import MatchmakingLeaderboard.Player;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ public abstract class AbstractTicTacToeLeaderboard implements IGameLeaderboard {
     protected static final int gameType = 1;
 
 
-    public void addPlayer(Player player, int gameType) {
+    public void addPlayer(Player player, GameType gameType) {
         if (player == null) {
             throw new NullPointerException("player is null");
         }

@@ -9,15 +9,15 @@ import MatchmakingLeaderboard.TicTacToe.Matchmaking.TicTacToeMatchmaking;
  * and used in matchmaking and leaderboard
  */
 public class Player {
-    private final double[] winRatio = new double[3];  // 1: TicTacToe, 2: Connect4, 3: Checkers
+    private final double[] winRatio = new double[GameType.values().length];  // 1: TicTacToe, 2: Connect4, 3: Checkers
     private final String username;
-    private final int[] wins = new int[3];
-    private final int[] losses = new int[3];
+    private final int[] wins = new int[GameType.values().length];
+    private final int[] losses = new int[GameType.values().length];
     private int level;
     private int userID;
-    private final Rank[] rank = new Rank[3];
-    private final int[] gameSignal = new int[3];
-    private final int[] mmr = new int[3];
+    private final Rank[] rank = new Rank[GameType.values().length];
+    private final int[] gameSignal = new int[GameType.values().length];
+    private final int[] mmr = new int[GameType.values().length];
 
     /**
      * Constructs a Player object
@@ -35,7 +35,7 @@ public class Player {
             this.wins[i] = 0;
             this.losses[i] = 0;
             this.rank[i] = new Rank();
-            this.gameSignal[i] = i+1;
+            this.gameSignal[i] = GameType.values()[i].getGameCode();
             this.mmr[i] = 0;
         }
 
@@ -46,58 +46,57 @@ public class Player {
     }
 
 
-    public int getWins(int gameType) {
-        validGame(gameType);
-        return this.wins[gameType-1];
+    public int getWins(GameType gameType) {
+        //validGame(gameType);
+        return this.wins[gameType.ordinal()];
     }
 
-    public void addWin(int gameType) {
-        validGame(gameType);
-        this.wins[gameType-1]++;
+    public void addWin(GameType gameType) {
+        //validGame(gameType);
+        this.wins[gameType.ordinal()]++;
         calculateRatio(gameType);
     }
-    public int getLosses(int gameType) {
-        validGame(gameType);
-        return this.losses[gameType-1];
+    public int getLosses(GameType gameType) {
+        //validGame(gameType);
+        return this.losses[gameType.ordinal()];
     }
 
-    public void addLoss(int gameType) {
-        validGame(gameType);
-        this.losses[gameType-1]++;
+    public void addLoss(GameType gameType) {
+        //validGame(gameType);
+        this.losses[gameType.ordinal()]++;
         calculateRatio(gameType);
     }
 
-    private void validGame(int gameType){
-        if(gameType < 1 || gameType > 3) {
-            throw new IllegalArgumentException("Invalid game type");
-        }
-    }
+//    private void validGame(int gameType){
+//        if(gameType < 1 || gameType > 3) {
+//            throw new IllegalArgumentException("Invalid game type");
+//        }
+//    }
     // --- MMR ---
-    public int getMMR(int gameType){
-        validGame(gameType);
-        return this.mmr[gameType - 1];
+    public int getMMR(GameType gameType){
+        //validGame(gameType);
+        return this.mmr[gameType.ordinal()];
     }
 
-    public void setMMR(int mmr, int gameType){
-        validGame(gameType);
-        this.mmr[gameType - 1] = mmr;
+    public void setMMR(int mmr, GameType gameType){
+        //validGame(gameType);
+        this.mmr[gameType.ordinal()] = mmr;
     }
 
     // --- Win Ratio ---
-    public double getWinRatio(int gameType) {
-        validGame(gameType);
-        return this.winRatio[gameType - 1];
+    public double getWinRatio(GameType gameType) {
+        //validGame(gameType);
+        return this.winRatio[gameType.ordinal()];
     }
 
-    public void setWinRatio(int gameType, double ratio) {
-        validGame(gameType);
-        this.winRatio[gameType - 1] = ratio;
+    public void setWinRatio(GameType gameType, double ratio) {
+        this.winRatio[gameType.ordinal()] = ratio;
 
     }
 
-    public void calculateRatio(int gameType) {
-        validGame(gameType);
-        int gameIndex = gameType - 1;
+    public void calculateRatio(GameType gameType) {
+        //validGame(gameType);
+        int gameIndex = gameType.ordinal() - 1;
         int totalGames = this.wins[gameIndex] + this.losses[gameIndex];
 
         if(totalGames > 0){
@@ -127,28 +126,26 @@ public class Player {
         this.userID = userID;
     }
 
-    public Rank getRank(int gameType) {
-        validGame(gameType);
-        return this.rank[gameType - 1];
+    public Rank getRank(GameType gameType) {
+
+        return this.rank[gameType.ordinal()];
     }
 
-    public void setRank(Rank rank, int gameType) {
-        validGame(gameType);
-        this.rank[gameType - 1] = rank;
+    public void setRank(Rank rank, GameType gameType) {
+        this.rank[gameType.ordinal()] = rank;
     }
 
-    public int getGameSignal(int gameType) {
-        validGame(gameType);
-        return this.gameSignal[gameType-1];
+    public int getGameSignal(GameType gameType) {
+        return this.gameSignal[gameType.ordinal()];
     }
 
-    public void setGameSignal(int Signal, int gameType) {
-        validGame(gameType);
+    public void setGameSignal(int Signal, GameType gameType) {
+
         if(Signal < 0 || Signal > 3) {
             throw new IllegalArgumentException("Signal must be between 0 and 3");
         }
 
-        this.gameSignal[gameType-1] = Signal;
+        this.gameSignal[gameType.ordinal()] = Signal;
     }
 
 
@@ -156,7 +153,7 @@ public class Player {
      * Joins the player into matchmaking queue based on their game signal
      * @throws Exception if there's an error during matchmaking
      */
-    public void joinMatch(int gameType) throws Exception {
+    public void joinMatch(GameType gameType) throws Exception {
         if (this.getGameSignal(gameType) == 1) {
             TicTacToeMatchmaking matchmaking = new TicTacToeMatchmaking();
             matchmaking.joinQueue(this);

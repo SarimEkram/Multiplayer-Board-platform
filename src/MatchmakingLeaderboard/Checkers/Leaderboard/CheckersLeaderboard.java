@@ -2,9 +2,12 @@ package MatchmakingLeaderboard.Checkers.Leaderboard;
 
 import MatchmakingLeaderboard.Player;
 import MatchmakingLeaderboard.PlayerDatabase;
+import MatchmakingLeaderboard.GameType;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static MatchmakingLeaderboard.GameType.CHECKERS;
 
 /**
  * Concrete class for Checkers leaderboard management.
@@ -12,7 +15,7 @@ import java.util.List;
 public class CheckersLeaderboard extends AbstractCheckersLeaderboard {
 
     private static final CheckersLeaderboard instance = new CheckersLeaderboard();
-    private static final int GAME_TYPE = 3;
+
 
     private CheckersLeaderboard() {
     }
@@ -27,7 +30,10 @@ public class CheckersLeaderboard extends AbstractCheckersLeaderboard {
         return new ArrayList<>(players);
     }
 
-    public static void updatePlayer(Player player, boolean Won, int gameType) {
+    public static void updatePlayer(Player player, boolean Won, GameType gameType) {
+        if (player == null) {
+            throw new IllegalArgumentException("Player cannot be null");
+        }
         instance.addPlayer(player, gameType);
         instance.sortLeaderboard();
     }
@@ -39,7 +45,7 @@ public class CheckersLeaderboard extends AbstractCheckersLeaderboard {
 
         List<Player> checkersPlayers = new ArrayList<>();
         for (Player player : allPlayers) {
-            if (player.getMMR(GAME_TYPE) > 0) {
+            if (player.getMMR(CHECKERS) > 0) {
                 checkersPlayers.add(player);
             }
         }
@@ -49,6 +55,6 @@ public class CheckersLeaderboard extends AbstractCheckersLeaderboard {
     }
 
     public void sortLeaderboard() {
-        players.sort((p1, p2) -> Integer.compare(p2.getMMR(GAME_TYPE), p1.getMMR(GAME_TYPE)));
+        players.sort((p1, p2) -> Integer.compare(p2.getMMR(CHECKERS), p1.getMMR(CHECKERS)));
     }
 }

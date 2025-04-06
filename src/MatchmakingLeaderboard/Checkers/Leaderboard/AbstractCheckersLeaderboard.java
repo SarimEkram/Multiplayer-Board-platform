@@ -1,5 +1,7 @@
 package MatchmakingLeaderboard.Checkers.Leaderboard;
 
+
+import MatchmakingLeaderboard.GameType;
 import MatchmakingLeaderboard.IGameLeaderboard;
 import MatchmakingLeaderboard.Player;
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ public abstract class AbstractCheckersLeaderboard implements IGameLeaderboard {
     protected static final int gameType = 3;
 
 
-    public void addPlayer(Player player, int gameType) {
+    public void addPlayer(Player player, GameType gameType) {
         if (player == null) {
             throw new NullPointerException("player is null");
         }

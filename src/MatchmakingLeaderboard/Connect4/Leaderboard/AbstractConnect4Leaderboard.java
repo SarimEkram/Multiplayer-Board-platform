@@ -1,9 +1,12 @@
 package MatchmakingLeaderboard.Connect4.Leaderboard;
 
+
 import MatchmakingLeaderboard.Player;
 import java.util.ArrayList;
 import java.util.List;
 import MatchmakingLeaderboard.IGameLeaderboard;
+import MatchmakingLeaderboard.GameType;
+
 /**
  * Abstract base class for Connect-4 leaderboard management.
  *
@@ -15,7 +18,7 @@ public abstract class AbstractConnect4Leaderboard implements IGameLeaderboard {
     protected static final int gameType = 2;
 
 
-    public void addPlayer(Player player, int gameType) {
+    public void addPlayer(Player player, GameType gameType) {
         if (player == null) {
             throw new NullPointerException("player is null");
         }
