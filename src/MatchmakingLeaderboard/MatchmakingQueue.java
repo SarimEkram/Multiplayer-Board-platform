@@ -2,6 +2,8 @@ package MatchmakingLeaderboard;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import static MatchmakingLeaderboard.GameType.*;
+
 
 /**
  * Common matchmaking queue for players, supports all games with separate queues.
@@ -10,17 +12,17 @@ import java.util.Queue;
 public class MatchmakingQueue {
 
     private final Queue<Player> queue;
-    private final int gameType; // 1 = TicTacToe, 2 = Connect4, 3 = Checkers
+    private final GameType gameType; // 1 = TicTacToe, 2 = Connect4, 3 = Checkers
     private boolean matchReady = false;
 
-    public MatchmakingQueue(int gameType) {
-        this.gameType = gameType;
+    public MatchmakingQueue(GameType gameType) {
 
+        this.gameType = gameType;
         // choose the correct queue
         switch (gameType) {
-            case 1 -> queue = new LinkedList<>(); // TicTacToe
-            case 2 -> queue = new LinkedList<>(); // Connect4
-            case 3 -> queue = new LinkedList<>(); // Checkers
+            case TIC_TAC_TOE -> queue = new LinkedList<>(); // TicTacToe
+            case CONNECT_FOUR -> queue = new LinkedList<>(); // Connect4
+            case CHECKERS -> queue = new LinkedList<>(); // Checkers
             default -> throw new IllegalArgumentException("Invalid game type: " + gameType);
         }
     }
@@ -70,7 +72,7 @@ public class MatchmakingQueue {
     /**
      * Gets the game type for this queue.
      */
-    public int getGameType() {
+    public GameType getGameType() {
         return gameType;
     }
 }
