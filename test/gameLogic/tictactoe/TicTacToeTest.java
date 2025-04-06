@@ -1,5 +1,3 @@
-package gameLogic.tictactoe;
-
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +13,7 @@ public class TicTacToeTest {
     public void setUp() {
         board = new TicTacToeBoard();
         game = new TicTacToe(board);
-        board.creatBoard();
+        board.createBoard();
     }
 
     @Test
@@ -29,11 +27,11 @@ public class TicTacToeTest {
     }
 
     @Test
-    public void testChangeActivePlayer() throws Exception {
-        char initialPlayer = getActivePlayer(game);
+    public void testChangeActivePlayer() {
+        char initialPlayer = game.getActivePlayer();
         game.changeActivePlayer();
-        char newPlayer = getActivePlayer(game);
-        asserNotEquals(initialPlayer, newPlayer);
+        char newPlayer = game.getActivePlayer();
+        assertNotEquals(initialPlayer, newPlayer);
     }
 
     @Test
@@ -61,7 +59,7 @@ public class TicTacToeTest {
                 {'X', 'O', 'X'},
                 {'X', 'X', 'O'},
                 {'O', 'X', 'O'},
-        }
+        };
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < 3; j++)
                 board.placePiece(i, j, pattern[i][j]);

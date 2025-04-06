@@ -1,5 +1,3 @@
-package gameLogic.tictactoe;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,7 +28,7 @@ public class TicTacToeBoardTest {
 
     @Test
     public void testPlacePieceAndEmptyCell() {
-        asserTrue(board.isCellEmpty(0, 0));
+        assertTrue(board.isCellEmpty(0, 0));
         board.placePiece(0, 0, 'X');
         assertFalse(board.isCellEmpty(0, 0));
     }
@@ -66,11 +64,11 @@ public class TicTacToeBoardTest {
                 {'X', 'O', 'X'},
                 {'O', 'X', 'O'},
                 {'O', 'X', 'O'},
-        }
+        };
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < 3; j++)
                 board.placePiece(i, j, pattern[i][j]);
-        asserTrue(board.boardFull());
+        assertTrue(board.boardFull());
     }
 
     @Test
