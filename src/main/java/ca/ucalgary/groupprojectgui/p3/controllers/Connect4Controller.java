@@ -113,7 +113,7 @@ public class Connect4Controller {
                 player1Id = localPlayer.getUserID();
                 matchmaking.joinQueue(localPlayer);
                 for (Player player : PlayerDatabase.getAllPlayers()) {
-                    if (player.getGameSignal(2) == 2)
+                    if (player.getGameSignal(gameType) == gameType)
                         matchmaking.joinQueue(player);
                 }
                 opponentPlayer = matchmaking.findOpponent(localPlayer.getUserID());
