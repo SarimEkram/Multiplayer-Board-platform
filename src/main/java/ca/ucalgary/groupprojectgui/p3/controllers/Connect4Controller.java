@@ -76,7 +76,7 @@ public class Connect4Controller {
     private GameProcessor gameProcessor;
 
     // Game type
-    private final int gameType = 2;
+    private final GameType gameType = GameType.CONNECT_FOUR;
 
     // Matchmaking and player info
     private Connect4Matchmaking matchmaking;
@@ -116,7 +116,7 @@ public class Connect4Controller {
                 player1Id = localPlayer.getUserID();
                 matchmaking.joinQueue(localPlayer);
                 for (Player player : PlayerDatabase.getAllPlayers()) {
-                    if (player.getGameSignal(gameType) == gameType)
+                    if (player.getGameSignal(gameType) == gameType.getGameCode())
                         matchmaking.joinQueue(player);
                 }
                 opponentPlayer = matchmaking.findOpponent(localPlayer.getUserID());

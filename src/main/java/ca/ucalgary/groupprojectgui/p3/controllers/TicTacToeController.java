@@ -1,6 +1,7 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
 
 import MatchmakingLeaderboard.GameProcessor;
+import MatchmakingLeaderboard.GameType;
 import MatchmakingLeaderboard.Player;
 import MatchmakingLeaderboard.PlayerDatabase;
 import MatchmakingLeaderboard.TicTacToe.Matchmaking.TicTacToeMatchmaking;
@@ -83,7 +84,7 @@ public class TicTacToeController {
     private int player1Id;       // Local player's ID (from matchmaking)
     private int opponentId;      // Opponent's player ID
     private Player opponentPlayer;
-    private final int gameType = 1;
+    private final GameType gameType = GameType.TIC_TAC_TOE;
     private Timeline timeline;
     private int secondsElapsed = 0;
     private GridPane tttgrid;
@@ -113,7 +114,7 @@ public class TicTacToeController {
                 matchmaking.joinQueue(localPlayer);
 
                 for (Player player : PlayerDatabase.getAllPlayers()) {
-                    if (player.getGameSignal(gameType) == gameType)
+                    if (player.getGameSignal(gameType) == gameType.getGameCode())
                         matchmaking.joinQueue(player);
                 }
 
