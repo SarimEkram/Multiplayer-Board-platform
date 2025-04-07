@@ -13,7 +13,7 @@ public class ResetPasswordController {
 
     // Removed the old tokenField since the FXML now uses oldPasswordField.
     @FXML
-    private PasswordField oldPasswordField;
+    private TextField TokenField;
 
     @FXML
     private PasswordField newPasswordField;
@@ -29,6 +29,7 @@ public class ResetPasswordController {
 
     // Field to store the token generated during email verification
     private String currentToken = null;
+    private String token;
 
     /**
      * Verifies the email by calling resetRequest.
@@ -37,27 +38,6 @@ public class ResetPasswordController {
      * and the hidden fields are made visible.
      */
     @FXML
-    private void handleVerifyEmail() {
-        String email = emailField.getText();
-        if (email == null || email.isEmpty()) {
-            statusLabel.setText("Please enter your email.");
-            return;
-        }
-
-        // Call resetRequest to check if the email exists.
-        String token = resetService.resetRequest(email);
-        if (token == null) {
-            statusLabel.setText("No account found for this email.");
-        } else {
-            currentToken = token;
-            // Reveal the hidden password reset controls.
-            passwordResetPane.setVisible(true);
-            passwordResetPane.setManaged(true);
-            statusLabel.setText("Email verified. Please enter your old and new password.");
-        }
-    }
-
-    @FXML
     private void handleSendToken() {
         String email = emailField.getText();
         if (email == null || email.isEmpty()) {
@@ -65,7 +45,7 @@ public class ResetPasswordController {
             return;
         }
 
-        String token = resetService.resetRequest(email);
+        token = resetService.resetRequest(email);
         if (token == null) {
             statusLabel.setText("No account found for this email.");
         } else {
@@ -85,8 +65,9 @@ public class ResetPasswordController {
     @FXML
     private void handleResetPassword() {
         String email = emailField.getText();
-        String oldPassword = oldPasswordField.getText(); // Now used as the old password
+        String oldPassword = TokenField.getText(); // Now used as the old password
         String newPassword = newPasswordField.getText();
+
 
         if (email == null || email.isEmpty() || oldPassword.isEmpty() || newPassword.isEmpty()) {
             statusLabel.setText("Please fill in your email, old password, and new password.");
@@ -100,21 +81,19 @@ public class ResetPasswordController {
         }
 
         // Ensure the email was verified first.
-        if (currentToken == null) {
+        if (token == null) {
+            System.out.println(token);
             statusLabel.setText("Please verify your email first.");
             return;
         }
-
-        // Verify that the old password matches the stored password.
-        boolean oldPassMatches = resetService.verifyOldPassword(email, oldPassword);
-        if (!oldPassMatches) {
-            statusLabel.setText("Old password does not match.");
+        if (!token.equals(oldPassword)){
+            statusLabel.setText("Token does not match");
             return;
         }
 
         // Use the previously generated token to reset the password.
-        boolean success = resetService.resetPassword(currentToken, newPassword);
-        if (success) {
+        boolean success = resetService.resetPassword(token, newPassword);
+        if (success && token.equals(oldPassword)) {
             statusLabel.setStyle("-fx-text-fill: #44ff44;");
             statusLabel.setText("✅ Password reset successfully.");
             // Clear the token after a successful reset.
