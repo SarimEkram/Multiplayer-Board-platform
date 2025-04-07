@@ -41,6 +41,8 @@ public class HomePageController {
     private StackPane popupContainer;
     @FXML
     private VBox rightPanel;
+    @FXML
+    private VBox friendPopupPlaceholder;
 
     @FXML
     private ImageView heartIcon;
@@ -435,5 +437,109 @@ public class HomePageController {
             System.out.println("Removal canceled for friend: " + friendName);
         });
     }
+    @FXML
+    private void openAddFriendPopup() {
+        System.out.println("✅ openAddFriendPopup() triggered!");
+
+        VBox popupContent = new VBox(10);
+        popupContent.setAlignment(Pos.TOP_CENTER);
+        popupContent.setPrefSize(250, 320);
+        popupContent.setStyle(
+                "-fx-background-color: rgba(0, 0, 0, 0.9);" +
+                        "-fx-padding: 15;" +
+                        "-fx-background-radius: 12;" +
+                        "-fx-border-color: #00ffff;" +
+                        "-fx-border-width: 2;" +
+                        "-fx-border-radius: 12;" +
+                        "-fx-effect: dropshadow(gaussian, rgba(0,255,255,0.6), 10, 0.5, 0, 0);"
+        );
+
+        Label title = new Label("Add Friend");
+        title.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
+
+        TextField friendUsernameField = new TextField();
+        friendUsernameField.setPromptText("Username...");
+        friendUsernameField.setPrefWidth(200);
+
+        // Recommended friends section
+        VBox recommendations = new VBox(8);
+        recommendations.setAlignment(Pos.TOP_LEFT);
+        int currentUserId = LoginController.loginId;
+        User currentUser = UserDatabase.getUserById(currentUserId);
+
+        List<Player> suggestedUsers = PlayerDatabase.getAllPlayers().stream()
+                .filter(p -> !p.getUsername().equalsIgnoreCase(currentUser.getUsername()))
+                .filter(p -> !FriendDatabase.areFriends(currentUserId, p.getUserID()))
+                .limit(5)
+                .collect(Collectors.toList());
+
+
+        for (Player player : suggestedUsers) {
+            String name = player.getUsername(); // 💡 Extract username
+
+            HBox row = new HBox(8);
+            Label nameLabel = new Label(name);
+            nameLabel.setStyle("-fx-text-fill: white; -fx-font-size: 12px;");
+            Button addBtn = new Button("+");
+            addBtn.setStyle(
+                    "-fx-background-color: #00ffff;" +
+                            "-fx-text-fill: black;" +
+                            "-fx-font-weight: bold;" +
+                            "-fx-background-radius: 5;"
+            );
+            addBtn.setOnAction(e -> {
+                friendUsernameField.setText(name); // auto-fill the search field
+            });
+            row.getChildren().addAll(nameLabel, addBtn);
+            recommendations.getChildren().add(row);
+        }
+
+        // Action buttons
+        Button sendRequestButton = new Button("Send");
+        sendRequestButton.setStyle(
+                "-fx-background-color: #00ffff;" +
+                        "-fx-text-fill: black;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-background-radius: 6;"
+        );
+
+        Button closeBtn = new Button("Cancel");
+        closeBtn.setStyle(
+                "-fx-background-color: #ff0066;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-background-radius: 6;"
+        );
+
+        sendRequestButton.setOnAction(e -> {
+            String enteredName = friendUsernameField.getText().trim();
+            if (!enteredName.isEmpty()) {
+                sendFriendRequest(enteredName);
+            }
+            friendPopupPlaceholder.getChildren().clear();
+            friendPopupPlaceholder.setVisible(false);
+            friendPopupPlaceholder.setManaged(false);
+        });
+
+        closeBtn.setOnAction(e -> {
+            friendPopupPlaceholder.getChildren().clear();
+            friendPopupPlaceholder.setVisible(false);
+            friendPopupPlaceholder.setManaged(false);
+        });
+
+        HBox buttonRow = new HBox(10, sendRequestButton, closeBtn);
+        buttonRow.setAlignment(Pos.CENTER);
+
+        popupContent.getChildren().addAll(title, friendUsernameField, new Separator(), recommendations, buttonRow);
+
+        friendPopupPlaceholder.getChildren().clear();
+        friendPopupPlaceholder.getChildren().add(popupContent);
+        friendPopupPlaceholder.setVisible(true);
+        friendPopupPlaceholder.setManaged(true);
+    }
+
+
+
+
+
 
 }

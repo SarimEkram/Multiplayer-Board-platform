@@ -92,52 +92,72 @@
             </BorderPane>
 
             <!-- RIGHT: FRIENDS PANEL -->
+            <!-- RIGHT: FRIENDS PANEL -->
             <VBox fx:id="friendsPanel" spacing="20" styleClass="right-sidebar" prefWidth="300">
                 <!-- Header -->
                 <HBox alignment="CENTER_LEFT">
                     <Label text="Friends" styleClass="friends-header"/>
                     <Region HBox.hgrow="ALWAYS"/>
-                    <Button text="✖" styleClass="close-button"/>
+                    <Button text="➕" onAction="#openAddFriendPopup" styleClass="close-button"/>
                 </HBox>
 
-                <!-- Friend list container -->
-                <VBox fx:id="playersContainer" styleClass="friends-list-container" VBox.vgrow="ALWAYS">
-                    <!-- Friend Item 1 -->
-                    <HBox alignment="CENTER_LEFT" spacing="15" styleClass="friend-item">
-                        <Label text="C" styleClass="friend-initial"/>
-                        <Label text="CyberWarrior" styleClass="friend-name"/>
-                        <Region HBox.hgrow="ALWAYS"/>
-                        <Button text="✖" styleClass="remove-button" onAction="#handleRemoveFriend"/>
-                    </HBox>
-                    <!-- Friend Item 2 -->
-                    <HBox alignment="CENTER_LEFT" spacing="15" styleClass="friend-item">
-                        <Label text="N" styleClass="friend-initial"/>
-                        <Label text="NeonNinja" styleClass="friend-name"/>
-                        <Region HBox.hgrow="ALWAYS"/>
-                        <Button text="✖" styleClass="remove-button" onAction="#handleRemoveFriend"/>
-                    </HBox>
-                    <!-- Friend Item 3 -->
-                    <HBox alignment="CENTER_LEFT" spacing="15" styleClass="friend-item">
-                        <Label text="Q" styleClass="friend-initial"/>
-                        <Label text="QuantumQueen" styleClass="friend-name"/>
-                        <Region HBox.hgrow="ALWAYS"/>
-                        <Button text="✖" styleClass="remove-button" onAction="#handleRemoveFriend"/>
-                    </HBox>
-                    <!-- Friend Item 4 -->
-                    <HBox alignment="CENTER_LEFT" spacing="15" styleClass="friend-item">
-                        <Label text="P" styleClass="friend-initial"/>
-                        <Label text="PixelPirate" styleClass="friend-name"/>
-                        <Region HBox.hgrow="ALWAYS"/>
-                        <Button text="✖" styleClass="remove-button" onAction="#handleRemoveFriend"/>
-                    </HBox>
-                    <!-- Friend Item 5 -->
-                    <HBox alignment="CENTER_LEFT" spacing="15" styleClass="friend-item">
-                        <Label text="D" styleClass="friend-initial"/>
-                        <Label text="DigitalDragon" styleClass="friend-name"/>
-                        <Region HBox.hgrow="ALWAYS"/>
-                        <Button text="✖" styleClass="remove-button" onAction="#handleRemoveFriend"/>
-                    </HBox>
-                </VBox>
+                <!-- StackPane allows popup to float over the list -->
+                <StackPane VBox.vgrow="ALWAYS">
+                    <!-- Friend list container -->
+                    <VBox fx:id="playersContainer" styleClass="friends-list-container" VBox.vgrow="ALWAYS">
+                        <!-- Friend Items -->
+                        <HBox alignment="CENTER_LEFT" spacing="15" styleClass="friend-item">
+                            <Label text="C" styleClass="friend-initial"/>
+                            <Label text="CyberWarrior" styleClass="friend-name"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Button text="✖" styleClass="remove-button" onAction="#handleRemoveFriend"/>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="15" styleClass="friend-item">
+                            <Label text="N" styleClass="friend-initial"/>
+                            <Label text="NeonNinja" styleClass="friend-name"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Button text="✖" styleClass="remove-button" onAction="#handleRemoveFriend"/>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="15" styleClass="friend-item">
+                            <Label text="Q" styleClass="friend-initial"/>
+                            <Label text="QuantumQueen" styleClass="friend-name"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Button text="✖" styleClass="remove-button" onAction="#handleRemoveFriend"/>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="15" styleClass="friend-item">
+                            <Label text="P" styleClass="friend-initial"/>
+                            <Label text="PixelPirate" styleClass="friend-name"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Button text="✖" styleClass="remove-button" onAction="#handleRemoveFriend"/>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="15" styleClass="friend-item">
+                            <Label text="D" styleClass="friend-initial"/>
+                            <Label text="DigitalDragon" styleClass="friend-name"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Button text="✖" styleClass="remove-button" onAction="#handleRemoveFriend"/>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="15" styleClass="friend-item">
+                            <Label text="M" styleClass="friend-initial"/>
+                            <Label text="Margret" styleClass="friend-name"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Button text="✖" styleClass="remove-button" onAction="#handleRemoveFriend"/>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="15" styleClass="friend-item">
+                            <Label text="K" styleClass="friend-initial"/>
+                            <Label text="Kathy" styleClass="friend-name"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Button text="✖" styleClass="remove-button" onAction="#handleRemoveFriend"/>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Popup that floats over the friend list -->
+                    <VBox fx:id="friendPopupPlaceholder"
+                          visible="false"
+                          managed="false"
+                          alignment="CENTER"
+                          style="-fx-translate-y: -60; -fx-alignment: center;">
+                    </VBox>
+                </StackPane>
             </VBox>
 
         </HBox>
