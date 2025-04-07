@@ -9,31 +9,31 @@
            stylesheets="@styles/leaderboard.css"
            styleClass="root">
 
-    <VBox alignment="TOP_CENTER" spacing="30" styleClass="leaderboard-card" maxWidth="800" maxHeight="650">
+    <VBox alignment="TOP_CENTER" spacing="30" styleClass="leaderboard-card" maxWidth="900" maxHeight="700">
         <!-- Header with Logo and Title -->
         <HBox spacing="15" alignment="CENTER_LEFT">
-            <ImageView fx:id="gameLogo" fitHeight="50" fitWidth="50"/>
-            <Label text="🎮 OMG" styleClass="logo-label"/>
+            <ImageView fx:id="gameLogo" fitHeight="50" fitWidth="50" />
+            <Label text="🎮 OMG" styleClass="logo-label" />
         </HBox>
 
         <!-- Section Title -->
-        <Label text="Leaderboard" styleClass="section-title"/>
+        <Label text="Leaderboard" styleClass="section-title" />
 
         <!-- Tabs for Games -->
-        <TabPane fx:id="gameTabs" tabClosingPolicy="UNAVAILABLE" styleClass="tab-pane">
+        <TabPane fx:id="gameTabs" tabClosingPolicy="UNAVAILABLE" styleClass="neon-tab-pane">
             <Tab text="Tic Tac Toe">
-                <ScrollPane styleClass="scroll-pane">
-                    <VBox fx:id="ticTacToeLeaderboard" alignment="TOP_CENTER" spacing="10" styleClass="content-box" />
+                <ScrollPane fitToWidth="true" styleClass="scroll-pane">
+                    <VBox fx:id="ticTacToeLeaderboard" alignment="TOP_CENTER" spacing="10" styleClass="neon-leaderboard-content" />
                 </ScrollPane>
             </Tab>
             <Tab text="Checkers">
-                <ScrollPane styleClass="scroll-pane">
-                    <VBox fx:id="checkersLeaderboard" alignment="TOP_CENTER" spacing="10" styleClass="content-box" />
+                <ScrollPane fitToWidth="true" styleClass="scroll-pane">
+                    <VBox fx:id="checkersLeaderboard" alignment="TOP_CENTER" spacing="10" styleClass="neon-leaderboard-content" />
                 </ScrollPane>
             </Tab>
             <Tab text="Connect 4">
-                <ScrollPane styleClass="scroll-pane">
-                    <VBox fx:id="connect4Leaderboard" alignment="TOP_CENTER" spacing="10" styleClass="content-box" />
+                <ScrollPane fitToWidth="true" styleClass="scroll-pane">
+                    <VBox fx:id="connect4Leaderboard" alignment="TOP_CENTER" spacing="10" styleClass="neon-leaderboard-content" />
                 </ScrollPane>
             </Tab>
         </TabPane>
@@ -42,6 +42,6 @@
         <Button text="← Back"
                 onAction="#handleBack"
                 styleClass="neon-outline-button"
-                prefWidth="120" prefHeight="40"/>
+                prefWidth="140" prefHeight="45" />
     </VBox>
 </StackPane>
