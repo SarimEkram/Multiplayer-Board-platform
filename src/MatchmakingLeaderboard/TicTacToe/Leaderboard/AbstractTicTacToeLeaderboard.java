@@ -13,7 +13,7 @@ import java.util.List;
  */
 public abstract class AbstractTicTacToeLeaderboard implements IGameLeaderboard {
     protected List<Player> players = new ArrayList<>();
-    protected static final int gameType = 1;
+    protected static final GameType gameType = GameType.TIC_TAC_TOE;
 
 
     public void addPlayer(Player player, GameType gameType) {

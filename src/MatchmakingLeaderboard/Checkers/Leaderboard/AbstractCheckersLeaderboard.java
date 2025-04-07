@@ -17,7 +17,7 @@ import java.util.List;
  */
 public abstract class AbstractCheckersLeaderboard implements IGameLeaderboard {
     protected List<Player> players = new ArrayList<>();
-    protected static final int gameType = 3;
+    protected static GameType  gameType = GameType.CHECKERS;
 
 
     public void addPlayer(Player player, GameType gameType) {

@@ -15,7 +15,7 @@ import MatchmakingLeaderboard.GameType;
  */
 public abstract class AbstractConnect4Leaderboard implements IGameLeaderboard {
     protected List<Player> players = new ArrayList<>();
-    protected static final int gameType = 2;
+    protected static final GameType gameType = GameType.CONNECT_FOUR;
 
 
     public void addPlayer(Player player, GameType gameType) {
