@@ -37,13 +37,13 @@ public class PlayerDatabase {
                 GameType[] gameTypes = GameType.values();
                 for (int i = 0; i < gameTypes.length; i++) {
                     GameType gameType = gameTypes[i];
-                    int baseIndex = 3 + (i * 6);
-                    player.setWinRatio(gameType, Double.parseDouble(parts[baseIndex]));
-                    player.setMMR(Integer.parseInt(parts[baseIndex + 1]), gameType);
-                    player.setGameSignal(Integer.parseInt(parts[baseIndex + 2]), gameType);
+                    //int baseIndex = 3 + (i * 6);
+                    player.setWinRatio(gameType, Double.parseDouble(parts[2 + i]));
+                    player.setMMR(Integer.parseInt(parts[6 + i]), gameType);
+                    player.setGameSignal(Integer.parseInt(parts[9 + i]), gameType);
 
-                    int wins = Integer.parseInt(parts[baseIndex + 3]);
-                    int losses = Integer.parseInt(parts[baseIndex + 4]);
+                    int wins = Integer.parseInt(parts[12 + i]);
+                    int losses = Integer.parseInt(parts[15 + i]);
 
                     for (int w = 0; w < wins; w++) {
                         player.addWin(gameType);

@@ -97,7 +97,7 @@ public class Player {
 
     public void calculateRatio(GameType gameType) {
         //validGame(gameType);
-        int gameIndex = gameType.ordinal() - 1;
+        int gameIndex = gameType.ordinal() ;
         int totalGames = this.wins[gameIndex] + this.losses[gameIndex];
 
         if(totalGames > 0){
