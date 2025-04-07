@@ -10,25 +10,25 @@ public class  TurnTimerTest {
 
     @BeforeEach
     void setUp() {
-        timer = new TurnTimer("player1", 2); // 2 seconds
+        timer = new TurnTimer("player1", 2);
     }
 
     @Test
     void testStartTimer() {
         timer.startTimer();
-        assertFalse(timer.isTimeExpired()); // Should not be expired immediately
+        assertFalse(timer.isTimeExpired());
     }
 
     @Test
     void testPauseTimer() throws InterruptedException {
         timer.startTimer();
-        Thread.sleep(1000); // wait 1 second
+        Thread.sleep(1000);
         timer.pauseTimer();
 
-        Thread.sleep(1000); // this should not count because it's paused
+        Thread.sleep(1000);
         timer.resumeTimer();
 
-        assertFalse(timer.isTimeExpired()); // should still have about 1 sec left
+        assertFalse(timer.isTimeExpired());
     }
 
     @Test
@@ -38,26 +38,26 @@ public class  TurnTimerTest {
         timer.pauseTimer();
 
         long beforeResume = System.currentTimeMillis();
-        Thread.sleep(500); // wait while paused
+        Thread.sleep(500);
         timer.resumeTimer();
 
-        // check that we're still not expired
-        Thread.sleep(800); // continue ticking
-        assertFalse(timer.isTimeExpired()); // should still not be expired
+
+        Thread.sleep(800);
+        assertFalse(timer.isTimeExpired());
     }
 
     @Test
     void testResetTimer() throws InterruptedException {
         timer.startTimer();
         Thread.sleep(1500);
-        timer.resetTimer(); // reset mid-way
+        timer.resetTimer();
         assertFalse(timer.isTimeExpired());
     }
 
     @Test
     void testTimeExpired() throws InterruptedException {
         timer.startTimer();
-        Thread.sleep(2200); // longer than 2 seconds
+        Thread.sleep(2200);
         assertTrue(timer.isTimeExpired());
     }
 
@@ -65,19 +65,19 @@ public class  TurnTimerTest {
     void testHandleTimerExpiry() throws InterruptedException {
         timer.startTimer();
         Thread.sleep(2200);
-        timer.handleTimerExpiry(); // prints disconnect message if expired
+        timer.handleTimerExpiry();
         assertTrue(timer.isTimeExpired());
     }
 
     @Test
     void testNotifyPlayer() throws InterruptedException {
-        TurnTimer shortTimer = new TurnTimer("player2", 1); // 1 second duration
+        TurnTimer shortTimer = new TurnTimer("player2", 1);
         shortTimer.startTimer();
-        Thread.sleep(100); // simulate short delay
-        shortTimer.notifyPlayer(); // Should NOT notify yet
+        Thread.sleep(100);
+        shortTimer.notifyPlayer();
 
-        Thread.sleep(950); // total wait ~1.05s
-        shortTimer.notifyPlayer(); // Should trigger warning
+        Thread.sleep(950);
+        shortTimer.notifyPlayer();
     }
 
 }

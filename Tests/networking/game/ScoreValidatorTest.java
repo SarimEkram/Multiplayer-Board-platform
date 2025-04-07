@@ -76,7 +76,7 @@ public class ScoreValidatorTest {
         HashMap<String, HashMap<String, Integer>> gameScore = new HashMap<>();
 
         boolean result = ScoreValidator.isScoreValid(gameID, playerId, score, playerScore, gameScore);
-        assertFalse(result); // Because there's no gameID, the nested condition is skipped, only score range matters
+        assertFalse(result);
     }
 
     @Test
@@ -86,14 +86,14 @@ public class ScoreValidatorTest {
         int score = 1;
 
         HashMap<String, Integer> playerScore1 = new HashMap<>();
-        HashMap<String, Integer> playerScore2 = new HashMap<>(); // different object
+        HashMap<String, Integer> playerScore2 = new HashMap<>();
         playerScore1.put(playerId, score);
 
         HashMap<String, HashMap<String, Integer>> gameScore = new HashMap<>();
         gameScore.put(gameID, playerScore1);
 
         boolean result = ScoreValidator.isScoreValid(gameID, playerId, score, playerScore2, gameScore);
-        assertTrue(result); // should be true because reference doesn't match
+        assertTrue(result);
     }
 
 }

@@ -1,6 +1,8 @@
 package networking.game;
 import java.util.HashMap;
 
+import static networking.game.ScoreValidator.isScoreValid;
+
 
 /**
  * Handles sending player scores to the server when a game ends.
@@ -38,20 +40,26 @@ public class GameScoreSender extends GameNetworking{
         if (!isconnected) { // checking server connection status
             System.out.println("Error: Cannot send scores. Server is not connected."); // Error Message
         } else if (isconnected) { // checking server connection status
-            if(isGameOver) { // checking if game is over
-                   if(ScoreValidator.isScoreValid(gameId,playerId,score, playerScore,gameScore)){
+            if(isGameOver) {// checking if game is over
+               gameScore.put(gameId, playerScore);
+                   if(isScoreValid(this.gameId,playerId,score, this.playerScore,this.gameScore)){
+
                        playerScore.put(playerId,score);  // storing player id and in hash map
                        gameScore.put(gameId,playerScore);
-                       System.out.println("Scores sent to player " + playerId  + "for game " + gameId);
+                       System.out.println("scores sent for "+playerId+": "+score+" for game: "+gameId);
 
                    }else {
                        System.out.println("Enter valid score");
                    }
-                System.out.println("Game score sent for player " + playerId + ": " + score); // success message
+
             }else if (!isGameOver) { // checking if game is over
                 System.out.println("Error: Cannot send scores. Game is not over."); // Error Message
             }
         }
+    }
+
+    public void markGameOver() {
+        this.isGameOver = true;
     }
 
     /**
@@ -82,7 +90,7 @@ public class GameScoreSender extends GameNetworking{
             return;
         }
         System.out.println("Sending game update: " + update);
-        // Simulate server transmission logic here
+
     }
 
 

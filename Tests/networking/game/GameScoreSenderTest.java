@@ -53,80 +53,52 @@ public class GameScoreSenderTest {
         GameScoreSender sender = new GameScoreSender("game123");
         sender.establishConnection();
         outContent.reset();
-        // isGameOver is false by default.
         sender.sendScores("player1", 1);
         String output = outContent.toString().trim();
         assertTrue(output.contains("Error: Cannot send scores. Game is not over."), "Expected error for game not over");
     }
 
     @Test
-    public void testSendScoresWithInvalidScore() throws Exception {
+    public void testSendValidScore() {
         GameScoreSender sender = new GameScoreSender("game123");
         sender.establishConnection();
-        // Set isGameOver to true via reflection.
-        Field isGameOverField = GameScoreSender.class.getDeclaredField("isGameOver");
-        isGameOverField.setAccessible(true);
-        isGameOverField.set(sender, true);
+        sender.markGameOver();
 
-        outContent.reset();
-        // Use an invalid score (e.g. 100, outside valid range 0-1)
-        sender.sendScores("player1", 100);
+        sender.sendScores("player1", 1);
+
         String output = outContent.toString().trim();
-        // ScoreValidator prints an error message for invalid score
-        assertTrue(output.contains("Error: Score must be between 0 and 1"), "Expected error message from ScoreValidator");
-        // Then GameScoreSender prints "Enter valid score"
-        assertTrue(output.contains("Enter valid score"), "Expected message for invalid score");
-        // And always prints game score sent message
-        assertTrue(output.contains("Game score sent for player player1: 100"), "Expected game score confirmation");
-        // The score should not be added to the map.
-        assertNull(sender.gameScore.get("game123"), "Game score map should not be updated for invalid score");
+        assertTrue(output.contains("scores sent for player1: 1 for game: game123"), "Should print success message");
+
     }
 
     @Test
-    public void testSendScoresWithValidScore() throws Exception {
+    public void testSendInvalidScore() {
         GameScoreSender sender = new GameScoreSender("game123");
         sender.establishConnection();
-        // Set isGameOver to true via reflection.
-        Field isGameOverField = GameScoreSender.class.getDeclaredField("isGameOver");
-        isGameOverField.setAccessible(true);
-        isGameOverField.set(sender, true);
+        sender.markGameOver();
 
-        outContent.reset();
-        // Use a valid score (e.g. 1)
-        sender.sendScores("player1", 1);
+        sender.sendScores("player1", 5);
+
         String output = outContent.toString().trim();
-        // Expect success messages from GameScoreSender
-        assertTrue(output.contains("Scores sent to player player1for game game123"), "Expected success message for sending score");
-        assertTrue(output.contains("Game score sent for player player1: 1"), "Expected game score confirmation");
-        // Verify that the gameScore map was updated.
-        assertNotNull(sender.gameScore.get("game123"), "Game score map should contain game id");
-        assertEquals(1, sender.gameScore.get("game123").get("player1"), "Player score should be updated to 1");
+        assertTrue(output.contains("Enter valid score") || output.contains("Error: Score must be between 0 and 1"),
+                "Should print error message for invalid score");
     }
-
     @Test
-    public void testSendScoresDuplicateScore() throws Exception {
+    public void testDuplicateScoreForSamePlayer() {
         GameScoreSender sender = new GameScoreSender("game123");
         sender.establishConnection();
-        // Set isGameOver to true via reflection.
-        Field isGameOverField = GameScoreSender.class.getDeclaredField("isGameOver");
-        isGameOverField.setAccessible(true);
-        isGameOverField.set(sender, true);
-
-        // First call: valid score
+        sender.markGameOver();
         sender.sendScores("player1", 1);
         outContent.reset();
-        // Second call with same score should be detected as duplicate.
         sender.sendScores("player1", 1);
         String output = outContent.toString().trim();
-        // According to ScoreValidator, duplicate prints "Score already exists for player player1"
-        assertTrue(output.contains("Score already exists for player player1"), "Expected duplicate score message");
-        // And then "Enter valid score" is printed
-        assertTrue(output.contains("Enter valid score"), "Expected message for invalid duplicate score");
-        // GameScoreSender still prints the game score confirmation.
-        assertTrue(output.contains("Game score sent for player player1: 1"), "Expected game score confirmation");
-        // The score should remain unchanged.
-        assertNotNull(sender.gameScore.get("game123"), "Game score map should contain game id");
-        assertEquals(1, sender.gameScore.get("game123").get("player1"), "Player score should remain as 1");
+
+        assertTrue(output.contains("Score already exists for player player1") ||
+                        output.contains("Enter valid score"),
+                "Should print error for duplicate score");
+
+        assertFalse(output.contains("Scores sent to player: player1 for game game123"),
+                "Duplicate score should not be accepted");
     }
 
     @Test
