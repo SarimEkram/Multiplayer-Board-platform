@@ -7,8 +7,8 @@ package networking.game;
  */
 public class UpdateGameBoard<T> {
 
-    private final GameServer gameServer = new GameServer(); // An object to simulate the role of a server and database
-    private final String gameId; // Unique identifier for the game session
+    private GameServer gameServer = new GameServer(); // An object to simulate the role of a server and database
+    private String gameId; // Unique identifier for the game session
     private T board;
 
     /**
@@ -17,18 +17,19 @@ public class UpdateGameBoard<T> {
      * @param gameId A string to uniquely identify the current game from the server.
      * @param board The local game board object for CheckersBoard, ConnectBoard, or TicTacToeBoard; which we want to update.
      */
-    public UpdateGameBoard(String gameId, T board) {
+    public UpdateGameBoard(GameServer gameServer, String gameId, T board) {
+        this.gameServer = gameServer;
         this.gameId = gameId;
         this.board = board;
     }
 
     /**
-     * Fetch the game board state from the server and update the local board.
+     * Fetch the game board state from the server and update the local board after each turn.
      *
      * @return A boolean value; true if successful, false otherwise.
      */
     public boolean fetchGameBoard() {
-        T fetchedBoard = (T) gameServer.getGameState(gameId);
+        T fetchedBoard = (T) gameServer.getGameState(gameId); //fetchedBoard is of generic type to use boards from all games.
         if (fetchedBoard != null) {     //If the fetched game board is not null, fetch is successful and return true
             board = (T) fetchedBoard;
             return true;
@@ -38,7 +39,7 @@ public class UpdateGameBoard<T> {
     }
 
     /**
-     * Upload the local game board state to the server.
+     * Upload the local game board state to the server after each turn.
      *
      * @return A boolean value; true if successful, false otherwise.
      */
