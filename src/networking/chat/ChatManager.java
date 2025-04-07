@@ -65,8 +65,6 @@ public class ChatManager {
         this.chatHistory = new ArrayList<>();
     }
 
-    // TODO: Offline Message Queue & Delayed Delivery, Chat Message Editing & Deleting
-
     /**
      * Adds a new message to the chat history with bad word filtering.
      *
