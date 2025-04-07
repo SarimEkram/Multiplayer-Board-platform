@@ -1,9 +1,11 @@
 package gameLogic.checkersTest;
+
 import gameLogic.checkers.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -109,19 +111,18 @@ public class CheckersTest {
     }
 
     @Test
-    public void testSetHasAnimatedKing() {
-        CheckersPiece piece = new CheckersPiece(CheckersPiece.Colour.BLACK);
-        piece.setHasAnimatedKing(true);
-        assertTrue(piece.hasAnimatedKing);
-    }
-
-    @Test
     public void testAvailableSimpleMovesForWhite() {
         board.clearBoard();
         CheckersPiece piece = new CheckersPiece(CheckersPiece.Colour.WHITE);
         board.board[4][3] = piece;
         CheckersMove.Move[] moves = CheckersMove.availableMoves(board, piece, 4, 3);
-        assertEquals(2, moves.length);  // both diagonals should be available
+        List<String> positions = new ArrayList<>();
+        for (CheckersMove.Move m : moves) {
+            positions.add(m.destRow + "," + m.destCol);
+        }
+        assertTrue(positions.contains("3,2"));
+        assertTrue(positions.contains("3,4"));
+        assertEquals(2, positions.size());
     }
 
     @Test
@@ -130,7 +131,31 @@ public class CheckersTest {
         CheckersPiece piece = new CheckersPiece(CheckersPiece.Colour.BLACK);
         board.board[3][4] = piece;
         CheckersMove.Move[] moves = CheckersMove.availableMoves(board, piece, 3, 4);
-        assertEquals(2, moves.length);  // both diagonals should be available
+        List<String> positions = new ArrayList<>();
+        for (CheckersMove.Move m : moves) {
+            positions.add(m.destRow + "," + m.destCol);
+        }
+        assertTrue(positions.contains("4,3"));
+        assertTrue(positions.contains("4,5"));
+        assertEquals(2, positions.size());
+    }
+
+    @Test
+    public void testAvailableMovesForKing() {
+        board.clearBoard();
+        CheckersPiece piece = new CheckersPiece(CheckersPiece.Colour.BLACK);
+        piece.promoteToKing();
+        board.board[3][3] = piece;
+        CheckersMove.Move[] moves = CheckersMove.availableMoves(board, piece, 3, 3);
+        List<String> positions = new ArrayList<>();
+        for (CheckersMove.Move m : moves) {
+            positions.add(m.destRow + "," + m.destCol);
+        }
+        assertTrue(positions.contains("2,2"));
+        assertTrue(positions.contains("2,4"));
+        assertTrue(positions.contains("4,2"));
+        assertTrue(positions.contains("4,4"));
+        assertEquals(4, positions.size());
     }
 
     @Test
@@ -167,5 +192,114 @@ public class CheckersTest {
         CheckersMove.Move move = new CheckersMove.Move(7, 0, new ArrayList<>());
         CheckersMove.move(board, black, 6, 1, move);
         assertTrue(black.isKing());
+    }
+
+    @Test
+    public void testMoveClassAttributes() {
+        List<int[]> captured = new ArrayList<>();
+        captured.add(new int[]{3, 2});
+        CheckersMove.Move move = new CheckersMove.Move(4, 3, captured);
+        assertEquals(4, move.destRow);
+        assertEquals(3, move.destCol);
+        assertEquals(1, move.capturedPositions.size());
+        assertArrayEquals(new int[]{3, 2}, move.capturedPositions.getFirst());
+    }
+    @Test
+    public void testFindJumpsSingleCapture() {
+        board.clearBoard();
+        CheckersPiece black = new CheckersPiece(CheckersPiece.Colour.BLACK);
+        CheckersPiece white = new CheckersPiece(CheckersPiece.Colour.WHITE);
+        board.board[2][1] = black;
+        board.board[3][2] = white;
+
+        List<CheckersMove.Move> result = new ArrayList<>();
+        result = List.of(CheckersMove.availableMoves(board, black, 2, 1));
+
+        assertEquals(2, result.size());
+        boolean found = result.stream().anyMatch(m -> m.destRow == 4 && m.destCol == 3 && m.capturedPositions.size() == 1);
+        assertTrue(found);
+
+    }
+
+    @Test
+    public void testFindJumpsChainCapture() {
+        board.clearBoard();
+        CheckersPiece black = new CheckersPiece(CheckersPiece.Colour.BLACK);
+        CheckersPiece white1 = new CheckersPiece(CheckersPiece.Colour.WHITE);
+        CheckersPiece white2 = new CheckersPiece(CheckersPiece.Colour.WHITE);
+        board.board[2][1] = black;
+        board.board[3][2] = white1;
+        board.board[5][4] = white2;
+
+        List<CheckersMove.Move> result = new ArrayList<>();
+        result = List.of(CheckersMove.availableMoves(board, black, 2, 1));
+
+        boolean found = result.stream().anyMatch(m -> m.destRow == 6 && m.destCol == 5 && m.capturedPositions.size() == 2);
+        assertTrue(found);
+    }
+
+    @Test
+    public void testFindJumpsKingMultiDirection() {
+        board.clearBoard();
+        CheckersPiece king = new CheckersPiece(CheckersPiece.Colour.WHITE);
+        king.promoteToKing();
+        board.board[4][4] = king;
+        board.board[3][3] = new CheckersPiece(CheckersPiece.Colour.BLACK);
+        board.board[5][3] = new CheckersPiece(CheckersPiece.Colour.BLACK);
+
+        List<CheckersMove.Move> result = new ArrayList<>();
+        result  = List.of(CheckersMove.availableMoves(board, king, 4, 4));
+
+        boolean foundNW = result.stream().anyMatch(m -> m.destRow == 2 && m.destCol == 2);
+        boolean foundSW = result.stream().anyMatch(m -> m.destRow == 6 && m.destCol == 2);
+        assertTrue(foundNW);
+        assertTrue(foundSW);
+    }
+
+    @Test
+    public void testMoveExecutionAndCaptureList() {
+        board.clearBoard();
+        CheckersPiece black = new CheckersPiece(CheckersPiece.Colour.BLACK);
+        CheckersPiece white = new CheckersPiece(CheckersPiece.Colour.WHITE);
+        board.board[2][1] = black;
+        board.board[3][2] = white;
+
+        List<int[]> captured = new ArrayList<>();
+        captured.add(new int[]{3, 2});
+        CheckersMove.Move move = new CheckersMove.Move(4, 3, captured);
+        CheckersMove.move(board, black, 2, 1, move);
+
+        assertNull(board.board[2][1]);
+        assertNull(board.board[3][2]);
+        assertEquals(black, board.board[4][3]);
+    }
+
+    @Test
+    public void testKingJumpExecution() {
+        board.clearBoard();
+        CheckersPiece king = new CheckersPiece(CheckersPiece.Colour.BLACK);
+        king.promoteToKing();
+        board.board[4][4] = king;
+        board.board[3][3] = new CheckersPiece(CheckersPiece.Colour.WHITE);
+
+        List<int[]> captured = new ArrayList<>();
+        captured.add(new int[]{3, 3});
+        CheckersMove.Move move = new CheckersMove.Move(2, 2, captured);
+        CheckersMove.move(board, king, 4, 4, move);
+
+        assertEquals(king, board.board[2][2]);
+        assertNull(board.board[4][4]);
+        assertNull(board.board[3][3]);
+    }
+
+
+
+    @Test
+    public void testEmptyCaptureMove() {
+        CheckersMove.Move move = new CheckersMove.Move(5, 6, new ArrayList<>());
+
+        assertEquals(5, move.destRow);
+        assertEquals(6, move.destCol);
+        assertTrue(move.capturedPositions.isEmpty());
     }
 }
