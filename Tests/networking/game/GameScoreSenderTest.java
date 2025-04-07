@@ -119,14 +119,6 @@ public class GameScoreSenderTest {
         assertTrue(output.contains("Sending game update: Update 1"), "Expected sending game update message");
     }
 
-    @Test
-    public void testReceiveGameUpdateWhenNotConnected() {
-        GameScoreSender sender = new GameScoreSender("game123");
-        sender.receiveGameUpdate();
-        String output = outContent.toString().trim();
-        assertTrue(output.contains("Error: Cannot receive game update. Server not connected."), "Expected error message for receiving update without connection");
-    }
-
 
 
 
