@@ -94,16 +94,5 @@ public class GameScoreSender extends GameNetworking{
     }
 
 
-    /**
-     * Receives game updates from the server.
-     */
-    @Override
-    public void receiveGameUpdate() {
-        if (!isconnected) {
-            System.out.println("Error: Cannot receive game update. Server not connected.");
-            return;
-        }
-        System.out.println("Receiving game update...");
 
-    }
 }
