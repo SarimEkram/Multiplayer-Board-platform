@@ -25,6 +25,7 @@ import javafx.stage.Popup;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class HomePageController {
@@ -101,6 +102,10 @@ public class HomePageController {
         if (searchField != null && playersContainer != null) {
             initializeFriendRequests();
         }
+        if (playersContainer != null) {
+            loadFriendList();
+        }
+
     }
 
     // ---------------- Friend Requests Methods ----------------
@@ -343,7 +348,7 @@ public class HomePageController {
         // Get the remove button and the associated friend item.
         Button removeButton = (Button) event.getSource();
         HBox friendItem = (HBox) removeButton.getParent();
-        Label friendLabel = (Label) friendItem.getChildren().get(0);
+        Label friendLabel = (Label) friendItem.getChildren().get(1);
         String friendName = friendLabel.getText();
 
         // Create a Popup instance.
@@ -383,11 +388,26 @@ public class HomePageController {
 
         // Set action handlers for the buttons.
         yesButton.setOnAction(e -> {
-            // Remove the friend item from the display.
-            playersContainer.getChildren().remove(friendItem);
+            int currentUserId = LoginController.loginId;
+            Player playerToRemove = PlayerDatabase.getPlayerByUsername(friendName);
+
+            if (playerToRemove != null) {
+                int friendId = playerToRemove.getUserID();
+                boolean removed = FriendDatabase.removeFriend(currentUserId, friendId);
+
+                if (removed) {
+                    playersContainer.getChildren().remove(friendItem);
+                    showOverlayAlert("Success", "Removed friend: " + friendName);
+                } else {
+                    showOverlayAlert("Error", "Failed to remove friend.");
+                }
+            } else {
+                showOverlayAlert("Error", "Friend not found.");
+            }
+
             popup.hide();
-            System.out.println("Removed friend: " + friendName);
         });
+
 
         noButton.setOnAction(e -> {
             popup.hide();
@@ -395,7 +415,41 @@ public class HomePageController {
         });
     }
 
+    private void loadFriendList() {
+        playersContainer.getChildren().clear();
 
+        int currentUserId = LoginController.loginId;
+        Set<Integer> friendIds = FriendDatabase.getFriends(currentUserId);
+
+        for (Integer friendId : friendIds) {
+            Player friend = PlayerDatabase.getPlayerByUserID(friendId);
+            if (friend != null) {
+                playersContainer.getChildren().add(createFriendItem(friend.getUsername()));
+            }
+        }
+    }
+
+    private HBox createFriendItem(String username) {
+        HBox friendItem = new HBox(15);
+        friendItem.setAlignment(Pos.CENTER_LEFT);
+        friendItem.getStyleClass().add("friend-item");
+
+        Label avatar = new Label(username.substring(0, 1).toUpperCase());
+        avatar.getStyleClass().add("friend-initial");
+
+        Label nameLabel = new Label(username);
+        nameLabel.getStyleClass().add("friend-name");
+
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        Button removeButton = new Button("✖");
+        removeButton.getStyleClass().add("remove-button");
+        removeButton.setOnAction(this::handleRemoveFriend); // reuses your existing handler
+
+        friendItem.getChildren().addAll(avatar, nameLabel, spacer, removeButton);
+        return friendItem;
+    }
 
 }
 
