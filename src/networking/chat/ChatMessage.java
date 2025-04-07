@@ -13,7 +13,7 @@ public class ChatMessage {
     private String playerId;
     private String message;
     private LocalDateTime timestamp;
-    private Set<String> readByPlayers; // ✅ Track which players have read the message
+    private Set<String> readByPlayers; //  Track which players have read the message
 
     /**
      * Constructs a new ChatMessage object.
@@ -61,6 +61,9 @@ public class ChatMessage {
      * @param readerId The ID of the player who has read the message.
      */
     public void markAsRead(String readerId) {
+        if (readerId == null) {
+            throw new NullPointerException("readerId cannot be null");
+        }
         readByPlayers.add(readerId);
     }
 

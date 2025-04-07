@@ -10,10 +10,10 @@ import java.util.*;
  */
 public class InGameChat extends NetworkHandler {
     private String gameId;       // Unique game session identifier
-    private ChatManager chatManager;
-    private boolean isConnected;
+    public ChatManager chatManager;
+    public boolean isConnected;
 
-    private Set<String> currentlyTyping; //  Track players who are typing
+    public Set<String> currentlyTyping; //  Track players who are typing
 
     /**
      * Initializes the in-game chat system for a given game session.
@@ -36,7 +36,7 @@ public class InGameChat extends NetworkHandler {
      */
     public void sendMessage(String playerId, String message) {
         if (!isConnected) {
-            System.out.println("Error: Cannot send message. Chat is not connected.");
+            System.out.println("Error: Cannot send message. chat is not connected.");
             return;
         }
 
@@ -55,7 +55,7 @@ public class InGameChat extends NetworkHandler {
             return;
         }
 
-        System.out.println("Chat History:");
+        System.out.println("chat History:");
         for (ChatMessage message : history) {
             System.out.println(message);
         }
@@ -75,7 +75,7 @@ public class InGameChat extends NetworkHandler {
     @Override
     public void establishConnection() {
         isConnected = true;
-        System.out.println("Chat connection established.");
+        System.out.println("chat connection established.");
     }
 
     /**
@@ -84,7 +84,7 @@ public class InGameChat extends NetworkHandler {
     @Override
     public void closeConnection() {
         isConnected = false;
-        System.out.println("Chat connection closed.");
+        System.out.println("chat connection closed.");
     }
 
     /**
@@ -95,7 +95,7 @@ public class InGameChat extends NetworkHandler {
      */
     public void receiveMessage(String playerId, String message) {
         if (!isConnected) {
-            System.out.println("Error: Cannot receive message. Chat is not connected.");
+            System.out.println("Error: Cannot receive message. chat is not connected.");
             return;
         }
 
