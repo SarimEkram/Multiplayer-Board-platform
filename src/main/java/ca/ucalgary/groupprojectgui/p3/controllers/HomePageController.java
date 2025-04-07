@@ -31,60 +31,36 @@ public class HomePageController {
     @FXML
     private VBox playersContainer;
     // Fields for game/home page
-    @FXML
-    private TextField gameSearchField;
-    @FXML
-    private HBox gameTilePane;
-    @FXML
-    private ImageView img;
-    @FXML
-    private StackPane popupContainer;
-    @FXML
-    private VBox rightPanel;
-    @FXML
-    private VBox friendPopupPlaceholder;
+    @FXML private TextField gameSearchField;
+    @FXML private HBox gameTilePane;
+    @FXML private ImageView img;
+    @FXML private StackPane popupContainer;
+    @FXML private VBox rightPanel;
 
-    @FXML
-    private ImageView heartIcon;
-    @FXML
-    private ImageView bellIcon;
-    @FXML
-    private ImageView friendsIcon;
-    @FXML
-    private ImageView profileIcon;
+    @FXML private ImageView heartIcon;
+    @FXML private ImageView bellIcon;
+    @FXML private ImageView friendsIcon;
+    @FXML private ImageView profileIcon;
 
-    @FXML
-    private Label welcomeLabel;
-    @FXML
-    private ListView<String> recentScores;
-    @FXML
-    private Button quickMatchButton;
-    @FXML
-    private Button logoutButton;
-    @FXML
-    private ImageView connect4Image;
-    @FXML
-    private ImageView tttImage;
-    @FXML
-    private ImageView checkersImage;
+    @FXML private Label welcomeLabel;
+    @FXML private ListView<String> recentScores;
+    @FXML private Button quickMatchButton;
+    @FXML private Button logoutButton;
+    @FXML private ImageView connect4Image;
+    @FXML private ImageView tttImage;
+    @FXML private ImageView checkersImage;
 
     // Fields for preview feature
-    @FXML
-    private ImageView previewImage;
-    @FXML
-    private Button connect4Btn;
-    @FXML
-    private Button tttBtn;
-    @FXML
-    private Button checkersBtn;
+    @FXML private ImageView previewImage;
+    @FXML private Button connect4Btn;
+    @FXML private Button tttBtn;
+    @FXML private Button checkersBtn;
 
     // Field for home pane
-    @FXML
-    private BorderPane homePane;
+    @FXML private BorderPane homePane;
 
     // Fields for Friend Requests functionality
-    @FXML
-    private TextField searchField;
+    @FXML private TextField searchField;
 
     private List<Player> allPlayers;
 
@@ -363,7 +339,6 @@ public class HomePageController {
             // Close/hide this popup
         }
     }
-
     @FXML
     public void handleRemoveFriend(ActionEvent event) {
         // Get the remove button and the associated friend item.
@@ -375,58 +350,41 @@ public class HomePageController {
         // Create a Popup instance.
         Popup popup = new Popup();
 
-        // Create a styled container for the pop-up content.
-        VBox popupContent = new VBox(15);
+        // Create a container for the pop-up content.
+        VBox popupContent = new VBox(10);
         popupContent.setAlignment(Pos.CENTER);
         popupContent.setStyle(
-                "-fx-background-color: radial-gradient(radius 100%, #111, #333);" +
-                        "-fx-padding: 15;" +
-                        "-fx-border-color: #00ffff;" +
-                        "-fx-border-width: 2;" +
-                        "-fx-background-radius: 10;" +
-                        "-fx-border-radius: 10;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(0,255,255,0.75), 10, 0.5, 0, 0);"
+                "-fx-background-color: #333333; " +
+                        "-fx-padding: 10; " +
+                        "-fx-border-color: #00ffff; " +
+                        "-fx-border-width: 2; " +
+                        "-fx-background-radius: 5; " +
+                        "-fx-border-radius: 5;"
         );
-
 
         // Create the confirmation message.
         Label message = new Label("Remove friend: " + friendName + "?");
-        message.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
+        message.setStyle("-fx-text-fill: white;");
 
-        // Create a container for the buttons.
+        // Create Yes and No buttons.
         HBox buttonBox = new HBox(10);
         buttonBox.setAlignment(Pos.CENTER);
-
-        // Yes button styling
         Button yesButton = new Button("Yes");
-        yesButton.setStyle(
-                "-fx-background-color: #00ffff;" +      // Neon cyan background
-                        "-fx-text-fill: black;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-background-radius: 5;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(0,255,255,0.8), 10, 0.5, 0, 0);"
-        );
-
         Button noButton = new Button("No");
-        noButton.setStyle(
-                "-fx-background-color: #ff00ff;" +      // Neon magenta background
-                        "-fx-text-fill: black;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-background-radius: 5;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(255,0,255,0.8), 10, 0.5, 0, 0);"
-        );
-
-
         buttonBox.getChildren().addAll(yesButton, noButton);
+
         popupContent.getChildren().addAll(message, buttonBox);
         popup.getContent().add(popupContent);
 
         // Position the popup near the friend item.
+        // Convert the friendItem's bounds to screen coordinates.
         Bounds bounds = friendItem.localToScreen(friendItem.getBoundsInLocal());
+        // Adjust x/y offsets as needed.
         popup.show(removeButton.getScene().getWindow(), bounds.getMinX() + 50, bounds.getMinY() + 20);
 
-        // Action handlers for the buttons.
+        // Set action handlers for the buttons.
         yesButton.setOnAction(e -> {
+            // Remove the friend item from the display.
             playersContainer.getChildren().remove(friendItem);
             popup.hide();
             System.out.println("Removed friend: " + friendName);
@@ -437,109 +395,8 @@ public class HomePageController {
             System.out.println("Removal canceled for friend: " + friendName);
         });
     }
-    @FXML
-    private void openAddFriendPopup() {
-        System.out.println("✅ openAddFriendPopup() triggered!");
-
-        VBox popupContent = new VBox(10);
-        popupContent.setAlignment(Pos.TOP_CENTER);
-        popupContent.setPrefSize(250, 320);
-        popupContent.setStyle(
-                "-fx-background-color: rgba(0, 0, 0, 0.9);" +
-                        "-fx-padding: 15;" +
-                        "-fx-background-radius: 12;" +
-                        "-fx-border-color: #00ffff;" +
-                        "-fx-border-width: 2;" +
-                        "-fx-border-radius: 12;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(0,255,255,0.6), 10, 0.5, 0, 0);"
-        );
-
-        Label title = new Label("Add Friend");
-        title.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
-
-        TextField friendUsernameField = new TextField();
-        friendUsernameField.setPromptText("Username...");
-        friendUsernameField.setPrefWidth(200);
-
-        // Recommended friends section
-        VBox recommendations = new VBox(8);
-        recommendations.setAlignment(Pos.TOP_LEFT);
-        int currentUserId = LoginController.loginId;
-        User currentUser = UserDatabase.getUserById(currentUserId);
-
-        List<Player> suggestedUsers = PlayerDatabase.getAllPlayers().stream()
-                .filter(p -> !p.getUsername().equalsIgnoreCase(currentUser.getUsername()))
-                .filter(p -> !FriendDatabase.areFriends(currentUserId, p.getUserID()))
-                .limit(5)
-                .collect(Collectors.toList());
-
-
-        for (Player player : suggestedUsers) {
-            String name = player.getUsername(); // 💡 Extract username
-
-            HBox row = new HBox(8);
-            Label nameLabel = new Label(name);
-            nameLabel.setStyle("-fx-text-fill: white; -fx-font-size: 12px;");
-            Button addBtn = new Button("+");
-            addBtn.setStyle(
-                    "-fx-background-color: #00ffff;" +
-                            "-fx-text-fill: black;" +
-                            "-fx-font-weight: bold;" +
-                            "-fx-background-radius: 5;"
-            );
-            addBtn.setOnAction(e -> {
-                friendUsernameField.setText(name); // auto-fill the search field
-            });
-            row.getChildren().addAll(nameLabel, addBtn);
-            recommendations.getChildren().add(row);
-        }
-
-        // Action buttons
-        Button sendRequestButton = new Button("Send");
-        sendRequestButton.setStyle(
-                "-fx-background-color: #00ffff;" +
-                        "-fx-text-fill: black;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-background-radius: 6;"
-        );
-
-        Button closeBtn = new Button("Cancel");
-        closeBtn.setStyle(
-                "-fx-background-color: #ff0066;" +
-                        "-fx-text-fill: white;" +
-                        "-fx-background-radius: 6;"
-        );
-
-        sendRequestButton.setOnAction(e -> {
-            String enteredName = friendUsernameField.getText().trim();
-            if (!enteredName.isEmpty()) {
-                sendFriendRequest(enteredName);
-            }
-            friendPopupPlaceholder.getChildren().clear();
-            friendPopupPlaceholder.setVisible(false);
-            friendPopupPlaceholder.setManaged(false);
-        });
-
-        closeBtn.setOnAction(e -> {
-            friendPopupPlaceholder.getChildren().clear();
-            friendPopupPlaceholder.setVisible(false);
-            friendPopupPlaceholder.setManaged(false);
-        });
-
-        HBox buttonRow = new HBox(10, sendRequestButton, closeBtn);
-        buttonRow.setAlignment(Pos.CENTER);
-
-        popupContent.getChildren().addAll(title, friendUsernameField, new Separator(), recommendations, buttonRow);
-
-        friendPopupPlaceholder.getChildren().clear();
-        friendPopupPlaceholder.getChildren().add(popupContent);
-        friendPopupPlaceholder.setVisible(true);
-        friendPopupPlaceholder.setManaged(true);
-    }
-
-
-
 
 
 
 }
+
