@@ -37,10 +37,11 @@ public class HomePageController {
     @FXML private StackPane popupContainer;
     @FXML private VBox rightPanel;
 
+    @FXML
+    private ImageView profileIcon;
     @FXML private ImageView heartIcon;
     @FXML private ImageView bellIcon;
     @FXML private ImageView friendsIcon;
-    @FXML private ImageView profileIcon;
 
     @FXML private Label welcomeLabel;
     @FXML private ListView<String> recentScores;
@@ -89,13 +90,11 @@ public class HomePageController {
             System.err.println("⚠️ Logo image not found.");
         }
 
-        loadIcon(heartIcon, "/ca/ucalgary/groupprojectgui/p3/images/heart.png");
-        loadIcon(bellIcon, "/ca/ucalgary/groupprojectgui/p3/images/bell.png");
         loadIcon(profileIcon, "/ca/ucalgary/groupprojectgui/p3/images/profile.png");
 
         // Set up event handler for the profile icon to open Manage Profile page on click
         profileIcon.setOnMouseClicked((MouseEvent event) -> {
-            openManageProfile(event);
+            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/ManageProfile.fxml", "Manage Profile", "ManageProfile.css");
         });
 
         // Initialize friend requests functionality if the FXML components exist on the Home page
