@@ -50,7 +50,15 @@ public class TicTacToe {
     public boolean isGameOver(){
         return this.board.checkForWin(activePlayer) || this.board.boardFull() || callCount != 0;
     }
+
+    /**
+     * Getter method for active player
+     */
+    public char getActivePlayer() {
+        return activePlayer;
     }
+
+}
 
 
 
