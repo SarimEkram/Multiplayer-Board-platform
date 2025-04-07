@@ -137,8 +137,8 @@ public class TicTacToeController {
         gameProcessor = new GameProcessor(localPlayer, opponentPlayer, gameType);
         currentPlayer = 'X';
         turnLabel.setText("X: " + localPlayer.getUsername() + "'s Turn");
-        localPlayerLabel.setText("X: " + localPlayer.getUsername());
-        opponentLabel.setText("O: " + opponentPlayer.getUsername());
+        localPlayerLabel.setText(localPlayer.getUsername());
+        opponentLabel.setText(opponentPlayer.getUsername());
     }
 
     /**
@@ -259,18 +259,18 @@ public class TicTacToeController {
         mainMenuButton.getStyleClass().add("popup-button");
         mainMenuButton.setOnAction(e -> {
             tttgrid.getChildren().remove(overlay);
-            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "home.css");
+            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "Home.css");
         });
 
         popup.getChildren().addAll(title, message, mainMenuButton);
         overlay.getChildren().add(popup);
-        ((Pane) tttgrid.getParent()).getChildren().add(overlay);
+        ((Pane) boardContainer.getParent()).getChildren().add(overlay);
     }
 
     private void onLeaveGame() {
         StackPane overlay = new StackPane();
         overlay.getStyleClass().add("popup-overlay");
-        overlay.setPrefSize(tttgrid.getWidth(), tttgrid.getHeight());
+        overlay.setPrefSize(boardContainer.getWidth(), boardContainer.getHeight());
         VBox popup = new VBox();
         popup.getStyleClass().add("popup-dialog");
         popup.setAlignment(Pos.CENTER);
@@ -284,19 +284,19 @@ public class TicTacToeController {
         Button yesButton = new Button("Yes");
         yesButton.getStyleClass().add("popup-button");
         yesButton.setOnAction(e -> {
-            tttgrid.getChildren().remove(overlay);
+            boardContainer.getChildren().remove(overlay);
             SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "home.css");
         });
         Button cancelButton = new Button("Cancel");
         cancelButton.getStyleClass().add("popup-button");
         cancelButton.setOnAction(e -> {
-            tttgrid.getChildren().remove(overlay);
+            boardContainer.getChildren().remove(overlay);
         });
         HBox buttonBox = new HBox(15, yesButton, cancelButton);
         buttonBox.setAlignment(Pos.CENTER);
         popup.getChildren().addAll(title, message, buttonBox);
         overlay.getChildren().add(popup);
-        tttgrid.getChildren().add(overlay);
+        boardContainer.getChildren().add(overlay);
     }
 
     private void startTimer() {

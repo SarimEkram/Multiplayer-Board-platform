@@ -41,14 +41,14 @@
                                         <!-- Renamed to match controller -->
                                         <HBox fx:id="player1Container" alignment="CENTER" spacing="5" HBox.hgrow="ALWAYS">
                                             <children>
-                                                <Label fx:id="avatar1" text="P1"/>
+                                                <Label fx:id="avatar1" text="X"/>
                                                 <Label fx:id="localPlayerLabel" styleClass="player-name" text="ALLIGATOR"/>
                                             </children>
                                         </HBox>
                                         <Label fx:id="vsBadge" text="VS"/>
                                         <HBox fx:id="player2Container" alignment="CENTER" spacing="5" HBox.hgrow="ALWAYS">
                                             <children>
-                                                <Label fx:id="avatar2" text="P2"/>
+                                                <Label fx:id="avatar2" text="O"/>
                                                 <Label fx:id="opponentLabel" styleClass="player-name" text="CHAMELEON" />
                                             </children>
                                         </HBox>
