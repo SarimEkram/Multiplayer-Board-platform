@@ -29,6 +29,10 @@ public class ScoreValidator  {
             System.out.println("GameId not found for player " + playerId);
             return false;
 
+        } else if (playerScore.size()>1) {
+            System.out.println("Cannot have more than 2 players in game");
+            return false;
+
         } else {
             if(score ==0 || score == 1  ){ // checking if score is between 0(lose) and 1(win)
                 return true;

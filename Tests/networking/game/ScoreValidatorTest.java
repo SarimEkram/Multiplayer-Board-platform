@@ -95,5 +95,42 @@ public class ScoreValidatorTest {
         boolean result = ScoreValidator.isScoreValid(gameID, playerId, score, playerScore2, gameScore);
         assertTrue(result);
     }
+    @Test
+    void testInValidNumberOfPlayers() {
+        String gameID = "game1";
+        String playerId1 = "player1";
+        int score = 1;
+        String playerId2 = "player2";
+        int score2 = 0;
+        String playerId3 = "player3";
+        int score3 = 1;
+
+
+        HashMap<String, Integer> playerScore = new HashMap<>();
+        playerScore.put(playerId1, score);
+        playerScore.put(playerId2, score2);
+        HashMap<String, HashMap<String, Integer>> gameScore = new HashMap<>();
+        gameScore.put(gameID, playerScore);
+
+        boolean result = ScoreValidator.isScoreValid(gameID, playerId3, score3, playerScore, gameScore);
+        assertFalse(result);
+    }
+    @Test
+    void testValidNumberOfPlayers() {
+        String gameID = "game1";
+        String playerId1 = "player1";
+        int score = 1;
+        String playerId2 = "player2";
+        int score2 = 0;
+
+        HashMap<String, Integer> playerScore = new HashMap<>();
+        playerScore.put(playerId1, score);
+        HashMap<String, HashMap<String, Integer>> gameScore = new HashMap<>();
+        gameScore.put(gameID, playerScore);
+
+        boolean result = ScoreValidator.isScoreValid(gameID, playerId2, score2, playerScore, gameScore);
+        assertTrue(result);
+    }
+
 
 }
