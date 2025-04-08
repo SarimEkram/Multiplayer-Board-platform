@@ -5,6 +5,10 @@ import MatchmakingLeaderboard.GameType;
 import MatchmakingLeaderboard.Player;
 import MatchmakingLeaderboard.PlayerDatabase;
 import MatchmakingLeaderboard.TicTacToe.Matchmaking.TicTacToeMatchmaking;
+import networking.chat.InGameChat;
+import networking.chat.ChatMessage;
+import gameLogic.tictactoe.TicTacToe;
+import gameLogic.tictactoe.TicTacToeBoard;
 import ca.ucalgary.groupprojectgui.p3.Fonts;
 import ca.ucalgary.groupprojectgui.p3.SceneManager;
 import javafx.animation.KeyFrame;
@@ -89,6 +93,8 @@ public class TicTacToeController {
     private int secondsElapsed = 0;
     private GridPane tttgrid;
     private int messageCount = 0;
+    private InGameChat chatSession;
+
 
     @FXML
     public void initialize() {
@@ -139,6 +145,10 @@ public class TicTacToeController {
         turnLabel.setText("X: " + localPlayer.getUsername() + "'s Turn");
         localPlayerLabel.setText(localPlayer.getUsername());
         opponentLabel.setText(opponentPlayer.getUsername());
+
+        chatSession = new InGameChat("TicTacToe-" + localPlayer.getUserID()); // or a real session ID if you have one
+        chatSession.establishConnection();
+
     }
 
     /**
@@ -382,18 +392,28 @@ public class TicTacToeController {
         if (message == null || message.trim().isEmpty()) {
             return;
         }
-        // Determine the sender dynamically based on whose turn it is.
-        String sender;
-        if (playerXTurn) {
-            sender = localPlayer.getUsername();
+
+        String sender = playerXTurn ? localPlayer.getUsername()
+                : (opponentPlayer != null ? opponentPlayer.getUsername() : "Player O");
+
+        chatSession.sendMessage(sender, message);
+
+        // Check the most recent message in history to see if it passed the filter
+        var history = chatSession.chatManager.getChatHistory();
+        if (!history.isEmpty()) {
+            ChatMessage last = history.get(history.size() - 1);
+            if (last.getPlayerId().equals(sender) && last.getMessage().equals(message)) {
+                addMessage(sender, message, false);
+            } else {
+                addMessage("SYSTEM", "Warning: Message contains inappropriate content!", true);
+            }
         } else {
-            sender = (opponentPlayer != null ? opponentPlayer.getUsername() : "Player O");
+            addMessage("SYSTEM", "Warning: Message contains inappropriate content!", true);
         }
-        addMessage(sender, message, false);
+
         chatInput.clear();
         Platform.runLater(() -> chatScrollPane.setVvalue(1.0));
     }
-
 
     /**
      * Adds a message to the chat view.
