@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,8 +23,8 @@ public class TicTacToeMatchmakingTest {
     @BeforeEach
     public void setup() {
         matchmaking = new TicTacToeMatchmaking();
-        player1 = new Player("Player1", 10, 123456);
-        player2 = new Player("Player2", 15, 987654);
+        player1 = new Player("Bob", 10, 123456);
+        player2 = new Player("Charlie", 15, 987654);
     }
 
     /**
@@ -145,6 +146,25 @@ public class TicTacToeMatchmakingTest {
     }
 
     /**
+     * Tests the matchmaking system's ability to find opponents for specific players
+     */
+    @Test
+    public void testFindOpponent(){
+        player1.setRank(new Rank(900), GameType.TIC_TAC_TOE);
+        player1.setGameSignal(1, GameType.TIC_TAC_TOE);
+        player1.setLevel(17);
+
+        player2.setRank(new Rank(800), GameType.TIC_TAC_TOE);
+        player2.setGameSignal(1,GameType.TIC_TAC_TOE);
+        player2.setLevel(18);
+        PlayerDatabase.savePlayer(player1);
+        PlayerDatabase.savePlayer(player2);
+        matchmaking.joinQueue(player2);
+        Player opponent = matchmaking.findOpponent(player1.getUserID());
+        assertEquals(player2.getUserID(), opponent.getUserID());
+    }
+
+    /**
      * Tests the matchmaking system's ability to initiate a match between two players.
      */
     @Test
@@ -173,7 +193,7 @@ public class TicTacToeMatchmakingTest {
      */
     @Test
     public void MatchmakingWithoutPlayers() {
-        matchmaking.startMatchmaking(); // Should handle empty case gracefully
+        matchmaking.startMatchmaking(); // Should handle empty case
     }
 
     /**

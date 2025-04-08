@@ -23,8 +23,8 @@ public class CheckersMatchmakingTest {
     @BeforeEach
     public void setup() {
         matchmaking = new CheckersMatchmaking();
-        player1 = new Player("Player1", 10, 123456);
-        player2 = new Player("Player2", 15, 987654);
+        player1 = new Player("Echo", 10, 567567);
+        player2 = new Player("Ferrera", 15, 765765);
     }
 
     /**
@@ -139,6 +139,25 @@ public class CheckersMatchmakingTest {
         player2.setLevel(26);
 
         assertFalse(matchmaking.checkPlayers(player1, player2)); // Same issue: large mismatch
+    }
+
+    /**
+     * Tests the matchmaking system's ability to find opponents for specific players
+     */
+    @Test
+    public void testFindOpponent(){
+        player1.setRank(new Rank(900), GameType.CHECKERS);
+        player1.setGameSignal(3, GameType.CHECKERS);
+        player1.setLevel(17);
+
+        player2.setRank(new Rank(800), GameType.CHECKERS);
+        player2.setGameSignal(3,GameType.CHECKERS);
+        player2.setLevel(18);
+        PlayerDatabase.savePlayer(player1);
+        PlayerDatabase.savePlayer(player2);
+        matchmaking.joinQueue(player2);
+        Player opponent = matchmaking.findOpponent(player1.getUserID());
+        assertEquals(player2.getUserID(), opponent.getUserID());
     }
 
     /**
