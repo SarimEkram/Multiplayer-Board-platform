@@ -706,15 +706,6 @@ public class HomePageController {
 
 
 
-    @FXML
-    private void cancelLogout() {
-        if (logoutPane.getParent() instanceof Pane) {
-            Pane parent = (Pane) logoutPane.getParent();
-            parent.getChildren().remove(logoutPane);
-        } else {
-            System.err.println("Logout popup is not attached to a parent; nothing to remove.");
-        }
-    }
 
 }
 
