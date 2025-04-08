@@ -14,6 +14,7 @@ import gameLogic.checkers.CheckersMove.Move;
 import networking.chat.InGameChat;
 import networking.chat.ChatManager;
 import networking.chat.ChatMessage;
+import networking.game.TurnTimer;
 import ca.ucalgary.groupprojectgui.p3.SceneManager;
 import javafx.animation.KeyFrame;
 import javafx.animation.RotateTransition;
@@ -114,7 +115,12 @@ public class CheckersController {
     private final GameType gameType = GameType.CHECKERS;
     private Timeline timeline;
     private int secondsElapsed = 0;
+
     private InGameChat chatSession;
+
+    private Timeline turnCountdown;
+    private int turnSecondsElapsed = 0;
+
 
 
     private static class Position {
@@ -179,6 +185,8 @@ public class CheckersController {
                 onSendMessage();
             }
         });
+        startTurnTimer();
+
     }
 
     private void createBoard() {
@@ -372,6 +380,7 @@ public class CheckersController {
                     return;
                 } else {
                     updateTurnIndicator();
+                    startTurnTimer(); // <-- start new turn timer when turn changes
                 }
                 return;
             } else {
@@ -751,5 +760,71 @@ public class CheckersController {
             Platform.runLater(() -> chatScrollPane.setVvalue(1.0));
         }
     }
+
+    private void startTurnTimer() {
+        if (turnCountdown != null) {
+            turnCountdown.stop();
+        }
+
+        turnSecondsElapsed = 0;  // Reset counter
+        updateTimerLabel();      // Reset GUI display
+
+        turnCountdown = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+            turnSecondsElapsed++;
+            updateTimerLabel();
+
+            if (turnSecondsElapsed == 35) {
+                chatSession.sendMessage("SYSTEM", "⚠ 10 seconds remaining!");
+                addMessage("SYSTEM", "⚠ 10 seconds remaining!", true);
+            }
+
+            if (turnSecondsElapsed >= 45) {
+                turnCountdown.stop();
+                handleTurnTimeout();
+            }
+        }));
+
+        turnCountdown.setCycleCount(Timeline.INDEFINITE);
+        turnCountdown.play();
+    }
+
+
+    private void updateTimerLabel() {
+        Platform.runLater(() -> {
+            int minutes = turnSecondsElapsed / 60;
+            int seconds = turnSecondsElapsed % 60;
+            timeElapsed.setText(String.format("TIME: %02d:%02d", minutes, seconds));
+        });
+    }
+
+
+    private void handleTurnTimeout() {
+        Platform.runLater(() -> {
+            addMessage("SYSTEM", "⏰ Time's up!", true);
+            boardGrid.setDisable(true); // Disable player input
+
+            Checkers.Turn currentTurn = gameLogic.getTurn();
+
+            // Award win to opponent
+            if (currentTurn == Checkers.Turn.BLACK) {
+                turnPiece.getStyleClass().clear();
+                turnPiece.getStyleClass().add("checker-white");
+                turnLabel.setText(opponentPlayer.getUsername() + " wins!");
+            } else {
+                turnPiece.getStyleClass().clear();
+                turnPiece.getStyleClass().add("checker-black");
+                turnLabel.setText(opponentPlayer.getUsername() + " wins!");
+            }
+
+            stopTimer(); // Stop GUI timer
+            if (turnCountdown != null) {
+                turnCountdown.stop();
+            }
+
+            showGameOverPopup(opponentPlayer.getUsername(), true);
+            gameProcessor.UpdateResults(opponentPlayer, localPlayer, gameType);
+        });
+    }
+
 
 }
