@@ -40,7 +40,7 @@ public class Connect4Leaderboard extends AbstractConnect4Leaderboard {
 
         List<Player> connect4Players = new ArrayList<>();
         for (Player player : allPlayers) {
-            if (player.getMMR(CONNECT_FOUR) > 0) {
+            if (player.getMMR(CONNECT_FOUR) >= 0) {
                 connect4Players.add(player);
             }
         }

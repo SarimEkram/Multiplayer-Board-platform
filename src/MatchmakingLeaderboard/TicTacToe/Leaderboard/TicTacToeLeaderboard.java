@@ -37,7 +37,7 @@ public class TicTacToeLeaderboard extends AbstractTicTacToeLeaderboard {
 
         List<Player> ticTacToePlayers = new ArrayList<>();
         for (Player player : allPlayers) {
-            if (player.getMMR(TIC_TAC_TOE) > 0) {
+            if (player.getMMR(TIC_TAC_TOE) >= 0) {
                 ticTacToePlayers.add(player);
             }
         }

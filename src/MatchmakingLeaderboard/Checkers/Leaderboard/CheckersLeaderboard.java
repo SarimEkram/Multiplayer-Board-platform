@@ -45,7 +45,7 @@ public class CheckersLeaderboard extends AbstractCheckersLeaderboard {
 
         List<Player> checkersPlayers = new ArrayList<>();
         for (Player player : allPlayers) {
-            if (player.getMMR(CHECKERS) > 0) {
+            if (player.getMMR(CHECKERS) >= 0) {
                 checkersPlayers.add(player);
             }
         }
