@@ -158,3 +158,10 @@
     -fx-text-fill: #f0ffff;       /* your desired text color */
 
 }
+
+
+.error-message {
+    -fx-text-fill: red;
+    -fx-font-size: 14px;
+    -fx-padding: 5 0 10 0;
+}

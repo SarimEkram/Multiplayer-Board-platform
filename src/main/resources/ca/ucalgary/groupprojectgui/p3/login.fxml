@@ -30,6 +30,10 @@
                                                 <Label styleClass="form-subtitle" text="Enter the OMG realm" />
                                             </children>
                                         </VBox>
+
+                                        <Label fx:id="loginErrorLabel" text=""
+                                               visible="false" managed="false"
+                                               styleClass="error-message"/>
                                         <!-- Username Field -->
                                         <VBox prefWidth="500" spacing="5" styleClass="form-group">
                                             <children>
@@ -74,6 +78,10 @@
                                                 <Label styleClass="form-subtitle" text="Reset your OMG access" />
                                             </children>
                                         </VBox>
+                                        <!-- Error Message for Forgot Password -->
+                                        <Label fx:id="forgotErrorLabel" text=""
+                                               visible="false" managed="false"
+                                               styleClass="error-message"/>
                                         <!-- Email Verification Section -->
                                         <VBox fx:id="verifyEmailSection" spacing="5" styleClass="form-group">
                                             <children>
@@ -83,6 +91,10 @@
                                         </VBox>
                                         <Button  fx:id="verifyEmailBtn" onAction="#proceedForgot" styleClass="btn" text="VERIFY EMAIL" />
                                         <!-- Reset Password Section (initially hidden) -->
+                                        <!-- Error Message for Reset Password -->
+                                        <Label fx:id="resetErrorLabel" text=""
+                                               visible="false" managed="false"
+                                               styleClass="error-message"/>
                                         <VBox fx:id="resetPasswordSection" spacing="5" visible="false">
                                             <children>
                                                 <VBox spacing="5" styleClass="form-group">
@@ -91,6 +103,7 @@
                                                         <TextField fx:id="resetToken" promptText="Enter reset token" />
                                                     </children>
                                                 </VBox>
+
                                                 <VBox spacing="5" styleClass="form-group">
                                                     <children>
                                                         <Label styleClass="form-label" text="New Password" />
@@ -123,6 +136,10 @@
                                                 <Label styleClass="form-subtitle" text="Join the OMG uprising" />
                                             </children>
                                         </VBox>
+                                        <!-- Error Message for Registration -->
+                                        <Label fx:id="registerErrorLabel" text=""
+                                               visible="false" managed="false"
+                                               styleClass="error-message"/>
                                         <VBox spacing="5" styleClass="form-group">
                                             <children>
                                                 <Label styleClass="form-label" text="Full Name" />

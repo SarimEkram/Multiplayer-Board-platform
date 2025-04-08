@@ -1,152 +1,147 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
 
-import ca.ucalgary.groupprojectgui.p3.Fonts;
+import Authentication.User;
+import Authentication.UserDatabase;
+import Authentication.UserLogin;
+import Authentication.UserRegistration;
+import Authentication.ResetTokenData;
+import Authentication.ResetUserPassword;
+import ca.ucalgary.groupprojectgui.p3.SceneManager;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.*;
-import javafx.scene.effect.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.effect.Blend;
+import javafx.scene.effect.BlendMode;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.InnerShadow;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.*;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.RadialGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
 import javafx.util.Duration;
 
+import java.util.ArrayList;
+import java.util.List;
 
 public class LoginController {
 
     public static int loginId;
-    // Form Containers
-    @FXML
-    private VBox loginForm;
-    @FXML
-    private VBox forgotForm;
-    @FXML
-    private VBox registerForm;
-    @FXML
-    private VBox verifyEmailSection;
-    @FXML
-    private VBox resetPasswordSection;
-    @FXML
-    private Pane animatedNeonLines;
-    @FXML
-    private Pane cyberGlow;
 
-    // Login Form Fields
-    @FXML
-    private TextField loginUsername;
-    @FXML
-    private PasswordField loginPassword;
-    @FXML
-    private CheckBox rememberMe;
+    // Root and background layers
+    @FXML private AnchorPane root;
+    @FXML private Pane gridBackground;
+    @FXML private Pane animatedNeonLines;
+    @FXML private Pane cyberGlow;
 
-    // Forgot Form Fields
-    @FXML
-    private TextField forgotEmail;
-    @FXML
-    private TextField resetToken;
-    @FXML
-    private PasswordField newPassword;
-    @FXML
-    private PasswordField confirmNewPassword;
-    @FXML
-    private Pane gridBackground;
+    // Main container and login box
+    @FXML private VBox loginContainer;
+    @FXML private AnchorPane loginBox;
 
+    // Forms within the StackPane
+    @FXML private VBox loginForm;
+    @FXML private VBox forgotForm;
+    @FXML private VBox registerForm;
 
-    // Register Form Fields
-    @FXML
-    private TextField registerFullName;
-    @FXML
-    private TextField registerUsername;
-    @FXML
-    private TextField registerEmail;
-    @FXML
-    private PasswordField registerPassword;
-    @FXML
-    private PasswordField registerConfirmPassword;
-    @FXML
-    private AnchorPane loginBox;
-    @FXML
-    private VBox loginContainer;
+    // --- Login Form Fields ---
+    @FXML private TextField loginUsername;
+    @FXML private PasswordField loginPassword;
+    @FXML private Button loginButton;
+    @FXML private Label loginErrorLabel;
 
+    // --- Forgot Password Form Fields ---
+    @FXML private VBox verifyEmailSection;
+    @FXML private TextField forgotEmail;
+    @FXML private Button verifyEmailBtn;
+    @FXML private Label forgotErrorLabel; // error message for forgot password validation
 
-    @FXML
-    private Button verifyEmailBtn;
-    @FXML
-    private Button registerBtn;
-    @FXML
-    private Button resetBtn;
+    // Forgot form - reset password section (initially hidden)
+    @FXML private VBox resetPasswordSection;
+    @FXML private TextField resetToken;
+    @FXML private PasswordField newPassword;
+    @FXML private PasswordField confirmNewPassword;
+    @FXML private Button resetBtn;
+    @FXML private Label resetErrorLabel; // error message in reset password section
 
+    // --- Register Form Fields ---
+    @FXML private TextField registerFullName;
+    @FXML private TextField registerUsername;
+    @FXML private TextField registerEmail;
+    @FXML private PasswordField registerPassword;
+    @FXML private PasswordField registerConfirmPassword;
+    @FXML private Button registerBtn;
+    @FXML private Label registerErrorLabel; // error message for registration validation
 
-
-    @FXML
-    private AnchorPane root;
-
-
+    // Instance of backend classes for registration and password reset
+    private final ResetUserPassword resetUserPassword = new ResetUserPassword();
+    private final UserRegistration userRegistration = new UserRegistration();
 
     @FXML
     public void initialize() {
+        // Show login form by default; hide forgot and register forms.
+        hideNode(forgotForm);
+        hideNode(registerForm);
+        showNode(loginForm);
 
-        forgotForm.setVisible(false);
-        forgotForm.setManaged(false);
-        registerForm.setVisible(false);
-        registerForm.setManaged(false);
+        // Hide error messages at startup.
+        hideNode(loginErrorLabel);
+        hideNode(forgotErrorLabel);
+        hideNode(resetErrorLabel);
+        hideNode(registerErrorLabel);
 
-        loginForm.setVisible(true);
-        loginForm.setManaged(true);
+        // --- Bind button widths to corresponding input fields ---
+        if (loginUsername != null && loginButton != null) {
+            loginButton.prefWidthProperty().bind(loginUsername.widthProperty());
+        }
+        if (forgotEmail != null && verifyEmailBtn != null) {
+            verifyEmailBtn.prefWidthProperty().bind(forgotEmail.widthProperty());
+        }
+        if (registerFullName != null && registerBtn != null) {
+            registerBtn.prefWidthProperty().bind(registerFullName.widthProperty());
+        }
 
-
-
-        // Bind the verify email button's width to the forgot email field
-        verifyEmailBtn.prefWidthProperty().bind(forgotEmail.widthProperty());
-        ReadOnlyDoubleProperty width= registerConfirmPassword.widthProperty();
-
-        registerBtn.prefWidthProperty().bind(width);
-
-
+        // --- Set up grid background using a Canvas ---
         Canvas gridCanvas = new Canvas();
-        // Bind canvas size to gridBackground so it always fills the container.
         gridCanvas.widthProperty().bind(gridBackground.widthProperty());
         gridCanvas.heightProperty().bind(gridBackground.heightProperty());
-        // Redraw the grid whenever the size changes.
         gridCanvas.widthProperty().addListener((obs, oldVal, newVal) -> drawGrid(gridCanvas));
         gridCanvas.heightProperty().addListener((obs, oldVal, newVal) -> drawGrid(gridCanvas));
         drawGrid(gridCanvas);
-        // Add the grid canvas to gridBackground.
         gridBackground.getChildren().add(gridCanvas);
 
-        // Create a Rectangle to fill the cyberGlow Pane.
+        // --- Set up cyber glow background ---
         Rectangle glowRect = new Rectangle();
         glowRect.widthProperty().bind(cyberGlow.widthProperty());
         glowRect.heightProperty().bind(cyberGlow.heightProperty());
-
-        // Create a RadialGradient with a radius of 1 to cover the entire rectangle.
         RadialGradient gradient = new RadialGradient(
-                0,                      // focusAngle
-                0,                      // focusDistance
-                0.5, 0.5,               // centerX, centerY (proportional; center of pane)
-                1,                      // radius: 1 means the gradient fills the entire rectangle
-                true,                   // proportional coordinates
-                CycleMethod.NO_CYCLE,   // no repeating
-                new Stop(0, Color.rgb(255, 0, 255, 0.15)),   // at 0% (center): neon magenta, 10% opacity
-                new Stop(0.5, Color.rgb(0, 255, 255, 0.1)),   // at 50%: neon cyan, 10% opacity
-                new Stop(1, Color.rgb(255, 255, 0, 0.28))        // at 100%: neon yellow, 10% opacity
+                0,
+                0,
+                0.5, 0.5,
+                1,
+                true,
+                CycleMethod.NO_CYCLE,
+                new Stop(0, Color.rgb(255, 0, 255, 0.15)),
+                new Stop(0.5, Color.rgb(0, 255, 255, 0.1)),
+                new Stop(1, Color.rgb(255, 255, 0, 0.28))
         );
         glowRect.setFill(gradient);
-
-        // Add the glow rectangle to the cyberGlow Pane.
         cyberGlow.getChildren().add(glowRect);
 
-        // Animate the glow rectangle to pulse more noticeably.
         Timeline pulseTimeline = new Timeline(
                 new KeyFrame(Duration.ZERO,
                         new KeyValue(glowRect.opacityProperty(), 0.3),
@@ -155,7 +150,6 @@ public class LoginController {
                 ),
                 new KeyFrame(Duration.seconds(4),
                         new KeyValue(glowRect.opacityProperty(), 0.5),
-                        // Increase scaling to 1.05 for a more pronounced pulse effect.
                         new KeyValue(glowRect.scaleXProperty(), 1.05),
                         new KeyValue(glowRect.scaleYProperty(), 1.05)
                 )
@@ -164,119 +158,79 @@ public class LoginController {
         pulseTimeline.setAutoReverse(true);
         pulseTimeline.play();
 
-        // --- 3. Ensure Correct Z-Order ---
-        // The FXML node order matters. Typically the first child is rendered at the bottom.
-        // In your FXML, ensure that 'gridBackground' is below any nodes that should appear on top,
-        // and 'cyberGlow' is placed as needed (often behind the login form).
-        // You can also use methods like toFront() or toBack() to adjust ordering dynamically:
-        // gridBackground.toBack();
-        // cyberGlow.toBack();
-
-
-        // --- 1. Set Background & Border (matching design) ---
+        // --- Set loginBox background, border, and shadow effects ---
         loginBox.setBackground(new Background(new BackgroundFill(
                 Color.rgb(0, 0, 0, 1),
                 new CornerRadii(10),
-                Insets.EMPTY)));
-        // Apply a border with no top stroke and thin, less opaque strokes on left/right/bottom.
+                Insets.EMPTY
+        )));
         loginBox.setBorder(new Border(new BorderStroke(
-                Color.rgb(255, 0, 255, 0.9), // lower opacity neon magenta
+                Color.rgb(255, 0, 255, 0.9),
                 BorderStrokeStyle.SOLID,
                 new CornerRadii(10),
-                new BorderWidths(1, 0.5, 0.5, 0.5)  // Top: 0, Right: 0.5, Bottom: 0.5, Left: 0.5
+                new BorderWidths(1, 0.5, 0.5, 0.5)
         )));
 
-
-        // --- 2. Create Shadow Effects and Combine via Blend ---
-        // Outer neon magenta shadow (simulate 0 0 20px rgba(255,0,255,0.3))
         DropShadow neonMagenta = new DropShadow();
         neonMagenta.setColor(Color.rgb(255, 255, 255, 0.3));
         neonMagenta.setRadius(20);
         neonMagenta.setOffsetX(0);
         neonMagenta.setOffsetY(0);
 
-        // Outer neon cyan shadow (simulate 0 0 40px rgba(0,255,255,0.2))
         DropShadow neonCyan = new DropShadow();
         neonCyan.setColor(Color.rgb(0, 255, 255, 0.2));
         neonCyan.setRadius(40);
         neonCyan.setOffsetX(0);
         neonCyan.setOffsetY(0);
 
-//        // Inner shadow (simulate inset 0 0 30px rgba(0,0,0,0.8))
-//        InnerShadow innerShadow = new InnerShadow();
-//        innerShadow.setColor(Color.rgb(255, 255, 255, 0.8));
-//        innerShadow.setRadius(30);
-//        innerShadow.setOffsetX(0);
-//        innerShadow.setOffsetY(0);
-        // Either remove it entirely:
         InnerShadow innerShadow = null;
-
-//// Or reduce its radius/opacity
-//        InnerShadow innerShadow = new InnerShadow();
-//        innerShadow.setBlurType(BlurType.GAUSSIAN);
-//        innerShadow.setColor(Color.rgb(0, 0, 0, 0.5)); // less opacity
-//        innerShadow.setRadius(10);                     // smaller radius
-
-
-        // Blend the two outer shadows.
         Blend outerBlend = new Blend();
         outerBlend.setMode(BlendMode.SRC_OVER);
-        // Here we combine the magenta and cyan glows.
         outerBlend.setBottomInput(neonMagenta);
         outerBlend.setTopInput(neonCyan);
 
-        // Now blend that result with the inner shadow.
         Blend finalBlend = new Blend();
         finalBlend.setMode(BlendMode.SRC_OVER);
         finalBlend.setBottomInput(outerBlend);
         finalBlend.setTopInput(innerShadow);
 
-        // Set the composite effect on the loginBox.
         loginBox.setEffect(finalBlend);
 
-        // --- 3. Add the "Pseudo-element" Gradient Top Line (Login Box ::before) ---
+        // --- Add the pseudo-element gradient top line ---
         Rectangle topLine = new Rectangle();
         topLine.setHeight(2);
-// Bind the width to the loginBox width.
         topLine.widthProperty().bind(loginBox.widthProperty());
-// Position it at the top.
         topLine.setLayoutY(0);
-// Mark it as unmanaged so it doesn't affect loginBox's calculated size.
         topLine.setManaged(false);
-
         LinearGradient lineGradient = new LinearGradient(
-                0, 0, 1, 0,      // from left to right (proportional)
-                true,            // using proportional coordinates
+                0, 0, 1, 0,
+                true,
                 CycleMethod.NO_CYCLE,
                 new Stop(0, Color.TRANSPARENT),
-                new Stop(0.33, Color.web("#ff00ff", 1.0)),  // neon magenta fully opaque
-                new Stop(0.66, Color.web("#00ffff", 0.6)),   // neon cyan at 50% opacity
+                new Stop(0.33, Color.web("#ff00ff", 1.0)),
+                new Stop(0.66, Color.web("#00ffff", 0.6)),
                 new Stop(1, Color.TRANSPARENT)
         );
-
         topLine.setFill(lineGradient);
-
         DropShadow lineShadow = new DropShadow();
-        lineShadow.setBlurType(BlurType.GAUSSIAN);
+        lineShadow.setBlurType(javafx.scene.effect.BlurType.GAUSSIAN);
         lineShadow.setColor(Color.web("#00ffff"));
         lineShadow.setRadius(10);
         lineShadow.setOffsetX(0);
         lineShadow.setOffsetY(0);
         topLine.setEffect(lineShadow);
-
-// Add the pseudo-element to the loginBox.
         loginBox.getChildren().add(topLine);
 
-
-        // --- (Optional) Animate the loginBox ("breathing" effect) if desired ---
-        // For example, to subtly animate scale:
+        // --- (Optional) Animate the loginBox ("breathing" effect) ---
         Timeline breathing = new Timeline(
                 new KeyFrame(Duration.ZERO,
                         new KeyValue(loginBox.scaleXProperty(), 1),
-                        new KeyValue(loginBox.scaleYProperty(), 1)),
+                        new KeyValue(loginBox.scaleYProperty(), 1)
+                ),
                 new KeyFrame(Duration.seconds(2),
                         new KeyValue(loginBox.scaleXProperty(), 1.02),
-                        new KeyValue(loginBox.scaleYProperty(), 1.02))
+                        new KeyValue(loginBox.scaleYProperty(), 1.02)
+                )
         );
         breathing.setCycleCount(Timeline.INDEFINITE);
         breathing.setAutoReverse(true);
@@ -287,122 +241,212 @@ public class LoginController {
         double width = canvas.getWidth();
         double height = canvas.getHeight();
         GraphicsContext gc = canvas.getGraphicsContext2D();
-
-        // Clear the canvas; if you want the dark background to be visible,
-        // fill with the base color:
         gc.setFill(Color.web("#0a0a12"));
         gc.fillRect(0, 0, width, height);
-
-        // Set grid line color: subtle neon magenta at 5% opacity.
         gc.setFill(Color.web("#ff00ff", 0.05));
         double step = 40.0;
-        double lineWidth = 2;  // Reduced line width
-
-        // Draw vertical grid lines.
+        double lineWidth = 2;
         for (double x = 0; x <= width; x += step) {
             gc.fillRect(x, 0, lineWidth, height);
         }
-        // Draw horizontal grid lines.
         for (double y = 0; y <= height; y += step) {
             gc.fillRect(0, y, width, lineWidth);
         }
     }
-    @FXML
-    private void showRegisterForm() {
-        // Hide the login and forgot forms completely so they don’t influence layout.
-        loginForm.setVisible(false);
-        loginForm.setManaged(false);
 
-        forgotForm.setVisible(false);
-        forgotForm.setManaged(false);
-
-        // Now show the register form and allow it to participate in layout.
-        registerForm.setVisible(true);
-        registerForm.setManaged(true);
+    // --- Helper Methods ---
+    private void hideNode(Node node) {
+        if (node != null) {
+            node.setVisible(false);
+            node.setManaged(false);
+        }
     }
 
+    private void showNode(Node node) {
+        if (node != null) {
+            node.setVisible(true);
+            node.setManaged(true);
+        }
+    }
+
+    private String generateToken() {
+        // For integration with ResetUserPassword, call the reset request.
+        String token = resetUserPassword.resetRequest(forgotEmail.getText().trim());
+        return (token != null) ? token : "ERROR";
+    }
+
+    private void copyToClipboard(String text) {
+        ClipboardContent content = new ClipboardContent();
+        content.putString(text);
+        Clipboard.getSystemClipboard().setContent(content);
+    }
+
+    // --- Form Switching Methods ---
     @FXML
     private void showLoginForm() {
-        // When showing login form, hide the others.
-        registerForm.setVisible(false);
-        registerForm.setManaged(false);
-
-        forgotForm.setVisible(false);
-        forgotForm.setManaged(false);
-
-        loginForm.setVisible(true);
-        loginForm.setManaged(true);
+        hideNode(forgotForm);
+        hideNode(registerForm);
+        showNode(loginForm);
+        hideNode(loginErrorLabel);
     }
 
     @FXML
     private void showForgotForm() {
-        // When showing forgot form, hide the others.
-        loginForm.setVisible(false);
-        loginForm.setManaged(false);
-
-        registerForm.setVisible(false);
-        registerForm.setManaged(false);
-
-        forgotForm.setVisible(true);
-        forgotForm.setManaged(true);
-
-        // Additionally, for multi‑step forms you might need to mark sub‑sections accordingly:
-        verifyEmailSection.setVisible(true);
-        verifyEmailSection.setManaged(true);
-
-        resetPasswordSection.setVisible(false);
-        resetPasswordSection.setManaged(false);
-
-        // Reset the verify button also.
-        verifyEmailBtn.setVisible(true);
-        verifyEmailBtn.setManaged(true);
-
-
+        hideNode(loginForm);
+        hideNode(registerForm);
+        showNode(forgotForm);
+        showNode(verifyEmailSection);
+        showNode(verifyEmailBtn);
+        hideNode(forgotErrorLabel);
+        hideNode(resetErrorLabel);
+        hideNode(resetPasswordSection);
     }
 
+    @FXML
+    private void showRegisterForm() {
+        hideNode(loginForm);
+        hideNode(forgotForm);
+        showNode(registerForm);
+        hideNode(registerErrorLabel);
+    }
 
+    // --- Login Form Handler (Integrated with backend) ---
     @FXML
     private void handleLogin() {
-        System.out.println("Login attempted with username: " + loginUsername.getText());
-        // Add login validation and processing logic here.
-    }
-
-    @FXML
-    private void handleRegister() {
-        System.out.println("Register attempted with username: " + registerUsername.getText());
-        // Add registration logic here.
-        showLoginForm();
+        String user = loginUsername.getText().trim();
+        String pass = loginPassword.getText().trim();
+        if (user.isEmpty() || pass.isEmpty()) {
+            loginErrorLabel.setText("Username or Password cannot be empty.");
+            showNode(loginErrorLabel);
+            return;
+        }
+        User loginUser = UserDatabase.getUserByUsername(user);
+        if (loginUser == null) {
+            loginErrorLabel.setText("User does not exist.");
+            showNode(loginErrorLabel);
+            return;
+        }
+        int loginSuccessful = UserLogin.loginUser(user, pass);
+        if (loginSuccessful != -1) {
+            hideNode(loginErrorLabel);
+            loginId = loginUser.getUserID();
+            System.out.println("Login successful for: " + user);
+            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "Home.css");
+        } else {
+            loginErrorLabel.setText("Invalid username or password.");
+            showNode(loginErrorLabel);
+        }
     }
 
     @FXML
     private void proceedForgot() {
-        if (forgotEmail.getText().trim().isEmpty()) {
-            System.out.println("Please enter a valid email address.");
+        String email = forgotEmail.getText().trim();
+        // Simple email validation: must not be empty and must contain '@'
+        if (email.isEmpty() || !email.contains("@")) {
+            forgotErrorLabel.setText("Please enter a valid email address.");
+            forgotErrorLabel.setStyle("-fx-text-fill: red;");
+            showNode(forgotErrorLabel);
+            return;
+        } else {
+            hideNode(forgotErrorLabel);
+        }
+
+        // Hide the verification section and button so they don't take up layout space.
+        hideNode(verifyEmailSection);
+        hideNode(verifyEmailBtn);
+
+        // Request the reset token from the backend.
+        String token = resetUserPassword.resetRequest(email);
+        if (token == null) {
+            // If token generation failed (for example, email doesn't exist), show an error message.
+            forgotErrorLabel.setText("Reset request failed: email does not exist. Redirecting to login...");
+            forgotErrorLabel.setStyle("-fx-text-fill: red;");
+            showNode(forgotErrorLabel);
+            // After 2 seconds, hide the error and go back to the login form.
+            Timeline delayTimeline = new Timeline(new KeyFrame(Duration.seconds(2), event -> {
+                hideNode(forgotErrorLabel);
+                showLoginForm();  // Redirecting to login form
+            }));
+            delayTimeline.play();
             return;
         }
-        // Hide the email verification section and its associated button so they do not take space.
-        verifyEmailSection.setVisible(false);
-        verifyEmailSection.setManaged(false);
 
-        verifyEmailBtn.setVisible(false);
-        verifyEmailBtn.setManaged(false);
+        // If a token is generated, copy it to the clipboard.
+        copyToClipboard(token);
+        String displayToken = token.substring(0, Math.min(4, token.length())) + "******";
+        // Show a temporary info message (green) that the token has been sent.
+        forgotErrorLabel.setText("Token sent! (" + displayToken + ") - copied to clipboard");
+        forgotErrorLabel.setStyle("-fx-text-fill: #00ff00;");
+        showNode(forgotErrorLabel);
 
-
-        resetPasswordSection.setVisible(true);
-        resetPasswordSection.setManaged(true);
-
+        // After 2 seconds, hide the info message and show the reset password section.
+        Timeline delayTimeline = new Timeline(new KeyFrame(Duration.seconds(2), event -> {
+            hideNode(forgotErrorLabel);
+            showNode(resetPasswordSection);
+        }));
+        delayTimeline.play();
     }
+
 
 
     @FXML
     private void resetPassword() {
         if (resetToken.getText().trim().isEmpty() ||
                 newPassword.getText().trim().isEmpty() ||
-                !newPassword.getText().equals(confirmNewPassword.getText())) {
-            System.out.println("Please ensure all fields are valid and both passwords match.");
+                confirmNewPassword.getText().trim().isEmpty()) {
+            resetErrorLabel.setText("All fields must be filled.");
+            showNode(resetErrorLabel);
             return;
         }
-        System.out.println("Password reset successful!");
-        showLoginForm();
+        if (!newPassword.getText().equals(confirmNewPassword.getText())) {
+            resetErrorLabel.setText("Passwords do not match.");
+            showNode(resetErrorLabel);
+            return;
+        }
+        hideNode(resetErrorLabel);
+        boolean resetSuccess = resetUserPassword.resetPassword(resetToken.getText().trim(), newPassword.getText());
+        if (resetSuccess) {
+            System.out.println("Password reset successful!");
+            showLoginForm();
+        } else {
+            resetErrorLabel.setText("Invalid token or password error.");
+            showNode(resetErrorLabel);
+        }
     }
+
+    @FXML
+    private void handleRegister() {
+        String usernameInput = registerUsername.getText().trim();
+        String emailInput = registerEmail.getText().trim();
+        String passwordInput = registerPassword.getText().trim();
+        String confirmPasswordInput = registerConfirmPassword.getText().trim();
+
+        List<String> errors = new ArrayList<>();
+        if (!passwordInput.equals(confirmPasswordInput)) {
+            errors.add("Passwords do not match.");
+        }
+
+        // Call registerUser which returns a List of error messages.
+        List<String> registrationErrors = userRegistration.registerUser(usernameInput, emailInput, passwordInput);
+        errors.addAll(registrationErrors);
+
+        if (!errors.isEmpty()) {
+            String errorMsg = String.join("\n", errors);
+            registerErrorLabel.setText(errorMsg);
+            showNode(registerErrorLabel);
+            return;
+        }
+        hideNode(registerErrorLabel);
+        System.out.println("Registration successful!");
+        // Display a success message and then switch back to login form.
+        registerErrorLabel.setText("Registration successful! Redirecting to login...");
+        registerErrorLabel.setStyle("-fx-text-fill: #00ff00;");
+        showNode(registerErrorLabel);
+        Timeline delay = new Timeline(new KeyFrame(Duration.seconds(2), event -> {
+            hideNode(registerErrorLabel);
+            showLoginForm();
+        }));
+        delay.play();
+    }
+
 }
