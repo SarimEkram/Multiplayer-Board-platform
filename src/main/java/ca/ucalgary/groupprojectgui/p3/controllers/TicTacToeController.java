@@ -599,6 +599,7 @@ public class TicTacToeController {
             }
 
         } catch (IOException e) {
+
             System.err.println("Error writing chat history: " + e.getMessage());
         }
     }
