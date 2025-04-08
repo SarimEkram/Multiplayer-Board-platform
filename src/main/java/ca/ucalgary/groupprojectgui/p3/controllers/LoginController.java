@@ -91,6 +91,7 @@ public class LoginController {
     private final ResetUserPassword resetUserPassword = new ResetUserPassword();
     private final UserRegistration userRegistration = new UserRegistration();
 
+
     @FXML
     public void initialize() {
         // Show login form by default; hide forgot and register forms.
@@ -356,6 +357,8 @@ public class LoginController {
         if (result > 0) {
             // Login success flow...
             loginErrorLabel.setText("Login successful! Redirecting...");
+            loginId = loginUser.getUserID();
+
             loginErrorLabel.setStyle("-fx-text-fill: #00ff00;");
             showNode(loginErrorLabel);
 

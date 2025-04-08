@@ -1,37 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.canvas.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.geometry.Insets?>
-<?import javafx.geometry.Pos?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
 
-<StackPane xmlns:fx="http://javafx.com/fxml"
-           fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.EditProfileController"
-           prefWidth="1200" prefHeight="800"
-           stylesheets="@styles/edit_profile.css"
-           styleClass="root">
+<StackPane prefHeight="800" prefWidth="1200" styleClass="root" stylesheets="@styles/edit_profile.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.EditProfileController">
+    <!-- Background Layers -->
+    <Pane fx:id="gridBackground" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+        <!-- Canvas for grid drawing -->
+        <Canvas fx:id="gridCanvas" height="800" width="1200" />
+    </Pane>
+    <Pane fx:id="cyberGlow" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+        <!-- Glow rectangle for pulsing radial gradient -->
+        <Rectangle fx:id="glowRect" fill="TRANSPARENT" height="800" width="1200" />
+    </Pane>
 
-    <!-- Centered form -->
-    <VBox spacing="20" alignment="CENTER">
-        <Label text="Edit Profile" fx:id="statusLabel" styleClass="section-title"/>
+    <!-- Main Content Container (centered neon box) -->
+    <VBox alignment="CENTER" spacing="20" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+        <!-- Neon Box for Edit Profile -->
+        <AnchorPane fx:id="editProfileBox" maxWidth="400" styleClass="login-box">
+            <children>
+                <VBox alignment="CENTER" spacing="20" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+                    <!-- Status Label for messages -->
+                    <Label fx:id="statusLabel" styleClass="form-title" text="Edit Profile" />
 
-        <TextField fx:id="usernameField" promptText="Username" styleClass="form-field"/>
-        <TextField fx:id="emailField" promptText="Email" styleClass="form-field"/>
+                    <!-- GridPane for showing user info -->
+                    <GridPane alignment="CENTER" hgap="15" vgap="15">
+                        <!-- Row 0: User ID (info only) -->
+                        <Label styleClass="form-label" text="User ID:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <Label fx:id="userIdLabel" styleClass="form-label" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-        <Button text="Save Changes"
-                onAction="#handleSaveChanges"
-                styleClass="save-button"
-                prefWidth="200" prefHeight="45"/>
+                        <!-- Row 1: Username (Editable) -->
+                        <Label styleClass="form-label" text="Username:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                        <TextField fx:id="usernameField" promptText="Enter new username" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                        <!-- Row 2: Email (Editable) -->
+                        <Label styleClass="form-label" text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                        <TextField fx:id="emailField" promptText="Enter new email" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                        <!-- Row 3: Win Ratio (Info only) -->
+                        <Label styleClass="form-label" text="Win Ratio:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                        <Label fx:id="winRatioLabel" styleClass="form-label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                        <!-- Row 4: Level (Info only) -->
+                        <Label styleClass="form-label" text="Level:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                        <Label fx:id="levelLabel" styleClass="form-label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+                        <!-- Row 5: Online Status (Info only) -->
+                        <Label styleClass="form-label" text="Online:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                        <Label fx:id="onlineStatusLabel" styleClass="form-label" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                  <columnConstraints>
+                     <ColumnConstraints />
+                     <ColumnConstraints />
+                  </columnConstraints>
+                  <rowConstraints>
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                  </rowConstraints>
+                    </GridPane>
+
+                    <!-- Action Buttons -->
+                    <Button fx:id="saveBtn" onAction="#handleSaveChanges" prefHeight="45" prefWidth="300" styleClass="btn" text="Save Changes" />
+                    <!-- Back Button (inside the neon box) -->
+                    <Button onAction="#handleBack" prefHeight="40" prefWidth="120" styleClass="save-btn" text="← Back" />
+                </VBox>
+            </children>
+        </AnchorPane>
     </VBox>
-
-    <!-- Bottom back button -->
-    <AnchorPane pickOnBounds="false">
-        <Button text="← Back"
-                onAction="#handleBack"
-                styleClass="neon-outline-button"
-                prefWidth="120" prefHeight="40"
-                AnchorPane.leftAnchor="30.0"
-                AnchorPane.bottomAnchor="30.0"/>
-    </AnchorPane>
-
 </StackPane>
