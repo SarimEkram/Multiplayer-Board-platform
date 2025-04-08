@@ -58,7 +58,6 @@
                                     <children>
                                         <Label fx:id="timeElapsed" text="TIME: 00:00" styleClass="time-label"/>
                                         <Region HBox.hgrow="ALWAYS" />
-                                        <Circle fx:id="turnPiece" radius="25" styleClass="checker-black"/>
                                         <Label fx:id="turnLabel" styleClass="moves-label" text="Black's TURN"/>
                                     </children>
                                 </HBox>

@@ -439,6 +439,19 @@
 }
 
 
+#leaveGameBtn {
+    -fx-background-color: linear-gradient(to bottom right, #ff00ff, #00ffff);
+    -fx-text-fill: #000;
+    -fx-font-family: 'Orbitron', sans-serif;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-letter-spacing: 1px;
+    -fx-padding: 12 18;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+
 /* Hide all scroll bars initially */
 .scroll-pane .scroll-bar {
     -fx-opacity: 0;
@@ -537,12 +550,6 @@
 .popup-button:hover {
     -fx-background-color: #005A9E;
 }
-
-
-
-
-
-
 
 #avatar1,
 #avatar2 {
