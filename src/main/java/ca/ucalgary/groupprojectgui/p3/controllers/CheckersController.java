@@ -639,17 +639,29 @@ public class CheckersController {
         if (message == null || message.trim().isEmpty()) {
             return;
         }
-        addMessage("You", message, false);
+        // Determine sender based on current turn.
+        // For this example, we assume localPlayer is assigned White and opponentPlayer is Black.
+        String sender;
+        if (gameLogic.getTurn() == Checkers.Turn.WHITE) {
+            sender = localPlayer.getUsername();
+        } else {
+            sender = (opponentPlayer != null ? opponentPlayer.getUsername() : "Player 2");
+        }
+        addMessage(sender, message, false);
         chatInput.clear();
         Platform.runLater(() -> chatScrollPane.setVvalue(1.0));
     }
 
+
     /**
      * Adds a message to the chat view.
+     * Uses inline styles to force the text color and a 3px left border
+     * so that the message’s appearance (both text and border) remains
+     * constant based on whether it’s a system message or which player sent it.
      *
      * @param sender   the sender of the message
      * @param text     the message text
-     * @param isSystem flag to indicate if this is a system message
+     * @param isSystem flag indicating if this is a system message
      */
     public void addMessage(String sender, String text, boolean isSystem) {
         if (chatMessages == null) {
@@ -657,31 +669,61 @@ public class CheckersController {
             return;
         }
 
+        // Create the container for one message
         HBox messageContainer = new HBox(5);
+        // Remove alternating CSS classes and add base style (if any)
         messageContainer.getStyleClass().add("chat-message");
-        messageContainer.getStyleClass().add(messageCount % 2 == 0 ? "chat-message-even" : "chat-message-odd");
 
+        // Determine the color to use for both text and the left border.
+        String colorCode;
+        if (isSystem) {
+            colorCode = "#ffff00";  // Yellow for system messages
+        } else if (localPlayer != null && sender.equalsIgnoreCase(localPlayer.getUsername())) {
+            colorCode = "#ff00ff";  // Neon pink for local player (assumed White)
+        } else if (opponentPlayer != null && sender.equalsIgnoreCase(opponentPlayer.getUsername())) {
+            colorCode = "#00ffff";  // Neon cyan for opponent (assumed Black)
+        } else {
+            colorCode = "#ffffff";  // Fallback white
+        }
+        // Force a 3px left vertical border using an inline style
+        messageContainer.setStyle("-fx-border-width: 0 0 0 3px; -fx-border-color: " + colorCode + ";");
+
+        // Create the sender label
         Label senderLabel = new Label(sender + ":");
-        senderLabel.getStyleClass().add("sender-label");
         senderLabel.setFont(Fonts.rajdhani(FontWeight.BOLD, 14));
 
+        // Create the message label
         Label messageLabel = new Label(text);
-        messageLabel.getStyleClass().add(isSystem ? "system-message" : "player-message");
         messageLabel.setFont(Fonts.rajdhaniRegular(14));
 
+        // Apply inline text color styles to override any CSS rules:
         if (isSystem) {
-            messageLabel.setTextFill(Color.YELLOW);
+            senderLabel.setStyle("-fx-text-fill: #ffff00;");
+            messageLabel.setStyle("-fx-text-fill: #ffff00;");
             messageLabel.setEffect(new DropShadow(5, Color.YELLOW));
         } else {
-            messageLabel.setTextFill(Color.WHITE);
+            if (localPlayer != null && sender.equalsIgnoreCase(localPlayer.getUsername())) {
+                senderLabel.setStyle("-fx-text-fill: #ff00ff;");
+                messageLabel.setStyle("-fx-text-fill: #ff00ff;");
+            } else if (opponentPlayer != null && sender.equalsIgnoreCase(opponentPlayer.getUsername())) {
+                senderLabel.setStyle("-fx-text-fill: #00ffff;");
+                messageLabel.setStyle("-fx-text-fill: #00ffff;");
+            } else {
+                senderLabel.setStyle("-fx-text-fill: #ffffff;");
+                messageLabel.setStyle("-fx-text-fill: #ffffff;");
+            }
         }
 
         messageContainer.getChildren().addAll(senderLabel, messageLabel);
         chatMessages.getChildren().add(messageContainer);
+
+        // Increment message count if needed
         messageCount++;
 
+        // Auto-scroll to the bottom
         if (chatScrollPane != null) {
             Platform.runLater(() -> chatScrollPane.setVvalue(1.0));
         }
     }
+
 }

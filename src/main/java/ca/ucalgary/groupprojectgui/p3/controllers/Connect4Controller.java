@@ -434,12 +434,16 @@ public class Connect4Controller {
     }
 
     @FXML
-    private void onSendMessage() {
+    public void onSendMessage() {
         String message = chatInput.getText();
         if (message == null || message.trim().isEmpty()) {
             return;
         }
-        addMessage("You", message, false);
+        // Determine the sender dynamically based on whose turn it is
+        String sender = (connectBoard.getCurrentPlayer() == PLAYER1_ID)
+                ? localPlayer.getUsername()
+                : (opponentPlayer != null ? opponentPlayer.getUsername() : "Player 2");
+        addMessage(sender, message, false);
         chatInput.clear();
         Platform.runLater(() -> chatScrollPane.setVvalue(1.0));
     }
@@ -537,40 +541,61 @@ public class Connect4Controller {
         }
     }
 
-    /**
-     * Adds a message to the chat view.
-     */
     public void addMessage(String sender, String text, boolean isSystem) {
         if (chatMessages == null) {
             System.err.println("Cannot add message - chatMessages is null");
             return;
         }
+
+        // Create a container for the message and set the vertical left border inline
         HBox messageContainer = new HBox(5);
-        messageContainer.getStyleClass().add("chat-message");
-        messageContainer.getStyleClass().add(messageCount % 2 == 0 ? "chat-message-even" : "chat-message-odd");
+        // Determine border color based on message type and sender
+        String borderColor;
+        if (isSystem) {
+            borderColor = "#ffff00";  // Yellow for system messages
+        } else if (localPlayer != null && sender.equalsIgnoreCase(localPlayer.getUsername())) {
+            borderColor = "#ff00ff";  // Neon pink for local player (PLAYER1)
+        } else if (opponentPlayer != null && sender.equalsIgnoreCase(opponentPlayer.getUsername())) {
+            borderColor = "#00ffff";  // Neon cyan for opponent (PLAYER2)
+        } else {
+            borderColor = "#ffffff";  // Fallback white
+        }
+        // Inline style for left vertical border (3px wide)
+        messageContainer.setStyle("-fx-border-width: 0 0 0 3px; -fx-border-color: " + borderColor + ";");
 
+        // Create sender and message labels
         Label senderLabel = new Label(sender + ":");
-        senderLabel.getStyleClass().add("sender-label");
         senderLabel.setFont(Fonts.rajdhani(FontWeight.BOLD, 14));
-
         Label messageLabel = new Label(text);
-        messageLabel.getStyleClass().add(isSystem ? "system-message" : "player-message");
         messageLabel.setFont(Fonts.rajdhaniRegular(14));
 
+        // Set text colors using inline style to override any CSS
         if (isSystem) {
-            messageLabel.setTextFill(Color.YELLOW);
+            senderLabel.setStyle("-fx-text-fill: #ffff00;");
+            messageLabel.setStyle("-fx-text-fill: #ffff00;");
             messageLabel.setEffect(new DropShadow(5, Color.YELLOW));
         } else {
-            messageLabel.setTextFill(Color.WHITE);
+            if (localPlayer != null && sender.equalsIgnoreCase(localPlayer.getUsername())) {
+                senderLabel.setStyle("-fx-text-fill: #ff00ff;");
+                messageLabel.setStyle("-fx-text-fill: #ff00ff;");
+            } else if (opponentPlayer != null && sender.equalsIgnoreCase(opponentPlayer.getUsername())) {
+                senderLabel.setStyle("-fx-text-fill: #00ffff;");
+                messageLabel.setStyle("-fx-text-fill: #00ffff;");
+            } else {
+                senderLabel.setStyle("-fx-text-fill: #ffffff;");
+                messageLabel.setStyle("-fx-text-fill: #ffffff;");
+            }
         }
+
         messageContainer.getChildren().addAll(senderLabel, messageLabel);
         chatMessages.getChildren().add(messageContainer);
-        messageCount++;
 
-        if (chatScrollPane != null) {
-            Platform.runLater(() -> chatScrollPane.setVvalue(1.0));
-        }
+        // Auto-scroll to the bottom of the chat view
+        Platform.runLater(() -> chatScrollPane.setVvalue(1.0));
     }
+
+
+
 
     public void onPlayerMove(String playerName, int column) {
         addMessage(playerName, "Played in column " + column, false);

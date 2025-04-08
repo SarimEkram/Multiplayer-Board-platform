@@ -379,17 +379,27 @@ public class TicTacToeController {
         if (message == null || message.trim().isEmpty()) {
             return;
         }
-        addMessage("You", message, false);
+        // Determine the sender dynamically based on whose turn it is.
+        String sender;
+        if (playerXTurn) {
+            sender = localPlayer.getUsername();
+        } else {
+            sender = (opponentPlayer != null ? opponentPlayer.getUsername() : "Player O");
+        }
+        addMessage(sender, message, false);
         chatInput.clear();
         Platform.runLater(() -> chatScrollPane.setVvalue(1.0));
     }
 
+
     /**
      * Adds a message to the chat view.
+     * Uses inline styles to force the text color and a 3px left border so that the
+     * message appearance remains consistent based on the sender.
      *
      * @param sender   the sender of the message
      * @param text     the message text
-     * @param isSystem flag to indicate if this is a system message
+     * @param isSystem if true, applies system message styling
      */
     public void addMessage(String sender, String text, boolean isSystem) {
         if (chatMessages == null) {
@@ -397,29 +407,56 @@ public class TicTacToeController {
             return;
         }
 
+        // Create the message container and add a base style (do not add alternating classes).
         HBox messageContainer = new HBox(5);
         messageContainer.getStyleClass().add("chat-message");
-        messageContainer.getStyleClass().add(messageCount % 2 == 0 ? "chat-message-even" : "chat-message-odd");
 
+        // Determine the color code for both the left border and text.
+        // (For Tic Tac Toe we assume local player is X and opponent is O.)
+        String colorCode;
+        if (isSystem) {
+            colorCode = "#ffff00";  // Yellow for system messages
+        } else if (playerXTurn && sender.equalsIgnoreCase(localPlayer.getUsername())) {
+            colorCode = "#ff00ff";  // Neon pink for local player (X)
+        } else if (!playerXTurn && sender.equalsIgnoreCase(opponentPlayer.getUsername())) {
+            colorCode = "#00ffff";  // Neon cyan for opponent (O)
+        } else {
+            colorCode = "#ffffff";  // Fallback white
+        }
+        // Set the inline style for a 3px left vertical border with the determined color.
+        messageContainer.setStyle("-fx-border-width: 0 0 0 3px; -fx-border-color: " + colorCode + ";");
+
+        // Create and style the sender label.
         Label senderLabel = new Label(sender + ":");
-        senderLabel.getStyleClass().add("sender-label");
         senderLabel.setFont(Fonts.rajdhani(FontWeight.BOLD, 14));
 
+        // Create and style the message label.
         Label messageLabel = new Label(text);
-        messageLabel.getStyleClass().add(isSystem ? "system-message" : "player-message");
         messageLabel.setFont(Fonts.rajdhaniRegular(14));
 
+        // Apply inline text color styles.
         if (isSystem) {
-            messageLabel.setTextFill(Color.YELLOW);
+            senderLabel.setStyle("-fx-text-fill: #ffff00;");
+            messageLabel.setStyle("-fx-text-fill: #ffff00;");
             messageLabel.setEffect(new DropShadow(5, Color.YELLOW));
         } else {
-            messageLabel.setTextFill(Color.WHITE);
+            if (playerXTurn && sender.equalsIgnoreCase(localPlayer.getUsername())) {
+                senderLabel.setStyle("-fx-text-fill: #ff00ff;");
+                messageLabel.setStyle("-fx-text-fill: #ff00ff;");
+            } else if (!playerXTurn && sender.equalsIgnoreCase(opponentPlayer.getUsername())) {
+                senderLabel.setStyle("-fx-text-fill: #00ffff;");
+                messageLabel.setStyle("-fx-text-fill: #00ffff;");
+            } else {
+                senderLabel.setStyle("-fx-text-fill: #ffffff;");
+                messageLabel.setStyle("-fx-text-fill: #ffffff;");
+            }
         }
 
         messageContainer.getChildren().addAll(senderLabel, messageLabel);
         chatMessages.getChildren().add(messageContainer);
         messageCount++;
 
+        // Auto-scroll to the bottom of the chat view.
         if (chatScrollPane != null) {
             Platform.runLater(() -> chatScrollPane.setVvalue(1.0));
         }
