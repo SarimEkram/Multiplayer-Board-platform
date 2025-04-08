@@ -8,6 +8,7 @@ import MatchmakingLeaderboard.TicTacToe.Matchmaking.TicTacToeMatchmaking;
 import javafx.scene.input.KeyCode;
 import networking.chat.InGameChat;
 import networking.chat.ChatMessage;
+import networking.game.TurnTimer;
 import gameLogic.tictactoe.TicTacToe;
 import gameLogic.tictactoe.TicTacToeBoard;
 import ca.ucalgary.groupprojectgui.p3.Fonts;
@@ -96,6 +97,11 @@ public class TicTacToeController {
     private GridPane tttgrid;
     private int messageCount = 0;
     private InGameChat chatSession;
+    private TurnTimer timerX;
+    private TurnTimer timerO;
+    private Timeline turnCheckTimeline;
+    private boolean warningSentX = false;
+    private boolean warningSentO = false;
 
 
     @FXML
@@ -150,6 +156,11 @@ public class TicTacToeController {
 
         chatSession = new InGameChat("TicTacToe-" + localPlayer.getUserID()); // or a real session ID if you have one
         chatSession.establishConnection();
+
+        timerX = new TurnTimer(localPlayer.getUsername(), 30);
+        timerO = new TurnTimer(opponentPlayer.getUsername(), 30);
+        startTurnTimer();  // Start monitoring loop
+        timerX.startTimer();  // X goes first
 
     }
 
@@ -245,7 +256,26 @@ public class TicTacToeController {
         // Next turn
         playerXTurn = !playerXTurn;
         gameLogic.changeActivePlayer();
-        turnLabel.setText(playerXTurn ? "X: " + localPlayer.getUsername() + "'s Turn" : "O: " + opponentPlayer.getUsername() + "'s Turn");
+        turnLabel.setText(playerXTurn ? "X: " + localPlayer.getUsername() + "'s Turn"
+                : "O: " + opponentPlayer.getUsername() + "'s Turn");
+
+        // Reset chat warning flags
+        warningSentX = false;
+        warningSentO = false;
+
+        // Reset GUI timer clock
+        secondsElapsed = 0;
+        startTimer();  // This stops and restarts the timer
+
+        // Reset and start the appropriate TurnTimer
+        if (playerXTurn) {
+            timerX.resetTimer();
+            timerX.startTimer();
+        } else {
+            timerO.resetTimer();
+            timerO.startTimer();
+        }
+
     }
 
     private void showGameOverPopup(String winner, boolean isWin) {
@@ -490,6 +520,49 @@ public class TicTacToeController {
         // Auto-scroll to the bottom of the chat view.
         if (chatScrollPane != null) {
             Platform.runLater(() -> chatScrollPane.setVvalue(1.0));
+        }
+    }
+
+    private void startTurnTimer() {
+        turnCheckTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+            if (gameOver) return;
+
+            TurnTimer currentTimer = playerXTurn ? timerX : timerO;
+            long elapsedTime = System.currentTimeMillis() - currentTimer.getStartTime();
+            long remainingMillis = currentTimer.getRemainingTime() - elapsedTime;
+            int remainingSec = (int) (remainingMillis / 1000);
+
+            // Show chat warning once if time drops to 10 or less
+            if (remainingSec <= 10) {
+                if (playerXTurn && !warningSentX) {
+                    addMessage("SYSTEM", "⚠ " + localPlayer.getUsername() + " has 10 seconds left!", true);
+                    warningSentX = true;
+                } else if (!playerXTurn && !warningSentO) {
+                    addMessage("SYSTEM", "⚠ " + opponentPlayer.getUsername() + " has 10 seconds left!", true);
+                    warningSentO = true;
+                }
+            }
+
+            // Time's up — end game
+            if (currentTimer.isTimeExpired()) {
+                String loser = playerXTurn ? localPlayer.getUsername() : opponentPlayer.getUsername();
+                String winner = playerXTurn ? opponentPlayer.getUsername() : localPlayer.getUsername();
+
+                addMessage("SYSTEM", "⏰ " + loser + " ran out of time!", true);
+                showGameOverPopup(winner, true);
+                gameOver = true;
+                boardContainer.setDisable(true);
+                stopTimer();
+                stopTurnTimer();
+            }
+        }));
+        turnCheckTimeline.setCycleCount(Timeline.INDEFINITE);
+        turnCheckTimeline.play();
+    }
+
+    private void stopTurnTimer() {
+        if (turnCheckTimeline != null) {
+            turnCheckTimeline.stop();
         }
     }
 
