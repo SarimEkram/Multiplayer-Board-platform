@@ -26,21 +26,42 @@
                 <!-- TOP: Search Field -->
                 <top>
                     <HBox spacing="20" alignment="CENTER" styleClass="top-header">
+                        <!-- Logo Image -->
                         <ImageView fx:id="img" fitHeight="90" preserveRatio="true" pickOnBounds="true"/>
+
+                        <!-- Spacer -->
                         <Region HBox.hgrow="ALWAYS"/>
+
+                        <!-- Game Search Field with Magnifier Icon -->
                         <StackPane alignment="CENTER_RIGHT" maxWidth="400">
                             <TextField fx:id="gameSearchField"
                                        promptText="Search games..."
                                        styleClass="search-text-field"
                                        prefWidth="800"
                                        prefHeight="50"/>
-                            <Label text="🔍" mouseTransparent="true"
+                            <Label text="🔍"
+                                   mouseTransparent="true"
                                    style="-fx-font-size: 16px; -fx-text-fill: #bbbbbb; -fx-padding: 0 12 0 0;"/>
                         </StackPane>
+
+                        <!-- Spacer -->
                         <Region HBox.hgrow="ALWAYS"/>
-                        <ImageView fx:id="profileIcon" fitHeight="45" fitWidth="45" pickOnBounds="true" onMouseClicked="#openManageProfile"/>
+
+                        <!-- Profile Icon -->
+                        <ImageView fx:id="profileIcon"
+                                   fitHeight="45" fitWidth="45"
+                                   pickOnBounds="true"
+                                   onMouseClicked="#openManageProfile"/>
+
+                        <!-- Logout Button (new) -->
+                        <Button fx:id="logoutButtonTop"
+                                text="⎋"
+                                onAction="#handleLogout"
+                                styleClass="icon-button"
+                                prefWidth="45" prefHeight="45"/>
                     </HBox>
                 </top>
+
 
                 <!-- CENTER: Game UI -->
                 <center>
@@ -84,7 +105,6 @@
                           style="-fx-background-radius: 20; -fx-padding: 25;"
                           HBox.Hgrow="ALWAYS">
                         <Button fx:id="leaderboardBtn" text="🏆 LEADER BOARD" onAction="#onLeaderboardClick" styleClass="neon-icon-button" prefWidth="200" prefHeight="35"/>
-                        <Button fx:id="logoutButton" text="⎋ LOG OUT" onAction="#handleLogout" styleClass="neon-icon-button" prefWidth="200" prefHeight="35"/>
                     </HBox>
                 </bottom>
             </BorderPane>

@@ -4,10 +4,10 @@ import ca.ucalgary.groupprojectgui.p3.SceneManager;
 import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
-import javafx.scene.Node;
 
 public class LogoutPanelController {
 
@@ -51,7 +51,10 @@ public class LogoutPanelController {
 
     @FXML
     private void cancelLogout() {
-        ((Pane) logoutPanel.getParent()).getChildren().remove(logoutPanel);
+        // Instead of removing the node from its parent, just set it invisible.
+        logoutPanel.setVisible(false);
+        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "Home.css");
+
     }
 
     @FXML

@@ -71,6 +71,9 @@ public class HomePageController {
     @FXML
     private BorderPane homePane;
 
+    @FXML
+    private Pane logoutPane; // the popup pane for logout
+
     // Fields for Friend Requests functionality
     @FXML
     private TextField searchField;
@@ -698,6 +701,20 @@ public class HomePageController {
         friendPopupPlaceholder.setVisible(true);
         friendPopupPlaceholder.setManaged(true);
     }
+
+
+
+
+    @FXML
+    private void cancelLogout() {
+        if (logoutPane.getParent() instanceof Pane) {
+            Pane parent = (Pane) logoutPane.getParent();
+            parent.getChildren().remove(logoutPane);
+        } else {
+            System.err.println("Logout popup is not attached to a parent; nothing to remove.");
+        }
+    }
+
 }
 
 
