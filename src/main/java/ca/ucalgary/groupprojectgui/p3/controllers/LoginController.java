@@ -338,28 +338,44 @@ public class LoginController {
     private void handleLogin() {
         String user = loginUsername.getText().trim();
         String pass = loginPassword.getText().trim();
+
         if (user.isEmpty() || pass.isEmpty()) {
             loginErrorLabel.setText("Username or Password cannot be empty.");
             showNode(loginErrorLabel);
             return;
         }
+
         User loginUser = UserDatabase.getUserByUsername(user);
         if (loginUser == null) {
             loginErrorLabel.setText("User does not exist.");
             showNode(loginErrorLabel);
             return;
         }
-        int loginSuccessful = UserLogin.loginUser(user, pass);
-        if (loginSuccessful != -1) {
-            hideNode(loginErrorLabel);
-            loginId = loginUser.getUserID();
-            System.out.println("Login successful for: " + user);
-            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "Home.css");
+
+        int result = UserLogin.loginUser(user, pass);
+        if (result > 0) {
+            // Login success flow...
+            loginErrorLabel.setText("Login successful! Redirecting...");
+            loginErrorLabel.setStyle("-fx-text-fill: #00ff00;");
+            showNode(loginErrorLabel);
+
+            // Delay the page switch by 2 seconds only on success.
+            Timeline delayTimeline = new Timeline(new KeyFrame(Duration.seconds(2), event -> {
+                SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "Home.css");
+            }));
+            delayTimeline.play();
+        } else if (result == -2) {
+            loginErrorLabel.setText("User does not exist.");
+            showNode(loginErrorLabel);
+        } else if (result == -3) {
+            loginErrorLabel.setText("Incorrect password.");
+            showNode(loginErrorLabel);
         } else {
-            loginErrorLabel.setText("Invalid username or password.");
+            loginErrorLabel.setText("Login failed. Please try again.");
             showNode(loginErrorLabel);
         }
     }
+
 
     // --- Forgot Password Handlers ---
     @FXML
