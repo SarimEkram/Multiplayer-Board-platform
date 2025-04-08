@@ -447,9 +447,60 @@ public class LoginController {
 
     @FXML
     private void handleRegister() {
+        String usernameInput = registerUsername.getText().trim();
+        String emailInput = registerEmail.getText().trim();
+        String passwordInput = registerPassword.getText().trim();
+        String confirmPasswordInput = registerConfirmPassword.getText().trim();
 
-    }
+        List<String> errors = new ArrayList<>();
 
-    public void handleResetPassword(ActionEvent actionEvent) {
+        // Perform local validation first.
+        if (usernameInput.isEmpty()) {
+            errors.add("Username is required.");
+        }
+        if (emailInput.isEmpty() || !emailInput.contains("@")) {
+            errors.add("A valid email address is required.");
+        }
+        if (passwordInput.isEmpty()) {
+            errors.add("Password is required.");
+        } else if (passwordInput.length() < 6) {
+            errors.add("Password must be at least 6 characters.");
+        }
+        if (!passwordInput.equals(confirmPasswordInput)) {
+            errors.add("Passwords do not match.");
+        }
+
+        // If local errors exist, display them and DO NOT call the backend registration.
+        if (!errors.isEmpty()) {
+            String errorMsg = String.join("\n", errors);
+            registerErrorLabel.setText(errorMsg);
+            registerErrorLabel.setStyle("-fx-text-fill: red;");
+            showNode(registerErrorLabel);
+            return;
+        }
+
+        // Otherwise, call the backend registration method.
+        List<String> registrationErrors = userRegistration.registerUser(usernameInput, emailInput, passwordInput);
+        if (!registrationErrors.isEmpty()) {
+            // If backend returns any errors, display them.
+            String errorMsg = String.join("\n", registrationErrors);
+            registerErrorLabel.setText(errorMsg);
+            registerErrorLabel.setStyle("-fx-text-fill: red;");
+            showNode(registerErrorLabel);
+            return;
+        }
+
+        // If everything is valid and registration is successful:
+        hideNode(registerErrorLabel);
+        System.out.println("Registration successful!");
+        // Display a success message, then after a 2-second delay switch back to login.
+        registerErrorLabel.setText("Registration successful! Redirecting to login...");
+        registerErrorLabel.setStyle("-fx-text-fill: #00ff00;");
+        showNode(registerErrorLabel);
+        Timeline delay = new Timeline(new KeyFrame(Duration.seconds(2), event -> {
+            hideNode(registerErrorLabel);
+            showLoginForm();
+        }));
+        delay.play();
     }
 }
