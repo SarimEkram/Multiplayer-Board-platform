@@ -5,6 +5,7 @@ import Authentication.UserDatabase;
 import Authentication.FriendDatabase;
 import MatchmakingLeaderboard.Player;
 import MatchmakingLeaderboard.PlayerDatabase;
+import ca.ucalgary.groupprojectgui.p3.SceneManager;
 import ca.ucalgary.groupprojectgui.p3.controllers.LoginController;
 import javafx.scene.control.Alert;
 
@@ -55,8 +56,6 @@ public class FriendRequestsController {
     private HBox createPlayerEntry(String username) {
         HBox entry = new HBox(10);
         entry.getStyleClass().add("player-box");
-
-
 
         Label avatar = new Label(username.substring(0, 1).toUpperCase());
         avatar.getStyleClass().add("avatar");

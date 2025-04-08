@@ -679,6 +679,7 @@ public class HomePageController {
             String enteredName = friendUsernameField.getText().trim();
             if (!enteredName.isEmpty()) {
                 sendFriendRequest(enteredName);
+                SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "Home.css");
             }
             friendPopupPlaceholder.getChildren().clear();
             friendPopupPlaceholder.setVisible(false);
