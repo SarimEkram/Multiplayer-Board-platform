@@ -6,25 +6,29 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 
+/**
+ * Controller for handling the password reset process.
+ * It verifies a user's email, generates a token, and allows them
+ * to reset their password using the token and a new password.
+ */
 public class ResetPasswordController {
 
     @FXML
-    private TextField emailField;
-
-    // Removed the old tokenField since the FXML now uses oldPasswordField.
-    @FXML
-    private TextField TokenField;
+    private TextField emailField;  // Input user's registered email
 
     @FXML
-    private PasswordField newPasswordField;
+    private TextField TokenField;  // Field to enter the token received
 
     @FXML
-    private Label statusLabel;
+    private PasswordField newPasswordField;   // Input user's new password
 
-    // Container for the hidden password reset controls.
     @FXML
-    private VBox passwordResetPane;
+    private Label statusLabel;  // Label to show status messages
 
+    @FXML
+    private VBox passwordResetPane;   // Container for fields shown after token is sent
+
+    // Service for handling reset logic
     private final ResetUserPassword resetService = new ResetUserPassword();
 
     // Field to store the token generated during email verification
@@ -32,54 +36,46 @@ public class ResetPasswordController {
     private String token;
 
     /**
-     * Verifies the email by calling resetRequest.
-     * If a token is returned (non-null), it means the account exists.
-     * The token is stored for later use in the reset process,
-     * and the hidden fields are made visible.
+     * Handles sending a reset token after email is submitted.
+     * If the email is valid and exists in the database, a token is generated.
      */
     @FXML
     private void handleSendToken() {
         String email = emailField.getText();
+        // Validate email field
         if (email == null || email.isEmpty()) {
             statusLabel.setText("Please enter your email.");
             return;
         }
-
+        // Request token from reset service
         token = resetService.resetRequest(email);
         if (token == null) {
             statusLabel.setText("No account found for this email.");
         } else {
-            // For testing purposes; in production you would email the token.
             statusLabel.setText("Token generated: " + token);
         }
     }
 
     /**
-     * Handles the password reset process.
-     * It first verifies that:
-     * 1. The email was verified (i.e. currentToken is set).
-     * 2. The entered old password matches the stored password.
-     * 3. The new password is different from the old password.
-     * Then, it uses the verified token to reset the password.
+     * Handles the actual password reset.
+     * Validates the entered token and checks password criteria before updating.
      */
     @FXML
     private void handleResetPassword() {
         String email = emailField.getText();
-        String oldPassword = TokenField.getText(); // Now used as the old password
+        String oldPassword = TokenField.getText();
         String newPassword = newPasswordField.getText();
 
-
+        // Ensure all fields are filled
         if (email == null || email.isEmpty() || oldPassword.isEmpty() || newPassword.isEmpty()) {
             statusLabel.setText("Please fill in your email, old password, and new password.");
             return;
         }
-
-        // Check that new password is different from the old password.
+        // Prevents using the same password again
         if (oldPassword.equals(newPassword)) {
             statusLabel.setText("New password must be different from the old password.");
             return;
         }
-
         // Ensure the email was verified first.
         if (token == null) {
             System.out.println(token);
@@ -90,7 +86,6 @@ public class ResetPasswordController {
             statusLabel.setText("Token does not match");
             return;
         }
-
         // Use the previously generated token to reset the password.
         boolean success = resetService.resetPassword(token, newPassword);
         if (success && token.equals(oldPassword)) {
@@ -103,7 +98,9 @@ public class ResetPasswordController {
             statusLabel.setText("❌ Password reset failed. New password might be too weak or token expired.");
         }
     }
-
+    /**
+     * Navigates the user back to the login screen.
+     */
     @FXML
     private void handleBack() {
         // Navigate back to login or previous screen.
