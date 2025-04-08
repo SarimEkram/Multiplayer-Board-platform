@@ -95,8 +95,8 @@ public class Connect4MatchmakingTest {
      */
     @Test
     public void testCheckPlayers_Compatible() {
-        player1.setRank(new Rank(6), GameType.TIC_TAC_TOE);
-        player2.setRank(new Rank(6), GameType.TIC_TAC_TOE);
+        player1.setRank(new Rank(RankTier.BRONZE), GameType.TIC_TAC_TOE);
+        player2.setRank(new Rank(RankTier.BRONZE), GameType.TIC_TAC_TOE);
         player1.setGameSignal(1, GameType.TIC_TAC_TOE);
         player2.setGameSignal(1, GameType.TIC_TAC_TOE);
         player1.setLevel(20);
@@ -110,8 +110,8 @@ public class Connect4MatchmakingTest {
      */
     @Test
     public void testCheckPlayers_NotCompatibleOne() {
-        player1.setRank(new Rank(17), GameType.CONNECT_FOUR);
-        player2.setRank(new Rank(6), GameType.CONNECT_FOUR);
+        player1.setRank(new Rank(RankTier.BRONZE), GameType.CONNECT_FOUR);
+        player2.setRank(new Rank(RankTier.BRONZE), GameType.CONNECT_FOUR);
         player1.setGameSignal(2, GameType.CONNECT_FOUR);
         player2.setGameSignal(2, GameType.CONNECT_FOUR);
         player1.setLevel(38);
@@ -125,8 +125,8 @@ public class Connect4MatchmakingTest {
      */
     @Test
     public void testCheckPlayers_NotCompatibleTwo() {
-        player1.setRank(new Rank(2500), GameType.CONNECT_FOUR);
-        player2.setRank(new Rank(500), GameType.CONNECT_FOUR);
+        player1.setRank(new Rank(RankTier.GOLD), GameType.CONNECT_FOUR);
+        player2.setRank(new Rank(RankTier.BRONZE), GameType.CONNECT_FOUR);
         player1.setGameSignal(2, GameType.CONNECT_FOUR);
         player2.setGameSignal(2, GameType.CONNECT_FOUR);
         player1.setLevel(27);
@@ -140,8 +140,8 @@ public class Connect4MatchmakingTest {
      */
     @Test
     public void testCheckPlayers_NotCompatibleThree() {
-        player1.setRank(new Rank(2500), GameType.CONNECT_FOUR);
-        player2.setRank(new Rank(500), GameType.CONNECT_FOUR);
+        player1.setRank(new Rank(RankTier.GOLD), GameType.CONNECT_FOUR);
+        player2.setRank(new Rank(RankTier.BRONZE), GameType.CONNECT_FOUR);
         player1.setLevel(27);
         player2.setLevel(26);
 
@@ -153,11 +153,11 @@ public class Connect4MatchmakingTest {
      */
     @Test
     public void testFindOpponent(){
-        player1.setRank(new Rank(900), GameType.CONNECT_FOUR);
+        player1.setRank(new Rank(RankTier.BRONZE), GameType.CONNECT_FOUR);
         player1.setGameSignal(2, GameType.CONNECT_FOUR);
         player1.setLevel(17);
 
-        player2.setRank(new Rank(800), GameType.CONNECT_FOUR);
+        player2.setRank(new Rank(RankTier.BRONZE), GameType.CONNECT_FOUR);
         player2.setGameSignal(2,GameType.CONNECT_FOUR);
         player2.setLevel(18);
         PlayerDatabase.savePlayer(player1);

@@ -1,0 +1,606 @@
+/* Root */
+#root {
+    -fx-font-family: 'Rajdhani', sans-serif;
+    -fx-text-fill: #fff;
+    -fx-background-color: #0a0a12;
+}
+
+/* Background Layers */
+#backgroundLayer {
+    -fx-background-color: #0a0a12,
+    linear-gradient(to bottom, rgba(255,0,255,0.05) 0%, rgba(255,0,255,0.05) 2%, transparent 2%, transparent 100%),
+    linear-gradient(to right, rgba(255,0,255,0.05) 0%, rgba(255,0,255,0.05) 2%, transparent 2%, transparent 100%);
+    -fx-background-size: auto, 40px 40px, 40px 40px;
+}
+
+#glowLayer {
+    -fx-background-color: radial-gradient(center 50% 50%, radius 100%, rgba(255,0,255,0.1), rgba(0,255,255,0.1) 50%, rgba(255,255,0,0.1) 100%);
+}
+
+#scanlinesLayer {
+    -fx-background-color: linear-gradient(to bottom, transparent 0%, rgba(0,255,255,0.1) 2%, transparent 4%);
+    -fx-background-repeat: repeat-y;
+    -fx-background-size: 100% 40px;
+    -fx-opacity: 0.1;
+}
+
+/* Main Container: Game Area and Chat Sidebar */
+#container {
+    -fx-alignment: center;
+    -fx-padding: 20;
+}
+
+/* Game Area */
+#gameArea {
+    -fx-background-color: rgba(10,5,20,0.85);
+    -fx-background-radius: 5;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(255,0,255,0.3), 20, 0, 0, 0);
+    -fx-border-color: rgba(255,0,255,0.3);
+    -fx-border-width: 1;
+}
+
+/* Game Title */
+#gameTitle {
+    -fx-font-family: 'Orbitron', sans-serif;
+    -fx-font-size: 40px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #fff;
+    -fx-effect: dropshadow(gaussian, #ff00ff, 10, 0.5, 0, 0);
+    -fx-padding: 0 0 20 0;
+}
+
+/* Player Info */
+#playerInfo {
+    -fx-background-color: black;
+    -fx-padding: 15 30;
+    -fx-background-radius: 5;
+    -fx-border-color: rgba(255,0,255,0.3);
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(255,0,255,0.2), 15, 0, 0, 0);
+}
+
+/* Player 1 */
+#player1 {
+    -fx-alignment: center;
+}
+
+#avatar1 {
+    -fx-background-color: #111;
+    -fx-max-width: 70px;
+    -fx-border-radius: 50%;
+    -fx-background-radius: 50%;
+    -fx-alignment: center;
+    -fx-font-family: 'Orbitron', sans-serif;
+    -fx-font-size: 24;
+    -fx-font-weight: bold;
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, #ff00ff, 15, 0, 0, 0);
+    -fx-padding: 5;
+    -fx-text-fill: #ff00ff;
+    -fx-border-color: #ff00ff;
+
+}
+#score1 {
+    -fx-font-family: 'Orbitron', sans-serif;
+    -fx-font-size: 16px;
+    -fx-font-weight: 700;
+    -fx-padding: 5 0 0 0;
+    -fx-text-fill: #fff;
+
+}
+
+/* VS Badge */
+#vsBadge {
+    -fx-font-family: 'Orbitron', sans-serif;
+    -fx-background-color: linear-gradient(to bottom right, #ff00ff, #00ffff);
+    -fx-padding: 10 20;
+    -fx-background-radius: 50;
+    -fx-effect: dropshadow(gaussian, rgba(255,0,255,0.7), 15, 0, 0, 0), dropshadow(gaussian, rgba(0,255,255,0.5), 30, 0, 0, 0);
+    -fx-font-size: 20px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #000;
+    -fx-rotate: -5;
+}
+
+/* Player 2 */
+#player2 {
+    -fx-alignment: center;
+}
+
+#avatar2 {
+    -fx-background-color: #111;
+    -fx-border-radius: 50%;
+    -fx-background-radius: 50%;
+    -fx-alignment: center;
+    -fx-font-family: 'Orbitron', sans-serif;
+    -fx-font-size: 24;
+    -fx-font-weight: bold;
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, #00ffff, 15, 0, 0, 0);
+    -fx-padding: 5;
+    -fx-text-fill: #00ffff;
+    -fx-border-color: #00ffff;
+}
+
+#score2 {
+    -fx-font-family: 'Orbitron', sans-serif;
+    -fx-font-size: 16px;
+    -fx-font-weight: 700;
+    -fx-padding: 5 0 0 0;
+    -fx-text-fill: #fff;
+
+}
+
+/* Game Stats */
+#gameStats {
+    -fx-font-family: 'Orbitron', sans-serif;
+    -fx-font-size: 18px;
+    -fx-alignment: center;
+}
+
+#timeElapsed {
+    -fx-background-color: rgba(0,0,0,0.5);
+    -fx-padding: 10 20;
+    -fx-background-radius: 5;
+    -fx-border-color: rgba(0,255,255,0.3);
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,255,255,0.2), 10, 0, 0, 0), innershadow(gaussian, rgba(255,0,255,0.2), 5, 0, 0, 0);
+    -fx-text-fill: #fff;
+}
+
+#movesCount {
+    -fx-background-color: rgba(0,0,0,0.5);
+    -fx-padding: 10 20;
+    -fx-background-radius: 5;
+    -fx-border-color: rgba(0,255,255,0.3);
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,255,255,0.2), 10, 0, 0, 0), innershadow(gaussian, rgba(255,0,255,0.2), 5, 0, 0, 0);
+    -fx-text-fill: #fff;
+}
+
+/* Board Container */
+#boardContainer {
+    -fx-alignment: center;
+}
+
+#board {
+    -fx-background-color: rgba(5,5,15,0.8);
+    -fx-background-radius: 10;
+    -fx-padding: 25;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.8), 30, 0, 0, 0), dropshadow(gaussian, rgba(255,0,255,0.3), 30, 0, 0, 0), dropshadow(gaussian, rgba(0,255,255,0.2), 60, 0, 0, 0);
+    -fx-border-color: rgba(255,0,255,0.3);
+    -fx-border-width: 1;
+}
+
+/* Game Controls */
+#gameControls {
+    -fx-alignment: center;
+}
+
+#newGameBtn {
+    -fx-background-color: rgba(0,0,0,0.5);
+    -fx-border-color: white;
+    -fx-border-radius: 5;
+    -fx-padding: 12 25;
+    -fx-font-family: 'Orbitron', sans-serif;
+    -fx-font-size: 16px;
+    -fx-font-weight: 700;
+    -fx-letter-spacing: 1px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,255,255,0.4), 10, 0, 0, 0);
+}
+
+#resetBtn {
+    -fx-background-color: rgba(0,0,0,0.5);
+    -fx-border-color: white;
+    -fx-border-radius: 5;
+    -fx-padding: 12 25;
+    -fx-font-family: 'Orbitron', sans-serif;
+    -fx-font-size: 16px;
+    -fx-font-weight: 700;
+    -fx-letter-spacing: 1px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,255,255,0.4), 10, 0, 0, 0);
+}
+
+#soundBtn {
+    -fx-background-color: rgba(0,0,0,0.5);
+    -fx-border-color: white;
+    -fx-border-radius: 5;
+    -fx-padding: 12 25;
+    -fx-font-family: 'Orbitron', sans-serif;
+    -fx-font-size: 16px;
+    -fx-font-weight: 700;
+    -fx-letter-spacing: 1px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,255,255,0.4), 10, 0, 0, 0);
+}
+
+/* Chat Sidebar */
+#chatSidebar {
+    -fx-background-color: rgba(10, 5, 20, 0.85);
+    -fx-background-radius: 5;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,255,255,0.3), 20, 0, 0, 0), dropshadow(gaussian, rgba(255,0,255,0.2), 40, 0, 0, 0), innershadow(gaussian, rgba(0,0,0,0.8), 30, 0, 0, 0);
+    -fx-border-color: rgba(0,255,255,0.3);
+    -fx-border-width: 1;
+}
+
+/*!* Chat Header *!*/
+/*#chatHeader {*/
+/*    -fx-font-family: 'Orbitron', sans-serif;*/
+/*    -fx-font-size:60px;*/
+/*    -fx-text-fill: #fff;*/
+/*    -fx-effect: dropshadow(gaussian, #00ffff, 10, 0.1, 0, 0);*/
+/*    -fx-padding: 0 0 10 0;*/
+/*    -fx-alignment: CENTER;*/
+/*}*/
+
+/*#chatHeader {*/
+
+/*    -fx-text-fill: #fff;*/
+/*    -fx-effect: dropshadow(gaussian, #00ffff, 10, 0.3, 0, 0);*/
+
+/*    -fx-padding: 0 0 10 0;  !* Equivalent to padding-bottom: 10px *!*/
+/*    -fx-letter-spacing: 10px; !* Adjust this value as needed *!*/
+
+
+/*}*/
+
+
+/* Chat Messages Container */
+#chatMessages {
+    -fx-background-color: rgba(0, 0, 0, 0.3);
+    -fx-padding: 15;
+    -fx-font-size: 16px;
+    -fx-border-radius: 5;
+    -fx-border-color: rgba(255, 0, 255, 0.2);
+    -fx-border-width: 1;
+    -fx-background-radius: 5;
+    /*-fx-effect: innershadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0, 0, 0);*/
+    -fx-effect: dropshadow(gaussian, rgba(255,0,255,0.2), 15, 0, 0, 0);
+
+}
+
+/* Chat Input Area */
+#chatInputArea {
+    -fx-spacing: 10;
+    -fx-alignment: center;
+}
+
+#chatInput {
+    -fx-background-color: rgba(0,0,0,0.5);
+    -fx-border-color: rgba(0,255,255,0.3);
+    -fx-border-radius: 5;
+    -fx-padding: 12;
+    -fx-text-fill: #fff;
+    -fx-font-size: 16px;
+    -fx-prompt-text-fill: rgba(255,255,255,0.5);
+}
+
+#sendBtn {
+    -fx-background-color: linear-gradient(to bottom right, #ff00ff, #00ffff);
+    -fx-text-fill: #000;
+    -fx-font-family: 'Orbitron', sans-serif;
+    -fx-font-size: 16px;
+    -fx-font-weight: 700;
+    -fx-letter-spacing: 1px;
+    -fx-padding: 12 20;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+/* Corner Accents */
+/* Removed fixed sizes for responsiveness */
+#topLeft,
+#topRight,
+#bottomLeft,
+#bottomRight {
+    -fx-background-color: transparent;
+}
+.chat-message {
+    -fx-padding: 8px;
+    -fx-border-width: 0 0 0 3px;
+    -fx-border-color: rgba(0, 255, 255, 0.3);
+    -fx-background-radius: 0 5 5 0;
+    -fx-border-radius: 0 5 5 0;
+    -fx-font-size: 14px;
+}
+
+.chat-message-even {
+    -fx-background-color: rgba(0, 255, 255, 0.05);
+}
+
+.chat-message-odd {
+    -fx-background-color: rgba(0, 255, 255, 0.1);
+}
+
+.sender-label {
+    -fx-text-fill: #00ffff;
+    -fx-effect: dropshadow(gaussian, #00ffff, 5, 0.5, 0, 0);
+
+}
+
+.system-message {
+    -fx-text-fill: #ffff00;
+    -fx-effect: dropshadow(gaussian, #ffff00, 5, 0.5, 0, 0);
+}
+
+.player-message {
+    -fx-text-fill: #ffffff;
+}
+
+.chat-message {
+    -fx-padding: 8px;
+    -fx-border-color:#00ffff;
+    -fx-border-width: 0 0 0 2px;
+
+    -fx-background-radius: 0 5 5 0;
+    -fx-border-radius: 0 5 5 0;
+    -fx-font-size: 14px;
+}
+
+.chat-message-even {
+    -fx-background-color: rgba(0, 255, 255, 0.1);
+    /*-fx-border-width: 0 0 0 2px;*/
+
+}
+
+.chat-message-odd {
+    -fx-background-color: rgba(255, 0, 255, 0.1);
+    /*-fx-border-width: 0 0 0 2px;*/
+
+    -fx-border-color:#ff00ff;
+
+
+;
+
+
+}
+
+
+.system-message {
+    -fx-text-fill: #ffff00;
+}
+
+.player-message {
+    -fx-text-fill: #ffffff;
+}
+
+
+/* Letter styling */
+.header-letter {
+    -fx-font-size: 40px;
+    -fx-fill: #fff;
+    -fx-effect: dropshadow(gaussian, #00ffff, 10, 0.3, 0, 0);
+}
+
+/* Underline styling */
+.header-underline {
+    -fx-background-color: linear-gradient(to right,
+    transparent 0%,
+    #ff00ff 30%,
+    #00ffff 70%,
+    transparent 100%);
+    -fx-background-radius: 2px;
+}
+
+
+
+.sender-label {
+    -fx-text-fill: #00ffff;
+    -fx-effect: dropshadow(gaussian, #00ffff, 5, 0.4, 0, 0);
+}
+
+.system-message {
+    -fx-text-fill: #ffff00;
+    -fx-effect: dropshadow(gaussian, #ffff00, 5, 0.5, 0, 0);
+}
+
+.player-message {
+    -fx-text-fill: #ffffff;
+}
+
+.chat-message-even {
+    -fx-background-color: rgba(0, 255, 255, 0.05);
+    -fx-font-family: Rajdhani, sans-serif;
+}
+
+.chat-message-odd {
+    -fx-background-color: rgba(255, 0, 255, 0.05);
+}
+
+
+
+/* Remove the background of the viewport */
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Customize the vertical scroll bar */
+.scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-pref-width: 1px;
+}
+
+/* Style the thumb (the draggable part) */
+.scroll-bar:vertical .thumb {
+    -fx-background-color: linear-gradient(#ff00ff, #ff66ff);
+    -fx-background-insets: 0;
+    -fx-background-radius: 6px;
+}
+
+/* Hide the increment and decrement arrows */
+.scroll-bar:vertical .increment-button,
+.scroll-bar:vertical .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+
+#leaveGameBtn {
+    -fx-background-color: linear-gradient(to bottom right, #ff00ff, #00ffff);
+    -fx-text-fill: #000;
+    -fx-font-family: 'Orbitron', sans-serif;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-letter-spacing: 1px;
+    -fx-padding: 12 18;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+
+/* Hide all scroll bars initially */
+.scroll-pane .scroll-bar {
+    -fx-opacity: 0;
+    -fx-background-color: transparent;
+}
+
+/* When hovering over the scroll pane, show the scroll bars */
+.scroll-pane:hover .scroll-bar {
+    -fx-opacity: 1;
+}
+/* Popup Overlay: covers the game board with a semi-transparent background */
+.popup-overlay {
+    -fx-background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black */
+    -fx-alignment: center;
+}
+
+/* Popup Dialog: the container for the pop-up content */
+.popup-dialog {
+    -fx-background-color: #2b2b2b;
+    -fx-background-radius: 10;
+    -fx-padding: 20;
+    -fx-spacing: 15;
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.75) , 10, 0.5, 0, 0 );
+}
+
+/* Popup Title: styling for the title text */
+.popup-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-fill: #FFFFFF;
+}
+
+/* Popup Message: styling for the message text */
+.popup-message {
+    -fx-font-size: 16px;
+    -fx-fill: #E0E0E0;
+    -fx-text-alignment: center;
+}
+
+/* Popup Button: styling for the Main Menu button */
+.popup-button {
+    -fx-background-color: #007ACC;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-background-radius: 5;
+    -fx-padding: 8 15 8 15;
+    -fx-cursor: hand;
+}
+
+/* Popup Button hover state */
+.popup-button:hover {
+    -fx-background-color: #005A9E;
+}
+
+
+/* Popup Overlay: covers the game area with a semi-transparent background */
+.popup-overlay {
+    -fx-background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black */
+    -fx-alignment: center;
+}
+
+/* Popup Dialog: container for the pop-up content */
+.popup-dialog {
+    -fx-background-color: #2b2b2b;
+    -fx-background-radius: 10;
+    -fx-padding: 20;
+    -fx-spacing: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.75), 10, 0.5, 0, 0);
+}
+
+/* Popup Title: styling for the title text */
+.popup-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-fill: #FFFFFF;
+}
+
+/* Popup Message: styling for the confirmation message text */
+.popup-message {
+    -fx-font-size: 16px;
+    -fx-fill: #E0E0E0;
+    -fx-text-alignment: center;
+}
+
+/* Popup Button: styling for both Yes and Cancel buttons */
+.popup-button {
+    -fx-background-color: #007ACC;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-background-radius: 5;
+    -fx-padding: 8 15 8 15;
+    -fx-cursor: hand;
+}
+
+/* Popup Button hover state */
+.popup-button:hover {
+    -fx-background-color: #005A9E;
+}
+
+#avatar1,
+#avatar2 {
+    -fx-pref-width: 70px;
+    -fx-pref-height: 70px;
+    -fx-min-width: 70px;
+    -fx-min-height: 70px;
+    -fx-max-width: 70px;
+    -fx-max-height: 70px;
+    -fx-background-color: #111;
+    -fx-border-radius: 50%;
+    -fx-background-radius: 50%;
+    -fx-alignment: center;
+    -fx-font-family: 'Orbitron', sans-serif;
+    -fx-font-size: 24;
+    -fx-font-weight: bold;
+    -fx-border-width: 2;
+    -fx-padding: 5;
+}
+
+.player-name {
+    -fx-letter-spacing: 1px;
+    -fx-text-fill: #fff;
+
+}
+
+.avatar {
+    -fx-pref-width: 70px;
+    -fx-pref-height: 70px;
+    -fx-background-color: #111;
+    -fx-border-radius: 50%;
+    -fx-background-radius: 50%;
+    -fx-alignment: center;
+    -fx-border-width: 2;
+    -fx-padding: 5;
+}
+
+#player1DiscContainer {
+    -fx-alignment: center; /* Ensures the VBox itself is centered */
+}
+
+#name1, #score1 {
+    -fx-alignment: center;        /* Horizontal alignment of the label’s content */
+    -fx-text-alignment: center;   /* Text alignment within the label */
+    -fx-pref-width: 100;          /* Give enough width to see the centering effect */
+}
+.time-label, .moves-label {
+    -fx-text-fill: #fff;
+    -fx-font-family: 'Orbitron', sans-serif;
+    -fx-font-size: 16px;
+    -fx-effect: dropshadow(gaussian, rgba(0,255,255,0.8), 10, 0.5, 0, 0);
+}
+
+
