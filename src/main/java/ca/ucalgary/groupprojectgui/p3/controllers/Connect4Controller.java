@@ -26,6 +26,7 @@ import MatchmakingLeaderboard.*;
 import networking.chat.InGameChat;
 import networking.chat.ChatManager;
 import networking.chat.ChatMessage;
+import networking.game.TurnTimer;
 
 
 import java.io.IOException;
@@ -102,8 +103,19 @@ public class Connect4Controller {
     private Timeline timeline;
     private int secondsElapsed = 0;
     private int moveCounter = 0;
+
+    // Chat filter
     private InGameChat chatSystem;
     private InGameChat chatSession;
+
+    //Implemented turn timer
+    private TurnTimer timerP1;
+    private TurnTimer timerP2;
+    private Timeline turnCheckTimeline;
+    private boolean warningSentP1 = false;
+    private boolean warningSentP2 = false;
+
+
 
 
 
@@ -171,6 +183,11 @@ public class Connect4Controller {
 
         chatSession = new InGameChat("connect4-" + localPlayer.getUserID() + "-" + opponentPlayer.getUserID());
         chatSession.establishConnection();
+
+        timerP1 = new TurnTimer(localPlayer.getUsername(), 30);
+        timerP2 = new TurnTimer(opponentPlayer.getUsername(), 30);
+        startTurnTimer();  // begin periodic checks
+        timerP1.startTimer();  // Player 1 always starts
 
     }
 
@@ -345,6 +362,24 @@ public class Connect4Controller {
             return;
         }
         updatePlayerTurn();
+
+        // Reset warning flags
+        warningSentP1 = false;
+        warningSentP2 = false;
+
+        // Reset GUI clock
+        secondsElapsed = 0;
+        startTimer(); // Restart GUI clock
+
+        // Reset TurnTimer
+        if (connectBoard.getCurrentPlayer() == PLAYER1_ID) {
+            timerP1.resetTimer();
+            timerP1.startTimer();
+        } else {
+            timerP2.resetTimer();
+            timerP2.startTimer();
+        }
+
     }
 
     /**
@@ -662,4 +697,44 @@ public class Connect4Controller {
             timeline.stop();
         }
     }
+
+    private void startTurnTimer() {
+        turnCheckTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+            if (!gameActive) return;
+
+            TurnTimer currentTimer = (connectBoard.getCurrentPlayer() == PLAYER1_ID) ? timerP1 : timerP2;
+            boolean isP1 = connectBoard.getCurrentPlayer() == PLAYER1_ID;
+
+            currentTimer.notifyPlayer();
+            long elapsed = System.currentTimeMillis() - currentTimer.getStartTime();
+
+            // Send system chat warning at 10 seconds left
+            if ((isP1 && !warningSentP1 && currentTimer.getRemainingTime() - elapsed <= 10000)) {
+                addMessage("SYSTEM", localPlayer.getUsername() + " has 10 seconds left!", true);
+                warningSentP1 = true;
+            } else if (!isP1 && !warningSentP2 && currentTimer.getRemainingTime() - elapsed <= 10000) {
+                addMessage("SYSTEM", opponentPlayer.getUsername() + " has 10 seconds left!", true);
+                warningSentP2 = true;
+            }
+
+            if (currentTimer.isTimeExpired()) {
+                String loser = isP1 ? localPlayer.getUsername() : opponentPlayer.getUsername();
+                String winner = !isP1 ? localPlayer.getUsername() : opponentPlayer.getUsername();
+                addMessage("SYSTEM", loser + " ran out of time!", true);
+                showGameOverPopup(winner, true);
+                gameActive = false;
+                stopTimer();
+                stopTurnTimer();
+            }
+        }));
+        turnCheckTimeline.setCycleCount(Timeline.INDEFINITE);
+        turnCheckTimeline.play();
+    }
+
+    private void stopTurnTimer() {
+        if (turnCheckTimeline != null) {
+            turnCheckTimeline.stop();
+        }
+    }
+
 }
