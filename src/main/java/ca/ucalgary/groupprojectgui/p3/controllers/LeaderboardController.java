@@ -19,82 +19,92 @@ import java.util.List;
 public class LeaderboardController {
 
     @FXML
-    private TabPane gameTabs;
-
-    @FXML
     private ImageView gameLogo;
 
-
+    @FXML
+    private VBox ticTacToeLeaderboardPane;
 
     @FXML
-    private void initialize() {
-        setupTabChangeListeners();
-        populateLeaderboards(TIC_TAC_TOE); // Load Tic Tac Toe by default
+    private VBox checkersLeaderboardPane;
+
+    @FXML
+    private VBox connect4LeaderboardPane;
+
+    @FXML
+    public void openTicTacToeLeaderboard() {
+        hideAllLeaderboards();
+        populateLeaderboards(TIC_TAC_TOE);
+        ticTacToeLeaderboardPane.setVisible(true);
+        ticTacToeLeaderboardPane.setManaged(true);
     }
 
-    private void setupTabChangeListeners() {
-        gameTabs.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            switch (newValue.getText()) {
-                case "Tic Tac Toe":
-                    populateLeaderboards(TIC_TAC_TOE);
-                    break;
-                case "Checkers":
-                    populateLeaderboards(CHECKERS);
-                    break;
-                case "Connect 4":
-                    populateLeaderboards(CONNECT_FOUR);
-                    break;
-            }
-        });
+    @FXML
+    public void openCheckersLeaderboard() {
+        hideAllLeaderboards();
+        populateLeaderboards(CHECKERS);
+        checkersLeaderboardPane.setVisible(true);
+        checkersLeaderboardPane.setManaged(true);
+    }
+
+    @FXML
+    public void openConnect4Leaderboard() {
+        hideAllLeaderboards();
+        populateLeaderboards(CONNECT_FOUR);
+        connect4LeaderboardPane.setVisible(true);
+        connect4LeaderboardPane.setManaged(true);
+    }
+
+    private void hideAllLeaderboards() {
+        ticTacToeLeaderboardPane.setVisible(false);
+        ticTacToeLeaderboardPane.setManaged(false);
+
+        checkersLeaderboardPane.setVisible(false);
+        checkersLeaderboardPane.setManaged(false);
+
+        connect4LeaderboardPane.setVisible(false);
+        connect4LeaderboardPane.setManaged(false);
     }
 
     private void populateLeaderboards(GameType gameType) {
-        System.out.println("Populating leaderboard for game type: " + gameType);
+        VBox targetPane = switch (gameType) {
+            case TIC_TAC_TOE -> ticTacToeLeaderboardPane;
+            case CHECKERS -> checkersLeaderboardPane;
+            case CONNECT_FOUR -> connect4LeaderboardPane;
+        };
 
-        VBox content = new VBox(10);
-        content.setStyle("-fx-alignment: center; -fx-padding: 20;");
+        targetPane.getChildren().clear();
 
-        List<Player> players = null;
-
-        // Manually populate each leaderboard before fetching scores
-        switch (gameType) {
-            case TIC_TAC_TOE:
+        List<Player> players = switch (gameType) {
+            case TIC_TAC_TOE -> {
                 TicTacToeLeaderboard.getInstance().displayLeaderboard();
-                players = TicTacToeLeaderboard.getInstance().getScores();
-                break;
-            case CHECKERS:
+                yield TicTacToeLeaderboard.getInstance().getScores();
+            }
+            case CHECKERS -> {
                 CheckersLeaderboard.getInstance().displayLeaderboard();
-                players = CheckersLeaderboard.getInstance().getScores();
-                break;
-            case CONNECT_FOUR:
+                yield CheckersLeaderboard.getInstance().getScores();
+            }
+            case CONNECT_FOUR -> {
                 Connect4Leaderboard.getInstance().displayLeaderboard();
-                players = Connect4Leaderboard.getInstance().getScores();
-                break;
-        }
+                yield Connect4Leaderboard.getInstance().getScores();
+            }
+        };
 
         if (players == null || players.isEmpty()) {
-            System.out.println("No players found for game type: " + gameType);
             Label noData = new Label("No players found.");
             noData.setStyle("-fx-text-fill: white; -fx-font-size: 16;");
-            content.getChildren().add(noData);
+            targetPane.getChildren().add(noData);
         } else {
             int rank = 1;
             for (Player player : players) {
-                String playerDetails = String.format(
-                        "%d. Player ID: %d - Username: %s - Level: %d - MMR: %d",
+                String entryText = String.format(
+                        "%d. Player ID: %d | Username: %s | Level: %d | MMR: %d",
                         rank, player.getUserID(), player.getUsername(), player.getLevel(), player.getMMR(gameType));
-                Label entry = new Label(playerDetails);
+                Label entry = new Label(entryText);
                 entry.setStyle("-fx-text-fill: white; -fx-font-size: 16;");
-                content.getChildren().add(entry);
+                targetPane.getChildren().add(entry);
                 rank++;
             }
         }
-
-        ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setContent(content);
-        scrollPane.setFitToWidth(true);
-
-        gameTabs.getSelectionModel().getSelectedItem().setContent(scrollPane);
     }
 
     @FXML

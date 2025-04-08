@@ -1,10 +1,8 @@
-// TODO: Player Typing Indicator
-
 package networking.chat;
 
 import networking.NetworkHandler;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Handles real-time in-game chat between players during an active game session.
@@ -12,8 +10,10 @@ import java.util.List;
  */
 public class InGameChat extends NetworkHandler {
     private String gameId;       // Unique game session identifier
-    private ChatManager chatManager;
-    private boolean isConnected;
+    public ChatManager chatManager;
+    public boolean isConnected;
+
+    public Set<String> currentlyTyping; //  Track players who are typing
 
     /**
      * Initializes the in-game chat system for a given game session.
@@ -25,6 +25,7 @@ public class InGameChat extends NetworkHandler {
         this.gameId = gameId;
         this.chatManager = new ChatManager();
         this.isConnected = false;
+        this.currentlyTyping = new HashSet<>();
     }
 
     /**
@@ -35,11 +36,12 @@ public class InGameChat extends NetworkHandler {
      */
     public void sendMessage(String playerId, String message) {
         if (!isConnected) {
-            System.out.println("Error: Cannot send message. Chat is not connected.");
+            System.out.println("Error: Cannot send message. chat is not connected.");
             return;
         }
 
         chatManager.addMessage(playerId, message);
+        stopTyping(playerId); //  Remove typing status once message is sent
         System.out.println("Message sent: " + message);
     }
 
@@ -53,7 +55,7 @@ public class InGameChat extends NetworkHandler {
             return;
         }
 
-        System.out.println("Chat History:");
+        System.out.println("chat History:");
         for (ChatMessage message : history) {
             System.out.println(message);
         }
@@ -73,7 +75,7 @@ public class InGameChat extends NetworkHandler {
     @Override
     public void establishConnection() {
         isConnected = true;
-        System.out.println("Chat connection established.");
+        System.out.println("chat connection established.");
     }
 
     /**
@@ -82,7 +84,7 @@ public class InGameChat extends NetworkHandler {
     @Override
     public void closeConnection() {
         isConnected = false;
-        System.out.println("Chat connection closed.");
+        System.out.println("chat connection closed.");
     }
 
     /**
@@ -93,11 +95,35 @@ public class InGameChat extends NetworkHandler {
      */
     public void receiveMessage(String playerId, String message) {
         if (!isConnected) {
-            System.out.println("Error: Cannot receive message. Chat is not connected.");
+            System.out.println("Error: Cannot receive message. chat is not connected.");
             return;
         }
 
         chatManager.addMessage(playerId, message);
+        stopTyping(playerId); // Remove typing status on receive
         System.out.println("New message received: " + message);
+    }
+
+    /**
+     * Marks a player as currently typing.
+     *
+     * @param playerId The ID of the player who is typing.
+     */
+    public void startTyping(String playerId) {
+        if (!currentlyTyping.contains(playerId)) {
+            currentlyTyping.add(playerId);
+            System.out.println(playerId + " is typing...");
+        }
+    }
+
+    /**
+     * Removes a player from the typing indicator.
+     *
+     * @param playerId The ID of the player who stopped typing.
+     */
+    public void stopTyping(String playerId) {
+        if (currentlyTyping.remove(playerId)) {
+            System.out.println(playerId + " stopped typing.");
+        }
     }
 }
