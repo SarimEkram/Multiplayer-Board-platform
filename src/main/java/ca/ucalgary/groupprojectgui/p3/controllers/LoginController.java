@@ -7,21 +7,30 @@ import ca.ucalgary.groupprojectgui.p3.SceneManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
+/**
+ * Controller class for handling user login functionality.
+ * It manages user authentication and navigation to other screens
+ * like registration, password recovery, and homepage.
+ */
 public class LoginController {
 
     @FXML
-    private TextField username;                  // User input for the username
+    private TextField username;                  // Input for the username
     @FXML
-    private PasswordField password;              // User input for the password
+    private PasswordField password;              // Input for the password
     @FXML
     private Label loginErrorMessageLabel;        // Label to show error messages
 
-    public static int loginId;
+    public static int loginId;                   // Stores the ID of the successfully logged-in use
 
+    /**
+     * Called when the user clicks the Login button.
+     * Validates credentials and switches to the home page on successful login.
+     */
     @FXML
     private void handleLogin() {
-        String user = username.getText();       // Get username from input
-        String pass = password.getText();       // Get password from input
+        String user = username.getText();         // Get username from input
+        String pass = password.getText();         // Get password from input
 
         // Validate that neither the username nor the password is empty
         if (user.isEmpty() || pass.isEmpty()) {
@@ -62,6 +71,10 @@ public class LoginController {
         }
     }
 
+    /**
+     * Called when the user clicks the Register button.
+     * Navigates to the user registration screen.
+     */
     @FXML
     private void handleRegister() {
         System.out.println("Register button clicked.");
@@ -69,6 +82,10 @@ public class LoginController {
         SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/UserRegistration.fxml", "User Registration", "UserRegistration.css");
     }
 
+    /**
+     * Called when the user clicks the Forgot Password link/button.
+     * Navigates to the password reset screen.
+     */
     @FXML
     private void handleForgotPassword() {
         System.out.println("Forgot Password clicked.");
