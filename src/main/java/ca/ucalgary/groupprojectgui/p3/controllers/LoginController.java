@@ -269,8 +269,25 @@ public class LoginController {
         }
     }
 
+    // New helper method to clear all text fields.
+    private void clearAllFields() {
+        // Login Form
+        if (loginUsername != null) loginUsername.clear();
+        if (loginPassword != null) loginPassword.clear();
+        // Forgot Password Form
+        if (forgotEmail != null) forgotEmail.clear();
+        if (resetToken != null) resetToken.clear();
+        if (newPassword != null) newPassword.clear();
+        if (confirmNewPassword != null) confirmNewPassword.clear();
+        // Register Form
+        if (registerFullName != null) registerFullName.clear();
+        if (registerUsername != null) registerUsername.clear();
+        if (registerEmail != null) registerEmail.clear();
+        if (registerPassword != null) registerPassword.clear();
+        if (registerConfirmPassword != null) registerConfirmPassword.clear();
+    }
+
     private String generateToken() {
-        // For integration with ResetUserPassword, call the reset request.
         String token = resetUserPassword.resetRequest(forgotEmail.getText().trim());
         return (token != null) ? token : "ERROR";
     }
@@ -284,6 +301,8 @@ public class LoginController {
     // --- Form Switching Methods ---
     @FXML
     private void showLoginForm() {
+        // Clear fields from other forms for fresh input.
+        clearAllFields();
         hideNode(forgotForm);
         hideNode(registerForm);
         showNode(loginForm);
@@ -292,6 +311,8 @@ public class LoginController {
 
     @FXML
     private void showForgotForm() {
+        // Clear fields in the forgot form.
+        clearAllFields();
         hideNode(loginForm);
         hideNode(registerForm);
         showNode(forgotForm);
@@ -304,6 +325,8 @@ public class LoginController {
 
     @FXML
     private void showRegisterForm() {
+        // Clear registration fields so that previous values are removed.
+        clearAllFields();
         hideNode(loginForm);
         hideNode(forgotForm);
         showNode(registerForm);
@@ -338,10 +361,10 @@ public class LoginController {
         }
     }
 
+    // --- Forgot Password Handlers ---
     @FXML
     private void proceedForgot() {
         String email = forgotEmail.getText().trim();
-        // Simple email validation: must not be empty and must contain '@'
         if (email.isEmpty() || !email.contains("@")) {
             forgotErrorLabel.setText("Please enter a valid email address.");
             forgotErrorLabel.setStyle("-fx-text-fill: red;");
@@ -350,44 +373,32 @@ public class LoginController {
         } else {
             hideNode(forgotErrorLabel);
         }
-
-        // Hide the verification section and button so they don't take up layout space.
         hideNode(verifyEmailSection);
         hideNode(verifyEmailBtn);
 
-        // Request the reset token from the backend.
         String token = resetUserPassword.resetRequest(email);
         if (token == null) {
-            // If token generation failed (for example, email doesn't exist), show an error message.
             forgotErrorLabel.setText("Reset request failed: email does not exist. Redirecting to login...");
             forgotErrorLabel.setStyle("-fx-text-fill: red;");
             showNode(forgotErrorLabel);
-            // After 2 seconds, hide the error and go back to the login form.
             Timeline delayTimeline = new Timeline(new KeyFrame(Duration.seconds(2), event -> {
                 hideNode(forgotErrorLabel);
-                showLoginForm();  // Redirecting to login form
+                showLoginForm();
             }));
             delayTimeline.play();
             return;
         }
-
-        // If a token is generated, copy it to the clipboard.
         copyToClipboard(token);
         String displayToken = token.substring(0, Math.min(4, token.length())) + "******";
-        // Show a temporary info message (green) that the token has been sent.
         forgotErrorLabel.setText("Token sent! (" + displayToken + ") - copied to clipboard");
         forgotErrorLabel.setStyle("-fx-text-fill: #00ff00;");
         showNode(forgotErrorLabel);
-
-        // After 2 seconds, hide the info message and show the reset password section.
         Timeline delayTimeline = new Timeline(new KeyFrame(Duration.seconds(2), event -> {
             hideNode(forgotErrorLabel);
             showNode(resetPasswordSection);
         }));
         delayTimeline.play();
     }
-
-
 
     @FXML
     private void resetPassword() {
@@ -422,23 +433,47 @@ public class LoginController {
         String confirmPasswordInput = registerConfirmPassword.getText().trim();
 
         List<String> errors = new ArrayList<>();
+
+        // Perform local validation first.
+        if (usernameInput.isEmpty()) {
+            errors.add("Username is required.");
+        }
+        if (emailInput.isEmpty() || !emailInput.contains("@")) {
+            errors.add("A valid email address is required.");
+        }
+        if (passwordInput.isEmpty()) {
+            errors.add("Password is required.");
+        } else if (passwordInput.length() < 6) {
+            errors.add("Password must be at least 6 characters.");
+        }
         if (!passwordInput.equals(confirmPasswordInput)) {
             errors.add("Passwords do not match.");
         }
 
-        // Call registerUser which returns a List of error messages.
-        List<String> registrationErrors = userRegistration.registerUser(usernameInput, emailInput, passwordInput);
-        errors.addAll(registrationErrors);
-
+        // If local errors exist, display them and DO NOT call the backend registration.
         if (!errors.isEmpty()) {
             String errorMsg = String.join("\n", errors);
             registerErrorLabel.setText(errorMsg);
+            registerErrorLabel.setStyle("-fx-text-fill: red;");
             showNode(registerErrorLabel);
             return;
         }
+
+        // Otherwise, call the backend registration method.
+        List<String> registrationErrors = userRegistration.registerUser(usernameInput, emailInput, passwordInput);
+        if (!registrationErrors.isEmpty()) {
+            // If backend returns any errors, display them.
+            String errorMsg = String.join("\n", registrationErrors);
+            registerErrorLabel.setText(errorMsg);
+            registerErrorLabel.setStyle("-fx-text-fill: red;");
+            showNode(registerErrorLabel);
+            return;
+        }
+
+        // If everything is valid and registration is successful:
         hideNode(registerErrorLabel);
         System.out.println("Registration successful!");
-        // Display a success message and then switch back to login form.
+        // Display a success message, then after a 2-second delay switch back to login.
         registerErrorLabel.setText("Registration successful! Redirecting to login...");
         registerErrorLabel.setStyle("-fx-text-fill: #00ff00;");
         showNode(registerErrorLabel);
