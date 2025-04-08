@@ -363,7 +363,7 @@ public class TicTacToeController {
             if (cssUrl != null) {
                 chatMessages.getStylesheets().add(cssUrl.toExternalForm());
             }
-            addMessage("SYSTEM", "Welcome to Neon Checkers", true);
+            addMessage("SYSTEM", "Welcome to Neon Tic Tac Toe", true);
             addMessage("SYSTEM", "Game initialized", true);
         } catch (Exception e) {
             System.err.println("Error initializing chat: " + e.getMessage());
