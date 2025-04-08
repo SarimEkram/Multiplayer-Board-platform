@@ -3,6 +3,8 @@ package ca.ucalgary.groupprojectgui.p3.controllers;
 import Authentication.User;
 import Authentication.UserDatabase;
 import Authentication.UpdateUserProfile;
+import MatchmakingLeaderboard.Player;
+import MatchmakingLeaderboard.PlayerDatabase;
 import ca.ucalgary.groupprojectgui.p3.SceneManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
@@ -74,6 +76,9 @@ public class EditProfileController {
 
         if (updateResult) {
             statusLabel.setText("Profile updated successfully: Username and Email have been changed.");
+            Player player = PlayerDatabase.getPlayerByUserID(currentUser.getUserID());
+            player.setUsername(newUsername);
+            PlayerDatabase.savePlayer(player);
         } else {
             statusLabel.setText("Failed to update profile. Please try again.");
         }

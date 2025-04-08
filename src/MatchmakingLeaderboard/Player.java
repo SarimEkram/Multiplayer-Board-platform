@@ -11,7 +11,7 @@ import MatchmakingLeaderboard.TicTacToe.Matchmaking.TicTacToeMatchmaking;
  */
 public class Player {
     private final double[] winRatio = new double[GameType.values().length];  // 1: TicTacToe, 2: Connect4, 3: Checkers
-    private final String username;
+    private String username;
     private final int[] wins = new int[GameType.values().length];
     private final int[] losses = new int[GameType.values().length];
     private int level;
@@ -46,6 +46,9 @@ public class Player {
         return this.username;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     public int getWins(GameType gameType) {
         //validGame(gameType);
