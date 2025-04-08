@@ -19,11 +19,14 @@
     <!-- Main Content Container (centered neon box) -->
     <VBox alignment="CENTER" spacing="20" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
         <!-- Neon Box for Edit Profile -->
-        <AnchorPane fx:id="editProfileBox" maxWidth="400" styleClass="login-box">
+        <AnchorPane fx:id="editProfileBox"  styleClass="login-box">
             <children>
                 <VBox alignment="CENTER" spacing="20" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
                     <!-- Status Label for messages -->
                     <Label fx:id="statusLabel" styleClass="form-title" text="Edit Profile" />
+
+                    <!-- Info Label to display current profile info; this node is added so that your controller's infoLabel reference is not null. -->
+                    <Label fx:id="infoLabel" styleClass="info-label" text="" />
 
                     <!-- GridPane for showing user info -->
                     <GridPane alignment="CENTER" hgap="15" vgap="15">
@@ -50,18 +53,18 @@
                         <!-- Row 5: Online Status (Info only) -->
                         <Label styleClass="form-label" text="Online:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
                         <Label fx:id="onlineStatusLabel" styleClass="form-label" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                  <columnConstraints>
-                     <ColumnConstraints />
-                     <ColumnConstraints />
-                  </columnConstraints>
-                  <rowConstraints>
-                     <RowConstraints />
-                     <RowConstraints />
-                     <RowConstraints />
-                     <RowConstraints />
-                     <RowConstraints />
-                     <RowConstraints />
-                  </rowConstraints>
+                        <columnConstraints>
+                            <ColumnConstraints />
+                            <ColumnConstraints />
+                        </columnConstraints>
+                        <rowConstraints>
+                            <RowConstraints />
+                            <RowConstraints />
+                            <RowConstraints />
+                            <RowConstraints />
+                            <RowConstraints />
+                            <RowConstraints />
+                        </rowConstraints>
                     </GridPane>
 
                     <!-- Action Buttons -->

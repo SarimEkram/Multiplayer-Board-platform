@@ -191,6 +191,15 @@
     -fx-max-width: 300px;
 }
 
+.info-label {
+    -fx-font-size: 16px;
+    -fx-text-fill: green;  /* White text */
+    -fx-padding: 10 0 10 0;
+    -fx-font-style: italic;
+
+}
+
+
 /* Optional: success and error variants you can set from controller */
 .status-success {
     -fx-text-fill: #00ff00;

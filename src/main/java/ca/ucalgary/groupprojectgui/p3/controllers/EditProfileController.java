@@ -11,6 +11,7 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
@@ -154,46 +155,84 @@ public class EditProfileController {
             gc.fillRect(0, y, width, lineWidth);
         }
     }
-
+    private void showNode(Node node) {
+        if (node != null) {
+            node.setVisible(true);
+            node.setManaged(true);
+        }
+        }
     /**
      * Handles the Save Changes button action.
      * Validates input and attempts to update the user's profile.
      */
     @FXML
     private void handleSaveChanges() {
-        String newUsername = usernameField.getText().trim();
-        String newEmail = emailField.getText().trim();
+        // Get new inputs; if a field is empty, we use the current value.
+        String inputUsername = usernameField.getText().trim();
+        String inputEmail = emailField.getText().trim();
 
-        // Basic input validation
-        if (newUsername.isEmpty() || newEmail.isEmpty() || !newEmail.contains("@")) {
-            statusLabel.setText("Please enter a valid username and email.");
+        // Use current values if inputs are blank.
+        String newUsername = inputUsername.isEmpty() ? currentUser.getUsername() : inputUsername;
+        String newEmail = inputEmail.isEmpty() ? currentUser.getEmail() : inputEmail;
+
+        // Local validation: if email is changed, it must contain '@'
+        if (!newEmail.equals(currentUser.getEmail()) && !newEmail.contains("@")) {
+            infoLabel.setText("Please enter a valid email address.");
+            infoLabel.setStyle("-fx-text-fill: red;");
+            showNode(infoLabel);
             return;
         }
-        // Check if changes were actually made
+
+        // Check if any changes were made.
         if (newUsername.equals(currentUser.getUsername()) && newEmail.equals(currentUser.getEmail())) {
-            statusLabel.setText("No changes were made.");
+            infoLabel.setText("No changes were made.");
+            infoLabel.setStyle("-fx-text-fill: red;");
+            showNode(infoLabel);
             return;
         }
-        // Attempt to update the user's profile
+
+        // Store original values BEFORE updating.
+        String originalUsername = currentUser.getUsername();
+        String originalEmail = currentUser.getEmail();
+
+        // Attempt to update the user's profile.
         UpdateUserProfile updater = new UpdateUserProfile();
         boolean updateResult = updater.updateUser(currentUser.getUserID(), newUsername, newEmail);
 
         if (updateResult) {
-            statusLabel.setText("Profile updated successfully: Username and Email have been changed.");
-            // Update the currentUser and Player objects, if applicable.
+            // Update local currentUser object.
             currentUser.setUsername(newUsername);
             currentUser.setEmail(newEmail);
+
+            // Also update the Player record.
             Player player = PlayerDatabase.getPlayerByUserID(currentUser.getUserID());
             if (player != null) {
                 player.setUsername(newUsername);
                 PlayerDatabase.savePlayer(player);
             }
-            // Optionally refresh the info label
-            loadUserProfileInfo();
+
+            // Build a success message based on which fields were updated.
+            StringBuilder successMessage = new StringBuilder("Profile updated successfully!");
+            if (!newUsername.equals(originalUsername)) {
+                successMessage.append("\nNew Username: ").append(newUsername);
+            }
+            if (!newEmail.equals(originalEmail)) {
+                successMessage.append("\nNew Email: ").append(newEmail);
+            }
+
+            infoLabel.setText(successMessage.toString());
+            infoLabel.setStyle("-fx-text-fill: #00ff00;"); // Green text for success.
+            showNode(infoLabel);
+
+            // Optionally refresh displayed user info.
+            loadUserInfo();
         } else {
-            statusLabel.setText("Failed to update profile. Please try again.");
+            infoLabel.setText("Failed to update profile. Please try again.");
+            infoLabel.setStyle("-fx-text-fill: red;");
+            showNode(infoLabel);
         }
     }
+
 
     /**
      * Navigates back to the Manage Profile screen.

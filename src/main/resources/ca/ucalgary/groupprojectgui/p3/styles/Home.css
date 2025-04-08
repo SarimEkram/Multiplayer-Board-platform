@@ -484,13 +484,13 @@
 
 .friend-list .list-cell:hover {
     -fx-background-color: #37006e;
-    -fx-border-radius: 4
+    -fx-border-radius: 4;
     -fx-text-fill: white;
 }
 
 .friend-list .list-cell:selected {
     -fx-background-color: #37006e;
-    -fx-border-radius: 4
+    -fx-border-radius: 4;
     -fx-text-fill: white;
 }
 
