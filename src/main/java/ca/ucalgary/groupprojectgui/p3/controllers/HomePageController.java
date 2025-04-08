@@ -10,14 +10,17 @@ import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.effect.BoxBlur;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import ca.ucalgary.groupprojectgui.p3.SceneManager;
+import javafx.scene.paint.Color;
 import javafx.stage.Popup;
 
 import java.util.List;
@@ -94,6 +97,7 @@ public class HomePageController {
         checkersImage.setImage(new Image(getClass().getResource("/ca/ucalgary/groupprojectgui/p3/images/chess_preview.jpg").toExternalForm()));
         setupGameSearch();
 
+        // Load the logo image
         var logoUrl = getClass().getResource("/ca/ucalgary/groupprojectgui/p3/images/img.png");
         if (logoUrl != null) {
             img.setImage(new Image(logoUrl.toExternalForm()));
@@ -101,12 +105,38 @@ public class HomePageController {
             System.err.println("⚠️ Logo image not found.");
         }
 
+// Load the profile icon image
         loadIcon(profileIcon, "/ca/ucalgary/groupprojectgui/p3/images/profile.png");
 
-        // Set up event handler for the profile icon to open Manage Profile page on click
+// Create a drop shadow effect for hovering
+        DropShadow neonShadow = new DropShadow();
+        neonShadow.setColor(Color.web("#ff00ff"));
+        neonShadow.setRadius(20);
+        neonShadow.setSpread(0.5);
+
+// Set up hover effect on the profile icon
+        profileIcon.setOnMouseEntered(event -> {
+            // Scale up the icon slightly
+            profileIcon.setScaleX(1.1);
+            profileIcon.setScaleY(1.1);
+            profileIcon.setCursor(Cursor.HAND);
+
+            // Set the drop shadow effect
+            profileIcon.setEffect(neonShadow);
+        });
+        profileIcon.setOnMouseExited(event -> {
+            // Return the icon back to original scale
+            profileIcon.setScaleX(1.0);
+            profileIcon.setScaleY(1.0);
+            // Remove the drop shadow effect
+            profileIcon.setEffect(null);
+        });
+
+// Set up click event to open the Manage Profile page
         profileIcon.setOnMouseClicked((MouseEvent event) -> {
             SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/ManageProfile.fxml", "Manage Profile", "ManageProfile.css");
         });
+
 
         // Initialize friend requests functionality if the FXML components exist on the Home page
         if (searchField != null && playersContainer != null) {
@@ -329,7 +359,7 @@ public class HomePageController {
 
         // Create an overlay for opponent choice
         StackPane overlay = new StackPane();
-        overlay.setStyle("friend-selection-overlay");
+        overlay.getStyleClass().add("friend-selection-overlay");
         overlay.prefWidthProperty().bind(rootPane.widthProperty());
         overlay.prefHeightProperty().bind(rootPane.heightProperty());
 
