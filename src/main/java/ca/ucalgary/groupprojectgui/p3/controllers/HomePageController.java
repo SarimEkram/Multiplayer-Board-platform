@@ -8,9 +8,11 @@ import MatchmakingLeaderboard.PlayerDatabase;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.effect.BoxBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -24,46 +26,57 @@ import java.util.stream.Collectors;
 
 public class HomePageController {
     public HBox gameFriend;
+    public HBox mainContainer;
     @FXML
     private VBox playersContainer;
     // Fields for game/home page
-    @FXML private TextField gameSearchField;
-    @FXML private HBox gameTilePane;
-    @FXML private ImageView img;
-    @FXML private StackPane popupContainer;
-    @FXML private VBox rightPanel;
+    @FXML
+    private TextField gameSearchField;
+    @FXML
+    private HBox gameTilePane;
+    @FXML
+    private ImageView img;
+    @FXML
+    private StackPane popupContainer;
+    @FXML
+    private StackPane friendSelectionOverlay;
+    @FXML
+    private ListView<String> friendListView;
 
     @FXML
     private ImageView profileIcon;
-    @FXML private ImageView heartIcon;
-    @FXML private ImageView bellIcon;
-    @FXML private ImageView friendsIcon;
     @FXML
     private VBox friendPopupPlaceholder;
-
-    @FXML private Label welcomeLabel;
-    @FXML private ListView<String> recentScores;
-    @FXML private Button quickMatchButton;
-    @FXML private Button logoutButton;
-    @FXML private ImageView connect4Image;
-    @FXML private ImageView tttImage;
-    @FXML private ImageView checkersImage;
+    @FXML
+    private Button logoutButton;
+    @FXML
+    private ImageView connect4Image;
+    @FXML
+    private ImageView tttImage;
+    @FXML
+    private ImageView checkersImage;
 
     // Fields for preview feature
-    @FXML private ImageView previewImage;
-    @FXML private Button connect4Btn;
-    @FXML private Button tttBtn;
-    @FXML private Button checkersBtn;
+    @FXML
+    private Button connect4Btn;
+    @FXML
+    private Button tttBtn;
+    @FXML
+    private Button checkersBtn;
 
     // Field for home pane
-    @FXML private BorderPane homePane;
+    @FXML
+    private BorderPane homePane;
 
     // Fields for Friend Requests functionality
-    @FXML private TextField searchField;
+    @FXML
+    private TextField searchField;
 
     private List<Player> allPlayers;
 
     public static int friendOpponentID;
+
+    private String currentGameName;
 
     @FXML
     public void initialize() {
@@ -230,22 +243,17 @@ public class HomePageController {
 
     @FXML
     private void onConnect4Click() {
-        launchGame("Connect 4");
+        chooseOpponent("Connect 4");
     }
 
     @FXML
     private void onCheckersClick() {
-        launchGame("Checkers");
+        chooseOpponent("Checkers");
     }
 
     @FXML
     private void onTicTacToeClick() {
-        launchGame("Tic Tac Toe");
-    }
-
-    @FXML
-    private void handleQuickMatch() {
-        System.out.println("Searching for quick match...");
+        chooseOpponent("Tic Tac Toe");
     }
 
     @FXML
@@ -307,6 +315,108 @@ public class HomePageController {
                 }
             }
         });
+    }
+
+    @FXML
+    public void chooseOpponent(String forGame) {
+        currentGameName = forGame;
+        // Apply blur effect on the main container
+        BoxBlur blur = new BoxBlur(10, 10, 3);
+        mainContainer.setEffect(blur);
+
+        // Get the root pane from the scene
+        StackPane rootPane = (StackPane) mainContainer.getScene().getRoot();
+
+        // Create an overlay for opponent choice
+        StackPane overlay = new StackPane();
+        overlay.setStyle("friend-selection-overlay");
+        overlay.prefWidthProperty().bind(rootPane.widthProperty());
+        overlay.prefHeightProperty().bind(rootPane.heightProperty());
+
+        // Build modal dialog (Random or Friend)
+        VBox modal = new VBox(20);
+        modal.setAlignment(Pos.CENTER);
+        modal.setPadding(new Insets(20));
+        modal.setStyle("-fx-background-color: rgba(0, 0, 0, 0.8); -fx-background-radius: 10;");
+        modal.setMinWidth(300);
+        modal.setMinHeight(150);
+
+        Label prompt = new Label("WHOM  DO  YOU  WANNA  PLAY  WITH??");
+        prompt.setStyle("-fx-text-fill: white; -fx-font-size: 20px;");
+
+        Button randomButton = new Button("Random");
+        Button friendButton = new Button("Friend");
+        randomButton.setStyle("-fx-background-color: #5f27cd; -fx-text-fill: white; -fx-background-radius: 10;");
+        friendButton.setStyle("-fx-background-color: #341f97; -fx-text-fill: white; -fx-background-radius: 10;");
+
+        HBox buttonBox = new HBox(10, randomButton, friendButton);
+        buttonBox.setAlignment(Pos.CENTER);
+
+        modal.getChildren().addAll(prompt, buttonBox);
+        overlay.getChildren().add(modal);
+
+        // Add overlay and bring it to the front
+        rootPane.getChildren().add(overlay);
+        overlay.toFront();
+
+        // Random button: remove overlay, remove blur, then launch game
+        randomButton.setOnAction(e -> {
+            rootPane.getChildren().remove(overlay);
+            mainContainer.setEffect(null);
+            launchGame(currentGameName);
+        });
+
+        // Friend button: remove this overlay/blur then show friend selection
+        friendButton.setOnAction(e -> {
+            rootPane.getChildren().remove(overlay);
+            mainContainer.setEffect(null);
+            showFriendSelection();
+        });
+    }
+
+    @FXML
+    public void showFriendSelection() {
+        // Clear previous items (if any)
+        BoxBlur blur = new BoxBlur(10, 10, 3);
+        mainContainer.setEffect(blur);
+        friendListView.getItems().clear();
+
+        int currentUserId = LoginController.loginId;
+        Set<Integer> friendIds = FriendDatabase.getFriends(currentUserId);
+
+        for (Integer friendId : friendIds) {
+            Player friend = PlayerDatabase.getPlayerByUserID(friendId);
+            if (friend != null) {
+                friendListView.getItems().add(friend.getUsername());
+                friendListView.setFixedCellSize(32);
+                friendListView.setPrefHeight(friendListView.getItems().size() * 32 + 2);
+            }
+        }
+
+        // Make the overlay visible
+        friendSelectionOverlay.setVisible(true);
+    }
+
+    @FXML
+    private void onConfirmFriendSelection(ActionEvent event) {
+        String selectedFriend = friendListView.getSelectionModel().getSelectedItem();
+        if (selectedFriend != null) {
+            Player friendDet = PlayerDatabase.getPlayerByUsername(selectedFriend);
+            friendOpponentID = friendDet.getUserID();
+            // Hide the overlay and clear any blur effects, then launch the game
+            friendSelectionOverlay.setVisible(false);
+            mainContainer.setEffect(null);
+            launchGame(currentGameName);  // Pass the appropriate game name
+        } else {
+            System.out.println("Please select a friend.");
+        }
+    }
+
+    @FXML
+    private void onCancelFriendSelection(ActionEvent event) {
+        // Hide the overlay and clear blur effects
+        friendSelectionOverlay.setVisible(false);
+        mainContainer.setEffect(null);
     }
 
 
@@ -381,82 +491,8 @@ public class HomePageController {
         removeButton.getStyleClass().add("remove-button");
         removeButton.setOnAction(this::handleRemoveFriend);
 
-        Button challengeButton = new Button("⚔️");
-        challengeButton.getStyleClass().add("challenge-button");
-        challengeButton.setOnAction(this::handleChallengeFriend);
-
-        friendItem.getChildren().addAll(avatar, nameLabel, spacer, challengeButton, removeButton);
+        friendItem.getChildren().addAll(avatar, nameLabel, spacer, removeButton);
         return friendItem;
-    }
-
-
-
-    @FXML
-    public void handleChallengeFriend(ActionEvent event){
-        Button challengeButton = (Button) event.getSource();
-        HBox friendItem = (HBox) challengeButton.getParent();
-        Label friendLabel = (Label) friendItem.getChildren().get(1);
-        String friendName = friendLabel.getText();
-        Popup popup = new Popup();
-
-        VBox popupContent = new VBox(15);
-        popupContent.setAlignment(Pos.CENTER);
-        popupContent.setStyle(
-                "-fx-background-color: radial-gradient(radius 100%, #111, #333);" +
-                        "-fx-padding: 15;" +
-                        "-fx-border-color: #00ffff;" +
-                        "-fx-border-width: 2;" +
-                        "-fx-background-radius: 10;" +
-                        "-fx-border-radius: 10;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(0,255,255,0.75), 10, 0.5, 0, 0);"
-        );
-
-        Label message = new Label("Challenge " + friendName + "?");
-        message.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
-
-        HBox buttonBox = new HBox(10);
-        buttonBox.setAlignment(Pos.CENTER);
-
-        // Yes button styling
-        Button yesButton = new Button("Yes");
-        yesButton.setStyle(
-                "-fx-background-color: #00ffff;" +      // Neon cyan background
-                        "-fx-text-fill: black;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-background-radius: 5;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(0,255,255,0.8), 10, 0.5, 0, 0);"
-        );
-
-        Button noButton = new Button("No");
-        noButton.setStyle(
-                "-fx-background-color: #ff00ff;" +      // Neon magenta background
-                        "-fx-text-fill: black;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-background-radius: 5;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(255,0,255,0.8), 10, 0.5, 0, 0);"
-        );
-
-
-        buttonBox.getChildren().addAll(yesButton, noButton);
-        popupContent.getChildren().addAll(message, buttonBox);
-        popup.getContent().add(popupContent);
-
-        // Position the popup near the friend item.
-        Bounds bounds = friendItem.localToScreen(friendItem.getBoundsInLocal());
-        popup.show(challengeButton.getScene().getWindow(), bounds.getMinX() + 50, bounds.getMinY() + 20);
-
-        // Action handlers for the buttons.
-        yesButton.setOnAction(e -> {
-            Player friendDet = PlayerDatabase.getPlayerByUsername(friendName);
-            friendOpponentID = friendDet.getUserID();
-            popup.hide();
-            System.out.println("Challenged friend " + friendName);
-        });
-
-        noButton.setOnAction(e -> {
-            popup.hide();
-            System.out.println("Challenge canceled for friend: " + friendName);
-        });
     }
 
     @FXML
@@ -632,12 +668,6 @@ public class HomePageController {
         friendPopupPlaceholder.setVisible(true);
         friendPopupPlaceholder.setManaged(true);
     }
-
-
-
-
-
-
 }
 
 

@@ -199,14 +199,7 @@
      -fx-border-color: rgba(255, 255, 255, 0.2);
      -fx-border-radius: 10;
   }
-  .glow-rocket {
-     -fx-effect: dropshadow(gaussian, #ff00ff, 10, 0.5, 0, 0);
-  }
 
-
-  .glow-UFO {
-     -fx-effect: dropshadow(gaussian, #00ffff, 10, 0.5, 0, 0);
-  }
   .play-now-button {
      -fx-background-color: linear-gradient(to right, #ff00ff, #00ffff);
      -fx-text-fill: black;
@@ -278,10 +271,6 @@
      -fx-scale-y: 1.05;
      -fx-opacity: 0.9;
   }
-
-
-
-
 
 .blur-overlay {
     -fx-background-color: rgba(0,0,0,0.6);
@@ -457,5 +446,62 @@
 
 .challenge-button:hover {
     -fx-text-fill: #ff4d4d; /* Red on hover */
+}
+
+/* Friend Selection Overlay (background dimmed) */
+.friend-selection-overlay {
+    -fx-background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Modal container for friend selection */
+.friend-selection-modal {
+    -fx-background-color: rgba(0, 0, 0, 0.85);
+    -fx-background-radius: 10;
+    -fx-padding: 20;
+    -fx-alignment: center;
+}
+
+.friend-list {
+    -fx-background-color: #1a0033;
+    -fx-border-color: #37006e;
+    -fx-effect-border: dropshadow(gaussian, #37006e, 15, 0.7, 0, 0);
+    -fx-border-radius: 5;
+    -fx-background-radius: 8;
+    -fx-font-size: 14px;
+    -fx-padding: 0;
+    -fx-max-width: 150px;
+}
+
+/* Cells inside the list */
+.friend-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-family: "Orbitron", sans-serif;
+    -fx-font-size: 14px;
+    -fx-alignment: center;
+    -fx-padding: 6 8;
+}
+
+.friend-list .list-cell:hover {
+    -fx-background-color: #37006e;
+    -fx-border-radius: 4;
+    -fx-text-fill: white;
+}
+
+.friend-list .list-cell:selected {
+    -fx-background-color: #37006e;
+    -fx-border-radius: 4;
+    -fx-text-fill: white;
+}
+
+.button {
+    -fx-font-family: "Orbitron", sans-serif;
+    -fx-font-size: 14px;
+    -fx-background-radius: 5;
+    -fx-padding: 5 15;
+}
+
+.button:hover {
+    -fx-opacity: 0.9;
 }
 
