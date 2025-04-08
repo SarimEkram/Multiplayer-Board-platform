@@ -23,9 +23,14 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 import MatchmakingLeaderboard.Connect4.Matchmaking.Connect4Matchmaking;
 import MatchmakingLeaderboard.*;
+import networking.chat.InGameChat;
+import networking.chat.ChatManager;
+import networking.chat.ChatMessage;
+
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.Objects;
 
 import static javafx.scene.paint.Color.rgb;
@@ -97,6 +102,10 @@ public class Connect4Controller {
     private Timeline timeline;
     private int secondsElapsed = 0;
     private int moveCounter = 0;
+    private InGameChat chatSystem;
+    private InGameChat chatSession;
+
+
 
     @FXML
     public void initialize() {
@@ -159,6 +168,10 @@ public class Connect4Controller {
 
         // Start timer for the game
         startTimer();
+
+        chatSession = new InGameChat("connect4-" + localPlayer.getUserID() + "-" + opponentPlayer.getUserID());
+        chatSession.establishConnection();
+
     }
 
     /**
@@ -439,14 +452,33 @@ public class Connect4Controller {
         if (message == null || message.trim().isEmpty()) {
             return;
         }
-        // Determine the sender dynamically based on whose turn it is
+
+        // Determine sender based on turn (you are always PLAYER1)
         String sender = (connectBoard.getCurrentPlayer() == PLAYER1_ID)
                 ? localPlayer.getUsername()
-                : (opponentPlayer != null ? opponentPlayer.getUsername() : "Player 2");
-        addMessage(sender, message, false);
+                : opponentPlayer.getUsername();
+
+        // Send the message via chat system
+        chatSession.sendMessage(sender, message);
+
+        // Check chat history to verify if it passed the filter
+        var history = chatSession.chatManager.getChatHistory();
+        if (!history.isEmpty()) {
+            ChatMessage lastMessage = history.get(history.size() - 1);
+            if (lastMessage.getPlayerId().equals(sender) && lastMessage.getMessage().equals(message)) {
+                addMessage(sender, message, false);
+            } else {
+                addMessage("SYSTEM", "Warning: Message contains inappropriate content!", true);
+            }
+        } else {
+            addMessage("SYSTEM", "Warning: Message contains inappropriate content!", true);
+        }
+
         chatInput.clear();
         Platform.runLater(() -> chatScrollPane.setVvalue(1.0));
     }
+
+
 
     /**
      * Displays a confirmation overlay asking if the user wants to quit.
