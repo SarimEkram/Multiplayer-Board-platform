@@ -8,7 +8,15 @@ import javafx.scene.layout.VBox;
 
 import java.util.Objects;
 
+/**
+ * Controller class for managing user profile-related actions.
+ * Supports editing profile, changing password, and deleting the user account.
+ */
 public class ManageProfileController {
+
+    /**
+     * Navigates the user back to the home page.
+     */
     @FXML
     private void handleBackButtonClick() {
         SceneManager.switchTo(
@@ -17,6 +25,9 @@ public class ManageProfileController {
                 "home.css"
         );
     }
+    /**
+     * Navigates to the Edit Profile screen.
+     */
     @FXML
     private void handleEditProfileButtonClick() {
         SceneManager.switchTo(
@@ -25,6 +36,9 @@ public class ManageProfileController {
                 "edit_profile.css"
         );
     }
+    /**
+     * Navigates to the Change Password screen.
+     */
     @FXML
     private void handleChangePasswordButtonClick() {
         SceneManager.switchTo(
@@ -33,9 +47,13 @@ public class ManageProfileController {
                 "change_password.css"
         );
     }
-
+    /**
+     * Handles account deletion with confirmation dialog.
+     * If confirmed, deletes the user's account and navigates to login screen.
+     */
     @FXML
     private void handleDeleteProfile() {
+        // Create a confirmation dialog for deleting the account
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Delete Account");
 
@@ -70,6 +88,13 @@ public class ManageProfileController {
         });
     }
 
+    /**
+     * Utility method to show alert dialogs.
+     *
+     * @param title   The title of the alert window.
+     * @param content The message content.
+     * @param type    The type of alert
+     */
     private void showDialog(String title, String content, Alert.AlertType type) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
