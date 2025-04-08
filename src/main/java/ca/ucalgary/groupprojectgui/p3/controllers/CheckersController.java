@@ -174,7 +174,11 @@ public class CheckersController {
         String sessionId = localPlayer.getUserID() + "_vs_" + opponentPlayer.getUserID();
         chatSession = new InGameChat(sessionId);
         chatSession.establishConnection();
-
+        chatInput.setOnKeyPressed(event -> {
+            if (event.getCode().toString().equals("ENTER")) {
+                onSendMessage();
+            }
+        });
     }
 
     private void createBoard() {
