@@ -7,28 +7,23 @@ import MatchmakingLeaderboard.Player;
 import MatchmakingLeaderboard.PlayerDatabase;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.util.Duration;
-import javafx.animation.TranslateTransition;
 import ca.ucalgary.groupprojectgui.p3.SceneManager;
 import javafx.stage.Popup;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class HomePageController {
+    public HBox gameFriend;
     @FXML
     private VBox playersContainer;
     // Fields for game/home page
@@ -384,10 +379,84 @@ public class HomePageController {
 
         Button removeButton = new Button("✖");
         removeButton.getStyleClass().add("remove-button");
-        removeButton.setOnAction(this::handleRemoveFriend); // reuses your existing handler
+        removeButton.setOnAction(this::handleRemoveFriend);
 
-        friendItem.getChildren().addAll(avatar, nameLabel, spacer, removeButton);
+        Button challengeButton = new Button("⚔️");
+        challengeButton.getStyleClass().add("challenge-button");
+        challengeButton.setOnAction(this::handleChallengeFriend);
+
+        friendItem.getChildren().addAll(avatar, nameLabel, spacer, challengeButton, removeButton);
         return friendItem;
+    }
+
+
+
+    @FXML
+    public void handleChallengeFriend(ActionEvent event){
+        Button challengeButton = (Button) event.getSource();
+        HBox friendItem = (HBox) challengeButton.getParent();
+        Label friendLabel = (Label) friendItem.getChildren().get(1);
+        String friendName = friendLabel.getText();
+        Popup popup = new Popup();
+
+        VBox popupContent = new VBox(15);
+        popupContent.setAlignment(Pos.CENTER);
+        popupContent.setStyle(
+                "-fx-background-color: radial-gradient(radius 100%, #111, #333);" +
+                        "-fx-padding: 15;" +
+                        "-fx-border-color: #00ffff;" +
+                        "-fx-border-width: 2;" +
+                        "-fx-background-radius: 10;" +
+                        "-fx-border-radius: 10;" +
+                        "-fx-effect: dropshadow(gaussian, rgba(0,255,255,0.75), 10, 0.5, 0, 0);"
+        );
+
+        Label message = new Label("Challenge " + friendName + "?");
+        message.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
+
+        HBox buttonBox = new HBox(10);
+        buttonBox.setAlignment(Pos.CENTER);
+
+        // Yes button styling
+        Button yesButton = new Button("Yes");
+        yesButton.setStyle(
+                "-fx-background-color: #00ffff;" +      // Neon cyan background
+                        "-fx-text-fill: black;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-background-radius: 5;" +
+                        "-fx-effect: dropshadow(gaussian, rgba(0,255,255,0.8), 10, 0.5, 0, 0);"
+        );
+
+        Button noButton = new Button("No");
+        noButton.setStyle(
+                "-fx-background-color: #ff00ff;" +      // Neon magenta background
+                        "-fx-text-fill: black;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-background-radius: 5;" +
+                        "-fx-effect: dropshadow(gaussian, rgba(255,0,255,0.8), 10, 0.5, 0, 0);"
+        );
+
+
+        buttonBox.getChildren().addAll(yesButton, noButton);
+        popupContent.getChildren().addAll(message, buttonBox);
+        popup.getContent().add(popupContent);
+
+        // Position the popup near the friend item.
+        Bounds bounds = friendItem.localToScreen(friendItem.getBoundsInLocal());
+        popup.show(challengeButton.getScene().getWindow(), bounds.getMinX() + 50, bounds.getMinY() + 20);
+
+        // Action handlers for the buttons.
+        yesButton.setOnAction(e -> {
+            Player friendDet = PlayerDatabase.getPlayerByUsername(friendName);
+            friendOpponentID = friendDet.getUserID();
+            popup.hide();
+            System.out.println("Challenged friend " + friendName);
+        });
+
+        noButton.setOnAction(e -> {
+            popup.hide();
+            System.out.println("Challenge canceled for friend: " + friendName);
+        });
     }
 
     @FXML
@@ -463,6 +532,7 @@ public class HomePageController {
             System.out.println("Removal canceled for friend: " + friendName);
         });
     }
+
     @FXML
     private void openAddFriendPopup() {
         System.out.println("✅ openAddFriendPopup() triggered!");

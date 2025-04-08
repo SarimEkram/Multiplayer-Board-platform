@@ -90,7 +90,6 @@
             </BorderPane>
 
             <!-- RIGHT: FRIENDS PANEL -->
-            <!-- RIGHT: FRIENDS PANEL -->
             <VBox fx:id="friendsPanel" spacing="20" styleClass="right-sidebar" prefWidth="300">
                 <!-- Header -->
                 <HBox alignment="CENTER_LEFT">
@@ -157,9 +156,6 @@
                     </VBox>
                 </StackPane>
             </VBox>
-
-
-
         </HBox>
     </HBox>
 
