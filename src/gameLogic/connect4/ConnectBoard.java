@@ -6,6 +6,7 @@ public class ConnectBoard {
      * Manages the game board for a Connect 4 game. This class is responsible for initializing the board,
      * tracking player moves, and determining the state of the game.
      */
+
     // User inputs the row size
     private  int row = 6;
 
@@ -32,6 +33,7 @@ public class ConnectBoard {
      * @param player1 The identifier (usually a specific integer) for Player 1's pieces.
      * @param player2 The identifier (usually a specific integer) for Player 2's pieces.
      */
+
     public ConnectBoard(int player1, int player2){
         this.gameLogic = new Connect4(this);
         this.piece1 = player1;
@@ -47,6 +49,7 @@ public class ConnectBoard {
      * This is called in the constructor after the user decides to play connect 4 and selecting the size.
      * creates a 2D array filled with an integer value 0 which will be considered for an empty spot.
      */
+
     private void createBoard(){
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
@@ -55,9 +58,21 @@ public class ConnectBoard {
         }
     }
 
+    /**
+     * Gets the current player's piece identifier.
+     *
+     * @return The current player's piece (1 or 2).
+     */
+
     public int getCurrentPlayer() { //D
         return currentPlayer; // Returns the player whose turn it currently is
     }
+
+    /**
+     * Sets the current player to the specified piece identifier.
+     *
+     * @param player The player piece to set as the current player (1 or 2).
+     */
 
     public void setCurrentPlayer(int player) { //D
         this.currentPlayer = player; // Updates the current player to the specified player
@@ -65,8 +80,11 @@ public class ConnectBoard {
 
     /**
      * play from connect4 class is being called here
+     *
+     * @param column The column to play the piece in.
      * @return the 0 if the play is successful else -1
      */
+
     public int playPiece(int column){
         int row = Connect4.play(board, column, currentPlayer);
         if (row >= 0) {
@@ -75,15 +93,25 @@ public class ConnectBoard {
         return row;
     }
 
+    /**
+     * Returns the current state of the game board.
+     *
+     * @return A 2D array representing the game board.
+     */
+
     public int[][] getBoard() {
         return board;
     }
 
+    /**
+     * Gets the Connect4 game logic instance associated with this board.
+     *
+     * @return The Connect4 game logic instance.
+     */
 
     public Connect4 getGameLogic() {
         return gameLogic; // Added to allow access to gameLogic for testing
     }
-
 
     /**
      * This function determines if the game is complete due to a win or tie by either player
@@ -91,6 +119,7 @@ public class ConnectBoard {
      * else we check won() for both blue or red
      * @return True if game is complete, False otherwise
      */
+
     public boolean isGameOver () { //D
         // Checks if the game is over by verifying if the board is full or if either player has won
          return gameLogic.isFull(board) || gameLogic.won(board, piece1) || gameLogic.won(board, piece2);
@@ -100,6 +129,7 @@ public class ConnectBoard {
      * Clears the game board by resetting all its elements.
      * This will be called in the GUI controller class.
      */
+
     public void clearBoard(){ //D
         createBoard(); //D // just creates new board to clear the old one
         gameLogic.resetGame();
