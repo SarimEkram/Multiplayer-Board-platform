@@ -548,7 +548,7 @@ public class TicTacToeController {
                 String loser = playerXTurn ? localPlayer.getUsername() : opponentPlayer.getUsername();
                 String winner = playerXTurn ? opponentPlayer.getUsername() : localPlayer.getUsername();
 
-                addMessage("SYSTEM", "⏰ " + loser + " ran out of time!", true);
+                addMessage("SYSTEM", loser + " ⏰ Time's up!", true);
                 showGameOverPopup(winner, true);
                 gameOver = true;
                 boardContainer.setDisable(true);

@@ -710,17 +710,17 @@ public class Connect4Controller {
 
             // Send system chat warning at 10 seconds left
             if ((isP1 && !warningSentP1 && currentTimer.getRemainingTime() - elapsed <= 10000)) {
-                addMessage("SYSTEM", localPlayer.getUsername() + " has 10 seconds left!", true);
+                addMessage("SYSTEM", "⚠" + localPlayer.getUsername() + " has 10 seconds left!", true);
                 warningSentP1 = true;
             } else if (!isP1 && !warningSentP2 && currentTimer.getRemainingTime() - elapsed <= 10000) {
-                addMessage("SYSTEM", opponentPlayer.getUsername() + " has 10 seconds left!", true);
+                addMessage("SYSTEM", "⚠" + opponentPlayer.getUsername() + " has 10 seconds left!", true);
                 warningSentP2 = true;
             }
 
             if (currentTimer.isTimeExpired()) {
                 String loser = isP1 ? localPlayer.getUsername() : opponentPlayer.getUsername();
                 String winner = !isP1 ? localPlayer.getUsername() : opponentPlayer.getUsername();
-                addMessage("SYSTEM", loser + " ran out of time!", true);
+                addMessage("SYSTEM", loser + " ⏰ Time's up!", true);
                 showGameOverPopup(winner, true);
                 gameActive = false;
                 stopTimer();
