@@ -120,7 +120,7 @@ public class PlayerDatabase {
             bw.write("username,level,userID");
             for (GameType game : GameType.values()) {
                 bw.write("," + game + "_wins," + game + "_losses," + game + "_mmr,"
-                        + game + "_winRatio," + game + "_rankingPoints," + game + "_gameSignal");
+                        + game + "_winRatio," + game + "_rank," + game + "_gameSignal");
             }
             bw.newLine();
 
@@ -135,7 +135,7 @@ public class PlayerDatabase {
                             .append(",").append(p.getLosses(game))
                             .append(",").append(p.getMMR(game))
                             .append(",").append(p.getWinRatio(game))
-                            .append(",").append(p.getRank(game).getRankingPoints())
+                            .append(",").append(p.getRank(game))
                             .append(",").append(p.getGameSignal(game));
                 }
                 bw.write(line.toString());
