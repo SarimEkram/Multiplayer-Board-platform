@@ -11,6 +11,9 @@ import gameLogic.checkers.CheckersBoard;
 import gameLogic.checkers.CheckersPiece;
 import gameLogic.checkers.CheckersMove;
 import gameLogic.checkers.CheckersMove.Move;
+import networking.chat.InGameChat;
+import networking.chat.ChatManager;
+import networking.chat.ChatMessage;
 import ca.ucalgary.groupprojectgui.p3.SceneManager;
 import javafx.animation.KeyFrame;
 import javafx.animation.RotateTransition;
@@ -111,6 +114,8 @@ public class CheckersController {
     private final GameType gameType = GameType.CHECKERS;
     private Timeline timeline;
     private int secondsElapsed = 0;
+    private InGameChat chatSession;
+
 
     private static class Position {
         int row, col;
@@ -165,6 +170,11 @@ public class CheckersController {
         gameProcessor = new GameProcessor(localPlayer, opponentPlayer, gameType);
 
         startTimer();
+        // Step 3: Initialize the chat session using player info
+        String sessionId = localPlayer.getUserID() + "_vs_" + opponentPlayer.getUserID();
+        chatSession = new InGameChat(sessionId);
+        chatSession.establishConnection();
+
     }
 
     private void createBoard() {
@@ -639,19 +649,31 @@ public class CheckersController {
         if (message == null || message.trim().isEmpty()) {
             return;
         }
-        // Determine sender based on current turn.
-        // For this example, we assume localPlayer is assigned White and opponentPlayer is Black.
-        String sender;
-        if (gameLogic.getTurn() == Checkers.Turn.BLACK) {
-            sender = localPlayer.getUsername();
+
+        // You are always BLACK
+        String sender = (gameLogic.getTurn() == Checkers.Turn.BLACK)
+                ? localPlayer.getUsername()
+                : opponentPlayer.getUsername();
+
+        // Send the message using networking
+        chatSession.sendMessage(sender, message);
+
+        // Check if the message went through (was not blocked by the filter)
+        var history = chatSession.chatManager.getChatHistory();
+        if (!history.isEmpty()) {
+            ChatMessage lastMessage = history.get(history.size() - 1);
+            if (lastMessage.getPlayerId().equals(sender) && lastMessage.getMessage().equals(message)) {
+                addMessage(sender, message, false);
+            } else {
+                addMessage("SYSTEM", "Warning: Message contains inappropriate content!", true);
+            }
         } else {
-            sender = (opponentPlayer != null ? opponentPlayer.getUsername() : "Player 2");
+            addMessage("SYSTEM", "Warning: Message contains inappropriate content!", true);
         }
-        addMessage(sender, message, false);
+
         chatInput.clear();
         Platform.runLater(() -> chatScrollPane.setVvalue(1.0));
     }
-
 
     /**
      * Adds a message to the chat view.
