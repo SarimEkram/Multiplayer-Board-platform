@@ -438,11 +438,24 @@
 .remove-button {
     -fx-background-color: transparent;
     -fx-text-fill: #ffffff;
-    -fx-font-size: 14;
+    -fx-font-size: 20;
     -fx-cursor: hand;
     -fx-font-weight: bold;
 }
+
 .remove-button:hover {
+    -fx-text-fill: #ff4d4d; /* Red on hover */
+}
+
+.challenge-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 20;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}
+
+.challenge-button:hover {
     -fx-text-fill: #ff4d4d; /* Red on hover */
 }
 
