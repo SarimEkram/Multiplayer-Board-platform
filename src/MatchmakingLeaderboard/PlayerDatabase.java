@@ -48,7 +48,7 @@ public class PlayerDatabase {
                     int losses = Integer.parseInt(parts[index++]);
                     int mmr = Integer.parseInt(parts[index++]);
                     double winRatio = Double.parseDouble(parts[index++]);
-                    Rank rank = new Rank(Integer.parseInt(parts[index++]));
+                    RankTier tier = RankTier.valueOf(parts[index++]);
                     int gameSignal = Integer.parseInt(parts[index++]);
 
                     // Add wins and losses (which will update the win ratio)
@@ -62,7 +62,7 @@ public class PlayerDatabase {
                     player.setMMR(mmr, gameType);
                     player.setWinRatio(gameType, winRatio);
                     // Set rank using the rankingPoints (the Rank constructor updates the tier)
-                    player.setRank(rank, gameType);
+                    player.setRank(new Rank(tier), gameType);
                     // Set game signal
                     player.setGameSignal(gameSignal, gameType);
                 }
@@ -135,7 +135,7 @@ public class PlayerDatabase {
                             .append(",").append(p.getLosses(game))
                             .append(",").append(p.getMMR(game))
                             .append(",").append(p.getWinRatio(game))
-                            .append(",").append(p.getRank(game))
+                            .append(",").append(p.getRank(game).getCurrentTier())
                             .append(",").append(p.getGameSignal(game));
                 }
                 bw.write(line.toString());
