@@ -184,8 +184,8 @@ public class CheckersController {
         for (int row = 0; row < BOARD_ROWS; row++) {
             for (int col = 0; col < BOARD_COLUMNS; col++) {
                 StackPane cell = new StackPane();
-                cell.setPrefSize(68, 68);
-                Rectangle square = new Rectangle(68, 68);
+                cell.setPrefSize(66, 66);
+                Rectangle square = new Rectangle(66, 66);
                 square.getStyleClass().add("board-square");
                 if ((row + col) % 2 == 0) {
                     square.setFill(Color.valueOf("#16858c"));
@@ -642,7 +642,7 @@ public class CheckersController {
         // Determine sender based on current turn.
         // For this example, we assume localPlayer is assigned White and opponentPlayer is Black.
         String sender;
-        if (gameLogic.getTurn() == Checkers.Turn.WHITE) {
+        if (gameLogic.getTurn() == Checkers.Turn.BLACK) {
             sender = localPlayer.getUsername();
         } else {
             sender = (opponentPlayer != null ? opponentPlayer.getUsername() : "Player 2");

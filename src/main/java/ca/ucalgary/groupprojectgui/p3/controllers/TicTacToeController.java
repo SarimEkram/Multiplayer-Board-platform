@@ -205,12 +205,14 @@ public class TicTacToeController {
                 showGameOverPopup(localPlayer.getUsername(), true);
                 gameOver = true;
                 boardContainer.setDisable(true);
+                stopTimer();
                 gameProcessor.UpdateResults(localPlayer, opponentPlayer, gameType);
                 return;
             } else {
                 showGameOverPopup(opponentPlayer.getUsername(), true);
                 gameOver = true;
                 boardContainer.setDisable(true);
+                stopTimer();
                 gameProcessor.UpdateResults(opponentPlayer, localPlayer, gameType);
                 return;
             }
@@ -221,6 +223,7 @@ public class TicTacToeController {
         if (logicBoard.boardFull()) {
             addMessage("SYSTEM", "It's a draw!", true);
             showGameOverPopup("No one", false);
+            stopTimer();
             gameOver = true;
             boardContainer.setDisable(true);
             gameProcessor.ProcessDraw(localPlayer, opponentPlayer, gameType);
