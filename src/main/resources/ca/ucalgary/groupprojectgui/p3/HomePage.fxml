@@ -53,12 +53,13 @@
                                    pickOnBounds="true"
                                    onMouseClicked="#openManageProfile"/>
 
-                        <!-- Logout Button (new) -->
-                        <Button fx:id="logoutButtonTop"
-                                text="⎋"
+                        <Button fx:id="logoutButton"
+                                text="⎋ Logout"
                                 onAction="#handleLogout"
-                                styleClass="icon-button"
-                                prefWidth="45" prefHeight="45"/>
+                                styleClass="logout-button"
+                                prefWidth="120"
+                                prefHeight="40"/>
+
                     </HBox>
                 </top>
 
