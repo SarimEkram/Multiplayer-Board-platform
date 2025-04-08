@@ -5,6 +5,7 @@ import MatchmakingLeaderboard.GameType;
 import MatchmakingLeaderboard.Player;
 import MatchmakingLeaderboard.PlayerDatabase;
 import MatchmakingLeaderboard.TicTacToe.Matchmaking.TicTacToeMatchmaking;
+import javafx.scene.input.KeyCode;
 import networking.chat.InGameChat;
 import networking.chat.ChatMessage;
 import gameLogic.tictactoe.TicTacToe;
@@ -37,6 +38,7 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Objects;
 
 import static javafx.scene.paint.Color.rgb;
 
@@ -378,6 +380,12 @@ public class TicTacToeController {
         } catch (Exception e) {
             System.err.println("Error initializing chat: " + e.getMessage());
         }
+        chatInput.setOnKeyPressed(event -> {
+            if (Objects.requireNonNull(event.getCode()) == KeyCode.ENTER) {
+                onSendMessage();
+            }
+        });
+
     }
 
     private void stopTimer() {
