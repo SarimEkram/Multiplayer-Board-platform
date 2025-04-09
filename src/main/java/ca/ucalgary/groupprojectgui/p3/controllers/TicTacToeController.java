@@ -424,7 +424,7 @@ public class TicTacToeController {
             }
             addMessage("SYSTEM", "Welcome to Neon Tic Tac Toe", true);
             addMessage("SYSTEM", "Game initialized", true);
-            addMessage("SYSTEM", "Make your move in 30 seconds!", true);
+            addMessage("SYSTEM", "Make your move in 30 seconds", true);
         } catch (Exception e) {
             System.err.println("Error initializing chat: " + e.getMessage());
         }
