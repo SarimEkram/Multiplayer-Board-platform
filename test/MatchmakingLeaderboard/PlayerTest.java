@@ -6,186 +6,170 @@ import static org.junit.jupiter.api.Assertions.*;
 import static MatchmakingLeaderboard.GameType.*;
 
 public class PlayerTest {
-    private Player player;
-
-
+    private Player player = new Player("TestPlayer", 1, 1001);;
 
     @Test
-    void testConstructor() {
-        player = new Player("Ramesh", 5, 123456);
-        assertEquals("Ramesh", player.getUsername());
-        assertEquals(5, player.getLevel());
-        assertEquals(123456, player.getUserID());
+    void testConstructorInitialization() {
+        assertEquals("TestPlayer", player.getUsername());
+        assertEquals(1, player.getLevel());
+        assertEquals(1001, player.getUserID());
 
-        // Test defaults for each game type
-        assertEquals(0, player.getWins(TIC_TAC_TOE));
-        assertEquals(0, player.getLosses(TIC_TAC_TOE));
-        assertEquals(0.0, player.getWinRatio(TIC_TAC_TOE));
-        assertEquals(0, player.getMMR(TIC_TAC_TOE));
-        assertEquals(TIC_TAC_TOE.getGameCode(), player.getGameSignal(TIC_TAC_TOE));
-        assertNotNull(player.getRank(TIC_TAC_TOE));
-
-        assertEquals(0, player.getWins(CONNECT_FOUR));
-        assertEquals(0, player.getLosses(CONNECT_FOUR));
-        assertEquals(0.0, player.getWinRatio(CONNECT_FOUR));
-        assertEquals(0, player.getMMR(CONNECT_FOUR));
-        assertEquals(CONNECT_FOUR.getGameCode(), player.getGameSignal(CONNECT_FOUR));
-        assertNotNull(player.getRank(CONNECT_FOUR));
-
-        assertEquals(0, player.getWins(CHECKERS));
-        assertEquals(0, player.getLosses(CHECKERS));
-        assertEquals(0.0, player.getWinRatio(CHECKERS));
-        assertEquals(0, player.getMMR(CHECKERS));
-        assertEquals(CHECKERS.getGameCode(), player.getGameSignal(CHECKERS));
-        assertNotNull(player.getRank(CHECKERS));
+        // Verify default values for each game type
+        for (GameType gameType : GameType.values()) {
+            assertEquals(0, player.getWins(gameType));
+            assertEquals(0, player.getLosses(gameType));
+            assertEquals(0.0, player.getWinRatio(gameType));
+            assertEquals(0, player.getMMR(gameType));
+            assertEquals(gameType.getGameCode(), player.getGameSignal(gameType));
+            assertNotNull(player.getRank(gameType));
+            assertEquals(RankTier.BRONZE, player.getRank(gameType).getCurrentTier());
+        }
     }
 
     @Test
-    void testWinLossOperationsForTicTacToe() {
-        // Initial state
-        assertEquals(0, player.getWins(TIC_TAC_TOE));
-        assertEquals(0, player.getLosses(TIC_TAC_TOE));
-        assertEquals(0.0, player.getWinRatio(TIC_TAC_TOE));
+    void testWinLossOperations() {
+        // Test for all game types
+        for (GameType gameType : GameType.values()) {
+            // Initial state
+            assertEquals(0, player.getWins(gameType));
+            assertEquals(0, player.getLosses(gameType));
+            assertEquals(0.0, player.getWinRatio(gameType));
 
-        // Add wins
-        player.addWin(TIC_TAC_TOE);
-        player.addWin(TIC_TAC_TOE);
-        assertEquals(2, player.getWins(TIC_TAC_TOE));
-        assertEquals(0, player.getLosses(TIC_TAC_TOE));
-        assertEquals(1.0, player.getWinRatio(TIC_TAC_TOE));
+            // Add wins
+            player.addWin(gameType);
+            player.addWin(gameType);
+            assertEquals(2, player.getWins(gameType));
+            assertEquals(0, player.getLosses(gameType));
+            assertEquals(1.0, player.getWinRatio(gameType));
 
-        // Add losses
-        player.addLoss(TIC_TAC_TOE);
-        player.addLoss(TIC_TAC_TOE);
-        player.addLoss(TIC_TAC_TOE);
-        assertEquals(2, player.getWins(TIC_TAC_TOE));
-        assertEquals(3, player.getLosses(TIC_TAC_TOE));
-        assertEquals(0.4, player.getWinRatio(TIC_TAC_TOE));
-    }
-
-    @Test
-    void testWinLossOperationsForConnectFour() {
-        // Similar tests for Connect Four
-        player.addWin(CONNECT_FOUR);
-        assertEquals(1, player.getWins(CONNECT_FOUR));
-        assertEquals(0, player.getLosses(CONNECT_FOUR));
-        assertEquals(1.0, player.getWinRatio(CONNECT_FOUR));
-
-        player.addLoss(CONNECT_FOUR);
-        assertEquals(1, player.getWins(CONNECT_FOUR));
-        assertEquals(1, player.getLosses(CONNECT_FOUR));
-        assertEquals(0.5, player.getWinRatio(CONNECT_FOUR));
-    }
-
-    @Test
-    void testWinLossOperationsForCheckers() {
-        // Similar tests for Checkers
-        player.addLoss(CHECKERS);
-        assertEquals(0, player.getWins(CHECKERS));
-        assertEquals(1, player.getLosses(CHECKERS));
-        assertEquals(0.0, player.getWinRatio(CHECKERS));
-
-        player.addWin(CHECKERS);
-        player.addWin(CHECKERS);
-        assertEquals(2, player.getWins(CHECKERS));
-        assertEquals(1, player.getLosses(CHECKERS));
-        assertEquals(2.0/3, player.getWinRatio(CHECKERS));
+            // Add losses
+            player.addLoss(gameType);
+            player.addLoss(gameType);
+            player.addLoss(gameType);
+            assertEquals(2, player.getWins(gameType));
+            assertEquals(3, player.getLosses(gameType));
+            assertEquals(0.4, player.getWinRatio(gameType));
+        }
     }
 
     @Test
     void testWinRatioEdgeCases() {
-        // No games played
+        // Test division by zero protection
         assertEquals(0.0, player.getWinRatio(TIC_TAC_TOE));
 
         // Only losses
-        player.addLoss(TIC_TAC_TOE);
-        player.addLoss(TIC_TAC_TOE);
-        assertEquals(0.0, player.getWinRatio(TIC_TAC_TOE));
+        player.addLoss(CONNECT_FOUR);
+        player.addLoss(CONNECT_FOUR);
+        assertEquals(0.0, player.getWinRatio(CONNECT_FOUR));
 
         // Only wins
-        Player winningPlayer = new Player("Champion", 10, 999);
-        winningPlayer.addWin(CONNECT_FOUR);
-        winningPlayer.addWin(CONNECT_FOUR);
-        assertEquals(1.0, winningPlayer.getWinRatio(CONNECT_FOUR));
+        player.addWin(CHECKERS);
+        player.addWin(CHECKERS);
+        assertEquals(1.0, player.getWinRatio(CHECKERS));
+
+        // Exactly 50% win rate
+        player.addWin(TIC_TAC_TOE);
+        player.addLoss(TIC_TAC_TOE);
+        assertEquals(0.5, player.getWinRatio(TIC_TAC_TOE));
     }
 
     @Test
     void testMMROperations() {
-        // Test for each game type
-        player.setMMR(1500, TIC_TAC_TOE);
-        assertEquals(1500, player.getMMR(TIC_TAC_TOE));
+        // Test setting and getting MMR for each game type
+        player.setMMR(1200, TIC_TAC_TOE);
+        assertEquals(1200, player.getMMR(TIC_TAC_TOE));
 
-        player.setMMR(1600, CONNECT_FOUR);
-        assertEquals(1600, player.getMMR(CONNECT_FOUR));
+        player.setMMR(1500, CONNECT_FOUR);
+        assertEquals(1500, player.getMMR(CONNECT_FOUR));
 
-        player.setMMR(1700, CHECKERS);
-        assertEquals(1700, player.getMMR(CHECKERS));
+        player.setMMR(1800, CHECKERS);
+        assertEquals(1800, player.getMMR(CHECKERS));
+
+        // Test MMR independence between game types
+        assertNotEquals(player.getMMR(TIC_TAC_TOE), player.getMMR(CHECKERS));
     }
 
     @Test
     void testGameSignalOperations() {
-        // Test valid signals
-        player.setGameSignal(0, TIC_TAC_TOE);
-        assertEquals(0, player.getGameSignal(TIC_TAC_TOE));
-
-        player.setGameSignal(1, CONNECT_FOUR);
-        assertEquals(1, player.getGameSignal(CONNECT_FOUR));
-
-        player.setGameSignal(2, CHECKERS);
-        assertEquals(2, player.getGameSignal(CHECKERS));
-
-
+        // Test valid signal range
+        for (int signal = 0; signal <= 3; signal++) {
+            player.setGameSignal(signal, TIC_TAC_TOE);
+            assertEquals(signal, player.getGameSignal(TIC_TAC_TOE));
+        }
 
         // Test invalid signals
         assertThrows(IllegalArgumentException.class, () ->
-                player.setGameSignal(-1, TIC_TAC_TOE));
+                player.setGameSignal(-1, CONNECT_FOUR));
         assertThrows(IllegalArgumentException.class, () ->
-                player.setGameSignal(4, TIC_TAC_TOE));
+                player.setGameSignal(4, CHECKERS));
     }
 
     @Test
     void testRankOperations() {
-        // Create a new player and get their initial CONNECT_FOUR rank
-        Rank initialRank = player.getRank(CONNECT_FOUR);
+        // Test initial rank state
+        Rank initialRank = player.getRank(TIC_TAC_TOE);
         assertEquals(0, initialRank.getRankingPoints());
+        assertEquals(RankTier.BRONZE, initialRank.getCurrentTier());
 
-        // Adjust points for the player's CONNECT_FOUR rank
-        initialRank.adjustPoints(player, 100, CONNECT_FOUR);
+        // Test rank adjustment to SILVER (1000 points)
+        initialRank.adjustPoints(player, 1000, TIC_TAC_TOE);
+        assertEquals(1000, player.getRank(TIC_TAC_TOE).getRankingPoints());
+        assertEquals(RankTier.SILVER, player.getRank(TIC_TAC_TOE).getCurrentTier());
 
-        // Verify the player's CONNECT_FOUR rank was updated
-        assertEquals(100, player.getRank(CONNECT_FOUR).getRankingPoints());
+        // Test rank adjustment to GOLD (2000 points)
+        initialRank.adjustPoints(player, 1000, TIC_TAC_TOE); // Adding another 1000 to reach 2000
+        assertEquals(2000, player.getRank(TIC_TAC_TOE).getRankingPoints());
+        assertEquals(RankTier.GOLD, player.getRank(TIC_TAC_TOE).getCurrentTier());
 
-        // Create a new rank and set it for CONNECT_FOUR
-        Rank newRank = new Rank(RankTier.BRONZE);
-        player.setRank(newRank, CONNECT_FOUR);
+        // Test rank adjustment to DIAMOND (3000 points)
+        initialRank.adjustPoints(player, 1000, TIC_TAC_TOE); // Adding another 1000 to reach 3000
+        assertEquals(3000, player.getRank(TIC_TAC_TOE).getRankingPoints());
+        assertEquals(RankTier.DIAMOND, player.getRank(TIC_TAC_TOE).getCurrentTier());
 
-        // Verify the new rank was set correctly
-        assertEquals(newRank, player.getRank(CONNECT_FOUR));
-        assertEquals(200, player.getRank(CONNECT_FOUR).getRankingPoints());
-
-        // Verify rank is game-specific
-        assertNotEquals(newRank, player.getRank(TIC_TAC_TOE));
+        // Test negative points adjustment (should clamp to 0)
+        initialRank.adjustPoints(player, -4000, TIC_TAC_TOE);
         assertEquals(0, player.getRank(TIC_TAC_TOE).getRankingPoints());
+        assertEquals(RankTier.BRONZE, player.getRank(TIC_TAC_TOE).getCurrentTier());
+
+        // Test rank independence between game types
+        assertEquals(0, player.getRank(CONNECT_FOUR).getRankingPoints());
     }
 
     @Test
-    void testBasicSettersAndGetters() {
-        // Level
+    void testRankTierPromotion() {
+        Rank rank = player.getRank(CHECKERS);
+
+        // BRONZE to SILVER
+        rank.adjustPoints(player, RankTier.SILVER.getThresholdPoints(), CHECKERS);
+        assertEquals(RankTier.SILVER, rank.getCurrentTier());
+
+        // SILVER to GOLD
+        rank.adjustPoints(player, RankTier.GOLD.getThresholdPoints() - RankTier.SILVER.getThresholdPoints(), CHECKERS);
+        assertEquals(RankTier.GOLD, rank.getCurrentTier());
+
+        // GOLD to DIAMOND
+        rank.adjustPoints(player, RankTier.DIAMOND.getThresholdPoints() - RankTier.GOLD.getThresholdPoints(), CHECKERS);
+        assertEquals(RankTier.DIAMOND, rank.getCurrentTier());
+    }
+
+    @Test
+    void testPlayerInformationUpdates() {
+        // Test username
+        player.setUsername("NewUsername");
+        assertEquals("NewUsername", player.getUsername());
+
+        // Test level
         player.setLevel(10);
         assertEquals(10, player.getLevel());
 
-        // UserID
-        player.setUserID(654321);
-        assertEquals(654321, player.getUserID());
-
-        // Username should be immutable (no setter)
-        assertEquals("Ramesh", player.getUsername());
+        // Test userID
+        player.setUserID(2002);
+        assertEquals(2002, player.getUserID());
     }
 
     @Test
-    void testJoinMatch() {
-        // This tests that the method doesn't throw exceptions
-        // Without Mockito, we can't verify the actual matchmaking behavior
+    void testJoinMatchWithDifferentSignals() {
+        // Test that joinMatch doesn't throw exceptions for valid signals
         assertDoesNotThrow(() -> {
             player.setGameSignal(1, TIC_TAC_TOE);
             player.joinMatch(TIC_TAC_TOE);
@@ -200,16 +184,23 @@ public class PlayerTest {
             player.setGameSignal(3, CHECKERS);
             player.joinMatch(CHECKERS);
         });
+
+        // Signal 0 should do nothing
+        assertDoesNotThrow(() -> {
+            player.setGameSignal(0, TIC_TAC_TOE);
+            player.joinMatch(TIC_TAC_TOE);
+        });
     }
 
     @Test
-    void testJoinMatchWithInvalidSignal() {
-        player.setGameSignal(0, TIC_TAC_TOE);
-        assertDoesNotThrow(() -> player.joinMatch(TIC_TAC_TOE));
+    void testMultipleGameTypeIndependence() {
+        // Verify that operations on one game type don't affect others
+        player.addWin(TIC_TAC_TOE);
+        player.setMMR(1500, TIC_TAC_TOE);
+        player.getRank(TIC_TAC_TOE).adjustPoints(player, 100, TIC_TAC_TOE);
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            player.setGameSignal(4, CONNECT_FOUR);
-            player.joinMatch(CONNECT_FOUR);
-        });
+        assertEquals(0, player.getWins(CONNECT_FOUR));
+        assertEquals(0, player.getMMR(CONNECT_FOUR));
+        assertEquals(0, player.getRank(CONNECT_FOUR).getRankingPoints());
     }
 }
