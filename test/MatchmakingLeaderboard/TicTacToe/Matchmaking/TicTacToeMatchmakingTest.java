@@ -93,8 +93,8 @@ public class TicTacToeMatchmakingTest {
      */
     @Test
     public void testCheckPlayers_Compatible() {
-        player1.setRank(new Rank(6), GameType.TIC_TAC_TOE);
-        player2.setRank(new Rank(6), GameType.TIC_TAC_TOE);
+        player1.setRank(new Rank(RankTier.BRONZE), GameType.TIC_TAC_TOE);
+        player2.setRank(new Rank(RankTier.BRONZE), GameType.TIC_TAC_TOE);
         player1.setGameSignal(1, GameType.TIC_TAC_TOE);
         player2.setGameSignal(1, GameType.TIC_TAC_TOE);
         player1.setLevel(20);
@@ -108,8 +108,8 @@ public class TicTacToeMatchmakingTest {
      */
     @Test
     public void testCheckPlayers_NotCompatibleOne() {
-        player1.setRank(new Rank(17), GameType.TIC_TAC_TOE);
-        player2.setRank(new Rank(6), GameType.TIC_TAC_TOE);
+        player1.setRank(new Rank(RankTier.BRONZE), GameType.TIC_TAC_TOE);
+        player2.setRank(new Rank(RankTier.BRONZE), GameType.TIC_TAC_TOE);
         player1.setGameSignal(1, GameType.TIC_TAC_TOE);
         player2.setGameSignal(1, GameType.TIC_TAC_TOE);
         player1.setLevel(38);
@@ -122,8 +122,8 @@ public class TicTacToeMatchmakingTest {
      */
     @Test
     public void testCheckPlayers_NotCompatibleTwo() {
-        player1.setRank(new Rank(2500), GameType.TIC_TAC_TOE);
-        player2.setRank(new Rank(500), GameType.TIC_TAC_TOE);
+        player1.setRank(new Rank(RankTier.GOLD), GameType.TIC_TAC_TOE);
+        player2.setRank(new Rank(RankTier.BRONZE), GameType.TIC_TAC_TOE);
         player1.setGameSignal(1, GameType.TIC_TAC_TOE);
         player2.setGameSignal(1, GameType.TIC_TAC_TOE);
         player1.setLevel(27);
@@ -136,8 +136,8 @@ public class TicTacToeMatchmakingTest {
      */
     @Test
     public void testCheckPlayers_NotCompatibleThree() {
-        player1.setRank(new Rank(2500), GameType.TIC_TAC_TOE);
-        player2.setRank(new Rank(500), GameType.TIC_TAC_TOE);
+        player1.setRank(new Rank(RankTier.GOLD), GameType.TIC_TAC_TOE);
+        player2.setRank(new Rank(RankTier.BRONZE), GameType.TIC_TAC_TOE);
         player1.setGameSignal(2, GameType.CONNECT_FOUR); // Different game
         player2.setGameSignal(1, GameType.TIC_TAC_TOE);
         player1.setLevel(27);
@@ -150,11 +150,11 @@ public class TicTacToeMatchmakingTest {
      */
     @Test
     public void testFindOpponent(){
-        player1.setRank(new Rank(900), GameType.TIC_TAC_TOE);
+        player1.setRank(new Rank(RankTier.BRONZE), GameType.TIC_TAC_TOE);
         player1.setGameSignal(1, GameType.TIC_TAC_TOE);
         player1.setLevel(17);
 
-        player2.setRank(new Rank(800), GameType.TIC_TAC_TOE);
+        player2.setRank(new Rank(RankTier.BRONZE), GameType.TIC_TAC_TOE);
         player2.setGameSignal(1,GameType.TIC_TAC_TOE);
         player2.setLevel(18);
         PlayerDatabase.savePlayer(player1);

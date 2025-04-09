@@ -14,6 +14,7 @@ import gameLogic.checkers.CheckersMove.Move;
 import networking.chat.InGameChat;
 import networking.chat.ChatManager;
 import networking.chat.ChatMessage;
+import networking.game.TurnTimer;
 import ca.ucalgary.groupprojectgui.p3.SceneManager;
 import javafx.animation.KeyFrame;
 import javafx.animation.RotateTransition;
@@ -39,6 +40,11 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+
+import java.io.*;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
 
 import java.io.IOException;
 import java.net.URL;
@@ -114,7 +120,16 @@ public class CheckersController {
     private final GameType gameType = GameType.CHECKERS;
     private Timeline timeline;
     private int secondsElapsed = 0;
+
     private InGameChat chatSession;
+
+    private Timeline turnCountdown;
+    private int turnSecondsElapsed = 0;
+
+    private static final String CHECKERS_CHAT_CSV = "checkersChatHistory.csv";
+
+
+
 
 
     private static class Position {
@@ -127,7 +142,6 @@ public class CheckersController {
 
     @FXML
     public void initialize() {
-        initializeChat();
         setupHeaderWithSpacing();
 
         gameTitle.setText("OMG CHECKERS");
@@ -174,11 +188,17 @@ public class CheckersController {
         String sessionId = localPlayer.getUserID() + "_vs_" + opponentPlayer.getUserID();
         chatSession = new InGameChat(sessionId);
         chatSession.establishConnection();
+
+        initializeChat();
+        clearChatHistoryCSV();
+
         chatInput.setOnKeyPressed(event -> {
             if (event.getCode().toString().equals("ENTER")) {
                 onSendMessage();
             }
         });
+        startTurnTimer();
+
     }
 
     private void createBoard() {
@@ -372,6 +392,7 @@ public class CheckersController {
                     return;
                 } else {
                     updateTurnIndicator();
+                    startTurnTimer(); // <-- start new turn timer when turn changes
                 }
                 return;
             } else {
@@ -695,61 +716,165 @@ public class CheckersController {
             return;
         }
 
-        // Create the container for one message
+        // Track message in chat history
+        ChatMessage lastMessage = null;
+        for (ChatMessage msg : chatSession.chatManager.getChatHistory()) {
+            if (msg.getPlayerId().equals(sender) && msg.getMessage().equals(text)) {
+                lastMessage = msg;
+                break;
+            }
+        }
+
+        if (lastMessage != null) {
+            lastMessage.markAsRead(String.valueOf(LoginController.loginId));
+
+            // Only log non-system messages OR system messages that are not time warnings
+            if (!isSystem || !(text.contains("⚠") || text.contains("Time's up"))) {
+                writeChatHistoryToCSV();
+            }
+        }
+
+        // Get timestamp if available
+        String timestamp = (lastMessage != null)
+                ? lastMessage.getTimestamp().format(DateTimeFormatter.ofPattern("HH:mm:ss"))
+                : "";
+
+        // Set up chat container
         HBox messageContainer = new HBox(5);
-        // Remove alternating CSS classes and add base style (if any)
         messageContainer.getStyleClass().add("chat-message");
 
-        // Determine the color to use for both text and the left border.
+        // Determine color
         String colorCode;
         if (isSystem) {
-            colorCode = "#ffff00";  // Yellow for system messages
+            colorCode = "#ffff00";  // Yellow
         } else if (localPlayer != null && sender.equalsIgnoreCase(localPlayer.getUsername())) {
-            colorCode = "#ff00ff";  // Neon pink for local player (assumed White)
+            colorCode = "#ff00ff";  // Neon pink
         } else if (opponentPlayer != null && sender.equalsIgnoreCase(opponentPlayer.getUsername())) {
-            colorCode = "#00ffff";  // Neon cyan for opponent (assumed Black)
+            colorCode = "#00ffff";  // Neon cyan
         } else {
-            colorCode = "#ffffff";  // Fallback white
+            colorCode = "#ffffff";  // Default white
         }
-        // Force a 3px left vertical border using an inline style
+
         messageContainer.setStyle("-fx-border-width: 0 0 0 3px; -fx-border-color: " + colorCode + ";");
 
-        // Create the sender label
-        Label senderLabel = new Label(sender + ":");
+        // Sender label (with timestamp if not system)
+        Label senderLabel = new Label();
+        if (!isSystem && !timestamp.isEmpty()) {
+            senderLabel.setText("[" + timestamp + "] " + sender + ":");
+        } else {
+            senderLabel.setText(sender + ":");
+        }
         senderLabel.setFont(Fonts.rajdhani(FontWeight.BOLD, 14));
 
-        // Create the message label
+        // Message label
         Label messageLabel = new Label(text);
         messageLabel.setFont(Fonts.rajdhaniRegular(14));
 
-        // Apply inline text color styles to override any CSS rules:
+        senderLabel.setStyle("-fx-text-fill: " + colorCode + ";");
+        messageLabel.setStyle("-fx-text-fill: " + colorCode + ";");
+
+        // DropShadow for system messages
         if (isSystem) {
-            senderLabel.setStyle("-fx-text-fill: #ffff00;");
-            messageLabel.setStyle("-fx-text-fill: #ffff00;");
             messageLabel.setEffect(new DropShadow(5, Color.YELLOW));
-        } else {
-            if (localPlayer != null && sender.equalsIgnoreCase(localPlayer.getUsername())) {
-                senderLabel.setStyle("-fx-text-fill: #ff00ff;");
-                messageLabel.setStyle("-fx-text-fill: #ff00ff;");
-            } else if (opponentPlayer != null && sender.equalsIgnoreCase(opponentPlayer.getUsername())) {
-                senderLabel.setStyle("-fx-text-fill: #00ffff;");
-                messageLabel.setStyle("-fx-text-fill: #00ffff;");
-            } else {
-                senderLabel.setStyle("-fx-text-fill: #ffffff;");
-                messageLabel.setStyle("-fx-text-fill: #ffffff;");
-            }
         }
 
         messageContainer.getChildren().addAll(senderLabel, messageLabel);
         chatMessages.getChildren().add(messageContainer);
 
-        // Increment message count if needed
         messageCount++;
 
-        // Auto-scroll to the bottom
         if (chatScrollPane != null) {
             Platform.runLater(() -> chatScrollPane.setVvalue(1.0));
         }
     }
+
+
+    private void startTurnTimer() {
+        if (turnCountdown != null) {
+            turnCountdown.stop();
+        }
+
+        turnSecondsElapsed = 0;  // Reset counter
+        updateTimerLabel();      // Reset GUI display
+
+        turnCountdown = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+            turnSecondsElapsed++;
+            updateTimerLabel();
+
+            if (turnSecondsElapsed == 35) {
+                chatSession.sendMessage("SYSTEM", "⚠ 10 seconds remaining!");
+                addMessage("SYSTEM", "⚠ 10 seconds remaining!", true);
+            }
+
+            if (turnSecondsElapsed >= 45) {
+                turnCountdown.stop();
+                handleTurnTimeout();
+            }
+        }));
+
+        turnCountdown.setCycleCount(Timeline.INDEFINITE);
+        turnCountdown.play();
+    }
+
+
+    private void updateTimerLabel() {
+        Platform.runLater(() -> {
+            int minutes = turnSecondsElapsed / 60;
+            int seconds = turnSecondsElapsed % 60;
+            timeElapsed.setText(String.format("TIME: %02d:%02d", minutes, seconds));
+        });
+    }
+
+
+    private void handleTurnTimeout() {
+        Platform.runLater(() -> {
+            addMessage("SYSTEM", "⏰ Time's up!", true);
+            boardGrid.setDisable(true); // Disable player input
+
+            Checkers.Turn currentTurn = gameLogic.getTurn();
+
+            // Award win to opponent
+            if (currentTurn == Checkers.Turn.BLACK) {
+                turnPiece.getStyleClass().clear();
+                turnPiece.getStyleClass().add("checker-white");
+                turnLabel.setText(opponentPlayer.getUsername() + " wins!");
+            } else {
+                turnPiece.getStyleClass().clear();
+                turnPiece.getStyleClass().add("checker-black");
+                turnLabel.setText(opponentPlayer.getUsername() + " wins!");
+            }
+
+            stopTimer(); // Stop GUI timer
+            if (turnCountdown != null) {
+                turnCountdown.stop();
+            }
+
+            showGameOverPopup(opponentPlayer.getUsername(), true);
+            gameProcessor.UpdateResults(opponentPlayer, localPlayer, gameType);
+        });
+    }
+
+    private void writeChatHistoryToCSV() {
+        List<ChatMessage> history = chatSession.chatManager.getChatHistory();
+        try (PrintWriter writer = new PrintWriter(new FileWriter(CHECKERS_CHAT_CSV))) {
+            writer.println("Timestamp,Sender,Message,ReadBy");
+            for (ChatMessage msg : history) {
+                String timestamp = msg.getTimestamp().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+                String readers = String.join(";", msg.getReaders());
+                writer.printf("\"%s\",\"%s\",\"%s\",\"%s\"%n", timestamp, msg.getPlayerId(), msg.getMessage(), readers);
+            }
+        } catch (IOException e) {
+            System.err.println("Failed to write chat history: " + e.getMessage());
+        }
+    }
+
+    private void clearChatHistoryCSV() {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(CHECKERS_CHAT_CSV))) {
+            writer.println("Timestamp,Sender,Message,ReadBy"); // CSV header
+        } catch (IOException e) {
+            System.err.println("Failed to clear chat history: " + e.getMessage());
+        }
+    }
+
 
 }

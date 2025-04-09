@@ -94,8 +94,8 @@ public class CheckersMatchmakingTest {
      */
     @Test
     public void testCheckPlayers_Compatible() {
-        player1.setRank(new Rank(6), GameType.CHECKERS);
-        player2.setRank(new Rank(6), GameType.CHECKERS);
+        player1.setRank(new Rank(RankTier.BRONZE), GameType.CHECKERS);
+        player2.setRank(new Rank(RankTier.BRONZE), GameType.CHECKERS);
         player1.setLevel(20);
         player2.setLevel(26);
 
@@ -107,8 +107,8 @@ public class CheckersMatchmakingTest {
      */
     @Test
     public void testCheckPlayers_NotCompatibleOne() {
-        player1.setRank(new Rank(17), GameType.CHECKERS);
-        player2.setRank(new Rank(6), GameType.CHECKERS);
+        player1.setRank(new Rank(RankTier.BRONZE), GameType.CHECKERS);
+        player2.setRank(new Rank(RankTier.BRONZE), GameType.CHECKERS);
         player1.setLevel(38);
         player2.setLevel(26);
 
@@ -120,8 +120,8 @@ public class CheckersMatchmakingTest {
      */
     @Test
     public void testCheckPlayers_NotCompatibleTwo() {
-        player1.setRank(new Rank(2500), GameType.CHECKERS);
-        player2.setRank(new Rank(500), GameType.CHECKERS);
+        player1.setRank(new Rank(RankTier.GOLD), GameType.CHECKERS);
+        player2.setRank(new Rank(RankTier.BRONZE), GameType.CHECKERS);
         player1.setLevel(27);
         player2.setLevel(26);
 
@@ -133,8 +133,8 @@ public class CheckersMatchmakingTest {
      */
     @Test
     public void testCheckPlayers_NotCompatibleThree() {
-        player1.setRank(new Rank(2500), GameType.CHECKERS);
-        player2.setRank(new Rank(500), GameType.CHECKERS);
+        player1.setRank(new Rank(RankTier.GOLD), GameType.CHECKERS);
+        player2.setRank(new Rank(RankTier.BRONZE), GameType.CHECKERS);
         player1.setLevel(27);
         player2.setLevel(26);
 
@@ -146,11 +146,11 @@ public class CheckersMatchmakingTest {
      */
     @Test
     public void testFindOpponent(){
-        player1.setRank(new Rank(900), GameType.CHECKERS);
+        player1.setRank(new Rank(RankTier.BRONZE), GameType.CHECKERS);
         player1.setGameSignal(3, GameType.CHECKERS);
         player1.setLevel(17);
 
-        player2.setRank(new Rank(800), GameType.CHECKERS);
+        player2.setRank(new Rank(RankTier.BRONZE), GameType.CHECKERS);
         player2.setGameSignal(3,GameType.CHECKERS);
         player2.setLevel(18);
         PlayerDatabase.savePlayer(player1);

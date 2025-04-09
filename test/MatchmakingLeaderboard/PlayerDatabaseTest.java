@@ -41,7 +41,7 @@ public class PlayerDatabaseTest {
         testPlayer.addLoss(CONNECT_FOUR);
         testPlayer.setMMR(1500, CHECKERS);
         testPlayer.setGameSignal(1, TIC_TAC_TOE);
-        testPlayer.setRank(new Rank(100), TIC_TAC_TOE);
+        testPlayer.setRank(new Rank(RankTier.SILVER), TIC_TAC_TOE);
 
         // Ensure clean state before each test
         PlayerDatabase.loadPlayersFromCSV();
@@ -95,7 +95,7 @@ public class PlayerDatabaseTest {
         testPlayer.addWin(TIC_TAC_TOE);
         testPlayer.setMMR(1600, CHECKERS);
         testPlayer.setGameSignal(2, CONNECT_FOUR);
-        testPlayer.setRank(new Rank(200), CONNECT_FOUR);
+        testPlayer.setRank(new Rank(RankTier.SILVER), CONNECT_FOUR);
 
         // Save updates
         assertTrue(PlayerDatabase.savePlayer(testPlayer));

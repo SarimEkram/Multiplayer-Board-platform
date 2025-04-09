@@ -110,10 +110,10 @@ public class TurnTimer {
         System.out.println("Network: Warning sent to player " + playerId);
     }
 
-
-
-
-
-
-
+    public long getStartTime() {
+        return this.startTime;
+    }
+    public long getRemainingTime() {
+        return this.remainingTime;
+    }
 }
