@@ -9,7 +9,7 @@ public class CheckersPiece {
      * Enum representing the possible colours of a checkers piece.
      */
     public enum Colour {
-        RED, BLACK
+        WHITE, BLACK
     }
     
     /**
@@ -19,8 +19,13 @@ public class CheckersPiece {
         NORMAL, KING
     }
 
+    public void setHasAnimatedKing(boolean hasAnimatedKing) {
+        this.hasAnimatedKing = hasAnimatedKing;
+    }
+
+    public boolean hasAnimatedKing ;
     private final Colour colour;
-    private final Type type;
+    private Type type;
 
 
     /**
@@ -32,6 +37,7 @@ public class CheckersPiece {
     public CheckersPiece(Colour colour) {
         this.colour = colour;
         this.type = Type.NORMAL;
+        this.hasAnimatedKing=false;
     }
 
     /**
@@ -48,8 +54,9 @@ public class CheckersPiece {
      * 
      */
     public void promoteToKing() {
-        
+        this.type = Type.KING;
     }
+
 
     /**
      * Retrieves the colour of this checkers piece.

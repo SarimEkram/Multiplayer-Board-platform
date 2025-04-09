@@ -20,18 +20,24 @@ public interface IGameLeaderboard {
     /**
      * Updates a player's score in the leaderboard.
      */
-    void updateScore(int playerId, int score);
 
     /**
      * Retrieves the top-ranked players from the leaderboard.
      *
      * @return List of top players.
      */
-    List<Player> getTopPlayers();
+    //List<Player> getTopPlayers();
 
 
     /**
      * Displays the leaderboard sorted by rank.
      */
     void displayLeaderboard();
+
+    static void updatePlayer(Player player, boolean Won, int gameType){
+
+    }
+    void sortLeaderboard();
+
+
 }

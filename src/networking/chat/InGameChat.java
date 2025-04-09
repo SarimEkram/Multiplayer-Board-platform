@@ -1,73 +1,129 @@
 package networking.chat;
+
 import networking.NetworkHandler;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Handles real-time in-game chat between players during an active game session.
+ * Manages sending, receiving, and storing chat messages.
  */
 public class InGameChat extends NetworkHandler {
+    private String gameId;       // Unique game session identifier
+    public ChatManager chatManager;
+    public boolean isConnected;
 
-    private String gameId;  // Unique identifier for the game session
-    private List<String> chatHistory;  // Stores chat messages
+    public Set<String> currentlyTyping; //  Track players who are typing
 
     /**
-     * Constructor to initialize the in-game chat.
+     * Initializes the in-game chat system for a given game session.
      *
      * @param gameId The unique ID of the game session.
      */
     public InGameChat(String gameId) {
         super(gameId);
-        // Initialize chat history and set up necessary configurations
+        this.gameId = gameId;
+        this.chatManager = new ChatManager();
+        this.isConnected = false;
+        this.currentlyTyping = new HashSet<>();
     }
 
     /**
-     * Sends a chat message in real-time to all players in the session.
+     * Sends a chat message from a player.
      *
-     * @param playerId The ID of the player sending the message.
-     * @param message The content of the message.
+     * @param playerId The player who is sending the message.
+     * @param message  The content of the message.
      */
     public void sendMessage(String playerId, String message) {
-        // Format and add the message to the chat history
-        // Send the message to the connected players via WebSocket or another protocol
+        if (!isConnected) {
+            System.out.println("Error: Cannot send message. chat is not connected.");
+            return;
+        }
+
+        chatManager.addMessage(playerId, message);
+        stopTyping(playerId); //  Remove typing status once message is sent
+        System.out.println("Message sent: " + message);
     }
 
     /**
-     * Receives a chat message from a player in real-time.
-     *
-     * @param playerId The ID of the player who sent the message.
-     * @param message The content of the received message.
+     * Retrieves and displays the full chat history for the session.
      */
-    public void receiveMessage(String playerId, String message) {
-        // Process the incoming message and update chat history
-        // Notify other players of the new message in real-time
+    public void displayChatHistory() {
+        List<ChatMessage> history = chatManager.getChatHistory();
+        if (history.isEmpty()) {
+            System.out.println("No chat history available.");
+            return;
+        }
+
+        System.out.println("chat History:");
+        for (ChatMessage message : history) {
+            System.out.println(message);
+        }
     }
 
     /**
-     * Retrieves the chat history for the current game session.
-     *
-     * @return A list of chat messages exchanged during the session.
+     * Clears the chat history.
      */
-    public List<String> getChatHistory() {
-        // Return the stored chat messages for the game session
-        return null;
+    public void clearChat() {
+        chatManager.clearChatHistory();
     }
 
     /**
-     * Establishes a real-time connection for the chat system.
+     * Establishes the connection for the chat system.
+     * This simulates setting up a WebSocket or another networking protocol.
      */
     @Override
     public void establishConnection() {
-        // Initialize WebSocket or networking connection for real-time chat
-        // Handle connection setup logic
+        isConnected = true;
+        System.out.println("chat connection established.");
     }
 
     /**
-     * Closes the real-time chat connection.
+     * Closes the connection and stops message transmission.
      */
     @Override
     public void closeConnection() {
-        // Gracefully close the WebSocket or networking connection
-        // Ensure proper cleanup of resources
+        isConnected = false;
+        System.out.println("chat connection closed.");
+    }
+
+    /**
+     * Simulates receiving a message from a player.
+     *
+     * @param playerId The ID of the player who sent the message.
+     * @param message  The message received.
+     */
+    public void receiveMessage(String playerId, String message) {
+        if (!isConnected) {
+            System.out.println("Error: Cannot receive message. chat is not connected.");
+            return;
+        }
+
+        chatManager.addMessage(playerId, message);
+        stopTyping(playerId); // Remove typing status on receive
+        System.out.println("New message received: " + message);
+    }
+
+    /**
+     * Marks a player as currently typing.
+     *
+     * @param playerId The ID of the player who is typing.
+     */
+    public void startTyping(String playerId) {
+        if (!currentlyTyping.contains(playerId)) {
+            currentlyTyping.add(playerId);
+            System.out.println(playerId + " is typing...");
+        }
+    }
+
+    /**
+     * Removes a player from the typing indicator.
+     *
+     * @param playerId The ID of the player who stopped typing.
+     */
+    public void stopTyping(String playerId) {
+        if (currentlyTyping.remove(playerId)) {
+            System.out.println(playerId + " stopped typing.");
+        }
     }
 }

@@ -9,38 +9,44 @@ public class UserLogin {
 
     /**
      * Verifies the user and return the login status
-     * @param email User email that has been entered
+     * @param userid Userid that has been entered
      * @param password User password that has been entered
      * @return Status of login
      */
-    public static int loginUser(String email, String password){
-        // Check if email and password are not null
-        if (!validateInput(email, password)){
+    public static int loginUser(String userid, String password) {
+        User user1 = UserDatabase.getUserByUsername(userid);
+        if (user1 == null) {
+            // User does not exist.
+            return -2;
+        }
+
+        String email = user1.getEmail();
+
+        if (!validateInput(email, password)) {
             return -1;
         }
-        // Check in database, if user exist or not
-        if (!userExist(email)){
-            return -1;
+        if (!userExist(email)) {
+            return -2;
         }
-        // Get saved password from database
+
+        // Get saved password from database.
         String savedPass = storedPassword(email);
-        if (!verifyPassword(password, savedPass)){
-            return -1;
+        if (!verifyPassword(password, savedPass)) {
+            // Return a distinct code for wrong password.
+            return -3;
         }
 
-        // login is successful
-        User user = UserDatabase.getUserByEmail(email); // get user to update status and what not
-
+        // Login is successful, update user online status, create session, etc.
+        User user = UserDatabase.getUserByEmail(email);
         int userID = user.getUserID();
-
-        user.setOnlineStatus(true); // set the user as online
-
+        user.setOnlineStatus(true);
         createSession(userID);
-
         createAuthToken(userID);
 
         return userID;
     }
+
+
 
     /**
      * Validates Input parameters

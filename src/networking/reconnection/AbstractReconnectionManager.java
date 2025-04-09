@@ -26,6 +26,13 @@ public abstract class AbstractReconnectionManager {
     public abstract boolean attemptReconnection(String playerId);
 
     /**
+     * Notifies other players that a player has reconnected.
+     *
+     * @param playerId The ID of the player who has reconnected.
+     */
+    public abstract void notifyReconnection(String playerId);
+
+    /**
      * Getter for game ID.
      *
      * @return The unique game session ID.

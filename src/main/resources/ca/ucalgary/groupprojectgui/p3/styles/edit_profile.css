@@ -1,0 +1,211 @@
+.root {
+    -fx-font-family: "Rajdhani", sans-serif;
+    -fx-text-fill: #fff;
+
+}
+
+/* Example for the form container */
+.form {
+    -fx-padding: 5 60 60 60;
+    -fx-spacing: 16;
+
+
+}
+
+#gridBackground {
+    -fx-background-color: transparent;
+}
+
+/* Form Header: Title and Subtitle styles */
+.form-header {
+    -fx-alignment: center;
+
+    -fx-padding: 50;
+}
+.form-title {
+    -fx-font-family: "Orbitron", sans-serif;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ff00ff;
+    -fx-effect: dropshadow(gaussian, #ff00ff, 5, 0, 0, 0),
+    dropshadow(gaussian, #00ffff, 10, 0, 0, 0);
+    /* JavaFX does not support text-transform so the label text is set as uppercase in FXML */
+}
+.form-subtitle {
+    -fx-text-fill: #ccc;
+    -fx-font-size: 14px;
+}
+
+/* Form groups & labels with tight spacing */
+.form-group {
+    -fx-spacing: 12;
+
+}
+
+
+.form-label, .inline-label {
+    -fx-text-fill: #00ffff;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, #00ffff, 5, 0, 0, 0);
+    -fx-font-size: 16px;
+}
+.text-field{
+    -fx-padding: 10;
+}
+
+.text-field,.password-field {
+    -fx-background-color: rgba(0, 0, 0, 0.5);
+    -fx-border-color: #00ffff;
+    -fx-border-width: 0.5;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-text-fill: #fff;
+    -fx-font-size: 14px;
+    -fx-prompt-text-fill: rgba(255,255,255,0.5);
+    -fx-pref-width: 300px;   /* New line to increase the field width */
+
+
+}
+.text-field:focused, .password-field:focused {
+    -fx-background-color: transparent, transparent, transparent;
+    -fx-background-insets: 0, 0, 0;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-border-color: #ff00ff;
+    -fx-effect: dropshadow(gaussian, #ff00ff, 12, 0.8, 0, 0);
+}
+
+
+
+
+
+
+/* Remember Me and Forgot Password Row */
+.remember-forgot {
+    -fx-alignment: center-left;
+    -fx-spacing: 15;
+}
+.remember-me {
+    -fx-alignment: center-left;
+    -fx-spacing: 5;
+}
+
+/* Button styling: Neon gradient button with defined glow */
+.btn {
+    -fx-background-color: linear-gradient(to right, #ff00ff, #00ffff);
+    -fx-background-radius: 5;
+    -fx-text-fill: #000;
+    -fx-font-family: "Orbitron", sans-serif;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-padding: 12;
+    -fx-border-radius: 5;
+}
+.btn:hover {
+    -fx-background-color: linear-gradient(to right, #ff00ff, #00ffff, #ff00ff);
+    -fx-effect: dropshadow(gaussian, #00ffff, 15, 0, 0, 5);
+}
+
+
+.save-btn {
+    -fx-background-color: #00ffff;
+    -fx-background-radius: 5;
+    -fx-text-fill: #000;
+    -fx-font-family: "Orbitron", sans-serif;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-padding: 12;
+    -fx-border-radius: 5;
+}
+/* Action Links (Register and Forgot Password) */
+.action-links {
+    -fx-alignment: center;
+}
+.link {
+    -fx-text-fill: #00ffff;
+    -fx-font-weight: bold;
+    -fx-underline: false;         /* disables the underline in normal state */
+    -fx-focus-color: transparent; /* no focus border */
+    -fx-faint-focus-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.link:hover {
+    -fx-underline: false;  /* disable underline on hover */
+    -fx-effect: dropshadow(gaussian, #00ffff, 5, 0.5, 0, 0);
+
+}
+
+.forgot-link{
+    -fx-text-fill: #ff00ff;
+    -fx-focus-color: transparent; /* no focus border */
+    -fx-faint-focus-color: transparent;
+    -fx-border-color: transparent;
+
+}
+
+.forgot-link:hover {
+
+    -fx-underline: false;  /* disable underline on hover */
+    -fx-effect: dropshadow(gaussian, #ff00ff, 5, 0.5, 0, 0);
+
+
+}
+
+.account-prompt {
+    -fx-fill: white;
+}
+
+
+.link:focused {
+    -fx-underline: false;
+    -fx-border-color: transparent;
+    -fx-effect: none;
+}
+
+.register-btn{
+    -fx-text-fill: #f0ffff;       /* your desired text color */
+
+}
+
+
+.error-message {
+    -fx-text-fill: red;
+    -fx-font-size: 14px;
+    -fx-padding: 5 0 10 0;
+}
+
+
+
+/* ---- STATUS LABEL: success or error message ---- */
+.status-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 6 0 6 0;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, #00ffff, 8, 0.5, 0, 0);
+    -fx-wrap-text: true;
+    -fx-alignment: center;
+    -fx-max-width: 300px;
+}
+
+.info-label {
+    -fx-font-size: 16px;
+    -fx-text-fill: green;  /* White text */
+    -fx-padding: 10 0 10 0;
+    -fx-font-style: italic;
+
+}
+
+
+/* Optional: success and error variants you can set from controller */
+.status-success {
+    -fx-text-fill: #00ff00;
+    -fx-effect: dropshadow(gaussian, #00ff00, 10, 0.8, 0, 0);
+}
+.status-error {
+    -fx-text-fill: #ff4c4c;
+    -fx-effect: dropshadow(gaussian, #ff0000, 8, 0.5, 0, 0);
+}

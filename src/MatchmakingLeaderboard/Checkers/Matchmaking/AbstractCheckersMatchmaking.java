@@ -1,7 +1,6 @@
 package MatchmakingLeaderboard.Checkers.Matchmaking;
 
 import MatchmakingLeaderboard.IGameMatchmaking;
-import MatchmakingLeaderboard.Player;
 
 /**
  * Abstract class for Checkers Matchmaking
@@ -14,4 +13,6 @@ public abstract class AbstractCheckersMatchmaking implements IGameMatchmaking {
     public void matchmaking(){
         // Add the matchmaking logic
     }
+
+
 }

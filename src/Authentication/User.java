@@ -1,5 +1,8 @@
 package Authentication;
 
+import MatchmakingLeaderboard.Player;
+import MatchmakingLeaderboard.PlayerDatabase;
+
 /**
  * Represents a user in system
  * Each user has an ID, username, email, hashed password, game stats and online status
@@ -66,6 +69,7 @@ public class User {
     private void save() {
         if (!suspendSave) {
             UserDatabase.saveUser(this);
+
         }
     }
 
