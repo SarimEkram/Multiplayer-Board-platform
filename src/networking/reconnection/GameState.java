@@ -7,7 +7,7 @@ public class GameState {
     private int score;
     private int level;
 
-    public GameState(int score, int level) {
+    public GameState() {
         this.score = score;
         this.level = level;
     }

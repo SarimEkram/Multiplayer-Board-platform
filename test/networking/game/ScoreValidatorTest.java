@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ScoreValidatorTest {
 
     @Test
-    void testValidScore_NewEntry() {
+    void testValidScoreNewEntry() {
         String gameID = "game1";
         String playerId = "player1";
         int score = 1;
@@ -131,6 +131,24 @@ public class ScoreValidatorTest {
         boolean result = ScoreValidator.isScoreValid(gameID, playerId2, score2, playerScore, gameScore);
         assertTrue(result);
     }
+    @Test
+    void testGameScoreContainsKeyButNotValue() {
+        String gameID = "game1";
+        String playerId = "player1";
+        int score = 1;
+
+
+        HashMap<String, Integer> playerScore = new HashMap<>();
+        playerScore.put(playerId, score);
+
+        HashMap<String, Integer> gamePlayerScore = new HashMap<>();
+        HashMap<String, HashMap<String, Integer>> gameScore = new HashMap<>();
+        gameScore.put(gameID, gamePlayerScore);
+
+        boolean result = ScoreValidator.isScoreValid(gameID, playerId, score, playerScore, gameScore);
+        assertTrue(result);
+    }
+
 
 
 }
