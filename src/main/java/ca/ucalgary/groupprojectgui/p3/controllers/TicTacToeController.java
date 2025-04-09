@@ -250,7 +250,6 @@ public class TicTacToeController {
             } else {
                 showGameOverPopup(opponentPlayer.getUsername(), true);
                 gameOver = true;
-//                boardContainer.setDisable(true);
                 stopTimer();
                 gameProcessor.UpdateResults(opponentPlayer, localPlayer, gameType);
                 return;
