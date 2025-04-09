@@ -70,23 +70,21 @@ public class Player {
     public int getMMR(GameType gameType){ return this.mmr[gameType.ordinal()]; }
     public void setMMR(int mmr, GameType gameType){ this.mmr[gameType.ordinal()] = mmr; }
 
-    public String rankForPlayer(GameType gameType){
-        int mmr = this.getMMR(gameType);
-
-        if (mmr >= RankTier.DIAMOND.getThresholdPoints()) {
-            return RankTier.DIAMOND.getRankName();
-        } else if (mmr >= RankTier.GOLD.getThresholdPoints()) {
-            return RankTier.GOLD.getRankName();
-        } else if (mmr >= RankTier.SILVER.getThresholdPoints()) {
-            return RankTier.SILVER.getRankName();
-        } else {
-            return RankTier.BRONZE.getRankName();
-        }
-    }
 
     // Getter - Setter for Rank
     public Rank getRank(GameType gameType) { return this.rank[gameType.ordinal()]; }
     public void setRank(Rank rank, GameType gameType) { this.rank[gameType.ordinal()] = rank; }
+
+    // Getter - Setter for Game Signal
+    public int getGameSignal(GameType gameType) {
+        return this.gameSignal[gameType.ordinal()];
+    }
+    public void setGameSignal(int Signal, GameType gameType) {
+        if(Signal < 0 || Signal > 3) {
+            throw new IllegalArgumentException("Signal must be between 0 and 3");
+        }
+        this.gameSignal[gameType.ordinal()] = Signal;
+    }
 
     // Getters for Wins/Losses
     public int getWins(GameType gameType) { return this.wins[gameType.ordinal()]; }
@@ -107,7 +105,7 @@ public class Player {
      * @param gameType
      */
     public void calculateRatio(GameType gameType) {
-        //validGame(gameType);
+
         int gameIndex = gameType.ordinal() ;
         int totalGames = this.wins[gameIndex] + this.losses[gameIndex];
 
@@ -124,17 +122,6 @@ public class Player {
     // Getter - Setter for WinRatio
     public double getWinRatio(GameType gameType) { return this.winRatio[gameType.ordinal()]; }
     public void setWinRatio(GameType gameType, double ratio) { this.winRatio[gameType.ordinal()] = ratio; }
-
-    // Getter - Setter for Game Signal
-    public int getGameSignal(GameType gameType) {
-        return this.gameSignal[gameType.ordinal()];
-    }
-    public void setGameSignal(int Signal, GameType gameType) {
-        if(Signal < 0 || Signal > 3) {
-            throw new IllegalArgumentException("Signal must be between 0 and 3");
-        }
-        this.gameSignal[gameType.ordinal()] = Signal;
-    }
 
     /**
      * Joins the player into matchmaking queue based on their game signal
@@ -153,6 +140,25 @@ public class Player {
             CheckersMatchmaking matchmaking = new CheckersMatchmaking();
             matchmaking.joinQueue(this);
             matchmaking.startMatchmaking();
+        }
+    }
+
+    /**
+     * finds rank tier and return tier name
+     * @param gameType
+     * @return string
+     */
+    public String rankForPlayer(GameType gameType){
+        int mmr = this.getMMR(gameType);
+
+        if (mmr >= RankTier.DIAMOND.getThresholdPoints()) {
+            return RankTier.DIAMOND.getRankName();
+        } else if (mmr >= RankTier.GOLD.getThresholdPoints()) {
+            return RankTier.GOLD.getRankName();
+        } else if (mmr >= RankTier.SILVER.getThresholdPoints()) {
+            return RankTier.SILVER.getRankName();
+        } else {
+            return RankTier.BRONZE.getRankName();
         }
     }
 

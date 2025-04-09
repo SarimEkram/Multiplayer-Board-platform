@@ -85,7 +85,7 @@ public class PlayerDatabaseTest {
     }
 
     @Test
-    void testGameSpecificDataHandling() {
+    void testGameSpecificHandling() {
 
         Player player = new Player("gametest", 1, 100007);
         player.addWin(TIC_TAC_TOE);
