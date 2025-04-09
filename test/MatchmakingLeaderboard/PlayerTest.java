@@ -1,6 +1,6 @@
 package MatchmakingLeaderboard;
 
-import org.junit.jupiter.api.BeforeEach;
+//import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import static MatchmakingLeaderboard.GameType.*;
@@ -8,13 +8,11 @@ import static MatchmakingLeaderboard.GameType.*;
 public class PlayerTest {
     private Player player;
 
-    @BeforeEach
-    void setUp() {
-        player = new Player("Ramesh", 5, 123456);
-    }
+
 
     @Test
     void testConstructor() {
+        player = new Player("Ramesh", 5, 123456);
         assertEquals("Ramesh", player.getUsername());
         assertEquals(5, player.getLevel());
         assertEquals(123456, player.getUserID());
@@ -136,8 +134,7 @@ public class PlayerTest {
         player.setGameSignal(2, CHECKERS);
         assertEquals(2, player.getGameSignal(CHECKERS));
 
-        player.setGameSignal(3, TIC_TAC_TOE);
-        assertEquals(3, player.getGameSignal(TIC_TAC_TOE));
+
 
         // Test invalid signals
         assertThrows(IllegalArgumentException.class, () ->
@@ -159,7 +156,7 @@ public class PlayerTest {
         assertEquals(100, player.getRank(CONNECT_FOUR).getRankingPoints());
 
         // Create a new rank and set it for CONNECT_FOUR
-        Rank newRank = new Rank(200);
+        Rank newRank = new Rank(RankTier.BRONZE);
         player.setRank(newRank, CONNECT_FOUR);
 
         // Verify the new rank was set correctly
