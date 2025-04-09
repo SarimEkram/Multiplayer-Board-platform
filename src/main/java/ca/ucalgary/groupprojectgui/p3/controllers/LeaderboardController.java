@@ -96,9 +96,9 @@ public class LeaderboardController {
         } else {
             int rank = 1;
             for (Player player : players) {
-                String entryText = String.format(
-                        "%d. Player ID: %d | Username: %s | Level: %d | MMR: %d",
-                        rank, player.getUserID(), player.getUsername(), player.getLevel(), player.getMMR(gameType));
+                String rankTier = player.getRank(gameType).getCurrentTier().getRankName();
+                String entryText = String.format( "%d. Player ID: %d | Username: %s | Level: %d | MMR: %d | Rank: %s",
+                        rank, player.getUserID(), player.getUsername(), player.getLevel(), player.getMMR(gameType), rankTier);
                 Label entry = new Label(entryText);
                 entry.setStyle("-fx-text-fill: white; -fx-font-size: 16;");
                 targetPane.getChildren().add(entry);
