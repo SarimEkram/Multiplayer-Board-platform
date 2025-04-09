@@ -1,6 +1,6 @@
 package MatchmakingLeaderboard;
 
-import MatchmakingLeaderboard.Checkers.Matchmaking.CheckersMatchmaking;
+import MatchmakingLeaderboard.Checkers.CheckersMatchmaking;
 import MatchmakingLeaderboard.Connect4.Connect4Matchmaking;
 import MatchmakingLeaderboard.TicTacToe.TicTacToeMatchmaking;
 
