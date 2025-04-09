@@ -202,8 +202,8 @@ public class CheckersController {
                 onSendMessage();
             }
         });
-        timerBlack = new TurnTimer(localPlayer.getUsername(), 45);
-        timerWhite = new TurnTimer(opponentPlayer.getUsername(), 45);
+        timerBlack = new TurnTimer(localPlayer.getUsername(), 30);
+        timerWhite = new TurnTimer(opponentPlayer.getUsername(), 30);
 
         // Start the shared monitoring timeline
         startTurnTimer();
@@ -818,43 +818,61 @@ public class CheckersController {
 
 
     private void startTurnTimer() {
-        // Stop the turn-check timeline if already running
         if (turnCheckTimeline != null) {
             turnCheckTimeline.stop();
         }
 
         turnCheckTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
-            if (gameLogic == null) return;
-            if (checkersBoard == null) return;
-            if (gameLogic.checkWin() != Checkers.WINNER.NONE) return;
+            if (gameLogic == null || checkersBoard == null || gameLogic.checkWin() != Checkers.WINNER.NONE) return;
 
             Checkers.Turn currentTurn = gameLogic.getTurn();
             TurnTimer currentTimer = (currentTurn == Checkers.Turn.WHITE) ? timerWhite : timerBlack;
             boolean isWhiteTurn = currentTurn == Checkers.Turn.WHITE;
 
-            long elapsed = System.currentTimeMillis() - currentTimer.getStartTime();
-            long remaining = currentTimer.getRemainingTime() - elapsed;
+            long elapsedTime = System.currentTimeMillis() - currentTimer.getStartTime();
+            long remainingMillis = currentTimer.getRemainingTime() - elapsedTime;
+            int remainingSec = (int) (remainingMillis / 1000);
 
             // 10-second warning
-            if (remaining <= 10_000) {
+            if (remainingSec <= 10) {
                 if (isWhiteTurn && !warningSentWhite) {
-                    addMessage("SYSTEM", "⚠ 10 seconds remaining!", true);
+                    addMessage("SYSTEM", "⚠ " + opponentPlayer.getUsername() + " has 10 seconds left!", true);
                     warningSentWhite = true;
                 } else if (!isWhiteTurn && !warningSentBlack) {
-                    addMessage("SYSTEM", "⚠ 10 seconds remaining!", true);
+                    addMessage("SYSTEM", "⚠ " + localPlayer.getUsername() + " has 10 seconds left!", true);
                     warningSentBlack = true;
                 }
             }
 
-            // Time's up
+            // Time's up — end game
             if (currentTimer.isTimeExpired()) {
-                handleTurnTimeout();
+                Platform.runLater(() -> {
+                    String loser = isWhiteTurn ? opponentPlayer.getUsername() : localPlayer.getUsername();
+                    String winner = isWhiteTurn ? localPlayer.getUsername() : opponentPlayer.getUsername();
+
+                    addMessage("SYSTEM", loser + " ⏰ Time's up! " + winner + " wins!", true);
+                    showGameOverPopup(winner, true);
+                    turnLabel.setText(winner + " wins!");
+                    turnPiece.getStyleClass().clear();
+                    turnPiece.getStyleClass().add(isWhiteTurn ? "checker-black" : "checker-white");
+
+                    boardGrid.setDisable(true);
+                    stopTimer();
+                    stopTurnTimer();
+
+                    if (isWhiteTurn) {
+                        gameProcessor.UpdateResults(localPlayer, opponentPlayer, gameType);  // White timed out
+                    } else {
+                        gameProcessor.UpdateResults(opponentPlayer, localPlayer, gameType);  // Black timed out
+                    }
+                });
             }
         }));
 
         turnCheckTimeline.setCycleCount(Timeline.INDEFINITE);
         turnCheckTimeline.play();
     }
+
 
     private void updateTimerLabel() {
         Platform.runLater(() -> {
