@@ -125,8 +125,9 @@ public class Connect4MatchmakingTest {
      */
     @Test
     public void testCheckPlayers_NotCompatibleTwo() {
-        player1.setRank(new Rank(RankTier.GOLD), GameType.CONNECT_FOUR);
-        player2.setRank(new Rank(RankTier.BRONZE), GameType.CONNECT_FOUR);
+
+        player1.getRank(GameType.CONNECT_FOUR).adjustPoints(player1,2500,GameType.CONNECT_FOUR);
+        player1.getRank(GameType.CONNECT_FOUR).adjustPoints(player1,500,GameType.CONNECT_FOUR);
         player1.setGameSignal(2, GameType.CONNECT_FOUR);
         player2.setGameSignal(2, GameType.CONNECT_FOUR);
         player1.setLevel(27);
@@ -142,6 +143,9 @@ public class Connect4MatchmakingTest {
     public void testCheckPlayers_NotCompatibleThree() {
         player1.setRank(new Rank(RankTier.GOLD), GameType.CONNECT_FOUR);
         player2.setRank(new Rank(RankTier.BRONZE), GameType.CONNECT_FOUR);
+        player1.setGameSignal(1, GameType.TIC_TAC_TOE); // Different game
+        player1.setGameSignal(0,GameType.CONNECT_FOUR);
+        player2.setGameSignal(1, GameType.CONNECT_FOUR);
         player1.setLevel(27);
         player2.setLevel(26);
 

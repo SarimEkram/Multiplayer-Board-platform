@@ -121,8 +121,8 @@ public class TicTacToeMatchmakingTest {
      */
     @Test
     public void testCheckPlayers_NotCompatibleTwo() {
-        player1.setRank(new Rank(RankTier.GOLD), GameType.TIC_TAC_TOE);
-        player2.setRank(new Rank(RankTier.BRONZE), GameType.TIC_TAC_TOE);
+        player1.getRank(GameType.TIC_TAC_TOE).adjustPoints(player1,2500,GameType.TIC_TAC_TOE);
+        player1.getRank(GameType.TIC_TAC_TOE).adjustPoints(player1,500,GameType.TIC_TAC_TOE);
         player1.setGameSignal(1, GameType.TIC_TAC_TOE);
         player2.setGameSignal(1, GameType.TIC_TAC_TOE);
         player1.setLevel(27);
@@ -135,9 +135,10 @@ public class TicTacToeMatchmakingTest {
      */
     @Test
     public void testCheckPlayers_NotCompatibleThree() {
-        player1.setRank(new Rank(RankTier.GOLD), GameType.TIC_TAC_TOE);
+        player1.setRank(new Rank(RankTier.BRONZE), GameType.TIC_TAC_TOE);
         player2.setRank(new Rank(RankTier.BRONZE), GameType.TIC_TAC_TOE);
-        player1.setGameSignal(2, GameType.CONNECT_FOUR); // Different game
+        player1.setGameSignal(1, GameType.CONNECT_FOUR); // Different game
+        player1.setGameSignal(0,GameType.TIC_TAC_TOE);
         player2.setGameSignal(1, GameType.TIC_TAC_TOE);
         player1.setLevel(27);
         player2.setLevel(26);

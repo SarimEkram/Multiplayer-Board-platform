@@ -120,11 +120,10 @@ public class CheckersMatchmakingTest {
      */
     @Test
     public void testCheckPlayers_NotCompatibleTwo() {
-        player1.setRank(new Rank(RankTier.GOLD), GameType.CHECKERS);
-        player2.setRank(new Rank(RankTier.BRONZE), GameType.CHECKERS);
+        player1.getRank(GameType.CHECKERS).adjustPoints(player1,2500,GameType.CHECKERS);
+        player1.getRank(GameType.CHECKERS).adjustPoints(player1,500,GameType.CHECKERS);
         player1.setLevel(27);
         player2.setLevel(26);
-
         assertFalse(matchmaking.checkPlayers(player1, player2)); // Skill gap too large
     }
 
@@ -135,6 +134,9 @@ public class CheckersMatchmakingTest {
     public void testCheckPlayers_NotCompatibleThree() {
         player1.setRank(new Rank(RankTier.GOLD), GameType.CHECKERS);
         player2.setRank(new Rank(RankTier.BRONZE), GameType.CHECKERS);
+        player1.setGameSignal(1, GameType.TIC_TAC_TOE); // Different game
+        player1.setGameSignal(0,GameType.CHECKERS);
+        player2.setGameSignal(1, GameType.CHECKERS);
         player1.setLevel(27);
         player2.setLevel(26);
 
