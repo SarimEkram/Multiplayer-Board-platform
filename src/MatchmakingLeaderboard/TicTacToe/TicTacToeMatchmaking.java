@@ -34,7 +34,7 @@ public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
         this.matchmakingUp = true;
     }catch (Exception e){
         this.matchmakingUp = false;
-        throw new MatchmakingException("Matchmaking is Down");
+        throw new MatchmakingException("TicTacToe Matchmaking is Down");
     }
     }
 

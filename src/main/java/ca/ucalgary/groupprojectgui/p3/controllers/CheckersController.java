@@ -1,6 +1,6 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
 
-import MatchmakingLeaderboard.Checkers.Matchmaking.CheckersMatchmaking;
+import MatchmakingLeaderboard.Checkers.CheckersMatchmaking;
 import MatchmakingLeaderboard.GameProcessor;
 import MatchmakingLeaderboard.GameType;
 import MatchmakingLeaderboard.Player;
