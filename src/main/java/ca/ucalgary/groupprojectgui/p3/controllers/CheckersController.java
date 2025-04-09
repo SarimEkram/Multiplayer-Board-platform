@@ -603,6 +603,7 @@ public class CheckersController {
     }
 
     private void showGameOverPopup(String winner, boolean isWin) {
+        leaveGame.setVisible(false);
         StackPane overlay = new StackPane();
         overlay.getStyleClass().add("popup-overlay");
         overlay.setPrefSize(boardGrid.getWidth(), boardGrid.getHeight());
