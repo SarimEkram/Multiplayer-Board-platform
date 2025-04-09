@@ -1,5 +1,5 @@
 package networking.reconnection;
-
+import networking.reconnection.GameState;
 /**
  * Test implementation of GameState.
  */
