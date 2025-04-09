@@ -5,6 +5,7 @@ import Authentication.UserDatabase;
 import Authentication.FriendDatabase;
 import MatchmakingLeaderboard.Player;
 import MatchmakingLeaderboard.PlayerDatabase;
+import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
@@ -12,6 +13,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.effect.DropShadow;
@@ -22,6 +24,7 @@ import javafx.scene.layout.*;
 import ca.ucalgary.groupprojectgui.p3.SceneManager;
 import javafx.scene.paint.Color;
 import javafx.stage.Popup;
+import javafx.util.Duration;
 
 import java.util.List;
 import java.util.Set;
@@ -205,6 +208,8 @@ public class HomePageController {
         entry.getChildren().addAll(avatar, nameLabel, spacer, addBtn);
         return entry;
     }
+
+
 
     private void sendFriendRequest(String username) {
         int currentUserId = LoginController.loginId;
@@ -523,9 +528,94 @@ public class HomePageController {
         Button removeButton = new Button("✖");
         removeButton.getStyleClass().add("remove-button");
         removeButton.setOnAction(this::handleRemoveFriend);
-
+// Set an event handler on the entire friend item.
+        // This handler will show the friend profile popup.
+        friendItem.setOnMouseClicked(event -> {
+            showFriendProfilePopup(username);
+        });
         friendItem.getChildren().addAll(avatar, nameLabel, spacer, removeButton);
         return friendItem;
+    }
+
+
+    private void showFriendProfilePopup(String username) {
+        // Sample data lookup
+        String email = username.toLowerCase() + "@example.com";
+        int level = 20;
+
+        // Apply blur to the main container
+        BoxBlur blur = new BoxBlur(10, 10, 3);
+        mainContainer.setEffect(blur);
+
+        StackPane rootPane = (StackPane) mainContainer.getScene().getRoot();
+
+        // Create overlay for dimming background
+        StackPane overlay = new StackPane();
+        overlay.setStyle("-fx-background-color: rgba(0,0,0,0.7);");
+        overlay.prefWidthProperty().bind(rootPane.widthProperty());
+        overlay.prefHeightProperty().bind(rootPane.heightProperty());
+
+        // Create modal that is centered in the overlay
+        VBox modal = new VBox(20);
+        modal.setAlignment(Pos.CENTER);
+        modal.setPadding(new Insets(20));
+
+// BINDING FOR RESPONSIVENESS
+        // For example, let the modal be 50% of the parent’s width, 40% of the parent’s height
+        modal.prefWidthProperty().bind(rootPane.widthProperty().multiply(0.5));
+        modal.prefHeightProperty().bind(rootPane.heightProperty().multiply(0.4));
+
+        // Ensure it doesn't go too small or too big
+        modal.setMinWidth(300);
+        modal.setMinHeight(200);
+        modal.setMaxWidth(800);
+        modal.setMaxHeight(600);
+
+        modal.setStyle(
+                "-fx-background-color: #0d0d0d;" +
+                        "-fx-background-radius: 15;" +
+                        "-fx-border-color: #ff00ff;" +
+                        "-fx-border-width: 2px;"
+        );
+
+        Label title = new Label("Friend Profile");
+        title.setStyle("-fx-text-fill: #00ffff; -fx-font-size: 24px; -fx-font-family: 'Orbitron';");
+
+        Label avatar = new Label(username.substring(0, 1).toUpperCase());
+        avatar.setMinSize(80, 80);
+        avatar.setAlignment(Pos.CENTER);
+        avatar.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, #ff00ff, #00ffff);" +
+                        "-fx-text-fill: black; -fx-font-size: 48px; -fx-background-radius: 40px;"
+        );
+
+        Label nameLabel = new Label(username);
+        nameLabel.setStyle("-fx-text-fill: white; -fx-font-size: 20px; -fx-font-family: 'Orbitron';");
+
+        Label emailLabel = new Label("Email: " + email);
+        emailLabel.setStyle("-fx-text-fill: white;");
+
+        Label levelLabel = new Label("Level: " + level);
+        levelLabel.setStyle("-fx-text-fill: white;");
+
+        Button closeBtn = new Button("Close");
+        closeBtn.setStyle("-fx-background-color: #ff00ff; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;");
+        closeBtn.setOnAction(ev -> {
+            rootPane.getChildren().remove(overlay);
+            mainContainer.setEffect(null);
+        });
+
+        modal.getChildren().addAll(title, avatar, nameLabel, emailLabel, levelLabel, closeBtn);
+        overlay.getChildren().add(modal);
+
+// Optional fade-in effect
+        FadeTransition ft = new FadeTransition(Duration.millis(300), overlay);
+        ft.setFromValue(0.0);
+        ft.setToValue(1.0);
+        ft.play();
+
+        rootPane.getChildren().add(overlay);
+        overlay.toFront();
     }
 
     @FXML
