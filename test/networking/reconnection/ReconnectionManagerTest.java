@@ -179,6 +179,31 @@ public class ReconnectionManagerTest {
         String output = outContent.toString().trim();
         assertTrue(output.contains("No saved game state found for player p2."));
     }
+    // Test notifyReconnection with multiple other players.
+    @Test
+    public void testNotifyReconnection_MultiplePlayers() {
+        ReconnectionManager manager = new ReconnectionManager("game13");
+        Set<String> players = new HashSet<>(Arrays.asList("p1", "p2", "p3"));
+        manager.startGame(players);
+        outContent.reset();
+        manager.notifyReconnection("p1");
+        String output = outContent.toString().trim();
+        // Ensure notifications for both p2 and p3 are present.
+        assertTrue(output.contains("Notifying player p2 that p1 has reconnected."));
+        assertTrue(output.contains("Notifying player p3 that p1 has reconnected."));
+    }
 
+    // Test handleFailedReconnection for a disconnected player.
+    @Test
+    public void testHandleFailedReconnection_WithDisconnectedPlayer() {
+        ReconnectionManager manager = new ReconnectionManager("game14");
+        Set<String> players = new HashSet<>(Arrays.asList("p1"));
+        manager.startGame(players);
+        manager.playerDisconnected("p1");
+        outContent.reset();
+        manager.handleFailedReconnection("p1");
+        String output = outContent.toString().trim();
+        assertTrue(output.contains("Failed to reconnect player p1. Player removed from the session."));
+    }
 
 }
