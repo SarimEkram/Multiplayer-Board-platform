@@ -295,6 +295,7 @@ public class TicTacToeController {
     }
 
     private void showGameOverPopup(String winner, boolean isWin) {
+        leaveGame.setVisible(false);
         StackPane overlay = new StackPane();
         overlay.getStyleClass().add("popup-overlay");
         overlay.setPrefSize(tttgrid.getWidth(), tttgrid.getHeight());
@@ -319,7 +320,7 @@ public class TicTacToeController {
         Button mainMenuButton = new Button("Main Menu");
         mainMenuButton.getStyleClass().add("popup-button");
         mainMenuButton.setOnAction(e -> {
-            tttgrid.getChildren().remove(overlay);
+            boardContainer.getChildren().remove(overlay);
             SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "Home.css");
         });
 
