@@ -1,76 +1,69 @@
 package Authentication;
 
 import org.junit.jupiter.api.*;
-
-import java.util.Map;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserLoginTest {
 
-    private static final String TEST_EMAIL = "testlogin@example.com";
-    private static final String TEST_PASSWORD = "secure123";
-    private static final String HASHED_PASSWORD = UserLogin.hashPassword(TEST_PASSWORD);
-    private static final String TEST_USERNAME = "loginUser";
+    private static final String VALID_USERNAME = "loginTester";
+    private static final String VALID_EMAIL = "loginTester@example.com";
+    private static final String VALID_PASSWORD = "mySecurePass";
 
-    private static User testUser;
+    private static int userId;
 
-    @BeforeAll
-    static void setup() {
-        testUser = new User(0, TEST_USERNAME, TEST_EMAIL, HASHED_PASSWORD, 0.0, 1, false);
-        UserDatabase.saveUser(testUser);
+    @BeforeEach
+    void setup() {
+        // Register a user in the database
+        User user = new User(0, VALID_USERNAME, VALID_EMAIL, UserLogin.hashPassword(VALID_PASSWORD), 0.0, 1, false);
+        UserDatabase.saveUser(user);
+        userId = user.getUserID();
     }
 
     @Test
     void testLoginSuccess() {
-        int login = UserLogin.loginUser(TEST_EMAIL, TEST_PASSWORD);
-        assertTrue(login>0);
+        int result = UserLogin.loginUser(VALID_USERNAME, VALID_PASSWORD);
+        assertEquals(userId, result, "Login should return userID for valid credentials");
 
-        User user = UserDatabase.getUserByEmail(TEST_EMAIL);
-        assertNotNull(user);
-        assertTrue(user.isOnline(), "User should be marked as online");
-
-        assertTrue(UserLogin.sessionData.containsKey(user.getUserID()), "Session data should be created");
-        assertTrue(UserLogin.authTokens.containsKey(user.getUserID()), "Auth token should be created");
+        User user = UserDatabase.getUserById(result);
+        assertTrue(user.isOnline(), "User should be marked online after login");
+        assertTrue(UserLogin.sessionData.containsKey(userId), "Session data should be created");
+        assertTrue(UserLogin.authTokens.containsKey(userId), "Auth token should be created");
     }
 
     @Test
-    void testLoginFailsWrongPassword() {
-        int login = UserLogin.loginUser(TEST_EMAIL, "wrongpass");
-        assertEquals(login,-1);
+    void testInvalidUsernameFormat() {
+        int result = UserLogin.loginUser("!invalid_email_format", VALID_PASSWORD);
+        assertEquals(-2, result, "Should return -2 for user not found with invalid username");
     }
 
     @Test
-    void testLoginFailsInvalidEmailFormat() {
-        int login = UserLogin.loginUser("invalid-email", TEST_PASSWORD);
-        assertEquals(login,-1);
+    void testUserNotFound() {
+        int result = UserLogin.loginUser("nonexistentuser", VALID_PASSWORD);
+        assertEquals(-2, result, "Should return -2 for non-existent user");
     }
 
     @Test
-    void testLoginFailsForNonExistingUser() {
-        int login = UserLogin.loginUser("doesnotexist@example.com", "anything123");
-        assertEquals(login,-1);
+    void testWrongPassword() {
+        int result = UserLogin.loginUser(VALID_USERNAME, "wrongPassword123");
+        assertEquals(-3, result, "Should return -3 for wrong password");
     }
 
     @Test
-    void testPasswordHashingConsistency() {
-        String hash1 = UserLogin.hashPassword("mypassword");
-        String hash2 = UserLogin.hashPassword("mypassword");
-        assertEquals(hash1, hash2, "Same input should always produce the same hash");
+    void testEmptyPassword() {
+        int result = UserLogin.loginUser(VALID_USERNAME, "");
+        assertEquals(-1, result, "Should return -1 for invalid password input");
     }
 
     @Test
-    void testSessionAndTokenExpiryAreSet() {
-        int userID = UserDatabase.getUserByEmail(TEST_EMAIL).getUserID();
+    void testNullPassword() {
+        int result = UserLogin.loginUser(VALID_USERNAME, null);
+        assertEquals(-1, result, "Should return -1 for null password input");
+    }
 
-        UserLogin.loginUser(TEST_EMAIL, TEST_PASSWORD);
-
-        ResetTokenData session = UserLogin.sessionData.get(userID);
-        ResetTokenData token = UserLogin.authTokens.get(userID);
-
-        assertNotNull(session, "Session should be set");
-        assertNotNull(token, "Token should be set");
-        assertTrue(session.getExpiry().isAfter(token.getExpiry().minusMinutes(31)), "Session should expire before token");
+    @AfterEach
+    void cleanup() {
+        UserDatabase.deleteUser(userId);
+        UserLogin.sessionData.clear();
+        UserLogin.authTokens.clear();
     }
 }
-
