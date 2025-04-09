@@ -495,11 +495,6 @@ public class TicTacToeController {
             writeChatHistoryToCSV(); // Save to CSV
         }
 
-        // Timestamp string (only used for player messages)
-        String timestamp = (lastMessage != null && !isSystem)
-                ? "[" + lastMessage.getTimestamp().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "] "
-                : "";
-
         // Create message container
         HBox messageContainer = new HBox(5);
         messageContainer.getStyleClass().add("chat-message");
@@ -512,7 +507,8 @@ public class TicTacToeController {
         messageContainer.setStyle("-fx-border-width: 0 0 0 3px; -fx-border-color: " + colorCode + ";");
 
         // Build sender label
-        Label senderLabel = new Label((isSystem ? "" : timestamp) + sender + ":");
+        Label senderLabel = new Label(sender + ":");
+
         senderLabel.setFont(Fonts.rajdhani(FontWeight.BOLD, 14));
         senderLabel.setStyle("-fx-text-fill: " + colorCode + ";");
 

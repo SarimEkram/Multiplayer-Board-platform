@@ -639,14 +639,10 @@ public class Connect4Controller {
 
         messageContainer.setStyle("-fx-border-width: 0 0 0 3px; -fx-border-color: " + colorCode + ";");
 
-        Label senderLabel = new Label();
-        if (!isSystem && !timestamp.isEmpty()) {
-            senderLabel.setText("[" + timestamp + "] " + sender + ":");
-        } else {
-            senderLabel.setText(sender + ":");
-        }
+        Label senderLabel = new Label(sender + ":");
 
         senderLabel.setFont(Fonts.rajdhani(FontWeight.BOLD, 14));
+
         Label messageLabel = new Label(text);
         messageLabel.setFont(Fonts.rajdhaniRegular(14));
 
