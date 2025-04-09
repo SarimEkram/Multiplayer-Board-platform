@@ -52,6 +52,8 @@ public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
                     player2 = queue.getNextPlayer();
                 }
                 this.findMatch(player1, player2);
+                this.signalAddPlayer(player1);
+                this.signalAddPlayer(player2);
                 this.signalStartGame();
             } else {
                 System.out.println("Matchmaking cancelled! Not enough players...please try again later!");
