@@ -101,8 +101,8 @@ public class PlayerDatabaseTest {
     @Test
     void testDuplicatePlayerHandling() {
 
-        Player player1 = new Player("duplicate", 1, 100008);
-        Player player2 = new Player("duplicate", 2, 100008);
+        Player player1 = new Player("p1", 1, 100008);
+        Player player2 = new Player("p1", 2, 100008);
 
         PlayerDatabase.savePlayer(player1);
         PlayerDatabase.savePlayer(player2);

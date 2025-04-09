@@ -130,8 +130,6 @@ public class PlayerTest {
         initialRank.adjustPoints(player, -4000, TIC_TAC_TOE);
         assertEquals(0, player.getRank(TIC_TAC_TOE).getRankingPoints());
         assertEquals(RankTier.BRONZE, player.getRank(TIC_TAC_TOE).getCurrentTier());
-
-        // Test rank independence between game types
         assertEquals(0, player.getRank(CONNECT_FOUR).getRankingPoints());
     }
 
@@ -169,7 +167,7 @@ public class PlayerTest {
 
     @Test
     void testJoinMatch() {
-        // Test that joinMatch doesn't throw exceptions for valid signals
+
         assertDoesNotThrow(() -> {
             player.setGameSignal(1, TIC_TAC_TOE);
             player.joinMatch(TIC_TAC_TOE);
