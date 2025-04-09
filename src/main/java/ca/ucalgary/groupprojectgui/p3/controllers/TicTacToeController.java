@@ -464,10 +464,10 @@ public class TicTacToeController {
             if (last.getPlayerId().equals(sender) && last.getMessage().equals(message)) {
                 addMessage(sender, message, false);
             } else {
-                addMessage("SYSTEM", "Warning: Message contains inappropriate content!", true);
+                addMessage("SYSTEM", "Warning: Inappropriate content!", true);
             }
         } else {
-            addMessage("SYSTEM", "Warning: Message contains inappropriate content!", true);
+            addMessage("SYSTEM", "Warning: Inappropriate content!", true);
         }
 
         chatInput.clear();
