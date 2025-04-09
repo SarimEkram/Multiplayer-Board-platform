@@ -73,7 +73,7 @@ public class GameProcessor {
 
         int newLevel = (l1+l2+l3)/100;
         if(newLevel == 0){
-            player.setLevel(1);
+            newLevel = 1;
         }
 
         player.setLevel(newLevel);
