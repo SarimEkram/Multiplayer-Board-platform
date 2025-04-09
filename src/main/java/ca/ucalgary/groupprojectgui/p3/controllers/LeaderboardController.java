@@ -13,6 +13,7 @@ import MatchmakingLeaderboard.GameType;
 import static MatchmakingLeaderboard.GameType.*;
 
 import ca.ucalgary.groupprojectgui.p3.SceneManager;
+import MatchmakingLeaderboard.RankTier;
 
 import java.util.List;
 
@@ -96,9 +97,22 @@ public class LeaderboardController {
         } else {
             int rank = 1;
             for (Player player : players) {
-                String rankTier = player.getRank(gameType).getCurrentTier().getRankName();
-                String entryText = String.format( "%d. Player ID: %d | Username: %s | Level: %d | MMR: %d | Rank: %s",
-                        rank, player.getUserID(), player.getUsername(), player.getLevel(), player.getMMR(gameType), rankTier);
+                int mmr = player.getMMR(gameType);
+                String rankTier;
+
+                if (mmr >= RankTier.DIAMOND.getThresholdPoints()) {
+                    rankTier = RankTier.DIAMOND.getRankName();
+                } else if (mmr >= RankTier.GOLD.getThresholdPoints()) {
+                    rankTier = RankTier.GOLD.getRankName();
+                } else if (mmr >= RankTier.SILVER.getThresholdPoints()) {
+                    rankTier = RankTier.SILVER.getRankName();
+                } else {
+                    rankTier = RankTier.BRONZE.getRankName();
+                }
+
+                String entryText = String.format(
+                        "%d. Player ID: %d | Username: %s | Level: %d | MMR: %d | Rank: %s",
+                        rank, player.getUserID(), player.getUsername(), player.getLevel(), mmr, rankTier);
                 Label entry = new Label(entryText);
                 entry.setStyle("-fx-text-fill: white; -fx-font-size: 16;");
                 targetPane.getChildren().add(entry);
