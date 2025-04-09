@@ -1,7 +1,6 @@
 package MatchmakingLeaderboard.Checkers.Matchmaking;
 
 import MatchmakingLeaderboard.IGameMatchmaking;
-import MatchmakingLeaderboard.Player;
 
 /**
  * Abstract class for Checkers Matchmaking

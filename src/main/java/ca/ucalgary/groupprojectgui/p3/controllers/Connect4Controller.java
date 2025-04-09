@@ -21,10 +21,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-import MatchmakingLeaderboard.Connect4.Matchmaking.Connect4Matchmaking;
+import MatchmakingLeaderboard.Connect4.Connect4Matchmaking;
 import MatchmakingLeaderboard.*;
 import networking.chat.InGameChat;
-import networking.chat.ChatManager;
 import networking.chat.ChatMessage;
 import networking.game.TurnTimer;
 
@@ -35,7 +34,6 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Objects;
 
 import static javafx.scene.paint.Color.rgb;
 
@@ -506,17 +504,15 @@ public class Connect4Controller {
             if (lastMessage.getPlayerId().equals(sender) && lastMessage.getMessage().equals(message)) {
                 addMessage(sender, message, false);
             } else {
-                addMessage("SYSTEM", "Warning: Message contains inappropriate content!", true);
+                addMessage("SYSTEM", "Warning: Inappropriate content!", true);
             }
         } else {
-            addMessage("SYSTEM", "Warning: Message contains inappropriate content!", true);
+            addMessage("SYSTEM", "Warning: Inappropriate content!", true);
         }
 
         chatInput.clear();
         Platform.runLater(() -> chatScrollPane.setVvalue(1.0));
     }
-
-
 
     /**
      * Displays a confirmation overlay asking if the user wants to quit.
@@ -714,10 +710,10 @@ public class Connect4Controller {
 
             // Send system chat warning at 10 seconds left
             if ((isP1 && !warningSentP1 && currentTimer.getRemainingTime() - elapsed <= 10000)) {
-                addMessage("SYSTEM", "⚠" + localPlayer.getUsername() + " has 10 seconds left!", true);
+                addMessage("SYSTEM", "⚠ " + localPlayer.getUsername() + " has 10 seconds left!", true);
                 warningSentP1 = true;
             } else if (!isP1 && !warningSentP2 && currentTimer.getRemainingTime() - elapsed <= 10000) {
-                addMessage("SYSTEM", "⚠" + opponentPlayer.getUsername() + " has 10 seconds left!", true);
+                addMessage("SYSTEM", "⚠ " + opponentPlayer.getUsername() + " has 10 seconds left!", true);
                 warningSentP2 = true;
             }
 

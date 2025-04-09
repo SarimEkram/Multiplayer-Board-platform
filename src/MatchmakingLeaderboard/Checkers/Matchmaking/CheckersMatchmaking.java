@@ -5,8 +5,8 @@ import MatchmakingLeaderboard.*;
 import java.io.IOException;
 import java.util.Random;
 
-public class CheckersMatchmaking extends AbstractCheckersMatchmaking{
-    protected boolean matchmakingUp = false;
+public class CheckersMatchmaking extends AbstractCheckersMatchmaking {
+    public boolean matchmakingUp = false;
     private final double probabilityOfNetworkFailure = 0.0117;
     private MatchmakingQueue queue;
 

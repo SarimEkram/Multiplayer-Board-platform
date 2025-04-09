@@ -4,7 +4,7 @@ import MatchmakingLeaderboard.GameProcessor;
 import MatchmakingLeaderboard.GameType;
 import MatchmakingLeaderboard.Player;
 import MatchmakingLeaderboard.PlayerDatabase;
-import MatchmakingLeaderboard.TicTacToe.Matchmaking.TicTacToeMatchmaking;
+import MatchmakingLeaderboard.TicTacToe.TicTacToeMatchmaking;
 import javafx.scene.input.KeyCode;
 import networking.chat.InGameChat;
 import networking.chat.ChatMessage;
@@ -16,12 +16,10 @@ import ca.ucalgary.groupprojectgui.p3.SceneManager;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.effect.BoxBlur;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -30,8 +28,6 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Line;
-import gameLogic.tictactoe.TicTacToe;
-import gameLogic.tictactoe.TicTacToeBoard;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -42,7 +38,6 @@ import java.io.PrintWriter;
 import java.io.File;
 import java.io.IOException;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
 
@@ -464,10 +459,10 @@ public class TicTacToeController {
             if (last.getPlayerId().equals(sender) && last.getMessage().equals(message)) {
                 addMessage(sender, message, false);
             } else {
-                addMessage("SYSTEM", "Warning: Message contains inappropriate content!", true);
+                addMessage("SYSTEM", "Warning: Inappropriate content!", true);
             }
         } else {
-            addMessage("SYSTEM", "Warning: Message contains inappropriate content!", true);
+            addMessage("SYSTEM", "Warning: Inappropriate content!", true);
         }
 
         chatInput.clear();
