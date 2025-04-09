@@ -26,62 +26,6 @@
     -fx-effect: dropshadow(gaussian, #ff00ff, 12, 0.5, 0, 0);
 }
 
-.neon-tab-pane {
-    -fx-tab-min-width: 150;
-    -fx-tab-max-width: 150;
-    -fx-background-color: transparent;
-    -fx-padding: 10;
-    -fx-background-radius: 10;
-    -fx-border-radius: 10;
-}
-
-.neon-tab-pane .tab-header-background {
-    -fx-background-color: transparent;
-}
-
-.neon-tab-pane .tab {
-    -fx-background-insets: 0;
-    -fx-background-color: rgba(255, 255, 255, 0.1);
-    -fx-border-radius: 10;
-    -fx-background-radius: 10;
-    -fx-padding: 8 20;
-    -fx-text-fill: #ccc;
-    -fx-font-weight: bold;
-    -fx-font-size: 14px;
-}
-
-.neon-tab-pane .tab:hover {
-    -fx-background-color: rgba(255, 255, 255, 0.2);
-}
-
-.neon-tab-pane .tab:selected {
-    -fx-background-color: linear-gradient(to right, #ff00ff, #00ffff);
-    -fx-text-fill: #000000;
-    -fx-effect: dropshadow(gaussian, #00ffff, 10, 0.4, 0, 0);
-}
-
-.scroll-pane {
-    -fx-background-color: transparent;
-    -fx-background-insets: 0;
-}
-
-.scroll-pane .viewport {
-    -fx-background-color: transparent;
-}
-
-.scroll-pane .scroll-bar {
-    -fx-background-color: rgba(255, 255, 255, 0.1);
-}
-
-.scroll-pane .scroll-bar:vertical .thumb {
-    -fx-background-color: #ff00ff;
-}
-
-.neon-leaderboard-content {
-    -fx-padding: 15;
-    -fx-alignment: top-center;
-}
-
 .neon-outline-button {
     -fx-font-family: 'Orbitron', sans-serif;
     -fx-font-size: 16px;
@@ -98,9 +42,99 @@
     -fx-transition: all 0.3s ease-in-out;
 }
 
-
 .neon-outline-button:hover {
     -fx-effect: dropshadow(gaussian, #00ffff, 8, 0.4, 0, 0);
     -fx-text-fill: white;
     -fx-border-color: white;
 }
+
+/* ScrollPane and Scrollbar Styling */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .scroll-bar:vertical .thumb {
+    -fx-background-color: linear-gradient(to bottom, #00ffff, #6600cc);
+    -fx-background-insets: 2;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(gaussian, #00ffff, 6, 0.3, 0, 0);
+}
+
+.scroll-pane .scroll-bar:vertical .track {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-background-radius: 8;
+}
+.scroll-pane .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .scroll-bar:horizontal .thumb {
+    -fx-background-color: linear-gradient(to right, #00ffff, #6600cc);
+    -fx-background-insets: 2;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(gaussian, #00ffff, 6, 0.3, 0, 0);
+}
+
+.scroll-pane .scroll-bar:horizontal .track {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-background-radius: 8;
+}
+
+/* VBox inside ScrollPane */
+.neon-leaderboard-content {
+    -fx-padding: 15;
+    -fx-alignment: top-center;
+}
+
+/* Center the TabPane header and style tabs */
+.tab-pane .tab-header-area {
+    -fx-padding: 0 0 10 0;
+    -fx-alignment: center;
+    -fx-max-width: infinity;
+    -fx-min-width: 100%;
+    -fx-justify-content: center;
+}
+
+.tab-pane .tab-header-background {
+    -fx-background-color: transparent;
+}
+
+.tab-pane .tab {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 8 20;
+    -fx-text-fill: #ccc;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: linear-gradient(to right, #ff00ff, #00ffff);
+    -fx-text-fill: #000;
+    -fx-effect: dropshadow(gaussian, #00ffff, 10, 0.4, 0, 0);
+}
+
+.tab-pane .tab:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+.leaderboard-entry {
+    -fx-padding: 4 0;
+    -fx-spacing: 20;
+}
+
+.leaderboard-entry Label {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+}
+

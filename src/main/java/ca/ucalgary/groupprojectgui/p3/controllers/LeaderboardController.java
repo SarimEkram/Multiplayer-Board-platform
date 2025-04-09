@@ -2,6 +2,7 @@ package ca.ucalgary.groupprojectgui.p3.controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.image.ImageView;
 
@@ -18,61 +19,28 @@ import java.util.List;
 
 public class LeaderboardController {
 
-    @FXML
-    private ImageView gameLogo;
-
-    @FXML
-    private VBox ticTacToeLeaderboardPane;
-
-    @FXML
-    private VBox checkersLeaderboardPane;
-
-    @FXML
-    private VBox connect4LeaderboardPane;
+    @FXML private VBox ticTacToeLeaderboard;
+    @FXML private VBox checkersLeaderboard;
+    @FXML private VBox connect4Leaderboard;
+    @FXML private TabPane gameTabs;
 
     @FXML
     public void openTicTacToeLeaderboard() {
-        hideAllLeaderboards();
-        populateLeaderboards(TIC_TAC_TOE);
-        ticTacToeLeaderboardPane.setVisible(true);
-        ticTacToeLeaderboardPane.setManaged(true);
+        populateLeaderboard(TIC_TAC_TOE, ticTacToeLeaderboard);
     }
 
     @FXML
     public void openCheckersLeaderboard() {
-        hideAllLeaderboards();
-        populateLeaderboards(CHECKERS);
-        checkersLeaderboardPane.setVisible(true);
-        checkersLeaderboardPane.setManaged(true);
+        populateLeaderboard(CHECKERS, checkersLeaderboard);
     }
 
     @FXML
     public void openConnect4Leaderboard() {
-        hideAllLeaderboards();
-        populateLeaderboards(CONNECT_FOUR);
-        connect4LeaderboardPane.setVisible(true);
-        connect4LeaderboardPane.setManaged(true);
+        populateLeaderboard(CONNECT_FOUR, connect4Leaderboard);
     }
 
-    private void hideAllLeaderboards() {
-        ticTacToeLeaderboardPane.setVisible(false);
-        ticTacToeLeaderboardPane.setManaged(false);
-
-        checkersLeaderboardPane.setVisible(false);
-        checkersLeaderboardPane.setManaged(false);
-
-        connect4LeaderboardPane.setVisible(false);
-        connect4LeaderboardPane.setManaged(false);
-    }
-
-    private void populateLeaderboards(GameType gameType) {
-        VBox targetPane = switch (gameType) {
-            case TIC_TAC_TOE -> ticTacToeLeaderboardPane;
-            case CHECKERS -> checkersLeaderboardPane;
-            case CONNECT_FOUR -> connect4LeaderboardPane;
-        };
-
-        targetPane.getChildren().clear();
+    private void populateLeaderboard(GameType gameType, VBox leaderboardBox) {
+        leaderboardBox.getChildren().clear();
 
         List<Player> players = switch (gameType) {
             case TIC_TAC_TOE -> {
@@ -92,19 +60,52 @@ public class LeaderboardController {
         if (players == null || players.isEmpty()) {
             Label noData = new Label("No players found.");
             noData.setStyle("-fx-text-fill: white; -fx-font-size: 16;");
-            targetPane.getChildren().add(noData);
+            leaderboardBox.getChildren().add(noData);
         } else {
             int rank = 1;
             for (Player player : players) {
-                String rankTier = player.getRank(gameType).getCurrentTier().getRankName();
-                String entryText = String.format( "%d. Player ID: %d | Username: %s | Level: %d | MMR: %d | Rank: %s",
-                        rank, player.getUserID(), player.getUsername(), player.getLevel(), player.getMMR(gameType), rankTier);
-                Label entry = new Label(entryText);
-                entry.setStyle("-fx-text-fill: white; -fx-font-size: 16;");
-                targetPane.getChildren().add(entry);
+                String tier = player.getRank(gameType).getCurrentTier().getRankName();
+
+                Label rankLabel = new Label(rank + ".");
+                Label idLabel = new Label("ID: " + player.getUserID());
+                Label usernameLabel = new Label("Username: " + player.getUsername());
+                Label levelLabel = new Label("Level: " + player.getLevel());
+                Label mmrLabel = new Label("MMR: " + player.getMMR(gameType));
+                Label tierLabel = new Label("Rank: " + tier);
+
+                // Set fixed widths for alignment
+                rankLabel.setPrefWidth(40);
+                idLabel.setPrefWidth(120);
+                usernameLabel.setPrefWidth(200);
+                levelLabel.setPrefWidth(100);
+                mmrLabel.setPrefWidth(100);
+                tierLabel.setPrefWidth(100);
+
+                for (Label label : new Label[]{rankLabel, idLabel, usernameLabel, levelLabel, mmrLabel, tierLabel}) {
+                    label.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");
+                }
+
+                HBox row = new HBox(20, rankLabel, idLabel, usernameLabel, levelLabel, mmrLabel, tierLabel);
+                row.setStyle("-fx-alignment: center-left;");
+                row.getStyleClass().add("leaderboard-entry");
+                leaderboardBox.getChildren().add(row);
                 rank++;
             }
         }
+    }
+
+    @FXML
+    public void initialize() {
+        gameTabs.getSelectionModel().selectedItemProperty().addListener((obs, oldTab, newTab) -> {
+            switch (newTab.getText()) {
+                case "Tic Tac Toe" -> openTicTacToeLeaderboard();
+                case "Checkers" -> openCheckersLeaderboard();
+                case "Connect 4" -> openConnect4Leaderboard();
+            }
+        });
+
+        // Trigger default tab content population
+        openTicTacToeLeaderboard();
     }
 
     @FXML
