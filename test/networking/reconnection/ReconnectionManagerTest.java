@@ -205,5 +205,33 @@ public class ReconnectionManagerTest {
         String output = outContent.toString().trim();
         assertTrue(output.contains("Failed to reconnect player p1. Player removed from the session."));
     }
+    // Test handleFailedReconnection when the player is not in the disconnected list.
+    @Test
+    public void testHandleFailedReconnection_WithNonExistingPlayer() {
+        ReconnectionManager manager = new ReconnectionManager("game15");
+        outContent.reset();
+        manager.handleFailedReconnection("p2");
+        String output = outContent.toString().trim();
+        assertTrue(output.contains("Failed to reconnect player p2. Player removed from the session."));
+    }
 
+    // Test attemptReconnection when no saved game state exists.
+    // This simulates a scenario where the player disconnects, but no game state is saved.
+    @Test
+    public void testAttemptReconnection_NoSavedGameState() {
+        ReconnectionManager manager = new ReconnectionManager("game16");
+        Set<String> players = new HashSet<>(Arrays.asList("p1", "p2"));
+        manager.startGame(players);
+        manager.playerDisconnected("p1");
+        // Do not save any game state for p1.
+        outContent.reset();
+        boolean result = manager.attemptReconnection("p1");
+        String output = outContent.toString().trim();
+        // We expect the reconnection to proceed, but with a message indicating no saved state.
+        assertTrue(result);
+        assertTrue(output.contains("Reconnecting player p1..."));
+        assertTrue(output.contains("No saved game state found for player p1."));
+        // Ensure that the notification for other players still occurs.
+        assertTrue(output.contains("Notifying player p2 that p1 has reconnected."));
+    }
 }
