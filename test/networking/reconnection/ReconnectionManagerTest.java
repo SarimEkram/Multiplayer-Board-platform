@@ -153,5 +153,85 @@ public class ReconnectionManagerTest {
         Assertions.assertFalse(result);
         assertTrue(output.contains("Game session is not active. Cannot reconnect player p1."));
     }
+    // Test restoreGameState when a saved state exists, then verify it's removed after restoration.
+    @Test
+    public void testRestoreGameState_StateExists() {
+        ReconnectionManager manager = new ReconnectionManager("game11");
+        TestGameState state1 = new TestGameState("state1");
+        manager.saveGameState("p1", state1);
+        outContent.reset();
+        manager.restoreGameState("p1");
+        String output = outContent.toString().trim();
+        assertTrue(output.contains("Restoring game state for player p1: state1"));
 
+        // Calling restoreGameState again should indicate no saved state.
+        outContent.reset();
+        manager.restoreGameState("p1");
+        output = outContent.toString().trim();
+        assertTrue(output.contains("No saved game state found for player p1."));
+    }
+
+    //  Test restoreGameState when no saved state is present.
+    @Test
+    public void testRestoreGameState_NoState() {
+        ReconnectionManager manager = new ReconnectionManager("game12");
+        manager.restoreGameState("p2");
+        String output = outContent.toString().trim();
+        assertTrue(output.contains("No saved game state found for player p2."));
+    }
+    // Test notifyReconnection with multiple other players.
+    @Test
+    public void testNotifyReconnection_MultiplePlayers() {
+        ReconnectionManager manager = new ReconnectionManager("game13");
+        Set<String> players = new HashSet<>(Arrays.asList("p1", "p2", "p3"));
+        manager.startGame(players);
+        outContent.reset();
+        manager.notifyReconnection("p1");
+        String output = outContent.toString().trim();
+        // Ensure notifications for both p2 and p3 are present.
+        assertTrue(output.contains("Notifying player p2 that p1 has reconnected."));
+        assertTrue(output.contains("Notifying player p3 that p1 has reconnected."));
+    }
+
+    // Test handleFailedReconnection for a disconnected player.
+    @Test
+    public void testHandleFailedReconnection_WithDisconnectedPlayer() {
+        ReconnectionManager manager = new ReconnectionManager("game14");
+        Set<String> players = new HashSet<>(Arrays.asList("p1"));
+        manager.startGame(players);
+        manager.playerDisconnected("p1");
+        outContent.reset();
+        manager.handleFailedReconnection("p1");
+        String output = outContent.toString().trim();
+        assertTrue(output.contains("Failed to reconnect player p1. Player removed from the session."));
+    }
+    // Test handleFailedReconnection when the player is not in the disconnected list.
+    @Test
+    public void testHandleFailedReconnection_WithNonExistingPlayer() {
+        ReconnectionManager manager = new ReconnectionManager("game15");
+        outContent.reset();
+        manager.handleFailedReconnection("p2");
+        String output = outContent.toString().trim();
+        assertTrue(output.contains("Failed to reconnect player p2. Player removed from the session."));
+    }
+
+    // Test attemptReconnection when no saved game state exists.
+    // This simulates a scenario where the player disconnects, but no game state is saved.
+    @Test
+    public void testAttemptReconnection_NoSavedGameState() {
+        ReconnectionManager manager = new ReconnectionManager("game16");
+        Set<String> players = new HashSet<>(Arrays.asList("p1", "p2"));
+        manager.startGame(players);
+        manager.playerDisconnected("p1");
+        // Do not save any game state for p1.
+        outContent.reset();
+        boolean result = manager.attemptReconnection("p1");
+        String output = outContent.toString().trim();
+        // We expect the reconnection to proceed, but with a message indicating no saved state.
+        assertTrue(result);
+        assertTrue(output.contains("Reconnecting player p1..."));
+        assertTrue(output.contains("No saved game state found for player p1."));
+        // Ensure that the notification for other players still occurs.
+        assertTrue(output.contains("Notifying player p2 that p1 has reconnected."));
+    }
 }
