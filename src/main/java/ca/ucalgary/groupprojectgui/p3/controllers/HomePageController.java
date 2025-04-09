@@ -1,8 +1,6 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
 
-import Authentication.User;
-import Authentication.UserDatabase;
-import Authentication.FriendDatabase;
+import Authentication.*;
 import MatchmakingLeaderboard.Player;
 import MatchmakingLeaderboard.PlayerDatabase;
 import javafx.animation.FadeTransition;
@@ -33,6 +31,10 @@ import java.util.stream.Collectors;
 public class HomePageController {
     public HBox gameFriend;
     public HBox mainContainer;
+    public StackPane opponentOverlay;
+    public Button cancelButton;
+    public Button randomButton;
+    public Button friendButton;
     @FXML
     private VBox playersContainer;
     // Fields for game/home page
@@ -358,55 +360,34 @@ public class HomePageController {
     @FXML
     public void chooseOpponent(String forGame) {
         currentGameName = forGame;
-        // Apply blur effect on the main container
+
+        // Blur effect
         BoxBlur blur = new BoxBlur(10, 10, 3);
         mainContainer.setEffect(blur);
 
-        // Get the root pane from the scene
-        StackPane rootPane = (StackPane) mainContainer.getScene().getRoot();
+        // Show overlay
+        opponentOverlay.setVisible(true);
+        opponentOverlay.setOpacity(1.0);
 
-        // Create an overlay for opponent choice
-        StackPane overlay = new StackPane();
-        overlay.getStyleClass().add("friend-selection-overlay");
-        overlay.prefWidthProperty().bind(rootPane.widthProperty());
-        overlay.prefHeightProperty().bind(rootPane.heightProperty());
+        // Cancel button behavior
+        cancelButton.setOnAction(e -> {
+            opponentOverlay.setVisible(false);
+            opponentOverlay.setOpacity(0.0);
+            mainContainer.setEffect(null);
+        });
 
-        // Build modal dialog (Random or Friend)
-        VBox modal = new VBox(20);
-        modal.setAlignment(Pos.CENTER);
-        modal.setPadding(new Insets(20));
-        modal.setStyle("-fx-background-color: rgba(0, 0, 0, 0.8); -fx-background-radius: 10;");
-        modal.setMinWidth(300);
-        modal.setMinHeight(150);
-
-        Label prompt = new Label("WHOM  DO  YOU  WANNA  PLAY  WITH??");
-        prompt.setStyle("-fx-text-fill: white; -fx-font-size: 20px;");
-
-        Button randomButton = new Button("Random");
-        Button friendButton = new Button("Friend");
-        randomButton.setStyle("-fx-background-color: #5f27cd; -fx-text-fill: white; -fx-background-radius: 10;");
-        friendButton.setStyle("-fx-background-color: #341f97; -fx-text-fill: white; -fx-background-radius: 10;");
-
-        HBox buttonBox = new HBox(10, randomButton, friendButton);
-        buttonBox.setAlignment(Pos.CENTER);
-
-        modal.getChildren().addAll(prompt, buttonBox);
-        overlay.getChildren().add(modal);
-
-        // Add overlay and bring it to the front
-        rootPane.getChildren().add(overlay);
-        overlay.toFront();
-
-        // Random button: remove overlay, remove blur, then launch game
+        // Random button behavior
         randomButton.setOnAction(e -> {
-            rootPane.getChildren().remove(overlay);
+            opponentOverlay.setVisible(false);
+            opponentOverlay.setOpacity(0.0);
             mainContainer.setEffect(null);
             launchGame(currentGameName);
         });
 
-        // Friend button: remove this overlay/blur then show friend selection
+        // Friend button behavior
         friendButton.setOnAction(e -> {
-            rootPane.getChildren().remove(overlay);
+            opponentOverlay.setVisible(false);
+            opponentOverlay.setOpacity(0.0);
             mainContainer.setEffect(null);
             showFriendSelection();
         });
@@ -414,9 +395,11 @@ public class HomePageController {
 
     @FXML
     public void showFriendSelection() {
-        // Clear previous items (if any)
+        // Apply blur effect
         BoxBlur blur = new BoxBlur(10, 10, 3);
         mainContainer.setEffect(blur);
+
+        // Clear previous items (if any)
         friendListView.getItems().clear();
 
         int currentUserId = LoginController.loginId;
@@ -424,8 +407,11 @@ public class HomePageController {
 
         for (Integer friendId : friendIds) {
             Player friend = PlayerDatabase.getPlayerByUserID(friendId);
-            if (friend != null) {
+            User onlineUser = UserDatabase.getUserById(friendId);
+            // Check if the friend exists and is online (assuming isOnline() exists)
+            if (friend != null && onlineUser.isOnline() ) {
                 friendListView.getItems().add(friend.getUsername());
+                // Update ListView display properties dynamically based on the number of items
                 friendListView.setFixedCellSize(32);
                 friendListView.setPrefHeight(friendListView.getItems().size() * 32 + 2);
             }
@@ -506,12 +492,12 @@ public class HomePageController {
         for (Integer friendId : friendIds) {
             Player friend = PlayerDatabase.getPlayerByUserID(friendId);
             if (friend != null) {
-                playersContainer.getChildren().add(createFriendItem(friend.getUsername()));
+                playersContainer.getChildren().add(createFriendItem(friend.getUsername(), friendId));
             }
         }
     }
 
-    private HBox createFriendItem(String username) {
+    private HBox createFriendItem(String username, int friendId) {
         HBox friendItem = new HBox(15);
         friendItem.setAlignment(Pos.CENTER_LEFT);
         friendItem.getStyleClass().add("friend-item");
@@ -525,15 +511,19 @@ public class HomePageController {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        Button removeButton = new Button("✖");
-        removeButton.getStyleClass().add("remove-button");
-        removeButton.setOnAction(this::handleRemoveFriend);
+        Label friendStatus = new Label("⚪️");
+        friendStatus.setStyle("-fx-font-size: 12px;");
+        User onlineUser = UserDatabase.getUserById(friendId);
+        if(onlineUser.isOnline())
+            friendStatus.setText("🟢");
+        else
+            friendStatus.setText("🔴");
 // Set an event handler on the entire friend item.
         // This handler will show the friend profile popup.
         friendItem.setOnMouseClicked(event -> {
             showFriendProfilePopup(username);
         });
-        friendItem.getChildren().addAll(avatar, nameLabel, spacer, removeButton);
+        friendItem.getChildren().addAll(avatar, nameLabel, spacer, friendStatus);
         return friendItem;
     }
 
