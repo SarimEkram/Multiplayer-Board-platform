@@ -558,8 +558,18 @@ public class TicTacToeController {
             if (currentTimer.isTimeExpired()) {
                 String loser = playerXTurn ? localPlayer.getUsername() : opponentPlayer.getUsername();
                 String winner = playerXTurn ? opponentPlayer.getUsername() : localPlayer.getUsername();
-
-                addMessage("SYSTEM", loser + " ⏰ Time's up!", true);
+                if (playerXTurn) {
+                    // Player X's time expired, Player O wins
+//                    scorePlayerO++; // Increment score for Player O
+//                    score2.setText("Score: " + scorePlayerO); // Update UI for Player O's score
+                    gameProcessor.UpdateResults(opponentPlayer, localPlayer, gameType);
+                } else {
+                    // Player O's time expired, Player X wins
+//                    scorePlayerX++; // Increment score for Player X
+//                    score1.setText("Score: " + scorePlayerX); // Update UI for Player X's score
+                    gameProcessor.UpdateResults(localPlayer, opponentPlayer, gameType);
+                }
+                addMessage("SYSTEM", loser + " ⏰ Time's up! " + winner + " wins!", true);
                 showGameOverPopup(winner, true);
                 gameOver = true;
                 boardContainer.setDisable(true);
@@ -570,6 +580,7 @@ public class TicTacToeController {
         turnCheckTimeline.setCycleCount(Timeline.INDEFINITE);
         turnCheckTimeline.play();
     }
+
 
     private void stopTurnTimer() {
         if (turnCheckTimeline != null) {
