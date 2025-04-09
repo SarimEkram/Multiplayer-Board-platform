@@ -720,7 +720,18 @@ public class Connect4Controller {
             if (currentTimer.isTimeExpired()) {
                 String loser = isP1 ? localPlayer.getUsername() : opponentPlayer.getUsername();
                 String winner = !isP1 ? localPlayer.getUsername() : opponentPlayer.getUsername();
-                addMessage("SYSTEM", loser + " ⏰ Time's up!", true);
+                if (isP1) {
+                    // Player 1 time expired, Player 2 wins
+                    scorePlayer2++; // Increment score for Player 2
+                    gameProcessor.UpdateResults(opponentPlayer,localPlayer, gameType);
+                    score2.setText("Score: " + scorePlayer2); // Update UI for Player 2's score
+                } else {
+                    // Player 2 time expired, Player 1 wins
+                    scorePlayer1++; // Increment score for Player 1
+                    gameProcessor.UpdateResults(localPlayer, opponentPlayer, gameType);
+                    score1.setText("Score: " + scorePlayer1); // Update UI for Player 1's score
+                }
+                addMessage("SYSTEM", loser + " ⏰ Time's up! " + winner + " wins!", true);
                 showGameOverPopup(winner, true);
                 gameActive = false;
                 stopTimer();

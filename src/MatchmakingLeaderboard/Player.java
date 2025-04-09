@@ -70,6 +70,20 @@ public class Player {
     public int getMMR(GameType gameType){ return this.mmr[gameType.ordinal()]; }
     public void setMMR(int mmr, GameType gameType){ this.mmr[gameType.ordinal()] = mmr; }
 
+    public String rankForPlayer(GameType gameType){
+        int mmr = this.getMMR(gameType);
+
+        if (mmr >= RankTier.DIAMOND.getThresholdPoints()) {
+            return RankTier.DIAMOND.getRankName();
+        } else if (mmr >= RankTier.GOLD.getThresholdPoints()) {
+            return RankTier.GOLD.getRankName();
+        } else if (mmr >= RankTier.SILVER.getThresholdPoints()) {
+            return RankTier.SILVER.getRankName();
+        } else {
+            return RankTier.BRONZE.getRankName();
+        }
+    }
+
     // Getter - Setter for Rank
     public Rank getRank(GameType gameType) { return this.rank[gameType.ordinal()]; }
     public void setRank(Rank rank, GameType gameType) { this.rank[gameType.ordinal()] = rank; }

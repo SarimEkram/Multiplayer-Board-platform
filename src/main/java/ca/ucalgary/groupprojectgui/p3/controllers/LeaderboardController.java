@@ -75,7 +75,7 @@ public class LeaderboardController {
         } else {
             int rank = 1;
             for (Player player : players) {
-                String rankTier = player.getRank(gameType).getCurrentTier().getRankName();
+                String rankTier = player.rankForPlayer(gameType);
 
                 HBox row = new HBox(20);
                 row.setAlignment(Pos.CENTER_LEFT);
