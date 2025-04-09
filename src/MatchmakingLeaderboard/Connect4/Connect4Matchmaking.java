@@ -34,7 +34,7 @@ public class Connect4Matchmaking extends AbstractConnect4Matchmaking{
             this.matchmakingUp = true;
         }catch (Exception e){
             this.matchmakingUp = false;
-            throw new MatchmakingException("Matchmaking is Down");
+            throw new MatchmakingException("Connect 4 Matchmaking is Down");
         }
     }
 
