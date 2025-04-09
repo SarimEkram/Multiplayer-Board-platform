@@ -15,7 +15,7 @@ public class RankTest {
         rank = new Rank(); // starts at BRONZE by default
         player = new Player("Jay", 1, 123456);
         for (GameType game : GameType.values()) {
-            player.setRank(new Rank(), game); // ensure rank is initialized
+            player.setRank(new Rank(), game); // ensure rank is initialized for each game
         }
     }
 
@@ -33,8 +33,8 @@ public class RankTest {
      */
     @Test
     void testConstructorWithTier() {
-        Rank goldRank = new Rank(RankTier.GOLD);
-        assertEquals(RankTier.GOLD, goldRank.getCurrentTier());
+        Rank bronzeRank = new Rank(RankTier.BRONZE);
+        assertEquals(RankTier.BRONZE, bronzeRank.getCurrentTier());
     }
 
     /**
@@ -42,7 +42,7 @@ public class RankTest {
      */
     @Test
     void testAdjustPointsIncrease() {
-        rank.adjustPoints(player, 60, GameType.TIC_TAC_TOE);
+        player.getRank(GameType.TIC_TAC_TOE).adjustPoints(player, 60, GameType.TIC_TAC_TOE);
         assertEquals(60, player.getRank(GameType.TIC_TAC_TOE).getRankingPoints());
     }
 
@@ -51,7 +51,7 @@ public class RankTest {
      */
     @Test
     void testAdjustPointsCannotGoNegative() {
-        rank.adjustPoints(player, -50, GameType.TIC_TAC_TOE);
+        player.getRank(GameType.TIC_TAC_TOE).adjustPoints(player, -50, GameType.TIC_TAC_TOE);
         assertEquals(0, player.getRank(GameType.TIC_TAC_TOE).getRankingPoints());
     }
 
@@ -59,39 +59,44 @@ public class RankTest {
      * Test that tier upgrades as ranking points increase.
      */
     @Test
-    void testTierUpgrade() {
-        // Bronze → Silver at 100
-        rank.adjustPoints(player, 100, GameType.TIC_TAC_TOE);
-        assertEquals(RankTier.SILVER, player.getRank(GameType.TIC_TAC_TOE).getCurrentTier());
+    void testTierUpgradeThroughPlayer() {
+        Rank rank = player.getRank(GameType.TIC_TAC_TOE);
 
-        // Silver → Gold at 300
-        rank.adjustPoints(player, 200, GameType.TIC_TAC_TOE);
-        assertEquals(RankTier.GOLD, player.getRank(GameType.TIC_TAC_TOE).getCurrentTier());
+        // BRONZE → SILVER
+        rank.adjustPoints(player, RankTier.SILVER.getThresholdPoints(), GameType.TIC_TAC_TOE);
+        assertEquals(RankTier.SILVER, rank.getCurrentTier());
 
-        // Gold → Diamond at 600
-        rank.adjustPoints(player, 300, GameType.TIC_TAC_TOE);
-        assertEquals(RankTier.DIAMOND, player.getRank(GameType.TIC_TAC_TOE).getCurrentTier());
+        // SILVER → GOLD
+        rank.adjustPoints(player, RankTier.GOLD.getThresholdPoints() - RankTier.SILVER.getThresholdPoints(), GameType.TIC_TAC_TOE);
+        assertEquals(RankTier.GOLD, rank.getCurrentTier());
+
+        // GOLD → DIAMOND
+        rank.adjustPoints(player, RankTier.DIAMOND.getThresholdPoints() - RankTier.GOLD.getThresholdPoints(), GameType.TIC_TAC_TOE);
+        assertEquals(RankTier.DIAMOND, rank.getCurrentTier());
     }
 
     /**
      * Test that tier downgrades when points fall below threshold.
      */
     @Test
-    void testTierDowngrade() {
-        // Start with high points
-        rank.adjustPoints(player, 600, GameType.TIC_TAC_TOE);
-        assertEquals(RankTier.DIAMOND, player.getRank(GameType.TIC_TAC_TOE).getCurrentTier());
+    void testTierDowngradeThroughPlayer() {
+        Rank rank = player.getRank(GameType.TIC_TAC_TOE);
 
-        // Reduce enough to drop to GOLD
-        rank.adjustPoints(player, -100, GameType.TIC_TAC_TOE);
-        assertEquals(RankTier.GOLD, player.getRank(GameType.TIC_TAC_TOE).getCurrentTier());
+        // First go to DIAMOND
+        rank.adjustPoints(player, RankTier.DIAMOND.getThresholdPoints(), GameType.TIC_TAC_TOE);
+        assertEquals(RankTier.DIAMOND, rank.getCurrentTier());
 
-        // Reduce to SILVER
-        rank.adjustPoints(player, -300, GameType.TIC_TAC_TOE);
-        assertEquals(RankTier.SILVER, player.getRank(GameType.TIC_TAC_TOE).getCurrentTier());
+        // Drop to GOLD
+        rank.adjustPoints(player, - (RankTier.DIAMOND.getThresholdPoints() - RankTier.GOLD.getThresholdPoints()), GameType.TIC_TAC_TOE);
+        assertEquals(RankTier.GOLD, rank.getCurrentTier());
 
-        // Reduce to BRONZE
-        rank.adjustPoints(player, -300, GameType.TIC_TAC_TOE);
-        assertEquals(RankTier.BRONZE, player.getRank(GameType.TIC_TAC_TOE).getCurrentTier());
+        // Drop to SILVER
+        rank.adjustPoints(player, - (RankTier.GOLD.getThresholdPoints() - RankTier.SILVER.getThresholdPoints()), GameType.TIC_TAC_TOE);
+        assertEquals(RankTier.SILVER, rank.getCurrentTier());
+
+        // Drop to BRONZE
+        rank.adjustPoints(player, - (RankTier.SILVER.getThresholdPoints()), GameType.TIC_TAC_TOE);
+        assertEquals(RankTier.BRONZE, rank.getCurrentTier());
     }
+
 }
