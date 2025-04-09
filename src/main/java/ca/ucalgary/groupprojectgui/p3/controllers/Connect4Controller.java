@@ -603,6 +603,7 @@ public class Connect4Controller {
             }
             addMessage("SYSTEM", "Welcome to Neon Connect 4", true);
             addMessage("SYSTEM", "Game initialized", true);
+            addMessage("SYSTEM", "Make your move in 30 seconds!", true);
         } catch (Exception e) {
             System.err.println("Error initializing chat: " + e.getMessage());
         }
@@ -676,12 +677,12 @@ public class Connect4Controller {
         if (timeline != null) {
             timeline.stop();
         }
-        timeElapsed.setText(String.format("⏳ TIME LEFT: %02d:%02d", secondsElapsed / 60, secondsElapsed % 60));
+        timeElapsed.setText(String.format("⏳ TURN TIME: %02d:%02d", secondsElapsed / 60, secondsElapsed % 60));
         timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
             secondsElapsed++;
             int minutes = secondsElapsed / 60;
             int seconds = secondsElapsed % 60;
-            timeElapsed.setText(String.format("⏳ TIME LEFT: %02d:%02d", minutes, seconds));
+            timeElapsed.setText(String.format("⏳ TURN TIME: %02d:%02d", minutes, seconds));
         }));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
