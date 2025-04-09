@@ -27,7 +27,7 @@ public class PlayerTest {
     }
 
     @Test
-    void testWinLossOperations() {
+    void testWinLoss() {
         // Test for all game types
         for (GameType gameType : GameType.values()) {
             // Initial state
@@ -53,7 +53,7 @@ public class PlayerTest {
     }
 
     @Test
-    void testWinRatioEdgeCases() {
+    void testWinRatio() {
         // Test division by zero protection
         assertEquals(0.0, player.getWinRatio(TIC_TAC_TOE));
 
@@ -74,7 +74,7 @@ public class PlayerTest {
     }
 
     @Test
-    void testMMROperations() {
+    void testMMR() {
         // Test setting and getting MMR for each game type
         player.setMMR(1200, TIC_TAC_TOE);
         assertEquals(1200, player.getMMR(TIC_TAC_TOE));
@@ -90,7 +90,7 @@ public class PlayerTest {
     }
 
     @Test
-    void testGameSignalOperations() {
+    void testGameSignal() {
         // Test valid signal range
         for (int signal = 0; signal <= 3; signal++) {
             player.setGameSignal(signal, TIC_TAC_TOE);
@@ -105,7 +105,7 @@ public class PlayerTest {
     }
 
     @Test
-    void testRankOperations() {
+    void testRank() {
         // Test initial rank state
         Rank initialRank = player.getRank(TIC_TAC_TOE);
         assertEquals(0, initialRank.getRankingPoints());
@@ -136,7 +136,7 @@ public class PlayerTest {
     }
 
     @Test
-    void testRankTierPromotion() {
+    void testRankTier() {
         Rank rank = player.getRank(CHECKERS);
 
         // BRONZE to SILVER
@@ -153,7 +153,7 @@ public class PlayerTest {
     }
 
     @Test
-    void testPlayerInformationUpdates() {
+    void testPlayerUpdates() {
         // Test username
         player.setUsername("NewUsername");
         assertEquals("NewUsername", player.getUsername());
@@ -168,7 +168,7 @@ public class PlayerTest {
     }
 
     @Test
-    void testJoinMatchWithDifferentSignals() {
+    void testJoinMatch() {
         // Test that joinMatch doesn't throw exceptions for valid signals
         assertDoesNotThrow(() -> {
             player.setGameSignal(1, TIC_TAC_TOE);
@@ -193,7 +193,7 @@ public class PlayerTest {
     }
 
     @Test
-    void testMultipleGameTypeIndependence() {
+    void testMultipleGameType() {
         // Verify that operations on one game type don't affect others
         player.addWin(TIC_TAC_TOE);
         player.setMMR(1500, TIC_TAC_TOE);

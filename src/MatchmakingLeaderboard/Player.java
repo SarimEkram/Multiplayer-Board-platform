@@ -3,7 +3,7 @@ package MatchmakingLeaderboard;
 import MatchmakingLeaderboard.Checkers.Matchmaking.CheckersMatchmaking;
 import MatchmakingLeaderboard.Connect4.Connect4Matchmaking;
 import MatchmakingLeaderboard.TicTacToe.TicTacToeMatchmaking;
-//import MatchmakingLeaderboard.Rank;
+
 /**
  * Player class that is used to represent Users pulled from database
  * and used in matchmaking and leaderboard
@@ -30,7 +30,7 @@ public class Player {
         this.level = level;
         this.username = username;
         this.userID = userID;
-        //this.spectate = spectate;
+
         for(int i = 0; i < 3; i++) {
             this.winRatio[i] = 0.0;
             this.wins[i] = 0;
@@ -42,62 +42,56 @@ public class Player {
 
     }
 
+    // Getter - Setter for Username
     public String getUsername() {
         return this.username;
     }
-
     public void setUsername(String username) {
         this.username = username;
     }
 
-    public int getWins(GameType gameType) {
-        //validGame(gameType);
-        return this.wins[gameType.ordinal()];
+    // Getter - Setter for Level
+    public int getLevel() {
+        return this.level;
+    }
+    public void setLevel(int level) {
+        this.level = level;
     }
 
+    // Getter - Setter for UsrID
+    public int getUserID() {
+        return this.userID;
+    }
+    public void setUserID(int userID) {
+        this.userID = userID;
+    }
+
+    // Getter - Setter for MMR
+    public int getMMR(GameType gameType){ return this.mmr[gameType.ordinal()]; }
+    public void setMMR(int mmr, GameType gameType){ this.mmr[gameType.ordinal()] = mmr; }
+
+    // Getter - Setter for Rank
+    public Rank getRank(GameType gameType) { return this.rank[gameType.ordinal()]; }
+    public void setRank(Rank rank, GameType gameType) { this.rank[gameType.ordinal()] = rank; }
+
+    // Getters for Wins/Losses
+    public int getWins(GameType gameType) { return this.wins[gameType.ordinal()]; }
+    public int getLosses(GameType gameType) { return this.losses[gameType.ordinal()]; }
+
+    // Setter for Wins/Losses
     public void addWin(GameType gameType) {
-        //validGame(gameType);
         this.wins[gameType.ordinal()]++;
         calculateRatio(gameType);
     }
-    public int getLosses(GameType gameType) {
-        //validGame(gameType);
-        return this.losses[gameType.ordinal()];
-    }
-
     public void addLoss(GameType gameType) {
-        //validGame(gameType);
         this.losses[gameType.ordinal()]++;
         calculateRatio(gameType);
     }
 
-//    private void validGame(int gameType){
-//        if(gameType < 1 || gameType > 3) {
-//            throw new IllegalArgumentException("Invalid game type");
-//        }
-//    }
-    // --- MMR ---
-    public int getMMR(GameType gameType){
-        //validGame(gameType);
-        return this.mmr[gameType.ordinal()];
-    }
-
-    public void setMMR(int mmr, GameType gameType){
-        //validGame(gameType);
-        this.mmr[gameType.ordinal()] = mmr;
-    }
-
-    // --- Win Ratio ---
-    public double getWinRatio(GameType gameType) {
-        //validGame(gameType);
-        return this.winRatio[gameType.ordinal()];
-    }
-
-    public void setWinRatio(GameType gameType, double ratio) {
-        this.winRatio[gameType.ordinal()] = ratio;
-
-    }
-
+    /**
+     * Calculates win ratio
+     * @param gameType
+     */
     public void calculateRatio(GameType gameType) {
         //validGame(gameType);
         int gameIndex = gameType.ordinal() ;
@@ -113,45 +107,20 @@ public class Player {
 
     }
 
-    // general info
-    public int getLevel() {
-        return this.level;
-    }
+    // Getter - Setter for WinRatio
+    public double getWinRatio(GameType gameType) { return this.winRatio[gameType.ordinal()]; }
+    public void setWinRatio(GameType gameType, double ratio) { this.winRatio[gameType.ordinal()] = ratio; }
 
-    public void setLevel(int level) {
-        this.level = level;
-    }
-
-    public int getUserID() {
-        return this.userID;
-    }
-
-    public void setUserID(int userID) {
-        this.userID = userID;
-    }
-
-    public Rank getRank(GameType gameType) {
-
-        return this.rank[gameType.ordinal()];
-    }
-
-    public void setRank(Rank rank, GameType gameType) {
-        this.rank[gameType.ordinal()] = rank;
-    }
-
+    // Getter - Setter for Game Signal
     public int getGameSignal(GameType gameType) {
         return this.gameSignal[gameType.ordinal()];
     }
-
     public void setGameSignal(int Signal, GameType gameType) {
-
         if(Signal < 0 || Signal > 3) {
             throw new IllegalArgumentException("Signal must be between 0 and 3");
         }
-
         this.gameSignal[gameType.ordinal()] = Signal;
     }
-
 
     /**
      * Joins the player into matchmaking queue based on their game signal

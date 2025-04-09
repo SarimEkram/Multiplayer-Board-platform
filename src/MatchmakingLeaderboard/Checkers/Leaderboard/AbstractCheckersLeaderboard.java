@@ -11,8 +11,7 @@ import java.util.List;
  * Abstract class for Checkers Leaderboard.
  * Implements Game Leaderboard functionality.
  *
- * @author Jay Thakor
- * @author Neel Savani
+ *
  * @author Happy Prajapati
  */
 public abstract class AbstractCheckersLeaderboard implements IGameLeaderboard {
@@ -29,11 +28,10 @@ public abstract class AbstractCheckersLeaderboard implements IGameLeaderboard {
         }
     }
 
-    //public abstract void updatePlayer(Player player, boolean won);
+
 
     public abstract List<Player> getScores();
 
-    //public abstract List<Player> getTopPlayers();
 
     public Player findPLayerById(int playerId) {
         for (Player player : players) {

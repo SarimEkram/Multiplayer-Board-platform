@@ -61,25 +61,6 @@ public class GameProcessor {
     }
 
     /**
-     * Updates level for a player
-     * @param player
-     *
-     */
-    public void updateLevel(Player player) {
-
-        int l1 = player.getMMR(GameType.TIC_TAC_TOE);
-        int l2 = player.getMMR(GameType.CONNECT_FOUR);
-        int l3 = player.getMMR(GameType.CHECKERS);
-
-        int newLevel = (l1+l2+l3)/100;
-        if(newLevel == 0){
-            newLevel = 1;
-        }
-
-        player.setLevel(newLevel);
-
-    }
-    /**
      * Updates MMR for players based on game outcome.
      */
     public void updateMMR(Player p1, Player p2, boolean won, GameType gameType) {
@@ -95,8 +76,6 @@ public class GameProcessor {
         Rank rank = p1.getRank(gameType);
         rank.adjustPoints(p1,updateMMR,gameType);
     }
-
-
 
     /**
      * Updates the leaderboard after a match.
@@ -119,6 +98,26 @@ public class GameProcessor {
     }
 
     /**
+     * Updates level for a player
+     * @param player
+     *
+     */
+    public void updateLevel(Player player) {
+
+        int l1 = player.getMMR(GameType.TIC_TAC_TOE);
+        int l2 = player.getMMR(GameType.CONNECT_FOUR);
+        int l3 = player.getMMR(GameType.CHECKERS);
+
+        int newLevel = (l1+l2+l3)/100;
+        if(newLevel == 0){
+            newLevel = 1;
+        }
+
+        player.setLevel(newLevel);
+
+    }
+
+    /**
      * Handles the end of a draw match.
      */
     public void ProcessDraw(Player p1, Player p2, GameType gameType) {
@@ -129,6 +128,9 @@ public class GameProcessor {
         p2.setMMR(p2.getMMR(gameType) + updateMMR2, gameType);
 
         updateLeaderBoard(p1, p2, gameType);
+
+        updateLevel(p1);
+        updateLevel(p2);
 
         PlayerDatabase.savePlayer(p1);
         PlayerDatabase.savePlayer(p2);
