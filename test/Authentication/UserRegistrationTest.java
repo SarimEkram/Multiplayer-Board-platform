@@ -1,6 +1,9 @@
 package Authentication;
 
 import org.junit.jupiter.api.*;
+
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserRegistrationTest {
@@ -31,8 +34,8 @@ public class UserRegistrationTest {
         String uniqueEmail = "user" + System.currentTimeMillis() + "@example.com";
         String password = "securepass";
 
-        boolean result = reg.registerUser(uniqueUsername, uniqueEmail, password);
-        assertTrue(result, "Registration should succeed with valid input");
+        List<String> result = reg.registerUser(uniqueUsername, uniqueEmail, password);
+        assertTrue(result.isEmpty(), "Registration should succeed with valid input");
 
         User saved = UserDatabase.getUserByEmail(uniqueEmail);
         assertNotNull(saved, "User should be saved in the database");
@@ -43,48 +46,48 @@ public class UserRegistrationTest {
     void testDuplicateEmailRegistration() {
         UserRegistration reg = new UserRegistration();
 
-        boolean result = reg.registerUser("anotherUser", DUPLICATE_EMAIL, "password123");
-        assertFalse(result, "Should fail due to duplicate email");
+        List<String> result = reg.registerUser("anotherUser", DUPLICATE_EMAIL, "password123");
+        assertFalse(result.isEmpty(), "Should fail due to duplicate email");
     }
 
     @Test
     void testDuplicateUsernameRegistration() {
         UserRegistration reg = new UserRegistration();
 
-        boolean result = reg.registerUser(DUPLICATE_USERNAME, "newemail@abc.com", "password123");
-        assertFalse(result, "Should fail due to duplicate username");
+        List<String> result = reg.registerUser(DUPLICATE_USERNAME, "newemail@abc.com", "password123");
+        assertFalse(result.isEmpty(), "Should fail due to duplicate username");
     }
 
     @Test
     void testInvalidEmailRegistration() {
         UserRegistration reg = new UserRegistration();
 
-        boolean result = reg.registerUser("user", "invalidemail.com", "password123");
-        assertFalse(result, "Should fail due to invalid email");
+        List<String> result = reg.registerUser("user", "invalidemail.com", "password123");
+        assertFalse(result.isEmpty(), "Should fail due to invalid email");
     }
 
     @Test
     void testWeakPasswordRegistration() {
         UserRegistration reg = new UserRegistration();
 
-        boolean result = reg.registerUser("user", "user@example.com", "123");
-        assertFalse(result, "Should fail due to short password");
+        List<String> result = reg.registerUser("user", "user@example.com", "123");
+        assertFalse(result.isEmpty(), "Should fail due to short password");
     }
 
     @Test
     void testEmptyUsernameRegistration() {
         UserRegistration reg = new UserRegistration();
 
-        boolean result = reg.registerUser("", "user@example.com", "password123");
-        assertFalse(result, "Should fail due to empty username");
+        List<String> result = reg.registerUser("", "user@example.com", "password123");
+        assertFalse(result.isEmpty(), "Should fail due to empty username");
     }
 
     @Test
     void testNullInputRegistration() {
         UserRegistration reg = new UserRegistration();
 
-        assertFalse(reg.registerUser(null, VALID_EMAIL, VALID_PASSWORD));
-        assertFalse(reg.registerUser(VALID_USERNAME, null, VALID_PASSWORD));
-        assertFalse(reg.registerUser(VALID_USERNAME, VALID_EMAIL, null));
+        assertFalse(reg.registerUser(null, VALID_EMAIL, VALID_PASSWORD).isEmpty());
+        assertFalse(reg.registerUser(VALID_USERNAME, null, VALID_PASSWORD).isEmpty());
+        assertFalse(reg.registerUser(VALID_USERNAME, VALID_EMAIL, null).isEmpty());
     }
 }
