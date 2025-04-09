@@ -13,6 +13,7 @@ import gameLogic.checkers.CheckersMove;
 import gameLogic.checkers.CheckersMove.Move;
 import networking.chat.InGameChat;
 import networking.chat.ChatMessage;
+import networking.game.TurnTimer;
 import ca.ucalgary.groupprojectgui.p3.SceneManager;
 import javafx.animation.KeyFrame;
 import javafx.animation.RotateTransition;
@@ -120,6 +121,13 @@ public class CheckersController {
 
     private InGameChat chatSession;
 
+    private TurnTimer timerWhite;
+    private TurnTimer timerBlack;
+    private Timeline turnCheckTimeline;
+    private boolean warningSentWhite = false;
+    private boolean warningSentBlack = false;
+
+
     private Timeline turnCountdown;
     private int turnSecondsElapsed = 0;
 
@@ -194,7 +202,15 @@ public class CheckersController {
                 onSendMessage();
             }
         });
+        timerBlack = new TurnTimer(localPlayer.getUsername(), 45);
+        timerWhite = new TurnTimer(opponentPlayer.getUsername(), 45);
+
+        // Start the shared monitoring timeline
         startTurnTimer();
+
+        // Black always goes first in Checkers
+        timerBlack.startTimer();
+
 
     }
 
@@ -389,7 +405,22 @@ public class CheckersController {
                     return;
                 } else {
                     updateTurnIndicator();
-                    startTurnTimer(); // <-- start new turn timer when turn changes
+                    // Reset GUI Timer
+                    secondsElapsed = 0;
+                    startTimer(); // GUI clock
+
+                    // Reset warning flags
+                    warningSentBlack = false;
+                    warningSentWhite = false;
+
+                    // Restart only the current turn's timer
+                    if (gameLogic.getTurn() == Checkers.Turn.BLACK) {
+                        timerBlack.resetTimer();
+                        timerBlack.startTimer();
+                    } else {
+                        timerWhite.resetTimer();
+                        timerWhite.startTimer();
+                    }// <-- start new turn timer when turn changes
                 }
                 return;
             } else {
@@ -787,32 +818,43 @@ public class CheckersController {
 
 
     private void startTurnTimer() {
-        if (turnCountdown != null) {
-            turnCountdown.stop();
+        // Stop the turn-check timeline if already running
+        if (turnCheckTimeline != null) {
+            turnCheckTimeline.stop();
         }
 
-        turnSecondsElapsed = 0;  // Reset counter
-        updateTimerLabel();      // Reset GUI display
+        turnCheckTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+            if (gameLogic == null) return;
+            if (checkersBoard == null) return;
+            if (gameLogic.checkWin() != Checkers.WINNER.NONE) return;
 
-        turnCountdown = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
-            turnSecondsElapsed++;
-            updateTimerLabel();
+            Checkers.Turn currentTurn = gameLogic.getTurn();
+            TurnTimer currentTimer = (currentTurn == Checkers.Turn.WHITE) ? timerWhite : timerBlack;
+            boolean isWhiteTurn = currentTurn == Checkers.Turn.WHITE;
 
-            if (turnSecondsElapsed == 35) {
-                chatSession.sendMessage("SYSTEM", "⚠ 10 seconds remaining!");
-                addMessage("SYSTEM", "⚠ 10 seconds remaining!", true);
+            long elapsed = System.currentTimeMillis() - currentTimer.getStartTime();
+            long remaining = currentTimer.getRemainingTime() - elapsed;
+
+            // 10-second warning
+            if (remaining <= 10_000) {
+                if (isWhiteTurn && !warningSentWhite) {
+                    addMessage("SYSTEM", "⚠ 10 seconds remaining!", true);
+                    warningSentWhite = true;
+                } else if (!isWhiteTurn && !warningSentBlack) {
+                    addMessage("SYSTEM", "⚠ 10 seconds remaining!", true);
+                    warningSentBlack = true;
+                }
             }
 
-            if (turnSecondsElapsed >= 45) {
-                turnCountdown.stop();
+            // Time's up
+            if (currentTimer.isTimeExpired()) {
                 handleTurnTimeout();
             }
         }));
 
-        turnCountdown.setCycleCount(Timeline.INDEFINITE);
-        turnCountdown.play();
+        turnCheckTimeline.setCycleCount(Timeline.INDEFINITE);
+        turnCheckTimeline.play();
     }
-
 
     private void updateTimerLabel() {
         Platform.runLater(() -> {
@@ -826,30 +868,38 @@ public class CheckersController {
     private void handleTurnTimeout() {
         Platform.runLater(() -> {
             addMessage("SYSTEM", "⏰ Time's up!", true);
-            boardGrid.setDisable(true); // Disable player input
+            boardGrid.setDisable(true);
 
             Checkers.Turn currentTurn = gameLogic.getTurn();
 
-            // Award win to opponent
+            String winnerName = (currentTurn == Checkers.Turn.BLACK)
+                    ? opponentPlayer.getUsername()
+                    : localPlayer.getUsername();
+
+            turnPiece.getStyleClass().clear();
+            turnPiece.getStyleClass().add(currentTurn == Checkers.Turn.BLACK ? "checker-white" : "checker-black");
+            turnLabel.setText(winnerName + " wins!");
+
+            stopTimer(); // GUI clock
+            stopTurnTimer(); // stop the timeline loop
+
+            showGameOverPopup(winnerName, true);
+
             if (currentTurn == Checkers.Turn.BLACK) {
-                turnPiece.getStyleClass().clear();
-                turnPiece.getStyleClass().add("checker-white");
-                turnLabel.setText(opponentPlayer.getUsername() + " wins!");
+                gameProcessor.UpdateResults(opponentPlayer, localPlayer, gameType);
             } else {
-                turnPiece.getStyleClass().clear();
-                turnPiece.getStyleClass().add("checker-black");
-                turnLabel.setText(opponentPlayer.getUsername() + " wins!");
+                gameProcessor.UpdateResults(localPlayer, opponentPlayer, gameType);
             }
-
-            stopTimer(); // Stop GUI timer
-            if (turnCountdown != null) {
-                turnCountdown.stop();
-            }
-
-            showGameOverPopup(opponentPlayer.getUsername(), true);
-            gameProcessor.UpdateResults(opponentPlayer, localPlayer, gameType);
         });
     }
+
+
+    private void stopTurnTimer() {
+        if (turnCheckTimeline != null) {
+            turnCheckTimeline.stop();
+        }
+    }
+
 
     private void writeChatHistoryToCSV() {
         List<ChatMessage> history = chatSession.chatManager.getChatHistory();

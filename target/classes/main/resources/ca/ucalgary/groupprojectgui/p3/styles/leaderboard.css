@@ -74,21 +74,6 @@
     -fx-background-color: rgba(255, 255, 255, 0.1);
     -fx-background-radius: 8;
 }
-.scroll-pane .scroll-bar:horizontal {
-    -fx-background-color: transparent;
-}
-
-.scroll-pane .scroll-bar:horizontal .thumb {
-    -fx-background-color: linear-gradient(to right, #00ffff, #6600cc);
-    -fx-background-insets: 2;
-    -fx-background-radius: 8;
-    -fx-effect: dropshadow(gaussian, #00ffff, 6, 0.3, 0, 0);
-}
-
-.scroll-pane .scroll-bar:horizontal .track {
-    -fx-background-color: rgba(255, 255, 255, 0.1);
-    -fx-background-radius: 8;
-}
 
 /* VBox inside ScrollPane */
 .neon-leaderboard-content {
