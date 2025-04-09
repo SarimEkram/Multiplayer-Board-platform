@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.FriendRequestsController"
+           stylesheets="@styles/friend_popup.css"
+           styleClass="blur-overlay"
+           alignment="TOP_RIGHT">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+
+    <VBox spacing="15"
+          alignment="TOP_CENTER"
+          maxWidth="400"
+          styleClass="neon-border-panel"
+          style="-fx-padding: 20; -fx-background-radius: 20; -fx-background-color: #0d0d0d; -fx-effect: dropshadow(gaussian, #ff00ff, 40, 0.5, 0, 0); -fx-border-color: #ff00ff; -fx-border-width: 2; -fx-border-radius: 20;">
+
+        <!-- Header -->
+        <HBox alignment="CENTER_LEFT">
+            <Label text="ADD FRIEND" styleClass="title-label"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="✖"
+                    onAction="#closePanel"
+                    styleClass="close-button"/>
+        </HBox>
+
+        <!-- Search Bar -->
+        <TextField fx:id="searchField"
+                   promptText="Search players..."
+                   styleClass="search-bar"
+                   prefWidth="360"/>
+
+        <!-- Player list -->
+        <VBox fx:id="playersContainer"
+              spacing="10"
+              style="-fx-padding: 10;"/>
+    </VBox>
+</StackPane>
