@@ -20,9 +20,9 @@ public interface IGameMatchmaking {
     void leaveQueue(Player player);
 
     /**
-     * function to check if the matchmaking is complete
+     * function to check if the matchmaking is up
      *
-     * @return boolean that signals completion or failure
+     * @return boolean that signals if system is active or down
      */
     boolean checkMatchmaking();
 
@@ -38,7 +38,7 @@ public interface IGameMatchmaking {
      *
      */
     boolean checkPlayers(Player Player1, Player Player2);
-    
+
     /**
      * function that contacts the server and finds matches to play
      *
