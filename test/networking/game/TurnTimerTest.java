@@ -79,5 +79,15 @@ public class  TurnTimerTest {
         Thread.sleep(950);
         shortTimer.notifyPlayer();
     }
+    @Test
+    void testPauseWhenAlreadyPaused() throws InterruptedException {
+        timer.startTimer();
+        Thread.sleep(500);
+        timer.pauseTimer();
+        long pausedTime = timer.getRemainingTime();
+        timer.pauseTimer(); // Should not change state or remainingTime
+        assertEquals(pausedTime, timer.getRemainingTime(), 50);
+    }
+
 
 }
