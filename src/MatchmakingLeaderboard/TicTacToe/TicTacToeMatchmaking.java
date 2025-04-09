@@ -18,27 +18,6 @@ public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
     }
 
     /**
-     * Class that represents the players joining the matchmaking queue
-     * It continuously scans for player joins signals from the database and throws exceptions if
-     * matchmaking is down, thus preventing other players from joining
-     */
-    public void matchmakingConnect() throws IOException {
-    Random random = new Random();
-    double randomValue = random.nextDouble();
-        if (probabilityOfNetworkFailure >= randomValue) {
-        throw new NetworkFailureException("Network Error! Could not connect to servers");
-    }
-
-        try {
-        queue = new MatchmakingQueue(GameType.TIC_TAC_TOE);
-        this.matchmakingUp = true;
-    }catch (Exception e){
-        this.matchmakingUp = false;
-        throw new MatchmakingException("TicTacToe Matchmaking is Down");
-    }
-    }
-
-    /**
      * function that simulates matchmaking for TicTacToe
      */
     public void startMatchmaking(){
@@ -60,6 +39,27 @@ public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
             }
         } else {
             System.out.println("Matchmaking is down. Please try again in some time. The issue has been reported");
+        }
+    }
+
+    /**
+     * Class that represents the players joining the matchmaking queue
+     * It continuously scans for player joins signals from the database and throws exceptions if
+     * matchmaking is down, thus preventing other players from joining
+     */
+    public void matchmakingConnect() throws IOException {
+        Random random = new Random();
+        double randomValue = random.nextDouble();
+        if (probabilityOfNetworkFailure >= randomValue) {
+            throw new NetworkFailureException("Network Error! Could not connect to servers");
+        }
+
+        try {
+            queue = new MatchmakingQueue(GameType.TIC_TAC_TOE);
+            this.matchmakingUp = true;
+        }catch (Exception e){
+            this.matchmakingUp = false;
+            throw new MatchmakingException("TicTacToe Matchmaking is Down");
         }
     }
 
