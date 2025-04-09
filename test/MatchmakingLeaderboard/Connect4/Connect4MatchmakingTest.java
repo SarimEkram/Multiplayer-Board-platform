@@ -1,4 +1,4 @@
-package MatchmakingLeaderboard.Connect4.Matchmaking;
+package MatchmakingLeaderboard.Connect4;
 
 import MatchmakingLeaderboard.*;
 import org.junit.jupiter.api.BeforeEach;

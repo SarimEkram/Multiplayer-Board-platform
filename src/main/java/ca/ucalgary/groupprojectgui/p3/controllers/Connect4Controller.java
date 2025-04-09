@@ -21,10 +21,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-import MatchmakingLeaderboard.Connect4.Matchmaking.Connect4Matchmaking;
+import MatchmakingLeaderboard.Connect4.Connect4Matchmaking;
 import MatchmakingLeaderboard.*;
 import networking.chat.InGameChat;
-import networking.chat.ChatManager;
 import networking.chat.ChatMessage;
 import networking.game.TurnTimer;
 
@@ -35,7 +34,6 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Objects;
 
 import static javafx.scene.paint.Color.rgb;
 

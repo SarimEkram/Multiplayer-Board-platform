@@ -1,11 +1,10 @@
-package MatchmakingLeaderboard.TicTacToe.Matchmaking;
+package MatchmakingLeaderboard.TicTacToe;
 
 import MatchmakingLeaderboard.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 

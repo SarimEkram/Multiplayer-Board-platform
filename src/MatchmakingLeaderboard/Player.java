@@ -1,8 +1,8 @@
 package MatchmakingLeaderboard;
 
 import MatchmakingLeaderboard.Checkers.Matchmaking.CheckersMatchmaking;
-import MatchmakingLeaderboard.Connect4.Matchmaking.Connect4Matchmaking;
-import MatchmakingLeaderboard.TicTacToe.Matchmaking.TicTacToeMatchmaking;
+import MatchmakingLeaderboard.Connect4.Connect4Matchmaking;
+import MatchmakingLeaderboard.TicTacToe.TicTacToeMatchmaking;
 //import MatchmakingLeaderboard.Rank;
 /**
  * Player class that is used to represent Users pulled from database

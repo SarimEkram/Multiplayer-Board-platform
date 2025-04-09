@@ -1,4 +1,4 @@
-package MatchmakingLeaderboard.TicTacToe.Matchmaking;
+package MatchmakingLeaderboard.TicTacToe;
 
 import MatchmakingLeaderboard.IGameMatchmaking;
 
