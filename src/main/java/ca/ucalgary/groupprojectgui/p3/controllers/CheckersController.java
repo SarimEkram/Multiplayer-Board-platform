@@ -1,6 +1,6 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
 
-import MatchmakingLeaderboard.Checkers.Matchmaking.CheckersMatchmaking;
+import MatchmakingLeaderboard.Checkers.CheckersMatchmaking;
 import MatchmakingLeaderboard.GameProcessor;
 import MatchmakingLeaderboard.GameType;
 import MatchmakingLeaderboard.Player;
@@ -603,6 +603,7 @@ public class CheckersController {
     }
 
     private void showGameOverPopup(String winner, boolean isWin) {
+        leaveGame.setVisible(false);
         StackPane overlay = new StackPane();
         overlay.getStyleClass().add("popup-overlay");
         overlay.setPrefSize(boardGrid.getWidth(), boardGrid.getHeight());

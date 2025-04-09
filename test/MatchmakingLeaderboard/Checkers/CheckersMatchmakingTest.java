@@ -1,7 +1,6 @@
 package MatchmakingLeaderboard.Checkers;
 
 import MatchmakingLeaderboard.*;
-import MatchmakingLeaderboard.Checkers.Matchmaking.CheckersMatchmaking;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

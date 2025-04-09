@@ -1,4 +1,4 @@
-package MatchmakingLeaderboard.Checkers.Matchmaking;
+package MatchmakingLeaderboard.Checkers;
 
 import MatchmakingLeaderboard.*;
 
@@ -34,7 +34,7 @@ public class CheckersMatchmaking extends AbstractCheckersMatchmaking {
             this.matchmakingUp = true;
         }catch (Exception e){
             this.matchmakingUp = false;
-            throw new MatchmakingException("Matchmaking is Down");
+            throw new MatchmakingException("Checkers Matchmaking is Down");
         }
     }
 

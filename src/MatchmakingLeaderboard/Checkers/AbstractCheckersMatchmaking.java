@@ -1,4 +1,4 @@
-package MatchmakingLeaderboard.Checkers.Matchmaking;
+package MatchmakingLeaderboard.Checkers;
 
 import MatchmakingLeaderboard.IGameMatchmaking;
 

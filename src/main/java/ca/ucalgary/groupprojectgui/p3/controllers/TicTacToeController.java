@@ -250,7 +250,6 @@ public class TicTacToeController {
             } else {
                 showGameOverPopup(opponentPlayer.getUsername(), true);
                 gameOver = true;
-                boardContainer.setDisable(true);
                 stopTimer();
                 gameProcessor.UpdateResults(opponentPlayer, localPlayer, gameType);
                 return;
@@ -295,6 +294,7 @@ public class TicTacToeController {
     }
 
     private void showGameOverPopup(String winner, boolean isWin) {
+        leaveGame.setVisible(false);
         StackPane overlay = new StackPane();
         overlay.getStyleClass().add("popup-overlay");
         overlay.setPrefSize(tttgrid.getWidth(), tttgrid.getHeight());
@@ -319,13 +319,13 @@ public class TicTacToeController {
         Button mainMenuButton = new Button("Main Menu");
         mainMenuButton.getStyleClass().add("popup-button");
         mainMenuButton.setOnAction(e -> {
-            tttgrid.getChildren().remove(overlay);
+            ((Pane) boardContainer.getParent()).getChildren().remove(overlay);
             SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "Home.css");
         });
 
         popup.getChildren().addAll(title, message, mainMenuButton);
         overlay.getChildren().add(popup);
-        ((Pane) boardContainer.getParent()).getChildren().add(overlay);
+        ((Pane) tttgrid.getParent()).getChildren().add(overlay);
     }
 
     private void onLeaveGame() {

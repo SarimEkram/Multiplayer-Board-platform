@@ -20,20 +20,6 @@ public interface IGameMatchmaking {
     void leaveQueue(Player player);
 
     /**
-     * function that contacts the server and finds matches to play
-     *
-     */
-    void findMatch(Player Player1, Player Player2);
-
-    Player findOpponent(int playerID);
-
-    /**
-     * function to signal start of game once matchmaking is completed
-     *
-     */
-    void signalStartGame();
-
-    /**
      * function to check if the matchmaking is complete
      *
      * @return boolean that signals completion or failure
@@ -41,13 +27,32 @@ public interface IGameMatchmaking {
     boolean checkMatchmaking();
 
     /**
-     * function to signal adding player to the game
+     * function to match similar skilled players
+     * @param playerID id of the player to find opponent of
+     * @return  the opponent Player
      */
-    void signalAddPlayer(Player player);
+    Player findOpponent(int playerID);
 
     /**
      * Check if players are similar in skill level
      *
      */
     boolean checkPlayers(Player Player1, Player Player2);
+    
+    /**
+     * function that contacts the server and finds matches to play
+     *
+     */
+    void findMatch(Player Player1, Player Player2);
+
+    /**
+     * function to signal adding player to the game
+     */
+    void signalAddPlayer(Player player);
+
+    /**
+     * function to signal start of game once matchmaking is completed
+     *
+     */
+    void signalStartGame();
 }

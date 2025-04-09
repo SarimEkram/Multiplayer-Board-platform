@@ -437,6 +437,7 @@ public class Connect4Controller {
      * Displays an in-scene pop-up overlay showing the game result and scores.
      */
     private void showGameOverPopup(String winner, boolean isWin) {
+        leaveGameBtn.setVisible(false);
         StackPane overlay = new StackPane();
         overlay.getStyleClass().add("popup-overlay");
         overlay.setPrefSize(connect4Grid.getWidth(), connect4Grid.getHeight());
