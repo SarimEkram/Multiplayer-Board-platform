@@ -36,6 +36,11 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import java.time.format.DateTimeFormatter;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.io.File;
+import java.io.IOException;
 
 import java.io.IOException;
 import java.net.URL;
@@ -96,12 +101,20 @@ public class TicTacToeController {
     private int secondsElapsed = 0;
     private GridPane tttgrid;
     private int messageCount = 0;
+
+    //Chat session
     private InGameChat chatSession;
+
+    //Turn timer
     private TurnTimer timerX;
     private TurnTimer timerO;
     private Timeline turnCheckTimeline;
     private boolean warningSentX = false;
     private boolean warningSentO = false;
+
+    //Chat history
+    private static final String CHAT_HISTORY_FILE = "tictactoeChatHistory.csv";
+    private static final int MAX_HISTORY_MESSAGES = 100;
 
 
     @FXML
@@ -156,11 +169,19 @@ public class TicTacToeController {
 
         chatSession = new InGameChat("TicTacToe-" + localPlayer.getUserID()); // or a real session ID if you have one
         chatSession.establishConnection();
+        initializeChat();
 
         timerX = new TurnTimer(localPlayer.getUsername(), 30);
         timerO = new TurnTimer(opponentPlayer.getUsername(), 30);
         startTurnTimer();  // Start monitoring loop
         timerX.startTimer();  // X goes first
+
+        // Clear previous chat CSV
+        File history = new File(CHAT_HISTORY_FILE);
+        if (history.exists()) {
+            history.delete();
+        }
+
 
     }
 
@@ -463,65 +484,60 @@ public class TicTacToeController {
      * @param isSystem if true, applies system message styling
      */
     public void addMessage(String sender, String text, boolean isSystem) {
-        if (chatMessages == null) {
-            System.err.println("Cannot add message - chatMessages is null");
-            return;
-        }
+        if (chatMessages == null) return;
 
-        // Create the message container and add a base style (do not add alternating classes).
-        HBox messageContainer = new HBox(5);
-        messageContainer.getStyleClass().add("chat-message");
-
-        // Determine the color code for both the left border and text.
-        // (For Tic Tac Toe we assume local player is X and opponent is O.)
-        String colorCode;
-        if (isSystem) {
-            colorCode = "#ffff00";  // Yellow for system messages
-        } else if (playerXTurn && sender.equalsIgnoreCase(localPlayer.getUsername())) {
-            colorCode = "#ff00ff";  // Neon pink for local player (X)
-        } else if (!playerXTurn && sender.equalsIgnoreCase(opponentPlayer.getUsername())) {
-            colorCode = "#00ffff";  // Neon cyan for opponent (O)
-        } else {
-            colorCode = "#ffffff";  // Fallback white
-        }
-        // Set the inline style for a 3px left vertical border with the determined color.
-        messageContainer.setStyle("-fx-border-width: 0 0 0 3px; -fx-border-color: " + colorCode + ";");
-
-        // Create and style the sender label.
-        Label senderLabel = new Label(sender + ":");
-        senderLabel.setFont(Fonts.rajdhani(FontWeight.BOLD, 14));
-
-        // Create and style the message label.
-        Label messageLabel = new Label(text);
-        messageLabel.setFont(Fonts.rajdhaniRegular(14));
-
-        // Apply inline text color styles.
-        if (isSystem) {
-            senderLabel.setStyle("-fx-text-fill: #ffff00;");
-            messageLabel.setStyle("-fx-text-fill: #ffff00;");
-            messageLabel.setEffect(new DropShadow(5, Color.YELLOW));
-        } else {
-            if (playerXTurn && sender.equalsIgnoreCase(localPlayer.getUsername())) {
-                senderLabel.setStyle("-fx-text-fill: #ff00ff;");
-                messageLabel.setStyle("-fx-text-fill: #ff00ff;");
-            } else if (!playerXTurn && sender.equalsIgnoreCase(opponentPlayer.getUsername())) {
-                senderLabel.setStyle("-fx-text-fill: #00ffff;");
-                messageLabel.setStyle("-fx-text-fill: #00ffff;");
-            } else {
-                senderLabel.setStyle("-fx-text-fill: #ffffff;");
-                messageLabel.setStyle("-fx-text-fill: #ffffff;");
+        ChatMessage lastMessage = null;
+        for (ChatMessage msg : chatSession.chatManager.getChatHistory()) {
+            if (msg.getPlayerId().equals(sender) && msg.getMessage().equals(text)) {
+                lastMessage = msg;
+                break;
             }
         }
 
+        // Mark the message as read if found
+        if (lastMessage != null) {
+            lastMessage.markAsRead(String.valueOf(LoginController.loginId));
+            writeChatHistoryToCSV(); // Save to CSV
+        }
+
+        // Timestamp string (only used for player messages)
+        String timestamp = (lastMessage != null && !isSystem)
+                ? "[" + lastMessage.getTimestamp().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + "] "
+                : "";
+
+        // Create message container
+        HBox messageContainer = new HBox(5);
+        messageContainer.getStyleClass().add("chat-message");
+
+        // Determine the neon border color
+        String colorCode = isSystem ? "#ffff00" :
+                (sender.equalsIgnoreCase(localPlayer.getUsername()) ? "#ff00ff" :
+                        sender.equalsIgnoreCase(opponentPlayer.getUsername()) ? "#00ffff" : "#ffffff");
+
+        messageContainer.setStyle("-fx-border-width: 0 0 0 3px; -fx-border-color: " + colorCode + ";");
+
+        // Build sender label
+        Label senderLabel = new Label((isSystem ? "" : timestamp) + sender + ":");
+        senderLabel.setFont(Fonts.rajdhani(FontWeight.BOLD, 14));
+        senderLabel.setStyle("-fx-text-fill: " + colorCode + ";");
+
+        // Build message label
+        Label messageLabel = new Label(text);
+        messageLabel.setFont(Fonts.rajdhaniRegular(14));
+        messageLabel.setStyle("-fx-text-fill: " + colorCode + ";");
+
+        // Add to chat box
         messageContainer.getChildren().addAll(senderLabel, messageLabel);
         chatMessages.getChildren().add(messageContainer);
         messageCount++;
 
-        // Auto-scroll to the bottom of the chat view.
+        // Auto-scroll to bottom
         if (chatScrollPane != null) {
             Platform.runLater(() -> chatScrollPane.setVvalue(1.0));
         }
     }
+
+
 
     private void startTurnTimer() {
         turnCheckTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
@@ -565,5 +581,28 @@ public class TicTacToeController {
             turnCheckTimeline.stop();
         }
     }
+
+    private void writeChatHistoryToCSV() {
+        File file = new File(CHAT_HISTORY_FILE);
+
+        try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
+            writer.println("Timestamp,Sender,Message,ReadBy");
+
+            var history = chatSession.chatManager.getChatHistory();
+            int startIdx = Math.max(0, history.size() - MAX_HISTORY_MESSAGES);
+
+            for (int i = startIdx; i < history.size(); i++) {
+                ChatMessage msg = history.get(i);
+                String time = msg.getTimestamp().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+                String readers = String.join(" | ", msg.getReaders());
+                writer.printf("\"%s\",\"%s\",\"%s\",\"%s\"%n", time, msg.getPlayerId(), msg.getMessage().replace("\"", "\"\""), readers);
+            }
+
+        } catch (IOException e) {
+
+            System.err.println("Error writing chat history: " + e.getMessage());
+        }
+    }
+
 
 }

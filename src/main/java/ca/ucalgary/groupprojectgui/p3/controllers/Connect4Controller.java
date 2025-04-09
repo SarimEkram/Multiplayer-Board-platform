@@ -29,8 +29,11 @@ import networking.chat.ChatMessage;
 import networking.game.TurnTimer;
 
 
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 
@@ -115,14 +118,12 @@ public class Connect4Controller {
     private boolean warningSentP1 = false;
     private boolean warningSentP2 = false;
 
-
-
+    private static final String CONNECT4_CHAT_CSV = "connect4ChatHistory.csv";
 
 
     @FXML
     public void initialize() {
         // Initialize chat view and header
-        initializeChat();
         setupHeaderWithSpacing();
 
         gameTitle.setText("OMG CONNECT 4");
@@ -183,6 +184,8 @@ public class Connect4Controller {
 
         chatSession = new InGameChat("connect4-" + localPlayer.getUserID() + "-" + opponentPlayer.getUserID());
         chatSession.establishConnection();
+        initializeChat();
+        clearChatHistoryCSV();
 
         timerP1 = new TurnTimer(localPlayer.getUsername(), 30);
         timerP2 = new TurnTimer(opponentPlayer.getUsername(), 30);
@@ -614,53 +617,54 @@ public class Connect4Controller {
             return;
         }
 
-        // Create a container for the message and set the vertical left border inline
-        HBox messageContainer = new HBox(5);
-        // Determine border color based on message type and sender
-        String borderColor;
-        if (isSystem) {
-            borderColor = "#ffff00";  // Yellow for system messages
-        } else if (localPlayer != null && sender.equalsIgnoreCase(localPlayer.getUsername())) {
-            borderColor = "#ff00ff";  // Neon pink for local player (PLAYER1)
-        } else if (opponentPlayer != null && sender.equalsIgnoreCase(opponentPlayer.getUsername())) {
-            borderColor = "#00ffff";  // Neon cyan for opponent (PLAYER2)
-        } else {
-            borderColor = "#ffffff";  // Fallback white
+        ChatMessage lastMessage = null;
+        for (ChatMessage msg : chatSession.chatManager.getChatHistory()) {
+            if (msg.getPlayerId().equals(sender) && msg.getMessage().equals(text)) {
+                lastMessage = msg;
+                break;
+            }
         }
-        // Inline style for left vertical border (3px wide)
-        messageContainer.setStyle("-fx-border-width: 0 0 0 3px; -fx-border-color: " + borderColor + ";");
 
-        // Create sender and message labels
-        Label senderLabel = new Label(sender + ":");
+        if (lastMessage != null) {
+            lastMessage.markAsRead(String.valueOf(LoginController.loginId));
+            writeChatHistoryToCSV();  // Save new message
+        }
+
+        String timestamp = (lastMessage != null)
+                ? lastMessage.getTimestamp().format(DateTimeFormatter.ofPattern("HH:mm:ss"))
+                : "";
+
+        HBox messageContainer = new HBox(5);
+        messageContainer.getStyleClass().add("chat-message");
+
+        String colorCode = isSystem ? "#ffff00" :
+                (sender.equalsIgnoreCase(localPlayer.getUsername()) ? "#ff00ff" :
+                        sender.equalsIgnoreCase(opponentPlayer.getUsername()) ? "#00ffff" : "#ffffff");
+
+        messageContainer.setStyle("-fx-border-width: 0 0 0 3px; -fx-border-color: " + colorCode + ";");
+
+        Label senderLabel = new Label();
+        if (!isSystem && !timestamp.isEmpty()) {
+            senderLabel.setText("[" + timestamp + "] " + sender + ":");
+        } else {
+            senderLabel.setText(sender + ":");
+        }
+
         senderLabel.setFont(Fonts.rajdhani(FontWeight.BOLD, 14));
         Label messageLabel = new Label(text);
         messageLabel.setFont(Fonts.rajdhaniRegular(14));
 
-        // Set text colors using inline style to override any CSS
-        if (isSystem) {
-            senderLabel.setStyle("-fx-text-fill: #ffff00;");
-            messageLabel.setStyle("-fx-text-fill: #ffff00;");
-            messageLabel.setEffect(new DropShadow(5, Color.YELLOW));
-        } else {
-            if (localPlayer != null && sender.equalsIgnoreCase(localPlayer.getUsername())) {
-                senderLabel.setStyle("-fx-text-fill: #ff00ff;");
-                messageLabel.setStyle("-fx-text-fill: #ff00ff;");
-            } else if (opponentPlayer != null && sender.equalsIgnoreCase(opponentPlayer.getUsername())) {
-                senderLabel.setStyle("-fx-text-fill: #00ffff;");
-                messageLabel.setStyle("-fx-text-fill: #00ffff;");
-            } else {
-                senderLabel.setStyle("-fx-text-fill: #ffffff;");
-                messageLabel.setStyle("-fx-text-fill: #ffffff;");
-            }
-        }
+        senderLabel.setStyle("-fx-text-fill: " + colorCode + ";");
+        messageLabel.setStyle("-fx-text-fill: " + colorCode + ";");
 
         messageContainer.getChildren().addAll(senderLabel, messageLabel);
         chatMessages.getChildren().add(messageContainer);
+        messageCount++;
 
-        // Auto-scroll to the bottom of the chat view
-        Platform.runLater(() -> chatScrollPane.setVvalue(1.0));
+        if (chatScrollPane != null) {
+            Platform.runLater(() -> chatScrollPane.setVvalue(1.0));
+        }
     }
-
 
 
 
@@ -737,4 +741,26 @@ public class Connect4Controller {
         }
     }
 
+    private void writeChatHistoryToCSV() {
+        List<ChatMessage> history = chatSession.chatManager.getChatHistory();
+        try (PrintWriter writer = new PrintWriter(new FileWriter(CONNECT4_CHAT_CSV))) {
+            writer.println("Timestamp,Sender,Message,ReadBy");
+
+            for (ChatMessage msg : history) {
+                String timestamp = msg.getTimestamp().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+                String readers = String.join(";", msg.getReaders());
+                writer.printf("\"%s\",\"%s\",\"%s\",\"%s\"%n", timestamp, msg.getPlayerId(), msg.getMessage(), readers);
+            }
+        } catch (IOException e) {
+            System.err.println("Failed to write chat history: " + e.getMessage());
+        }
+    }
+
+    private void clearChatHistoryCSV() {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(CONNECT4_CHAT_CSV))) {
+            writer.println("Timestamp,Sender,Message,ReadBy"); // Header
+        } catch (IOException e) {
+            System.err.println("Failed to clear chat history: " + e.getMessage());
+        }
+    }
 }

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.LeaderboardController"
+           prefWidth="1200" prefHeight="800"
+           stylesheets="@styles/leaderboard.css"
+           styleClass="root">
+
+    <VBox alignment="TOP_CENTER" spacing="30" styleClass="leaderboard-card" maxWidth="900" maxHeight="700">
+        <!-- Header with Logo and Title -->
+        <HBox spacing="15" alignment="CENTER_LEFT">
+            <ImageView fx:id="gameLogo" fitHeight="50" fitWidth="50" />
+            <Label text="🎮 OMG" styleClass="logo-label" />
+        </HBox>
+
+        <!-- Section Title -->
+        <Label text="Leaderboard" styleClass="section-title" />
+
+        <!-- Leaderboard Buttons -->
+        <HBox spacing="20" alignment="CENTER">
+            <Button text="Tic Tac Toe" onAction="#openTicTacToeLeaderboard" styleClass="neon-outline-button" prefWidth="180" prefHeight="50" />
+            <Button text="Checkers" onAction="#openCheckersLeaderboard" styleClass="neon-outline-button" prefWidth="180" prefHeight="50" />
+            <Button text="Connect 4" onAction="#openConnect4Leaderboard" styleClass="neon-outline-button" prefWidth="180" prefHeight="50" />
+        </HBox>
+
+        <!-- Mini Glowy Leaderboard Windows (Each with matching fx:id for controller binding) -->
+        <VBox fx:id="ticTacToeLeaderboardPane" spacing="10" alignment="TOP_CENTER" visible="false" managed="false" styleClass="leaderboard-popup">
+            <Label text="Tic Tac Toe Leaderboard" styleClass="section-title" />
+            <ScrollPane fitToWidth="true" styleClass="scroll-pane">
+                <VBox fx:id="ticTacToeLeaderboard" alignment="TOP_CENTER" spacing="10" styleClass="neon-leaderboard-content" />
+            </ScrollPane>
+        </VBox>
+
+        <VBox fx:id="checkersLeaderboardPane" spacing="10" alignment="TOP_CENTER" visible="false" managed="false" styleClass="leaderboard-popup">
+            <Label text="Checkers Leaderboard" styleClass="section-title" />
+            <ScrollPane fitToWidth="true" styleClass="scroll-pane">
+                <VBox fx:id="checkersLeaderboard" alignment="TOP_CENTER" spacing="10" styleClass="neon-leaderboard-content" />
+            </ScrollPane>
+        </VBox>
+
+        <VBox fx:id="connect4LeaderboardPane" spacing="10" alignment="TOP_CENTER" visible="false" managed="false" styleClass="leaderboard-popup">
+            <Label text="Connect 4 Leaderboard" styleClass="section-title" />
+            <ScrollPane fitToWidth="true" styleClass="scroll-pane">
+                <VBox fx:id="connect4Leaderboard" alignment="TOP_CENTER" spacing="10" styleClass="neon-leaderboard-content" />
+            </ScrollPane>
+        </VBox>
+
+        <!-- Back Button -->
+        <Button text="← Back"
+                onAction="#handleBack"
+                styleClass="neon-outline-button"
+                prefWidth="140" prefHeight="45" />
+    </VBox>
+</StackPane>
