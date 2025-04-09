@@ -1,9 +1,9 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
 
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.image.ImageView;
 
 import MatchmakingLeaderboard.Player;
@@ -23,18 +23,29 @@ public class LeaderboardController {
     @FXML private VBox checkersLeaderboard;
     @FXML private VBox connect4Leaderboard;
     @FXML private TabPane gameTabs;
+    @FXML private Button backButton;
 
     @FXML
+    public void initialize() {
+        gameTabs.getSelectionModel().selectedItemProperty().addListener((obs, oldTab, newTab) -> {
+            switch (newTab.getText()) {
+                case "Tic Tac Toe" -> openTicTacToeLeaderboard();
+                case "Checkers" -> openCheckersLeaderboard();
+                case "Connect 4" -> openConnect4Leaderboard();
+            }
+        });
+
+        openTicTacToeLeaderboard();
+    }
+
     public void openTicTacToeLeaderboard() {
         populateLeaderboard(TIC_TAC_TOE, ticTacToeLeaderboard);
     }
 
-    @FXML
     public void openCheckersLeaderboard() {
         populateLeaderboard(CHECKERS, checkersLeaderboard);
     }
 
-    @FXML
     public void openConnect4Leaderboard() {
         populateLeaderboard(CONNECT_FOUR, connect4Leaderboard);
     }
@@ -64,30 +75,33 @@ public class LeaderboardController {
         } else {
             int rank = 1;
             for (Player player : players) {
-                String tier = player.getRank(gameType).getCurrentTier().getRankName();
+                String rankTier = player.getRank(gameType).getCurrentTier().getRankName();
+
+                HBox row = new HBox(20);
+                row.setAlignment(Pos.CENTER_LEFT);
+                row.getStyleClass().add("leaderboard-entry");
 
                 Label rankLabel = new Label(rank + ".");
+                rankLabel.setMinWidth(40);
+                rankLabel.setAlignment(Pos.CENTER_LEFT);
+
                 Label idLabel = new Label("ID: " + player.getUserID());
+                idLabel.setMinWidth(120);
+
                 Label usernameLabel = new Label("Username: " + player.getUsername());
+                usernameLabel.setMinWidth(180);
+
                 Label levelLabel = new Label("Level: " + player.getLevel());
+                levelLabel.setMinWidth(100);
+
                 Label mmrLabel = new Label("MMR: " + player.getMMR(gameType));
-                Label tierLabel = new Label("Rank: " + tier);
+                mmrLabel.setMinWidth(120);
 
-                // Set fixed widths for alignment
-                rankLabel.setPrefWidth(40);
-                idLabel.setPrefWidth(120);
-                usernameLabel.setPrefWidth(200);
-                levelLabel.setPrefWidth(100);
-                mmrLabel.setPrefWidth(100);
-                tierLabel.setPrefWidth(100);
+                Label rankTierLabel = new Label("Rank: " + rankTier);
+                rankTierLabel.setMinWidth(150);
+                HBox.setHgrow(rankTierLabel, Priority.ALWAYS);
 
-                for (Label label : new Label[]{rankLabel, idLabel, usernameLabel, levelLabel, mmrLabel, tierLabel}) {
-                    label.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");
-                }
-
-                HBox row = new HBox(20, rankLabel, idLabel, usernameLabel, levelLabel, mmrLabel, tierLabel);
-                row.setStyle("-fx-alignment: center-left;");
-                row.getStyleClass().add("leaderboard-entry");
+                row.getChildren().addAll(rankLabel, idLabel, usernameLabel, levelLabel, mmrLabel, rankTierLabel);
                 leaderboardBox.getChildren().add(row);
                 rank++;
             }
@@ -95,21 +109,7 @@ public class LeaderboardController {
     }
 
     @FXML
-    public void initialize() {
-        gameTabs.getSelectionModel().selectedItemProperty().addListener((obs, oldTab, newTab) -> {
-            switch (newTab.getText()) {
-                case "Tic Tac Toe" -> openTicTacToeLeaderboard();
-                case "Checkers" -> openCheckersLeaderboard();
-                case "Connect 4" -> openConnect4Leaderboard();
-            }
-        });
-
-        // Trigger default tab content population
-        openTicTacToeLeaderboard();
-    }
-
-    @FXML
-    private void handleBack() {
+    public void handleBack() {
         SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "home.css");
     }
 }
