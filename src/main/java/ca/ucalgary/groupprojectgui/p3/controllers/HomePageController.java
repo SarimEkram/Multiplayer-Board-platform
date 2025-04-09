@@ -530,16 +530,14 @@ public class HomePageController {
 
     @FXML
     public void handleRemoveFriend(ActionEvent event) {
-        // Get the remove button and the associated friend item.
         Button removeButton = (Button) event.getSource();
         HBox friendItem = (HBox) removeButton.getParent();
-        Label friendLabel = (Label) friendItem.getChildren().get(0);
-        String friendName = friendLabel.getText();
 
-        // Create a Popup instance.
+        Label usernameLabel = (Label) friendItem.getChildren().get(1); // index 1 = full username
+        String friendUsername = usernameLabel.getText();
+
         Popup popup = new Popup();
 
-        // Create a styled container for the pop-up content.
         VBox popupContent = new VBox(15);
         popupContent.setAlignment(Pos.CENTER);
         popupContent.setStyle(
@@ -552,53 +550,35 @@ public class HomePageController {
                         "-fx-effect: dropshadow(gaussian, rgba(0,255,255,0.75), 10, 0.5, 0, 0);"
         );
 
-
-        // Create the confirmation message.
-        Label message = new Label("Remove friend: " + friendName + "?");
+        Label message = new Label("Remove friend: " + friendUsername + "?");
         message.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
 
-        // Create a container for the buttons.
         HBox buttonBox = new HBox(10);
         buttonBox.setAlignment(Pos.CENTER);
 
-        // Yes button styling
         Button yesButton = new Button("Yes");
-        yesButton.setStyle(
-                "-fx-background-color: #00ffff;" +      // Neon cyan background
-                        "-fx-text-fill: black;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-background-radius: 5;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(0,255,255,0.8), 10, 0.5, 0, 0);"
-        );
+        yesButton.setStyle("-fx-background-color: #00ffff; -fx-text-fill: black; -fx-font-weight: bold; -fx-background-radius: 5;");
 
         Button noButton = new Button("No");
-        noButton.setStyle(
-                "-fx-background-color: #ff00ff;" +      // Neon magenta background
-                        "-fx-text-fill: black;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-background-radius: 5;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(255,0,255,0.8), 10, 0.5, 0, 0);"
-        );
-
+        noButton.setStyle("-fx-background-color: #ff00ff; -fx-text-fill: black; -fx-font-weight: bold; -fx-background-radius: 5;");
 
         buttonBox.getChildren().addAll(yesButton, noButton);
         popupContent.getChildren().addAll(message, buttonBox);
         popup.getContent().add(popupContent);
 
-        // Position the popup near the friend item.
         Bounds bounds = friendItem.localToScreen(friendItem.getBoundsInLocal());
         popup.show(removeButton.getScene().getWindow(), bounds.getMinX() + 50, bounds.getMinY() + 20);
 
-        // Action handlers for the buttons.
         yesButton.setOnAction(e -> {
             playersContainer.getChildren().remove(friendItem);
             popup.hide();
-            System.out.println("Removed friend: " + friendName);
+            System.out.println("Removed friend: " + friendUsername);
+            FriendDatabase.removeFriend(LoginController.loginId, PlayerDatabase.getPlayerByUsername(friendUsername).getUserID());
         });
 
         noButton.setOnAction(e -> {
             popup.hide();
-            System.out.println("Removal canceled for friend: " + friendName);
+            System.out.println("Removal canceled for friend: " + friendUsername);
         });
     }
 
