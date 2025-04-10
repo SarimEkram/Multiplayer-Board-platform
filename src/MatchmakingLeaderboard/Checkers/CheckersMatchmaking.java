@@ -134,7 +134,7 @@ public class CheckersMatchmaking extends AbstractCheckersMatchmaking {
      */
     @Override
     public boolean checkPlayers(Player player1, Player player2) {
-        if ((player1.getRank(GameType.CHECKERS).getCurrentTier() == player2.getRank(GameType.CHECKERS).getCurrentTier()) && (player1.getGameSignal(GameType.CHECKERS) == player2.getGameSignal(GameType.CHECKERS))&&(player1.getUserID()!= player2.getUserID())){
+        if ((player1.rankForPlayer(GameType.CHECKERS) == player2.rankForPlayer(GameType.CHECKERS)) && (player1.getGameSignal(GameType.CHECKERS) == player2.getGameSignal(GameType.CHECKERS))&&(player1.getUserID()!= player2.getUserID())){
             return Math.abs((player1.getLevel() - player2.getLevel())) <= 10;
         }
         return false;
