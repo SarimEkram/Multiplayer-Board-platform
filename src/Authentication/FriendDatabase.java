@@ -16,7 +16,10 @@ public class FriendDatabase {
         loadFromCSV();
     }
 
-    // Load all friendship data from CSV
+    /**
+     * Loads friendship data from the CSV file into memory.
+     * Each line in the file follows the format: userID:friendID1,friendID2,...
+     */
     public static void loadFromCSV() {
         friendsMap.clear();
         File file = new File(FILE_PATH);
@@ -45,7 +48,10 @@ public class FriendDatabase {
         }
     }
 
-    // Save the current friendship data to CSV
+    /**
+     * Saves the current friendship map into the CSV file.
+     * @return true if the save was successful, false otherwise
+     */
     private static boolean saveToCSV() {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_PATH))) {
             for (Map.Entry<Integer, Set<Integer>> entry : friendsMap.entrySet()) {
@@ -61,7 +67,12 @@ public class FriendDatabase {
         }
     }
 
-    // Add a friend (mutual)
+    /**
+     * Adds a friend for a user. This is a mutual friendship (both users become friends with each other).
+     * @param userId ID of the first user
+     * @param friendId ID of the friend to be added
+     * @return true if friendship was added, false otherwise
+     */
     public static boolean addFriend(int userId, int friendId) {
         if (userId == friendId) return false; // Cannot friend yourself
 
@@ -73,8 +84,12 @@ public class FriendDatabase {
 
         return saveToCSV() && (added1 || added2);
     }
-
-    // Remove a friend (mutual)
+    /**
+     * Removes a friend from both users’ friend lists (mutual removal).
+     * @param userId ID of the user
+     * @param friendId ID of the friend to be removed
+     * @return true if the friend was removed from either list
+     */
     public static boolean removeFriend(int userId, int friendId) {
         boolean removed1 = friendsMap.containsKey(userId) && friendsMap.get(userId).remove(friendId);
         boolean removed2 = friendsMap.containsKey(friendId) && friendsMap.get(friendId).remove(userId);
@@ -82,17 +97,29 @@ public class FriendDatabase {
         return (removed1 || removed2);
     }
 
-    // Get all friends of a user
+    /**
+     * Retrieves the set of friend IDs for a given user.
+     * @param userId ID of the user
+     * @return a set of friend IDs, or an empty set if none exist
+     */
     public static Set<Integer> getFriends(int userId) {
         return friendsMap.getOrDefault(userId, new HashSet<>());
     }
 
-    // Check if two users are friends
+    /**
+     * Checks if two users are friends.
+     * @param userId ID of the first user
+     * @param friendId ID of the second user
+     * @return true if they are friends, false otherwise
+     */
     public static boolean areFriends(int userId, int friendId) {
         return friendsMap.containsKey(userId) && friendsMap.get(userId).contains(friendId);
     }
 
-    // Clear all data and delete CSV (useful for testing)
+    /**
+     * Clears all friend data from memory and deletes the CSV file.
+     * @return true if the CSV file was successfully deleted
+     */
     public static boolean deleteCSVFile() {
         friendsMap.clear();
         File file = new File(FILE_PATH);
