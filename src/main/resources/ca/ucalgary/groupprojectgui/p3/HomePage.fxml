@@ -204,7 +204,6 @@
 
     <StackPane fx:id="logoutOverlay"
                visible="false"
-               style="friendSelectionOverly"
                StackPane.alignment="CENTER">
 
         <VBox spacing="25"
