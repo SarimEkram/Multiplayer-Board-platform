@@ -39,7 +39,7 @@ public class Connect4Matchmaking extends AbstractConnect4Matchmaking{
     }
 
     /**
-     * function that simulates matchmaking for TicTacToe
+     * function that simulates matchmaking for Connect4
      */
     public void startMatchmaking(){
         if (checkMatchmaking()) {
