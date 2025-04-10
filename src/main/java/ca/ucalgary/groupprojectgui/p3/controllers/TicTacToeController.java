@@ -262,7 +262,6 @@ public class TicTacToeController {
             showGameOverPopup("No one", false);
             stopTimer();
             gameOver = true;
-            boardContainer.setDisable(true);
             gameProcessor.ProcessDraw(localPlayer, opponentPlayer, gameType);
             return;
         }

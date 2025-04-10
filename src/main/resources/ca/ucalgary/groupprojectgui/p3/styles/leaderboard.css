@@ -12,13 +12,6 @@
     -fx-effect: dropshadow(gaussian, #00ffff, 12, 0.3, 0, 0);
 }
 
-.logo-label {
-    -fx-text-fill: #00ffff;
-    -fx-font-size: 30px;
-    -fx-font-weight: bold;
-    -fx-effect: dropshadow(gaussian, #ff00ff, 10, 0.4, 0, 0);
-}
-
 .section-title {
     -fx-text-fill: #ffffff;
     -fx-font-size: 28px;
@@ -83,40 +76,6 @@
     -fx-padding: 15;
     -fx-alignment: top-center;
 }
-
-/* Center the TabPane header and style tabs */
-.tab-pane .tab-header-area {
-    -fx-padding: 0 0 10 0;
-    -fx-alignment: right;
-    -fx-max-width: infinity;
-    -fx-min-width: 100%;
-    -fx-justify-content: right;
-    -fx-padding: 0 100px;
-}
-
-.tab-pane .tab-header-background {
-    -fx-background-color: transparent;
-}
-
-.tab-pane .tab {
-    -fx-background-color: rgba(255, 255, 255, 0.1);
-    -fx-border-radius: 10;
-    -fx-background-radius: 10;
-    -fx-padding: 8 20;
-    -fx-text-fill: #ccc;
-    -fx-font-weight: bold;
-    -fx-font-size: 14px;
-}
-
-.tab-pane .tab:selected {
-    -fx-background-color: linear-gradient(to right, #ff00ff, #00ffff);
-    -fx-text-fill: #000;
-    -fx-effect: dropshadow(gaussian, #00ffff, 10, 0.4, 0, 0);
-}
-
-.tab-pane .tab:hover {
-    -fx-background-color: rgba(255, 255, 255, 0.2);
-}
 .leaderboard-entry {
     -fx-padding: 5 0;
     -fx-spacing: 20;
@@ -128,7 +87,7 @@
 }
 
 .leaderboard-data-header {
-    -fx-padding: 10;
+    -fx-padding: 20;
     -fx-border-color: #666;
     -fx-border-width: 0 0 1 0;
 }
@@ -136,4 +95,19 @@
 .leaderboard-data-header .label {
     -fx-text-fill: #00ffff;
     -fx-font-weight: bold;
+}
+
+.toggle-button {
+    -fx-background-color: #222;
+    -fx-text-fill: #00faff;
+    -fx-font-size: 16px;
+    -fx-padding: 10 20;
+    -fx-border-color: transparent;
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(gaussian, #00faff, 5, 0.3, 0, 0);
+}
+
+.toggle-button:selected {
+    -fx-background-color: linear-gradient(to right, #ff00ff, #00faff);
+    -fx-text-fill: white;
 }

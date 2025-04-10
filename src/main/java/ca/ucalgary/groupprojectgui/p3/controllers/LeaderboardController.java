@@ -3,6 +3,7 @@ package ca.ucalgary.groupprojectgui.p3.controllers;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.image.ImageView;
 
@@ -19,6 +20,19 @@ import java.util.List;
 
 public class LeaderboardController {
 
+    public ImageView img;
+    public HBox leaderboardHeader;
+    public VBox leaderboardContainer;
+
+    @FXML private ToggleGroup gameToggleGroup;
+    @FXML private ToggleButton ticTacToeToggle;
+    @FXML private ToggleButton checkersToggle;
+    @FXML private ToggleButton connect4Toggle;
+
+    @FXML private ScrollPane ticTacToeScroll;
+    @FXML private ScrollPane checkersScroll;
+    @FXML private ScrollPane connect4Scroll;
+
     @FXML private VBox ticTacToeLeaderboard;
     @FXML private VBox checkersLeaderboard;
     @FXML private VBox connect4Leaderboard;
@@ -27,63 +41,52 @@ public class LeaderboardController {
 
     @FXML
     public void initialize() {
-        gameTabs.getSelectionModel().selectedItemProperty().addListener((obs, oldTab, newTab) -> {
-            switch (newTab.getText()) {
-                case "Tic Tac Toe" -> openTicTacToeLeaderboard();
-                case "Checkers" -> openCheckersLeaderboard();
-                case "Connect 4" -> openConnect4Leaderboard();
+        ticTacToeToggle.setSelected(true); // default selected
+        openTicTacToeLeaderboard();
+
+        gameToggleGroup.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
+            if (newToggle == ticTacToeToggle) {
+                setVisibleLeaderboard(ticTacToeScroll);
+                openTicTacToeLeaderboard();
+            } else if (newToggle == checkersToggle) {
+                setVisibleLeaderboard(checkersScroll);
+                openCheckersLeaderboard();
+            } else if (newToggle == connect4Toggle) {
+                setVisibleLeaderboard(connect4Scroll);
+                openConnect4Leaderboard();
             }
         });
-
-        openTicTacToeLeaderboard();
+    }
+    private void setVisibleLeaderboard(ScrollPane visiblePane) {
+        ticTacToeScroll.setVisible(false);
+        checkersScroll.setVisible(false);
+        connect4Scroll.setVisible(false);
+        visiblePane.setVisible(true);
     }
 
     public void openTicTacToeLeaderboard() {
+        ticTacToeScroll.setVisible(true);
+        checkersScroll.setVisible(false);
+        connect4Scroll.setVisible(false);
         populateLeaderboard(TIC_TAC_TOE, ticTacToeLeaderboard);
     }
 
     public void openCheckersLeaderboard() {
+        ticTacToeScroll.setVisible(false);
+        checkersScroll.setVisible(true);
+        connect4Scroll.setVisible(false);
         populateLeaderboard(CHECKERS, checkersLeaderboard);
     }
 
     public void openConnect4Leaderboard() {
+        ticTacToeScroll.setVisible(false);
+        checkersScroll.setVisible(false);
+        connect4Scroll.setVisible(true);
         populateLeaderboard(CONNECT_FOUR, connect4Leaderboard);
     }
 
     private void populateLeaderboard(GameType gameType, VBox leaderboardBox) {
         leaderboardBox.getChildren().clear();
-
-        // Add header row
-        HBox header = new HBox(20);
-        header.setAlignment(Pos.CENTER);
-        header.getStyleClass().add("leaderboard-data-header");
-
-        Label rankHeader = new Label("Rank");
-        rankHeader.setAlignment(Pos.CENTER);
-        rankHeader.setMinWidth(40);
-
-        Label idHeader = new Label("User ID");
-        idHeader.setAlignment(Pos.CENTER);
-        idHeader.setMinWidth(120);
-
-        Label usernameHeader = new Label("Username");
-        usernameHeader.setAlignment(Pos.CENTER);
-        usernameHeader.setMinWidth(180);
-
-        Label levelHeader = new Label("Level");
-        levelHeader.setAlignment(Pos.CENTER);
-        levelHeader.setMinWidth(100);
-
-        Label mmrHeader = new Label("MMR");
-        mmrHeader.setAlignment(Pos.CENTER);
-        mmrHeader.setMinWidth(120);
-
-        Label rankTierHeader = new Label("Rank Tier");
-        rankTierHeader.setAlignment(Pos.CENTER);
-        rankTierHeader.setMinWidth(150);
-
-        header.getChildren().addAll(rankHeader, idHeader, usernameHeader, levelHeader, mmrHeader, rankTierHeader);
-        leaderboardBox.getChildren().add(header);
         leaderboardBox.setPrefWidth(800);
         leaderboardBox.setAlignment(Pos.TOP_CENTER);
 
@@ -118,6 +121,7 @@ public class LeaderboardController {
                 row.getStyleClass().add("leaderboard-entry");
 
                 Label rankLabel = new Label(String.valueOf(rank));
+                rankLabel.setAlignment(Pos.CENTER);
                 rankLabel.setMinWidth(40);
 
                 Label idLabel = new Label(String.valueOf(player.getUserID()));
