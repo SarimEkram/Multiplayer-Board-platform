@@ -1,10 +1,15 @@
 package Authentication;
-
-
-
+/**
+ * This class provides a method to view the current user's profile based on user ID.
+ */
 public class ViewUserProfile {
 
-    //This method retrieves and formats a user's profile details based on their user ID.
+    /**
+     * Retrieves and formats a user's profile details based on their user ID.
+     *
+     * @param userId The unique ID of the user whose profile is being retrieved.
+     * @return A formatted string representing the user's profile, or "User not found." if no such user exists.
+     */
     public String getUserProfile(int userId) {
 
         // getting the user object from the UserDatabase using the given user ID

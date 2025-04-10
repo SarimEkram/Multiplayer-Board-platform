@@ -1,10 +1,17 @@
 package Authentication;
 
+/**
+ * This class is responsible for retrieving and displaying a friend's profile information.
+ */
 public class ViewFriendProfile {
 
-    // Retrieves and formats a friend's profile information as a string
-    // friendId - The unique ID of the friend whose profile to retrieve
-    // Returns formatted profile string if friend exists, or "Friend not found" message
+    /**
+     * Retrieves and formats a friend's profile information as a readable string.
+     *
+     * @param friendId The unique user ID of the friend whose profile is being retrieved.
+     * @return A formatted string containing the friend's profile details, or
+     *         "Friend not found." if no such user exists in the database.
+     */
     public String getFriendProfile(int friendId) {
         // Fetch user from database using the provided ID
         User friend = UserDatabase.getUserById(friendId);
