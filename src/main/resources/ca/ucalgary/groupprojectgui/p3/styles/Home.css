@@ -618,3 +618,35 @@
 .tab-content-area {
     -fx-padding: 15;
 }
+
+
+/*// Add this to your initialization or CSS file*/
+.playersContainer {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-spacing: 0;
+}
+
+/*// For the scroll pane*/
+   .scroll-pane {
+       -fx-background: transparent;
+       -fx-background-color: transparent;
+   }
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-pref-width: 6px;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: rgba(255, 0, 255, 0.5);
+    -fx-background-radius: 3px;
+}
+
+.scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+}

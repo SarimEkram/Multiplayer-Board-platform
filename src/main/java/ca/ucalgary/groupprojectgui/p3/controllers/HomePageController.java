@@ -506,7 +506,19 @@ public class HomePageController {
 
 
     private void loadFriendList() {
+        // Clear the existing content
         playersContainer.getChildren().clear();
+
+        // Create a ScrollPane to contain the friends list
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setStyle("-fx-background: transparent; -fx-background-color: transparent;");
+
+        // Create a VBox to hold the friend items
+        VBox friendsContent = new VBox(10);
+        friendsContent.setPadding(new Insets(10));
 
         int currentUserId = LoginController.loginId;
         Set<Integer> friendIds = FriendDatabase.getFriends(currentUserId);
@@ -514,37 +526,50 @@ public class HomePageController {
         for (Integer friendId : friendIds) {
             Player friend = PlayerDatabase.getPlayerByUserID(friendId);
             if (friend != null) {
-                playersContainer.getChildren().add(createFriendItem(friend.getUsername(), friendId));
+                friendsContent.getChildren().add(createFriendItem(friend.getUsername(), friendId));
             }
         }
-    }
 
+        // Set the content and add to the container
+        scrollPane.setContent(friendsContent);
+        playersContainer.getChildren().add(scrollPane);
+
+        // Set constraints to prevent growing beyond container
+        VBox.setVgrow(scrollPane, Priority.ALWAYS);
+        scrollPane.setMaxHeight(Double.MAX_VALUE);
+    }
     private HBox createFriendItem(String username, int friendId) {
         HBox friendItem = new HBox(15);
         friendItem.setAlignment(Pos.CENTER_LEFT);
         friendItem.getStyleClass().add("friend-item");
+        friendItem.setMaxWidth(Double.MAX_VALUE);
+        friendItem.setPrefHeight(40); // Fixed height for each item
 
         Label avatar = new Label(username.substring(0, 1).toUpperCase());
         avatar.getStyleClass().add("friend-initial");
+        avatar.setMinWidth(30);
+        avatar.setMaxWidth(30);
 
         Label nameLabel = new Label(username);
         nameLabel.getStyleClass().add("friend-name");
+        nameLabel.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(nameLabel, Priority.ALWAYS);
 
         Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
+        HBox.setHgrow(spacer, Priority.NEVER);
 
         Label friendStatus = new Label("⚪️");
         friendStatus.setStyle("-fx-font-size: 12px;");
         User onlineUser = UserDatabase.getUserById(friendId);
-        if(onlineUser!= null && onlineUser.isOnline())
+        if(onlineUser != null && onlineUser.isOnline())
             friendStatus.setText("🟢");
         else
             friendStatus.setText("🔴");
-        // Set an event handler on the entire friend item.
-        // This handler will show the friend profile popup.
+
         friendItem.setOnMouseClicked(event -> {
             showFriendProfilePopup(username);
         });
+
         friendItem.getChildren().addAll(avatar, nameLabel, spacer, friendStatus);
         return friendItem;
     }
