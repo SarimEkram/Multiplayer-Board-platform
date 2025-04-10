@@ -20,6 +20,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Label;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
@@ -543,13 +544,22 @@ public class HomePageController {
         friendItem.setAlignment(Pos.CENTER_LEFT);
         friendItem.getStyleClass().add("friend-item");
         friendItem.setMaxWidth(Double.MAX_VALUE);
-        friendItem.setPrefHeight(40); // Fixed height for each item
+        friendItem.setPrefHeight(40);
 
+        // Avatar styled to match HTML using Orbitron font and gradient background.
         Label avatar = new Label(username.substring(0, 1).toUpperCase());
-        avatar.getStyleClass().add("friend-initial");
-        avatar.setMinWidth(30);
-        avatar.setMaxWidth(30);
+        avatar.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, #ff00ff, #00ffff);" +
+                        "-fx-text-fill: #00ffff;" +
+                        "-fx-font-family: 'Orbitron';" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-background-radius: 50%;" +
+                        "-fx-min-width: 40px;" +
+                        "-fx-min-height: 40px;" +
+                        "-fx-alignment: center;"
+        );
 
+        // Username label with updated inline style using Orbitron font.
         Label nameLabel = new Label(username);
         nameLabel.getStyleClass().add("friend-name");
         nameLabel.setMaxWidth(Double.MAX_VALUE);
@@ -561,11 +571,18 @@ public class HomePageController {
         Label friendStatus = new Label("⚪️");
         friendStatus.setStyle("-fx-font-size: 12px;");
         User onlineUser = UserDatabase.getUserById(friendId);
-        if(onlineUser != null && onlineUser.isOnline())
+        if (onlineUser != null && onlineUser.isOnline()) {
             friendStatus.setText("🟢");
-        else
+        } else {
             friendStatus.setText("🔴");
+        }
 
+        friendItem.setOnMouseEntered(e -> {
+            friendItem.setStyle("-fx-background-color: rgba(255, 0, 255, 0.1); -fx-cursor: hand;");
+        });
+        friendItem.setOnMouseExited(e -> {
+            friendItem.setStyle("-fx-background-color: transparent;");
+        });
         friendItem.setOnMouseClicked(event -> {
             showFriendProfilePopup(username);
         });
@@ -573,8 +590,6 @@ public class HomePageController {
         friendItem.getChildren().addAll(avatar, nameLabel, spacer, friendStatus);
         return friendItem;
     }
-
-
 
     private void showFriendProfilePopup(String username) {
         // Retrieve friend data
@@ -909,13 +924,10 @@ public class HomePageController {
 
     @FXML
     private void openAddFriendPopup() {
-        // Apply blur effect
         BoxBlur blur = new BoxBlur(10, 10, 3);
         mainContainer.setEffect(blur);
-
-        // Create the modal container
         VBox modalContent = new VBox(15);
-        modalContent.setAlignment(Pos.CENTER);
+        modalContent.setAlignment(Pos.TOP_CENTER);
         modalContent.setPrefSize(400, 500);
         modalContent.setMaxSize(400, 500);
         modalContent.setPadding(new Insets(25));
@@ -928,11 +940,9 @@ public class HomePageController {
                         "-fx-effect: dropshadow(gaussian, rgba(255, 0, 255, 0.5), 30, 0.5, 0, 0);"
         );
 
-        // Create header with title and close button
         HBox headerBox = new HBox();
         headerBox.setAlignment(Pos.CENTER_LEFT);
         headerBox.setPadding(new Insets(0, 0, 15, 0));
-
         Label titleLabel = new Label("ADD FRIEND");
         titleLabel.setStyle(
                 "-fx-text-fill: #00ffff;" +
@@ -941,21 +951,19 @@ public class HomePageController {
                         "-fx-font-weight: bold;" +
                         "-fx-text-shadow: 0 0 5px #00ffff;"
         );
-        HBox.setHgrow(titleLabel, Priority.ALWAYS);
-
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
         Button closeButton = new Button();
-        closeButton.setGraphic(new Text("✕"));
-        closeButton.setStyle(
-                "-fx-background-color: transparent;" +
-                        "-fx-text-fill: #ff00ff;" +
-                        "-fx-font-size: 20px;" +
-                        "-fx-padding: 0 0 0 10;"
-        );
+        Text closeIcon = new Text("✕");
+        closeIcon.setStyle("-fx-font-size: 20px; -fx-fill: #ff00ff;");
+        closeButton.setGraphic(closeIcon);
+        closeButton.setStyle("-fx-background-color: transparent; -fx-border-color: transparent;");
+        closeButton.setCursor(Cursor.HAND);
+        closeButton.setOnMouseEntered(e -> closeButton.setRotate(90));
+        closeButton.setOnMouseExited(e -> closeButton.setRotate(0));
         closeButton.setOnAction(e -> closeAddFriendPopup());
+        headerBox.getChildren().addAll(titleLabel, spacer, closeButton);
 
-        headerBox.getChildren().addAll(titleLabel, closeButton);
-
-        // Create search field
         TextField searchField = new TextField();
         searchField.setPromptText("Search players...");
         searchField.setPrefWidth(350);
@@ -971,90 +979,43 @@ public class HomePageController {
                         "-fx-border-width: 1;"
         );
 
-        // Create search results list
         ListView<Player> resultsListView = new ListView<>();
         resultsListView.setPrefHeight(300);
         resultsListView.setStyle(
                 "-fx-control-inner-background: linear-gradient(#2b0057, #4a0077);" +
                         "-fx-background-insets: 0;" +
                         "-fx-background-radius: 10;" +
-                        "-fx-padding: 0;" // Remove inner padding to eliminate inner border
+                        "-fx-padding: 0;" +
+                        "-fx-background: transparent;"
         );
-
-        // Apply the custom skin after the ListView is shown
-        resultsListView.skinProperty().addListener((obs, oldSkin, newSkin) -> {
-            if (newSkin != null) {
-                // Wait for the skin to be fully initialized
-                Platform.runLater(() -> {
-                    Node node = resultsListView.lookup(".scroll-bar:vertical");
-                    if (node instanceof ScrollBar) {
-                        ScrollBar scrollBar = (ScrollBar) node;
-                        scrollBar.setStyle(
-                                "-fx-background-color: transparent;" +
-                                        "-fx-background-insets: 0;" +
-                                        "-fx-padding: 0;" +
-                                        "-fx-pref-width: 6px;" + // Narrower scrollbar
-                                        "-fx-min-width: 6px;" +
-                                        "-fx-max-width: 6px;"
-                        );
-
-                        // Style the track
-                        Node track = scrollBar.lookup(".track");
-                        if (track != null) {
-                            track.setStyle(
-                                    "-fx-background-color: transparent;" +
-                                            "-fx-background-insets: 0;" +
-                                            "-fx-padding: 0;"
-                            );
-                        }
-
-                        // Style the thumb
-                        Node thumb = scrollBar.lookup(".thumb");
-                        if (thumb != null) {
-                            thumb.setStyle(
-                                    "-fx-background-color: rgba(255, 0, 255, 0.5);" +
-                                            "-fx-background-insets: 0;" +
-                                            "-fx-background-radius: 3px;" +
-                                            "-fx-padding: 0;"
-                            );
-                        }
-                    }
-                });
-            }
-        });
-
-        // Custom cell factory for the list view
         resultsListView.setCellFactory(lv -> new ListCell<Player>() {
             private final HBox cellContainer = new HBox(10);
             private final Label avatarLabel = new Label();
             private final Label nameLabel = new Label();
-            private final Region spacer = new Region();
+            private final Region cellSpacer = new Region();
             private final Button addButton = new Button("+");
 
             {
                 cellContainer.setAlignment(Pos.CENTER_LEFT);
-                cellContainer.setPadding(new Insets(5, 15, 5, 15)); // Adjusted padding
-
+                cellContainer.setPadding(new Insets(5, 15, 5, 15));
+                cellContainer.setStyle("-fx-background-color: transparent;");
                 avatarLabel.setStyle(
                         "-fx-background-color: linear-gradient(to bottom, #ff00ff, #00ffff);" +
-                                "-fx-text-fill: black;" +
+                                "-fx-text-fill: #00ffff;" +
                                 "-fx-font-family: 'Orbitron';" +
                                 "-fx-font-weight: bold;" +
                                 "-fx-background-radius: 50%;" +
-                                "-fx-min-width: 30px;" +
-                                "-fx-min-height: 30px;" +
+                                "-fx-min-width: 40px;" +
+                                "-fx-min-height: 40px;" +
                                 "-fx-alignment: center;"
                 );
-
                 nameLabel.setStyle(
                         "-fx-text-fill: white;" +
                                 "-fx-font-family: 'Rajdhani';" +
                                 "-fx-font-size: 14px;" +
                                 "-fx-font-weight: 500;"
                 );
-
-                HBox.setHgrow(spacer, Priority.ALWAYS);
-
+                HBox.setHgrow(cellSpacer, Priority.ALWAYS);
                 addButton.setStyle(
                         "-fx-background-color: #00ffff;" +
                                 "-fx-text-fill: black;" +
@@ -1083,10 +1044,14 @@ public class HomePageController {
                                 "-fx-min-width: 30px;" +
                                 "-fx-min-height: 30px;"
                 ));
-
-                cellContainer.getChildren().addAll(avatarLabel, nameLabel, spacer, addButton);
+                cellContainer.setOnMouseEntered(e -> {
+                    cellContainer.setStyle("-fx-background-color: rgba(255, 0, 255, 0.1); -fx-cursor: hand;");
+                });
+                cellContainer.setOnMouseExited(e -> {
+                    cellContainer.setStyle("-fx-background-color: transparent;");
+                });
+                cellContainer.getChildren().addAll(avatarLabel, nameLabel, cellSpacer, addButton);
             }
-
             @Override
             protected void updateItem(Player player, boolean empty) {
                 super.updateItem(player, empty);
@@ -1095,31 +1060,31 @@ public class HomePageController {
                 } else {
                     avatarLabel.setText(player.getUsername().substring(0, 1).toUpperCase());
                     nameLabel.setText(player.getUsername());
-
-                    // Update add button action
                     addButton.setOnAction(e -> {
                         sendFriendRequest(player.getUsername());
-                        // Remove the added friend from the list
-                        resultsListView.getItems().remove(player);
+                        getListView().getItems().remove(player);
                     });
-
                     setGraphic(cellContainer);
                 }
             }
         });
 
-        // Load all potential friends (excluding current user and existing friends)
         int currentUserId = LoginController.loginId;
         User currentUser = UserDatabase.getUserById(currentUserId);
         List<Player> potentialFriends = PlayerDatabase.getAllPlayers().stream()
                 .filter(p -> !p.getUsername().equalsIgnoreCase(currentUser.getUsername()))
                 .filter(p -> !FriendDatabase.areFriends(currentUserId, p.getUserID()))
                 .collect(Collectors.toList());
-
         ObservableList<Player> searchResults = FXCollections.observableArrayList(potentialFriends);
-        resultsListView.setItems(searchResults);
-
-        // Implement search functionality
+        Node resultNode;
+        if (searchResults.isEmpty()) {
+            Label noFriendsLabel = new Label("No players available to add as friend.");
+            noFriendsLabel.setStyle("-fx-text-fill: #ff00ff; -fx-font-family: 'Orbitron'; -fx-font-size: 16px;");
+            resultNode = noFriendsLabel;
+        } else {
+            resultsListView.setItems(searchResults);
+            resultNode = resultsListView;
+        }
         searchField.textProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal == null || newVal.isEmpty()) {
                 resultsListView.setItems(searchResults);
@@ -1128,27 +1093,25 @@ public class HomePageController {
                 List<Player> filtered = potentialFriends.stream()
                         .filter(p -> p.getUsername().toLowerCase().contains(query))
                         .collect(Collectors.toList());
+                if (filtered.isEmpty()) {
+                    Label noResultsLabel = new Label("No players match your search.");
+                    noResultsLabel.setStyle("-fx-text-fill: #ff00ff; -fx-font-family: 'Orbitron'; -fx-font-size: 16px;");
+                    resultsListView.setPlaceholder(noResultsLabel);
+                }
                 resultsListView.setItems(FXCollections.observableArrayList(filtered));
             }
         });
 
-        // Add all components to the modal
-        modalContent.getChildren().addAll(headerBox, searchField, resultsListView);
-
-        // Add the modal to the overlay container
+        modalContent.getChildren().addAll(headerBox, searchField, resultNode);
         addFriendPopupContainer.getChildren().setAll(modalContent);
         addFriendOverlay.setVisible(true);
         addFriendOverlay.setManaged(true);
-
-        // Add animation for the modal appearance
         FadeTransition fadeIn = new FadeTransition(Duration.millis(300), addFriendOverlay);
         fadeIn.setFromValue(0);
         fadeIn.setToValue(1);
-
         TranslateTransition slideIn = new TranslateTransition(Duration.millis(300), modalContent);
         slideIn.setFromY(20);
         slideIn.setToY(0);
-
         ParallelTransition openTransition = new ParallelTransition(fadeIn, slideIn);
         openTransition.play();
     }
@@ -1165,6 +1128,7 @@ public class HomePageController {
         });
         fadeOut.play();
     }
+
     private void confirmRemoveFriend(String friendUsername, Runnable postRemovalAction) {
         Popup popup = new Popup();
         VBox popupContent = new VBox(15);
@@ -1176,46 +1140,34 @@ public class HomePageController {
                 "-fx-background-radius: 10;" +
                 "-fx-border-radius: 10;" +
                 "-fx-effect: dropshadow(gaussian, rgba(0,255,255,0.75), 10, 0.5, 0, 0);");
-
         Label message = new Label("Remove friend: " + friendUsername + "?");
         message.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
-
         HBox buttonBox = new HBox(10);
         buttonBox.setAlignment(Pos.CENTER);
-
         Button yesButton = new Button("Yes");
         yesButton.setStyle("-fx-background-color: #00ffff; -fx-text-fill: black; -fx-font-weight: bold; -fx-background-radius: 5;");
-
         Button noButton = new Button("No");
         noButton.setStyle("-fx-background-color: #ff00ff; -fx-text-fill: black; -fx-font-weight: bold; -fx-background-radius: 5;");
-
         buttonBox.getChildren().addAll(yesButton, noButton);
         popupContent.getChildren().addAll(message, buttonBox);
         popup.getContent().add(popupContent);
-
-        // Show the confirmation popup centered over the application window.
         Stage stage = (Stage) mainContainer.getScene().getWindow();
         popup.show(stage);
-
         yesButton.setOnAction(e -> {
             int friendID = PlayerDatabase.getPlayerByUsername(friendUsername).getUserID();
             FriendDatabase.removeFriend(LoginController.loginId, friendID);
-            // Execute any additional UI cleanup (e.g., removing the friend item or closing the popup overlay)
             if (postRemovalAction != null) {
                 postRemovalAction.run();
             }
-            // Refresh friend list if needed.
             loadFriendList();
             popup.hide();
             System.out.println("Removed friend: " + friendUsername);
         });
-
         noButton.setOnAction(e -> {
             popup.hide();
             System.out.println("Removal canceled for friend: " + friendUsername);
         });
     }
-
 
     public void showStatsOverlay(ActionEvent event) {
         String selfUsername = PlayerDatabase.getPlayerByUserID(LoginController.loginId).getUsername();

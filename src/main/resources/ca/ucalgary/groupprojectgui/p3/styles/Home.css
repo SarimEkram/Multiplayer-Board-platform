@@ -393,7 +393,6 @@
 
 /* Individual friend item styling */
 .friend-item {
-    -fx-background-color: #1a0033; /* Deep purple background */
     -fx-background-radius: 10;
     -fx-padding: 10;
     -fx-alignment: CENTER_LEFT;
