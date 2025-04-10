@@ -49,8 +49,6 @@ public class Connect4Controller {
     @FXML private HBox columnSelectors;
     @FXML private Label name1;
     @FXML private Label name2;
-    @FXML private Label score1;
-    @FXML private Label score2;
     @FXML private Button newGameBtn;
     @FXML private Button resetBtn;
     @FXML private Button soundBtn;
@@ -92,10 +90,8 @@ public class Connect4Controller {
     private Player localPlayer;
     private Player opponentPlayer;
 
-    // Game state and scores
+    // Game state
     private boolean gameActive = true;
-    private int scorePlayer1 = 0;
-    private int scorePlayer2 = 0;
 
     // Used to track message count for alternating chat message styling
     private int messageCount = 0;
@@ -162,9 +158,6 @@ public class Connect4Controller {
         name2.setPadding(new Insets(5, 10, 5, 10));
         name2.setFont(Fonts.rajdhaniBold(16));
 
-        // Initialize scores
-        score1.setText("Score: " + scorePlayer1);
-        score2.setText("Score: " + scorePlayer2);
 
         // Instantiate game logic (PLAYER1 is local, PLAYER2 is opponent)
         connectBoard = new ConnectBoard(PLAYER1_ID, PLAYER2_ID);
@@ -346,12 +339,10 @@ public class Connect4Controller {
             gameActive = false;
             if (logic.won(connectBoard.getBoard(), lastPlayer)) {
                 if (lastPlayer == PLAYER1_ID) {
-                    scorePlayer1++;
-                    score1.setText("Score: " + scorePlayer1);
+
                     gameProcessor.UpdateResults(localPlayer, opponentPlayer, gameType);
                 } else {
-                    scorePlayer2++;
-                    score2.setText("Score: " + scorePlayer2);
+
                     gameProcessor.UpdateResults(opponentPlayer, localPlayer, gameType);
                 }
                 addMessage("SYSTEM", playerName + " wins!", true);
@@ -456,13 +447,9 @@ public class Connect4Controller {
         Text message = new Text();
         message.getStyleClass().add("popup-message");
         if (isWin) {
-            message.setText("Winner: " + winner + "\nScore:\n"
-                    + name1.getText() + ": " + scorePlayer1 + "\n"
-                    + name2.getText() + ": " + scorePlayer2);
+            message.setText("Winner: " + winner);
         } else {
-            message.setText("It's a draw!\nScore:\n"
-                    + name1.getText() + ": " + scorePlayer1 + "\n"
-                    + name2.getText() + ": " + scorePlayer2);
+            message.setText("It's a draw!");
         }
 
         Button mainMenuButton = new Button("Main Menu");
@@ -721,16 +708,16 @@ public class Connect4Controller {
                 String winner = !isP1 ? localPlayer.getUsername() : opponentPlayer.getUsername();
                 if (isP1) {
                     // Player 1 time expired, Player 2 wins
-                    scorePlayer2++; // Increment score for Player 2
+
                     // update the result, opponent player wins
                     gameProcessor.UpdateResults(opponentPlayer,localPlayer, gameType);
-                    score2.setText("Score: " + scorePlayer2); // Update UI for Player 2's score
+
                 } else {
                     // Player 2 time expired, Player 1 wins
-                    scorePlayer1++; // Increment score for Player 1
+
                     // update the result, local player wins
                     gameProcessor.UpdateResults(localPlayer, opponentPlayer, gameType);
-                    score1.setText("Score: " + scorePlayer1); // Update UI for Player 1's score
+
                 }
                 addMessage("SYSTEM", loser + " ⏰ Time's up! " + winner + " wins!", true);
                 showGameOverPopup(winner, true);
