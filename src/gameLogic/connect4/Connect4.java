@@ -3,9 +3,8 @@ package gameLogic.connect4;
 public class Connect4 {
 
     /**
-     * This class represents the game logic for a Connect 4 game. It manages game rules,
-     * checks for wins in various directions, and controls the gameplay flow.
-     * Connect 4 instance is created in ConnectBoard
+     * This class represents the game logic for a Connect 4 game.
+     * It manages game rules, checks for wins in various directions, and controls the gameplay flow.
      */
     ConnectBoard board;
     private boolean gameOver = false;
@@ -35,7 +34,7 @@ public class Connect4 {
 
     /**
      * This function checks if we can play at a certain column or not.
-     *
+     * @param board The current state of the game board.
      * @param column the column we want to play the piece.
      * @return true if the column is empty
      */
@@ -48,10 +47,12 @@ public class Connect4 {
     /**
      * This function plays the piece at the column we want to play.
      *
+     * @param board The current state of the game board.
      * @param column the column we want to play the piece.
      * @param piece  the piece we want to play.
      * @return the row of the piece we played else -1.
      */
+
     public static int play(int[][] board, int column, int piece) {
         if (canPlay(board, column)) {
             // As the piece is deployed from the top and ends up on the bottom, I started the loop from
@@ -71,9 +72,10 @@ public class Connect4 {
 
     /**
      * This checks if the board is full or not and will be called in isGameOver ConnectBoard
-     *
+     * @param board The current state of the game board.
      * @return true if board is full
      */
+
     public boolean isFull(int[][] board) { //D
         // Checks if the board is full by looping through the top row to check for empty slots, if the top row is full = board is full
         for (int i = 0; i < board[0].length; i++) {
@@ -86,10 +88,12 @@ public class Connect4 {
      * This function checks if the user has won in row or not.
      * This will be called in winAnyRow
      *
+     * @param board The current state of the game board.
      * @param row   the row we want to check for the win condition.
      * @param piece the piece we want to check for.
      * @return true if the conditions for win in row fulfills.
      */
+
     private static boolean winInRow(int[][] board, int row, int piece) {
         int count = 0;
 
@@ -110,10 +114,12 @@ public class Connect4 {
      * This function checks if the user has won in column or not.
      * This will be called in winAnyColumn
      *
+     * @param board The current state of the game board.
      * @param column the column we want to check for the win condition.
      * @param piece  the piece we want to check for.
      * @return true if the conditions for win in column fulfills.
      */
+
     private static boolean winInColumn(int[][] board, int column, int piece) { //D
         int count = 0; // Keeps track of how many matching pieces have been seen in a row
         for (int row = 0; row < board.length; row++) {
@@ -131,9 +137,11 @@ public class Connect4 {
      * This function checks if the user has won in diagonal Forward Slash or not.
      * This will be called in winAnyDiagonal
      *
+     * @param board The current state of the game board.
      * @param piece the piece we want to check for.
      * @return true if the conditions for win in Diagonal forward slash fulfills.
      */
+
     private static boolean winInDiagonalForwardSlash(int[][] board, int piece) { //D
         // Starts from row 3 to make sure there are enough rows above to check diagonals going upward (avoid out of bounds)
         for (int row = 3; row < board.length; row++) {
@@ -152,9 +160,11 @@ public class Connect4 {
      * This function checks if the user has won in diagonal backslash or not.
      * This will be called in winAnyDiagonal
      *
+     * @param board The current state of the game board.
      * @param piece the piece we want to check for.
      * @return true if the conditions for win in Diagonal backslash fulfills.
      */
+
     private static boolean winInDiagonalBackslash(int[][] board,int piece) { //D // same concept as winInDiagonalForwardSlash, but checks in the opposite (\) direction
         // Starts from the top-left of the board (row 0) and checks diagonals going down and to the right (\ direction)
         for(int row = 0; row <= board.length-4; row++) {
@@ -170,13 +180,14 @@ public class Connect4 {
         return false; // No back-slash diagonal win was found
     }
 
-
     /**
      * Is there a win in given board in any diagonal of board
      *
+     * @param board The current state of the game board.
      * @param piece The piece to look for length in a row for any diagonal
      * @return True if there is
      */
+
     public static boolean winInAnyDiagonal(int[][] board, int piece) {//D
         return winInDiagonalForwardSlash(board, piece) || winInDiagonalBackslash(board, piece);
     } //checks for all diagonals back/front slash, returns true if either are true
@@ -184,6 +195,7 @@ public class Connect4 {
     /**
      * When this function is called, winInRow, winInColumn & winInAnyDiagonal will be called to check.
      *
+     * @param board The current state of the game board.
      * @param playerNumber The playerNumber to check for a win
      * @return True if playerNumber has won
      */
@@ -216,13 +228,32 @@ public class Connect4 {
             return board.piece1; // Player 2 forfeits, P1 wins
         }
     }
+
+    /**
+     * Resets the game state by marking the game as not over.
+     * This is typically called when starting a new game.
+     */
+
     public void resetGame() {
         gameOver = false;
     }
 
+    /**
+     * Returns the current value of the gameOver flag.
+     * This is used to check if the game ended via forfeit.
+     *
+     * @return true if the game ended due, false otherwise.
+     */
+
     public boolean isGameOver() { //D
         return gameOver; // Returns the current gameOver state, which will be true only after a forfeit
     }
+
+    /**
+     * Sets the gameOver flag to the specified value.
+     *
+     * @param gameOver true to mark the game as over, false to resume the game.
+     */
 
     public void setGameOver(boolean gameOver) {
         this.gameOver = gameOver;
