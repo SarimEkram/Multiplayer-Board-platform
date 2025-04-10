@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
 
-<StackPane prefHeight="800" prefWidth="1200" styleClass="root" stylesheets="@styles/edit_profile.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.EditProfileController">
+<StackPane prefHeight="800" prefWidth="1200" styleClass="root" stylesheets="@../styles/edit-profile.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.EditProfileController">
     <!-- Background Layers -->
     <Pane fx:id="gridBackground" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
         <!-- Canvas for grid drawing -->

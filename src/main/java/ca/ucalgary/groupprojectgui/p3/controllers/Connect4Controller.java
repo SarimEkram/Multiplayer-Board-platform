@@ -479,7 +479,7 @@ public class Connect4Controller {
 
     private void goToMainMenu() {
         SceneManager.switchTo(
-                "/ca/ucalgary/groupprojectgui/p3/HomePage.fxml"
+                "/ca/ucalgary/groupprojectgui/p3/views/homePage.fxml"
         );
     }
 

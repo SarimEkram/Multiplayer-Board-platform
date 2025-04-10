@@ -321,7 +321,7 @@ public class TicTacToeController {
         mainMenuButton.getStyleClass().add("popup-button");
         mainMenuButton.setOnAction(e -> {
             ((Pane) boardContainer.getParent()).getChildren().remove(overlay);
-            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml");
+            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/views/homePage.fxml");
         });
 
         popup.getChildren().addAll(title, message, mainMenuButton);
@@ -347,7 +347,7 @@ public class TicTacToeController {
         yesButton.getStyleClass().add("popup-button");
         yesButton.setOnAction(e -> {
             boardContainer.getChildren().remove(overlay);
-            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml");
+            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/views/homePage.fxml");
         });
         Button cancelButton = new Button("Cancel");
         cancelButton.getStyleClass().add("popup-button");

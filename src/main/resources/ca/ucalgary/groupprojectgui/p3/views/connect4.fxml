@@ -7,7 +7,7 @@
 
 <StackPane fx:id="root" maxHeight="-1" maxWidth="-1" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.Connect4Controller"
 
-stylesheets="@styles/connect4.css">
+stylesheets="@../styles/connect4.css">
 
     <children>
         <!-- BACKGROUND LAYERS -->
@@ -126,8 +126,8 @@ stylesheets="@styles/connect4.css">
                 <Region fx:id="bottomRight" />
             </children>
          <stylesheets>
-            <URL value="@styles/connect4.css" />
-            <URL value="@styles/connect4.css" />
+            <URL value="@../styles/connect4.css" />
+            <URL value="@../styles/connect4.css" />
          </stylesheets>
         </Pane>
     </children>

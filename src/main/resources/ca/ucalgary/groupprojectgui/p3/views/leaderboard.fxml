@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<StackPane prefHeight="800" prefWidth="1200" styleClass="root" stylesheets="@styles/leaderboard.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21" fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.LeaderboardController">
+<StackPane prefHeight="800" prefWidth="1200" styleClass="root" stylesheets="@../styles/leaderboard.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21" fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.LeaderboardController">
 
     <VBox alignment="TOP_CENTER" prefHeight="700" prefWidth="1000" spacing="30" styleClass="leaderboard-card">
 

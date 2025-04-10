@@ -13,7 +13,7 @@
            fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.ManageProfileController"
            prefWidth="1200" prefHeight="800"
            styleClass="root"
-           stylesheets="@styles/manage_profile.css">
+           stylesheets="@../styles/manage-profile.css">
 
     <!-- Background layers: identical to Login scene -->
     <Pane fx:id="gridBackground" prefWidth="1200" prefHeight="800">

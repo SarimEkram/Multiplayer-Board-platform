@@ -13,7 +13,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -34,17 +33,11 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import javafx.stage.Popup;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static java.util.Locale.lookup;
 
 public class HomePageController {
     public HBox gameFriend;
@@ -165,7 +158,7 @@ public class HomePageController {
 
 // Set up click event to open the Manage Profile page
         profileIcon.setOnMouseClicked((MouseEvent event) -> {
-            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/ManageProfile.fxml");
+            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/views/manageProfile.fxml");
         });
 
 
@@ -325,23 +318,18 @@ public class HomePageController {
 
         String fxmlFile;
         String title;
-        String cssFile;
-
         switch (gameName) {
             case "Connect 4":
-                fxmlFile = "/ca/ucalgary/groupprojectgui/p3/connect4UI.fxml";
-                title = "Connect 4 Game";
-                cssFile = "connect4.css";
+                fxmlFile = "/ca/ucalgary/groupprojectgui/p3/views/connect4.fxml";
+
                 break;
             case "Checkers":
-                fxmlFile = "/ca/ucalgary/groupprojectgui/p3/checkers.fxml";
-                title = "Checkers Game";
-                cssFile = "checkers.css";
+                fxmlFile = "/ca/ucalgary/groupprojectgui/p3/views/checkers.fxml";
+
                 break;
             case "Tic Tac Toe":
-                fxmlFile = "/ca/ucalgary/groupprojectgui/p3/TicTacToe.fxml";
-                title = "Tic Tac Toe";
-                cssFile = "TicTacToe.css";
+                fxmlFile = "/ca/ucalgary/groupprojectgui/p3/views/ticTacToe.fxml";
+
                 break;
             default:
                 System.out.println("Game not recognized: " + gameName);
@@ -349,7 +337,7 @@ public class HomePageController {
         }
 
         SceneManager.showLoadingScreenAndLoadMain(
-                "/ca/ucalgary/groupprojectgui/p3/LoadingScreen.fxml",
+                "/ca/ucalgary/groupprojectgui/p3/views/loadingScreen.fxml",
                 fxmlFile
         );
     }
@@ -462,13 +450,13 @@ public class HomePageController {
 
     @FXML
     private void openManageProfile(MouseEvent event) {
-        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/ManageProfile.fxml");
+        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/views/manageProfile.fxml");
     }
 
     @FXML
     private void onLeaderboardClick() {
         // Example navigation
-        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/Leaderboard.fxml");
+        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/views/leaderboard.fxml");
     }
 
     private void loadIcon(ImageView view, String path) {
@@ -493,7 +481,7 @@ public class HomePageController {
     public void confirmLogout() {
 
         // Navigate to login or home screen
-        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/Login.fxml");
+        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/views/login.fxml");
     }
 
     @FXML
@@ -1122,7 +1110,7 @@ public class HomePageController {
             addFriendOverlay.setVisible(false);
             addFriendOverlay.setManaged(false);
             mainContainer.setEffect(null);
-            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml");
+            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/views/homePage.fxml");
         });
         fadeOut.play();
     }
