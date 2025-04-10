@@ -556,7 +556,7 @@ public class HomePageController {
         }
         int friendId = friend.getUserID();
         String email = friend.getEmail();
-        int level = friend.getLevel();
+        int level = player.getLevel();
         String onlineStatus = friend.isOnline() ? "Online" : "Offline";
 
         Scene scene = mainContainer.getScene();
