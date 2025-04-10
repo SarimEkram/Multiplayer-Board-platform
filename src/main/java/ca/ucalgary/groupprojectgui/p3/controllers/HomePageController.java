@@ -505,7 +505,6 @@ public class HomePageController {
         mainContainer.setEffect(null);
     }
 
-
     private void loadFriendList() {
         // Clear the existing content
         playersContainer.getChildren().clear();
@@ -517,28 +516,34 @@ public class HomePageController {
         scrollPane.setFitToWidth(true);
         scrollPane.setStyle("-fx-background: transparent; -fx-background-color: transparent;");
 
-        // Create a VBox to hold the friend items
+        // Create a VBox to hold the friend items with left alignment
         VBox friendsContent = new VBox(10);
         friendsContent.setPadding(new Insets(10));
+        friendsContent.setAlignment(Pos.TOP_LEFT);
 
         int currentUserId = LoginController.loginId;
         Set<Integer> friendIds = FriendDatabase.getFriends(currentUserId);
-
         for (Integer friendId : friendIds) {
             Player friend = PlayerDatabase.getPlayerByUserID(friendId);
             if (friend != null) {
                 friendsContent.getChildren().add(createFriendItem(friend.getUsername(), friendId));
             }
         }
-
-        // Set the content and add to the container
         scrollPane.setContent(friendsContent);
         playersContainer.getChildren().add(scrollPane);
 
-        // Set constraints to prevent growing beyond container
+        // Hide the vertical scrollbar by setting its opacity and preferred width to zero
+        Platform.runLater(() -> {
+            Node vBar = scrollPane.lookup(".scroll-bar:vertical");
+            if (vBar != null) {
+                vBar.setStyle("-fx-opacity: 0; -fx-pref-width: 0;");
+            }
+        });
+
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
         scrollPane.setMaxHeight(Double.MAX_VALUE);
     }
+
     private HBox createFriendItem(String username, int friendId) {
         HBox friendItem = new HBox(15);
         friendItem.setAlignment(Pos.CENTER_LEFT);
