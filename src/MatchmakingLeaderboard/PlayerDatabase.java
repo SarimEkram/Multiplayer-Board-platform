@@ -135,7 +135,7 @@ public class PlayerDatabase {
                             .append(",").append(p.getLosses(game))
                             .append(",").append(p.getMMR(game))
                             .append(",").append(p.getWinRatio(game))
-                            .append(",").append(p.getRank(game).getCurrentTier())
+                            .append(",").append(p.rankForPlayer(game))
                             .append(",").append(p.getGameSignal(game));
                 }
                 bw.write(line.toString());
