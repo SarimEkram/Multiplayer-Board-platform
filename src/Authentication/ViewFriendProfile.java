@@ -16,11 +16,15 @@ public class ViewFriendProfile {
         StringBuilder sb = new StringBuilder();
         sb.append("Friend Profile:\n");
         sb.append("Username: ").append(friend.getUsername()).append("\n");  // Friend's username
-        sb.append("Email: ").append(friend.getEmail()).append("\n");       // Friend's email address
+        sb.append("Email: ").append(friend.getEmail()).append("\n");        // Friend's email address
         sb.append("Level: ").append(friend.getLevel()).append("\n");        // Friend's current level
         sb.append("Win Ratio: ").append(friend.getWinRatio()).append("\n"); // Friend's win/loss ratio
-        sb.append("Online: ").append(friend.isOnline() ? "Yes" : "No");     // Friend's online status
 
+        // Appending the online status as "Yes" or "No" based on boolean value
+        sb.append("Online: ").append(friend.isOnline() ? "Yes" : "No");
+
+
+        // Return the final string representation of the user's profile
         return sb.toString();
     }
 }
