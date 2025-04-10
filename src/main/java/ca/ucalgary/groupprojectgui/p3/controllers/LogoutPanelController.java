@@ -54,12 +54,12 @@ public class LogoutPanelController {
     private void cancelLogout() {
         // Instead of removing the node from its parent, just set it invisible.
         logoutPanel.setVisible(false);
-        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "Home.css");
+        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml");
 
     }
 
     @FXML
     private void confirmLogout() {
-        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/login.fxml", "Login Page", "login.css");
+        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/login.fxml");
     }
 }

@@ -29,7 +29,7 @@ public class SceneManager {
     /**
      * Shows a loading screen then transitions with a cross-fade to the main content.
      */
-    public static void showLoadingScreenAndLoadMain(String loadingFXMLPath, String mainFXMLPath, String title, String cssFile) {
+    public static void showLoadingScreenAndLoadMain(String loadingFXMLPath, String mainFXMLPath) {
         try {
             // Load loading screen FXML.
             FXMLLoader loadingLoader = new FXMLLoader(SceneManager.class.getResource(loadingFXMLPath));
@@ -59,17 +59,6 @@ public class SceneManager {
             loadTask.setOnSucceeded(e -> {
                 Parent mainRoot = loadTask.getValue();
 
-                // If a CSS file is provided, update the scene's stylesheets.
-                if (cssFile != null && !cssFile.isEmpty()) {
-                    scene.getStylesheets().clear();
-                    URL cssURL = SceneManager.class.getResource("/ca/ucalgary/groupprojectgui/p3/styles/" + cssFile);
-                    if (cssURL != null) {
-                        scene.getStylesheets().add(cssURL.toExternalForm());
-                    } else {
-                        System.err.println("CSS file not found: " + cssFile);
-                    }
-                }
-
                 // Start fade-out transition for the loading screen.
                 FadeTransition fadeOutLoading = new FadeTransition(Duration.millis(100), loadingRoot);
                 fadeOutLoading.setFromValue(1);
@@ -77,7 +66,6 @@ public class SceneManager {
                 fadeOutLoading.setOnFinished(event -> {
                     // Once loading screen is fully faded out, update the root.
                     scene.setRoot(mainRoot);
-                    primaryStage.setTitle(title);
 
                     // Fade in the main content.
                     mainRoot.setOpacity(0);
@@ -99,19 +87,12 @@ public class SceneManager {
     /**
      * A simple switch method (if needed) that reuses the same Scene.
      */
-    public static void switchTo(String fxmlPath, String title, String cssFile) {
+    public static void switchTo(String fxmlPath) {
         try {
             FXMLLoader loader = new FXMLLoader(SceneManager.class.getResource(fxmlPath));
             Parent root = loader.load();
             scene.setRoot(root);
-            if (cssFile != null && !cssFile.isEmpty()) {
-                scene.getStylesheets().clear();
-                URL cssURL = SceneManager.class.getResource("/ca/ucalgary/groupprojectgui/p3/styles/" + cssFile);
-                if (cssURL != null) {
-                    scene.getStylesheets().add(cssURL.toExternalForm());
-                }
-            }
-            primaryStage.setTitle(title);
+
         } catch (IOException ex) {
             ex.printStackTrace();
         }

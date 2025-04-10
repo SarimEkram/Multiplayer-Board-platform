@@ -17,7 +17,10 @@
            xmlns="http://javafx.com/javafx/21"
            xmlns:fx="http://javafx.com/fxml/1"
            maxWidth="-1" maxHeight="-1"
-           fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.CheckersController">
+           fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.CheckersController"
+           stylesheets="@styles/checkers.css"
+
+>
 
     <children>
         <!-- BACKGROUND LAYERS -->

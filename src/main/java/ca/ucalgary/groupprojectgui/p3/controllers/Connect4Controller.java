@@ -479,9 +479,7 @@ public class Connect4Controller {
 
     private void goToMainMenu() {
         SceneManager.switchTo(
-                "/ca/ucalgary/groupprojectgui/p3/HomePage.fxml",
-                "Home Page",
-                "home.css"
+                "/ca/ucalgary/groupprojectgui/p3/HomePage.fxml"
         );
     }
 

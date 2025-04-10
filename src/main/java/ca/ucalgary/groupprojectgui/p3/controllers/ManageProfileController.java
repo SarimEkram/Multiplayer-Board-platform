@@ -50,9 +50,7 @@ public class ManageProfileController {
     @FXML
     private void handleBackButtonClick() {
         SceneManager.switchTo(
-                "/ca/ucalgary/groupprojectgui/p3/HomePage.fxml",
-                "Home Page",
-                "home.css"
+                "/ca/ucalgary/groupprojectgui/p3/HomePage.fxml"
         );
     }
     /**
@@ -61,9 +59,7 @@ public class ManageProfileController {
     @FXML
     private void handleEditProfileButtonClick() {
         SceneManager.switchTo(
-                "/ca/ucalgary/groupprojectgui/p3/EditProfile.fxml",
-                "Edit Profile",
-                "edit_profile.css"
+                "/ca/ucalgary/groupprojectgui/p3/EditProfile.fxml"
         );
     }
     /**
@@ -72,9 +68,7 @@ public class ManageProfileController {
     @FXML
     private void handleChangePasswordButtonClick() {
         SceneManager.switchTo(
-                "/ca/ucalgary/groupprojectgui/p3/ChangePassword.fxml",
-                "Change Password",
-                "change_password.css"
+                "/ca/ucalgary/groupprojectgui/p3/ChangePassword.fxml"
         );
     }
     /**
@@ -174,7 +168,7 @@ public class ManageProfileController {
                         if (DeleteUserAccount.deleteAccount(userId)) {
                             // Remove blur effect and switch to Login page
                             mainRoot.setEffect(null);
-                            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/Login.fxml", "Login", "login.css");
+                            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/Login.fxml");
                         } else {
                             // Optionally show error alert if deletion failed
                             showDialog("Error", "Failed to delete account. Please try again.", Alert.AlertType.ERROR);

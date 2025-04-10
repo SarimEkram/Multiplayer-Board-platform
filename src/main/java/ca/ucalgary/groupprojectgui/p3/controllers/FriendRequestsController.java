@@ -1,12 +1,8 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
 
-import Authentication.User;
-import Authentication.UserDatabase;
 import Authentication.FriendDatabase;
 import MatchmakingLeaderboard.Player;
 import MatchmakingLeaderboard.PlayerDatabase;
-import ca.ucalgary.groupprojectgui.p3.SceneManager;
-import ca.ucalgary.groupprojectgui.p3.controllers.LoginController;
 import javafx.scene.control.Alert;
 
 

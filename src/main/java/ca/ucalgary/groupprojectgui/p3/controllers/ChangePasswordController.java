@@ -214,7 +214,7 @@ public class ChangePasswordController {
      */
     @FXML
     private void handleBack() {
-        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/ManageProfile.fxml", "Manage Profile", "manage_profile.css");
+        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/ManageProfile.fxml");
     }
 
     /**

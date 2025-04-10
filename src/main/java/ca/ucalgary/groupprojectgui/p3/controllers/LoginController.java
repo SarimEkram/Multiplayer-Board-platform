@@ -371,7 +371,7 @@
 
                 // Delay the page switch by 2 seconds only on success.
                 Timeline delayTimeline = new Timeline(new KeyFrame(Duration.seconds(2), event -> {
-                    SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "Home.css");
+                    SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml");
                 }));
                 delayTimeline.play();
             } else if (result == -2) {

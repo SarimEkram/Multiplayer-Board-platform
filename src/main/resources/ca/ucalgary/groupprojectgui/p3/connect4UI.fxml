@@ -5,7 +5,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane fx:id="root" maxHeight="-1" maxWidth="-1" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.Connect4Controller">
+<StackPane fx:id="root" maxHeight="-1" maxWidth="-1" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.Connect4Controller"
+
+stylesheets="@styles/connect4.css">
 
     <children>
         <!-- BACKGROUND LAYERS -->

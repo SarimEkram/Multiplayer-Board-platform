@@ -351,7 +351,7 @@ public class CheckersController {
         yesButton.getStyleClass().add("popup-button");
         yesButton.setOnAction(e -> {
             parent.getChildren().remove(overlay);
-            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "home.css");
+            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml");
         });
         Button cancelButton = new Button("Cancel");
         cancelButton.getStyleClass().add("popup-button");
@@ -634,7 +634,7 @@ public class CheckersController {
         mainMenuButton.getStyleClass().add("popup-button");
         mainMenuButton.setOnAction(e -> {
             boardGrid.getChildren().remove(overlay);
-            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "Home.css");
+            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml");
         });
 
         popup.getChildren().addAll(title, message, mainMenuButton);

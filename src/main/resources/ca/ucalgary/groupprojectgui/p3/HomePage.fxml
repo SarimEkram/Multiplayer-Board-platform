@@ -7,6 +7,7 @@
 <?import java.lang.String?>
 
 <StackPane xmlns:fx="http://javafx.com/fxml"
+           stylesheets="@styles/Home.css"
            fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.HomePageController"
            styleClass="home-background"
            prefWidth="1200" prefHeight="800">
@@ -118,12 +119,15 @@
 
             <!-- RIGHT: FRIENDS PANEL -->
             <VBox fx:id="friendsPanel" spacing="20" styleClass="right-sidebar" prefWidth="300">
-                <!-- Header -->
-                <HBox alignment="CENTER_LEFT">
-                    <Label text="Friends" styleClass="friends-header"/>
-                    <Region HBox.hgrow="ALWAYS"/>
-                    <Button text="➕" onAction="#openAddFriendPopup" styleClass="close-button"/>
-                </HBox>
+                <!-- Header: Inline style set for header friends -->
+                    <!-- Header: Inline style set for header friends -->
+                    <HBox alignment="CENTER_LEFT">
+                        <Label text="Friends" style="-fx-font-family: 'Orbitron'; -fx-font-size: 18px; -fx-text-fill: #00ffff; -fx-text-shadow: 0 0 5px #00ffff;"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <!-- Use literal plus sign "+" and assign a custom style class -->
+                        <Button text="+" onAction="#openAddFriendPopup" styleClass="add-friend-button"/>
+                    </HBox>
+                    <!-- Other nodes -->
 
                 <!-- StackPane allows popup to float over the list -->
                 <StackPane VBox.vgrow="ALWAYS">

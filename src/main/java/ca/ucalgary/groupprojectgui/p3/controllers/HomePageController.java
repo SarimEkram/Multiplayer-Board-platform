@@ -165,7 +165,7 @@ public class HomePageController {
 
 // Set up click event to open the Manage Profile page
         profileIcon.setOnMouseClicked((MouseEvent event) -> {
-            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/ManageProfile.fxml", "Manage Profile", "ManageProfile.css");
+            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/ManageProfile.fxml");
         });
 
 
@@ -351,9 +351,7 @@ public class HomePageController {
 
         SceneManager.showLoadingScreenAndLoadMain(
                 "/ca/ucalgary/groupprojectgui/p3/LoadingScreen.fxml",
-                fxmlFile,
-                title,
-                cssFile
+                fxmlFile
         );
     }
 
@@ -465,14 +463,14 @@ public class HomePageController {
 
     @FXML
     private void openManageProfile(MouseEvent event) {
-        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/ManageProfile.fxml", "Manage Profile", "ManageProfile.css");
+        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/ManageProfile.fxml");
     }
 
     @FXML
     private void onLeaderboardClick() {
         System.out.println("Leaderboard button clicked!");
         // Example navigation
-        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/Leaderboard.fxml", "Leaderboard", "leaderboard");
+        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/Leaderboard.fxml");
     }
 
     private void loadIcon(ImageView view, String path) {
@@ -497,7 +495,7 @@ public class HomePageController {
     public void confirmLogout() {
         System.out.println("User confirmed logout");
         // Navigate to login or home screen
-        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/Login.fxml", "Login", "login.css");
+        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/Login.fxml");
     }
 
     @FXML
@@ -1131,7 +1129,7 @@ public class HomePageController {
             addFriendOverlay.setVisible(false);
             addFriendOverlay.setManaged(false);
             mainContainer.setEffect(null);
-            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "Home.css");
+            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml");
         });
         fadeOut.play();
     }
