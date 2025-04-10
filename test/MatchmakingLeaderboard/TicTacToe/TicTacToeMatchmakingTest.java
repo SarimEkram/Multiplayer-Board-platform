@@ -126,7 +126,7 @@ public class TicTacToeMatchmakingTest {
         player1.setGameSignal(1, GameType.TIC_TAC_TOE);
         player2.setGameSignal(1, GameType.TIC_TAC_TOE);
         player1.setLevel(27);
-        player2.setLevel(26);
+        player2.setLevel(16);
         assertFalse(matchmaking.checkPlayers(player1, player2)); // Rank too far apart
     }
 
