@@ -123,7 +123,7 @@ public class CheckersMatchmakingTest {
         player1.getRank(GameType.CHECKERS).adjustPoints(player1,2500,GameType.CHECKERS);
         player1.getRank(GameType.CHECKERS).adjustPoints(player1,500,GameType.CHECKERS);
         player1.setLevel(27);
-        player2.setLevel(26);
+        player2.setLevel(16);
         assertFalse(matchmaking.checkPlayers(player1, player2)); // Skill gap too large
     }
 

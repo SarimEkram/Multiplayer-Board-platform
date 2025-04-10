@@ -131,7 +131,7 @@ public class Connect4MatchmakingTest {
         player1.setGameSignal(2, GameType.CONNECT_FOUR);
         player2.setGameSignal(2, GameType.CONNECT_FOUR);
         player1.setLevel(27);
-        player2.setLevel(26);
+        player2.setLevel(16);
 
         assertFalse(matchmaking.checkPlayers(player1, player2)); // Skill gap too large
     }

@@ -58,10 +58,10 @@ public class TicTacToeController {
     public Button leaveGame;
 
     @FXML
-    private StackPane boardContainer;
+    public StackPane boardContainer;
 
     @FXML
-    private Label turnLabel;
+    public Label turnLabel;
 
     @FXML
     private TextArea chatArea;
@@ -70,31 +70,31 @@ public class TicTacToeController {
     private TextField chatInput;
 
     @FXML
-    private Label localPlayerLabel;
+    public Label localPlayerLabel;
     @FXML
-    private Label opponentLabel;
-    private GameProcessor gameProcessor;
+    public Label opponentLabel;
+    public GameProcessor gameProcessor;
 
-    private TicTacToeBoard logicBoard;
-    private TicTacToe gameLogic;
+    public TicTacToeBoard logicBoard;
+    public TicTacToe gameLogic;
 
     private GridPane grid;
-    private char currentPlayer;
+    public char currentPlayer;
 
     // Track the current player. True = Player X, False = Player O.
-    private boolean playerXTurn = true;
+    public boolean playerXTurn = true;
 
     //Prevents further interaction after game ends
     private boolean gameOver = false;
     private TicTacToeMatchmaking matchmaking;
-    private Player localPlayer;
+    public Player localPlayer;
     private int player1Id;       // Local player's ID (from matchmaking)
     private int opponentId;      // Opponent's player ID
-    private Player opponentPlayer;
-    private final GameType gameType = GameType.TIC_TAC_TOE;
+    public Player opponentPlayer;
+    public final GameType gameType = GameType.TIC_TAC_TOE;
     private Timeline timeline;
     private int secondsElapsed = 0;
-    private GridPane tttgrid;
+    public GridPane tttgrid;
     private int messageCount = 0;
 
     //Chat session
@@ -102,7 +102,7 @@ public class TicTacToeController {
 
     //Turn timer
     private TurnTimer timerX;
-    private TurnTimer timerO;
+    public TurnTimer timerO;
     private Timeline turnCheckTimeline;
     private boolean warningSentX = false;
     private boolean warningSentO = false;
@@ -183,7 +183,7 @@ public class TicTacToeController {
     /**
      * Create a 3x3 Tic Tac Toe grid and add it to the boardContainer.
      */
-    private void createBoard() {
+    public void createBoard() {
         tttgrid = new GridPane();
         tttgrid.setHgap(10);
         tttgrid.setVgap(10);
@@ -218,7 +218,7 @@ public class TicTacToeController {
      */
 
 
-    private void handleCellClick(int row, int col, StackPane cell) {
+    public void handleCellClick(int row, int col, StackPane cell) {
         //  Ignore if the game is over or cell is already filled
         if (gameOver || !cell.getChildren().isEmpty() || !logicBoard.isCellEmpty(row, col)) return;
 
