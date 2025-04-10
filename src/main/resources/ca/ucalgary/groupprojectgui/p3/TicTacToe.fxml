@@ -46,7 +46,7 @@
                                             </children>
                                         </HBox>
                                         <Label fx:id="vsBadge" text="VS"/>
-                                        <HBox fx:id="player2Container" alignment="CENTER" spacing="5" HBox.hgrow="ALWAYS">
+                                        <HBox fx:id="player2Container" alignment="CENTER" spacing="40" HBox.hgrow="ALWAYS">
                                             <children>
                                                 <Label fx:id="avatar2" text="O"/>
                                                 <Label fx:id="opponentLabel" styleClass="player-name" text="CHAMELEON" />

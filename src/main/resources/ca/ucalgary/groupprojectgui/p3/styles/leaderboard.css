@@ -61,6 +61,9 @@
 
 .scroll-pane .scroll-bar:vertical {
     -fx-background-color: transparent;
+    -fx-opacity: 0;
+    -fx-pref-width: 0;
+    }
 }
 
 .scroll-pane .scroll-bar:vertical .thumb {
@@ -84,10 +87,11 @@
 /* Center the TabPane header and style tabs */
 .tab-pane .tab-header-area {
     -fx-padding: 0 0 10 0;
-    -fx-alignment: center;
+    -fx-alignment: right;
     -fx-max-width: infinity;
     -fx-min-width: 100%;
-    -fx-justify-content: center;
+    -fx-justify-content: right;
+    -fx-padding: 0 100px;
 }
 
 .tab-pane .tab-header-background {
@@ -114,7 +118,7 @@
     -fx-background-color: rgba(255, 255, 255, 0.2);
 }
 .leaderboard-entry {
-    -fx-padding: 4 0;
+    -fx-padding: 5 0;
     -fx-spacing: 20;
 }
 
@@ -123,3 +127,13 @@
     -fx-font-size: 14px;
 }
 
+.leaderboard-data-header {
+    -fx-padding: 10;
+    -fx-border-color: #666;
+    -fx-border-width: 0 0 1 0;
+}
+
+.leaderboard-data-header .label {
+    -fx-text-fill: #00ffff;
+    -fx-font-weight: bold;
+}
