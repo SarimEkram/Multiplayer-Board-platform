@@ -202,6 +202,15 @@
         </VBox>
     </StackPane>
 
+    <!-- AddFriendPopup Overlay -->
+    <StackPane fx:id="addFriendOverlay"
+               visible="false"
+               managed="false"
+               StackPane.alignment="CENTER">
+        <VBox fx:id="addFriendPopupContainer" spacing="20" alignment="CENTER" maxWidth="400"/>
+    </StackPane>
+
+
     <StackPane fx:id="logoutOverlay"
                visible="false"
                StackPane.alignment="CENTER">

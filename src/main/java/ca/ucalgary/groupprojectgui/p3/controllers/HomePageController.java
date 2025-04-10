@@ -7,6 +7,8 @@ import MatchmakingLeaderboard.PlayerDatabase;
 import MatchmakingLeaderboard.RankTier;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
@@ -32,7 +34,9 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -46,6 +50,8 @@ public class HomePageController {
     public Button cancelLogoutButton;
     public Button confirmLogoutButton;
     public StackPane logoutOverlay;
+    public StackPane addFriendOverlay;
+    public VBox addFriendPopupContainer;
     @FXML
     private VBox playersContainer;
     // Fields for game/home page
@@ -871,102 +877,126 @@ public class HomePageController {
     private void openAddFriendPopup() {
         System.out.println("✅ openAddFriendPopup() triggered!");
 
-        VBox popupContent = new VBox(10);
-        popupContent.setAlignment(Pos.TOP_CENTER);
-        popupContent.setPrefSize(250, 320);
+        // Apply blur effect
+        BoxBlur blur = new BoxBlur(10, 10, 3);
+        mainContainer.setEffect(blur);
+
+        VBox popupContent = new VBox(15);
+        popupContent.setAlignment(Pos.CENTER);
+        popupContent.setPrefSize(350, 420);
+        popupContent.setPadding(new Insets(20));
         popupContent.setStyle(
-                "-fx-background-color: rgba(0, 0, 0, 0.9);" +
-                        "-fx-padding: 15;" +
-                        "-fx-background-radius: 12;" +
-                        "-fx-border-color: #00ffff;" +
+                "-fx-background-color: #0d0d0d;" +
+                        "-fx-background-radius: 15;" +
+                        "-fx-border-color: #ff00ff;" +
                         "-fx-border-width: 2;" +
-                        "-fx-border-radius: 12;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(0,255,255,0.6), 10, 0.5, 0, 0);"
+                        "-fx-border-radius: 15;"
         );
 
-        Label title = new Label("Add Friend");
-        title.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
+        Label title = new Label("SEARCH A PLAYER");
+        title.setStyle("-fx-text-fill: white; -fx-font-size: 20px; -fx-font-family: 'Arial Black';");
 
-        TextField friendUsernameField = new TextField();
-        friendUsernameField.setPromptText("Username...");
-        friendUsernameField.setPrefWidth(200);
+        TextField searchField = new TextField();
+        searchField.setPromptText("Search username...");
+        searchField.setPrefWidth(200);
+        searchField.setStyle("-fx-background-radius: 10; -fx-padding: 5;");
 
-        // Recommended friends section
-        VBox recommendations = new VBox(8);
-        recommendations.setAlignment(Pos.TOP_LEFT);
+        ListView<Player> friendListView = new ListView<>();
+        friendListView.setPrefHeight(220);
+        friendListView.setStyle(
+                "-fx-control-inner-background: linear-gradient(#2b0057, #4a0077);" +
+                        "-fx-border-color: #7a00cc;" +
+                        "-fx-border-width: 2;" +
+                        "-fx-background-radius: 10;" +
+                        "-fx-font-size: 14px;"
+        );
+
+        // Custom list cell with checkbox
+        ObservableList<Player> masterList = FXCollections.observableArrayList();
+        ObservableList<Player> filteredList = FXCollections.observableArrayList();
+        Map<Player, CheckBox> checkBoxes = new HashMap<>();
+
+        friendListView.setCellFactory(lv -> new ListCell<>() {
+            @Override
+            protected void updateItem(Player player, boolean empty) {
+                super.updateItem(player, empty);
+                if (empty || player == null) {
+                    setGraphic(null);
+                } else {
+                    CheckBox checkBox = checkBoxes.computeIfAbsent(player, p -> {
+                        CheckBox cb = new CheckBox();
+                        cb.setText(p.getUsername());
+                        cb.setStyle("-fx-text-fill: white;");
+                        cb.setUserData(p);
+                        return cb;
+                    });
+                    setGraphic(checkBox);
+                }
+            }
+        });
+
+        // Load potential friends
         int currentUserId = LoginController.loginId;
         User currentUser = UserDatabase.getUserById(currentUserId);
-
-        List<Player> suggestedUsers = PlayerDatabase.getAllPlayers().stream()
+        List<Player> potentialFriends = PlayerDatabase.getAllPlayers().stream()
                 .filter(p -> !p.getUsername().equalsIgnoreCase(currentUser.getUsername()))
                 .filter(p -> !FriendDatabase.areFriends(currentUserId, p.getUserID()))
-                .limit(5)
                 .collect(Collectors.toList());
 
+        masterList.setAll(potentialFriends);
+        filteredList.setAll(masterList);
+        friendListView.setItems(filteredList);
 
-        for (Player player : suggestedUsers) {
-            String name = player.getUsername(); // 💡 Extract username
+        // Search filter
+        searchField.textProperty().addListener((obs, oldVal, newVal) -> {
+            String filter = newVal.trim().toLowerCase();
+            filteredList.setAll(masterList.stream()
+                    .filter(p -> p.getUsername().toLowerCase().contains(filter))
+                    .collect(Collectors.toList()));
+        });
 
-            HBox row = new HBox(8);
-            Label nameLabel = new Label(name);
-            nameLabel.setStyle("-fx-text-fill: white; -fx-font-size: 12px;");
-            Button addBtn = new Button("+");
-            addBtn.setStyle(
-                    "-fx-background-color: #00ffff;" +
-                            "-fx-text-fill: black;" +
-                            "-fx-font-weight: bold;" +
-                            "-fx-background-radius: 5;"
-            );
-            addBtn.setOnAction(e -> {
-                friendUsernameField.setText(name); // auto-fill the search field
-            });
-            row.getChildren().addAll(nameLabel, addBtn);
-            recommendations.getChildren().add(row);
-        }
+        // Buttons
+        Button confirmBtn = new Button("Confirm");
+        confirmBtn.setStyle("-fx-background-color: #4a90e2; -fx-text-fill: white; -fx-background-radius: 10;");
 
-        // Action buttons
-        Button sendRequestButton = new Button("Send");
-        sendRequestButton.setStyle(
-                "-fx-background-color: #00ffff;" +
-                        "-fx-text-fill: black;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-background-radius: 6;"
-        );
+        Button cancelBtn = new Button("Cancel");
+        cancelBtn.setStyle("-fx-background-color: #ff4444; -fx-text-fill: white; -fx-background-radius: 10;");
 
-        Button closeBtn = new Button("Cancel");
-        closeBtn.setStyle(
-                "-fx-background-color: #ff0066;" +
-                        "-fx-text-fill: white;" +
-                        "-fx-background-radius: 6;"
-        );
+        confirmBtn.setOnAction(e -> {
+            List<Player> selected = checkBoxes.entrySet().stream()
+                    .filter(entry -> entry.getValue().isSelected())
+                    .map(Map.Entry::getKey)
+                    .toList();
 
-        sendRequestButton.setOnAction(e -> {
-            String enteredName = friendUsernameField.getText().trim();
-            if (!enteredName.isEmpty()) {
-                sendFriendRequest(enteredName);
-                SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "Home.css");
+            for (Player p : selected) {
+                sendFriendRequest(p.getUsername());
             }
-            friendPopupPlaceholder.getChildren().clear();
-            friendPopupPlaceholder.setVisible(false);
-            friendPopupPlaceholder.setManaged(false);
+
+            closePopup();
+            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "Home.css");
         });
 
-        closeBtn.setOnAction(e -> {
-            friendPopupPlaceholder.getChildren().clear();
-            friendPopupPlaceholder.setVisible(false);
-            friendPopupPlaceholder.setManaged(false);
-        });
+        cancelBtn.setOnAction(e -> closePopup());
 
-        HBox buttonRow = new HBox(10, sendRequestButton, closeBtn);
+        HBox buttonRow = new HBox(20, confirmBtn, cancelBtn);
         buttonRow.setAlignment(Pos.CENTER);
 
-        popupContent.getChildren().addAll(title, friendUsernameField, new Separator(), recommendations, buttonRow);
+        popupContent.getChildren().addAll(title, searchField, friendListView, buttonRow);
 
-        friendPopupPlaceholder.getChildren().clear();
-        friendPopupPlaceholder.getChildren().add(popupContent);
-        friendPopupPlaceholder.setVisible(true);
-        friendPopupPlaceholder.setManaged(true);
+        addFriendPopupContainer.getChildren().setAll(popupContent);
+        addFriendOverlay.setVisible(true);
+        addFriendOverlay.setManaged(true);
+        mainContainer.setEffect(blur);
     }
+
+    // Helper to clear popup and blur
+    private void closePopup() {
+        addFriendPopupContainer.getChildren().clear();
+        addFriendOverlay.setVisible(false);
+        addFriendOverlay.setManaged(false);
+        mainContainer.setEffect(null); // remove blur
+    }
+
 
     private void confirmRemoveFriend(String friendUsername, Runnable postRemovalAction) {
         Popup popup = new Popup();

@@ -42,7 +42,6 @@ public class ManageProfileController {
 
     @FXML
     public void initialize() {
-
         setupBackground();
     }
     /**
