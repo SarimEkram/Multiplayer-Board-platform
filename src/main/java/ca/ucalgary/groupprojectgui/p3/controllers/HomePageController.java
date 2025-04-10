@@ -6,7 +6,9 @@ import MatchmakingLeaderboard.Player;
 import MatchmakingLeaderboard.PlayerDatabase;
 import MatchmakingLeaderboard.RankTier;
 import javafx.animation.FadeTransition;
+import javafx.animation.ParallelTransition;
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -30,6 +32,7 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -39,6 +42,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static java.util.Locale.lookup;
 
 public class HomePageController {
     public HBox gameFriend;
@@ -501,7 +506,19 @@ public class HomePageController {
 
 
     private void loadFriendList() {
+        // Clear the existing content
         playersContainer.getChildren().clear();
+
+        // Create a ScrollPane to contain the friends list
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setStyle("-fx-background: transparent; -fx-background-color: transparent;");
+
+        // Create a VBox to hold the friend items
+        VBox friendsContent = new VBox(10);
+        friendsContent.setPadding(new Insets(10));
 
         int currentUserId = LoginController.loginId;
         Set<Integer> friendIds = FriendDatabase.getFriends(currentUserId);
@@ -509,37 +526,50 @@ public class HomePageController {
         for (Integer friendId : friendIds) {
             Player friend = PlayerDatabase.getPlayerByUserID(friendId);
             if (friend != null) {
-                playersContainer.getChildren().add(createFriendItem(friend.getUsername(), friendId));
+                friendsContent.getChildren().add(createFriendItem(friend.getUsername(), friendId));
             }
         }
-    }
 
+        // Set the content and add to the container
+        scrollPane.setContent(friendsContent);
+        playersContainer.getChildren().add(scrollPane);
+
+        // Set constraints to prevent growing beyond container
+        VBox.setVgrow(scrollPane, Priority.ALWAYS);
+        scrollPane.setMaxHeight(Double.MAX_VALUE);
+    }
     private HBox createFriendItem(String username, int friendId) {
         HBox friendItem = new HBox(15);
         friendItem.setAlignment(Pos.CENTER_LEFT);
         friendItem.getStyleClass().add("friend-item");
+        friendItem.setMaxWidth(Double.MAX_VALUE);
+        friendItem.setPrefHeight(40); // Fixed height for each item
 
         Label avatar = new Label(username.substring(0, 1).toUpperCase());
         avatar.getStyleClass().add("friend-initial");
+        avatar.setMinWidth(30);
+        avatar.setMaxWidth(30);
 
         Label nameLabel = new Label(username);
         nameLabel.getStyleClass().add("friend-name");
+        nameLabel.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(nameLabel, Priority.ALWAYS);
 
         Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
+        HBox.setHgrow(spacer, Priority.NEVER);
 
         Label friendStatus = new Label("⚪️");
         friendStatus.setStyle("-fx-font-size: 12px;");
         User onlineUser = UserDatabase.getUserById(friendId);
-        if(onlineUser!= null && onlineUser.isOnline())
+        if(onlineUser != null && onlineUser.isOnline())
             friendStatus.setText("🟢");
         else
             friendStatus.setText("🔴");
-        // Set an event handler on the entire friend item.
-        // This handler will show the friend profile popup.
+
         friendItem.setOnMouseClicked(event -> {
             showFriendProfilePopup(username);
         });
+
         friendItem.getChildren().addAll(avatar, nameLabel, spacer, friendStatus);
         return friendItem;
     }
@@ -879,67 +909,206 @@ public class HomePageController {
 
     @FXML
     private void openAddFriendPopup() {
-        System.out.println("✅ openAddFriendPopup() triggered!");
-
         // Apply blur effect
         BoxBlur blur = new BoxBlur(10, 10, 3);
         mainContainer.setEffect(blur);
 
-        VBox popupContent = new VBox(15);
-        popupContent.setAlignment(Pos.CENTER);
-        popupContent.setPrefSize(350, 420);
-        popupContent.setPadding(new Insets(20));
-        popupContent.setStyle(
-                "-fx-background-color: #0d0d0d;" +
+        // Create the modal container
+        VBox modalContent = new VBox(15);
+        modalContent.setAlignment(Pos.CENTER);
+        modalContent.setPrefSize(400, 500);
+        modalContent.setMaxSize(400, 500);
+        modalContent.setPadding(new Insets(25));
+        modalContent.setStyle(
+                "-fx-background-color: rgba(10, 5, 20, 0.95);" +
                         "-fx-background-radius: 15;" +
                         "-fx-border-color: #ff00ff;" +
                         "-fx-border-width: 2;" +
-                        "-fx-border-radius: 15;"
+                        "-fx-border-radius: 15;" +
+                        "-fx-effect: dropshadow(gaussian, rgba(255, 0, 255, 0.5), 30, 0.5, 0, 0);"
         );
 
-        Label title = new Label("SEARCH A PLAYER");
-        title.setStyle("-fx-text-fill: white; -fx-font-size: 20px; -fx-font-family: 'Arial Black';");
+        // Create header with title and close button
+        HBox headerBox = new HBox();
+        headerBox.setAlignment(Pos.CENTER_LEFT);
+        headerBox.setPadding(new Insets(0, 0, 15, 0));
 
+        Label titleLabel = new Label("ADD FRIEND");
+        titleLabel.setStyle(
+                "-fx-text-fill: #00ffff;" +
+                        "-fx-font-size: 20px;" +
+                        "-fx-font-family: 'Orbitron';" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-text-shadow: 0 0 5px #00ffff;"
+        );
+        HBox.setHgrow(titleLabel, Priority.ALWAYS);
+
+        Button closeButton = new Button();
+        closeButton.setGraphic(new Text("✕"));
+        closeButton.setStyle(
+                "-fx-background-color: transparent;" +
+                        "-fx-text-fill: #ff00ff;" +
+                        "-fx-font-size: 20px;" +
+                        "-fx-padding: 0 0 0 10;"
+        );
+        closeButton.setOnAction(e -> closeAddFriendPopup());
+
+        headerBox.getChildren().addAll(titleLabel, closeButton);
+
+        // Create search field
         TextField searchField = new TextField();
-        searchField.setPromptText("Search username...");
-        searchField.setPrefWidth(200);
-        searchField.setStyle("-fx-background-radius: 10; -fx-padding: 5;");
-
-        ListView<Player> friendListView = new ListView<>();
-        friendListView.setPrefHeight(220);
-        friendListView.setStyle(
-                "-fx-control-inner-background: linear-gradient(#2b0057, #4a0077);" +
-                        "-fx-border-color: #7a00cc;" +
-                        "-fx-border-width: 2;" +
+        searchField.setPromptText("Search players...");
+        searchField.setPrefWidth(350);
+        searchField.setStyle(
+                "-fx-background-color: rgba(0, 0, 0, 0.5);" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-family: 'Rajdhani';" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-padding: 10 15;" +
                         "-fx-background-radius: 10;" +
-                        "-fx-font-size: 14px;"
+                        "-fx-border-color: rgba(0, 255, 255, 0.3);" +
+                        "-fx-border-radius: 10;" +
+                        "-fx-border-width: 1;"
         );
 
-        // Custom list cell with checkbox
-        ObservableList<Player> masterList = FXCollections.observableArrayList();
-        ObservableList<Player> filteredList = FXCollections.observableArrayList();
-        Map<Player, CheckBox> checkBoxes = new HashMap<>();
+        // Create search results list
+        ListView<Player> resultsListView = new ListView<>();
+        resultsListView.setPrefHeight(300);
+        resultsListView.setStyle(
+                "-fx-control-inner-background: linear-gradient(#2b0057, #4a0077);" +
+                        "-fx-background-insets: 0;" +
+                        "-fx-background-radius: 10;" +
+                        "-fx-padding: 0;" // Remove inner padding to eliminate inner border
+        );
 
-        friendListView.setCellFactory(lv -> new ListCell<>() {
+        // Apply the custom skin after the ListView is shown
+        resultsListView.skinProperty().addListener((obs, oldSkin, newSkin) -> {
+            if (newSkin != null) {
+                // Wait for the skin to be fully initialized
+                Platform.runLater(() -> {
+                    Node node = resultsListView.lookup(".scroll-bar:vertical");
+                    if (node instanceof ScrollBar) {
+                        ScrollBar scrollBar = (ScrollBar) node;
+                        scrollBar.setStyle(
+                                "-fx-background-color: transparent;" +
+                                        "-fx-background-insets: 0;" +
+                                        "-fx-padding: 0;" +
+                                        "-fx-pref-width: 6px;" + // Narrower scrollbar
+                                        "-fx-min-width: 6px;" +
+                                        "-fx-max-width: 6px;"
+                        );
+
+                        // Style the track
+                        Node track = scrollBar.lookup(".track");
+                        if (track != null) {
+                            track.setStyle(
+                                    "-fx-background-color: transparent;" +
+                                            "-fx-background-insets: 0;" +
+                                            "-fx-padding: 0;"
+                            );
+                        }
+
+                        // Style the thumb
+                        Node thumb = scrollBar.lookup(".thumb");
+                        if (thumb != null) {
+                            thumb.setStyle(
+                                    "-fx-background-color: rgba(255, 0, 255, 0.5);" +
+                                            "-fx-background-insets: 0;" +
+                                            "-fx-background-radius: 3px;" +
+                                            "-fx-padding: 0;"
+                            );
+                        }
+                    }
+                });
+            }
+        });
+
+        // Custom cell factory for the list view
+        resultsListView.setCellFactory(lv -> new ListCell<Player>() {
+            private final HBox cellContainer = new HBox(10);
+            private final Label avatarLabel = new Label();
+            private final Label nameLabel = new Label();
+            private final Region spacer = new Region();
+            private final Button addButton = new Button("+");
+
+            {
+                cellContainer.setAlignment(Pos.CENTER_LEFT);
+                cellContainer.setPadding(new Insets(5, 15, 5, 15)); // Adjusted padding
+
+                avatarLabel.setStyle(
+                        "-fx-background-color: linear-gradient(to bottom, #ff00ff, #00ffff);" +
+                                "-fx-text-fill: black;" +
+                                "-fx-font-family: 'Orbitron';" +
+                                "-fx-font-weight: bold;" +
+                                "-fx-background-radius: 50%;" +
+                                "-fx-min-width: 30px;" +
+                                "-fx-min-height: 30px;" +
+                                "-fx-alignment: center;"
+                );
+
+                nameLabel.setStyle(
+                        "-fx-text-fill: white;" +
+                                "-fx-font-family: 'Rajdhani';" +
+                                "-fx-font-size: 14px;" +
+                                "-fx-font-weight: 500;"
+                );
+
+                HBox.setHgrow(spacer, Priority.ALWAYS);
+
+                addButton.setStyle(
+                        "-fx-background-color: #00ffff;" +
+                                "-fx-text-fill: black;" +
+                                "-fx-font-family: 'Orbitron';" +
+                                "-fx-font-weight: bold;" +
+                                "-fx-background-radius: 5;" +
+                                "-fx-min-width: 30px;" +
+                                "-fx-min-height: 30px;"
+                );
+                addButton.setOnMouseEntered(e -> addButton.setStyle(
+                        "-fx-background-color: #33ffff;" +
+                                "-fx-text-fill: black;" +
+                                "-fx-font-family: 'Orbitron';" +
+                                "-fx-font-weight: bold;" +
+                                "-fx-background-radius: 5;" +
+                                "-fx-min-width: 30px;" +
+                                "-fx-min-height: 30px;" +
+                                "-fx-effect: dropshadow(gaussian, rgba(0, 255, 255, 0.8), 10, 0.5, 0, 0);"
+                ));
+                addButton.setOnMouseExited(e -> addButton.setStyle(
+                        "-fx-background-color: #00ffff;" +
+                                "-fx-text-fill: black;" +
+                                "-fx-font-family: 'Orbitron';" +
+                                "-fx-font-weight: bold;" +
+                                "-fx-background-radius: 5;" +
+                                "-fx-min-width: 30px;" +
+                                "-fx-min-height: 30px;"
+                ));
+
+                cellContainer.getChildren().addAll(avatarLabel, nameLabel, spacer, addButton);
+            }
+
             @Override
             protected void updateItem(Player player, boolean empty) {
                 super.updateItem(player, empty);
                 if (empty || player == null) {
                     setGraphic(null);
                 } else {
-                    CheckBox checkBox = checkBoxes.computeIfAbsent(player, p -> {
-                        CheckBox cb = new CheckBox();
-                        cb.setText(p.getUsername());
-                        cb.setStyle("-fx-text-fill: white;");
-                        cb.setUserData(p);
-                        return cb;
+                    avatarLabel.setText(player.getUsername().substring(0, 1).toUpperCase());
+                    nameLabel.setText(player.getUsername());
+
+                    // Update add button action
+                    addButton.setOnAction(e -> {
+                        sendFriendRequest(player.getUsername());
+                        // Remove the added friend from the list
+                        resultsListView.getItems().remove(player);
                     });
-                    setGraphic(checkBox);
+
+                    setGraphic(cellContainer);
                 }
             }
         });
 
-        // Load potential friends
+        // Load all potential friends (excluding current user and existing friends)
         int currentUserId = LoginController.loginId;
         User currentUser = UserDatabase.getUserById(currentUserId);
         List<Player> potentialFriends = PlayerDatabase.getAllPlayers().stream()
@@ -947,61 +1116,55 @@ public class HomePageController {
                 .filter(p -> !FriendDatabase.areFriends(currentUserId, p.getUserID()))
                 .collect(Collectors.toList());
 
-        masterList.setAll(potentialFriends);
-        filteredList.setAll(masterList);
-        friendListView.setItems(filteredList);
+        ObservableList<Player> searchResults = FXCollections.observableArrayList(potentialFriends);
+        resultsListView.setItems(searchResults);
 
-        // Search filter
+        // Implement search functionality
         searchField.textProperty().addListener((obs, oldVal, newVal) -> {
-            String filter = newVal.trim().toLowerCase();
-            filteredList.setAll(masterList.stream()
-                    .filter(p -> p.getUsername().toLowerCase().contains(filter))
-                    .collect(Collectors.toList()));
-        });
-
-        // Buttons
-        Button confirmBtn = new Button("Confirm");
-        confirmBtn.setStyle("-fx-background-color: #4a90e2; -fx-text-fill: white; -fx-background-radius: 10;");
-
-        Button cancelBtn = new Button("Cancel");
-        cancelBtn.setStyle("-fx-background-color: #ff4444; -fx-text-fill: white; -fx-background-radius: 10;");
-
-        confirmBtn.setOnAction(e -> {
-            List<Player> selected = checkBoxes.entrySet().stream()
-                    .filter(entry -> entry.getValue().isSelected())
-                    .map(Map.Entry::getKey)
-                    .toList();
-
-            for (Player p : selected) {
-                sendFriendRequest(p.getUsername());
+            if (newVal == null || newVal.isEmpty()) {
+                resultsListView.setItems(searchResults);
+            } else {
+                String query = newVal.toLowerCase();
+                List<Player> filtered = potentialFriends.stream()
+                        .filter(p -> p.getUsername().toLowerCase().contains(query))
+                        .collect(Collectors.toList());
+                resultsListView.setItems(FXCollections.observableArrayList(filtered));
             }
-
-            closePopup();
-            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "Home.css");
         });
 
-        cancelBtn.setOnAction(e -> closePopup());
+        // Add all components to the modal
+        modalContent.getChildren().addAll(headerBox, searchField, resultsListView);
 
-        HBox buttonRow = new HBox(20, confirmBtn, cancelBtn);
-        buttonRow.setAlignment(Pos.CENTER);
-
-        popupContent.getChildren().addAll(title, searchField, friendListView, buttonRow);
-
-        addFriendPopupContainer.getChildren().setAll(popupContent);
+        // Add the modal to the overlay container
+        addFriendPopupContainer.getChildren().setAll(modalContent);
         addFriendOverlay.setVisible(true);
         addFriendOverlay.setManaged(true);
-        mainContainer.setEffect(blur);
+
+        // Add animation for the modal appearance
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(300), addFriendOverlay);
+        fadeIn.setFromValue(0);
+        fadeIn.setToValue(1);
+
+        TranslateTransition slideIn = new TranslateTransition(Duration.millis(300), modalContent);
+        slideIn.setFromY(20);
+        slideIn.setToY(0);
+
+        ParallelTransition openTransition = new ParallelTransition(fadeIn, slideIn);
+        openTransition.play();
     }
 
-    // Helper to clear popup and blur
-    private void closePopup() {
-        addFriendPopupContainer.getChildren().clear();
-        addFriendOverlay.setVisible(false);
-        addFriendOverlay.setManaged(false);
-        mainContainer.setEffect(null); // remove blur
+    private void closeAddFriendPopup() {
+        FadeTransition fadeOut = new FadeTransition(Duration.millis(200), addFriendOverlay);
+        fadeOut.setFromValue(1);
+        fadeOut.setToValue(0);
+        fadeOut.setOnFinished(e -> {
+            addFriendPopupContainer.getChildren().clear();
+            addFriendOverlay.setVisible(false);
+            addFriendOverlay.setManaged(false);
+            mainContainer.setEffect(null);
+        });
+        fadeOut.play();
     }
-
-
     private void confirmRemoveFriend(String friendUsername, Runnable postRemovalAction) {
         Popup popup = new Popup();
         VBox popupContent = new VBox(15);

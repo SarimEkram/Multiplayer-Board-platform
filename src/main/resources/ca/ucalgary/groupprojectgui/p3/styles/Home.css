@@ -552,11 +552,11 @@
     /*-fx-padding: 30 30 30 30;*/
 }
 
-/*.tab:selected {*/
-/*    -fx-background-color: rgba(255, 0, 255, 0.3);*/
-/*    -fx-border-color: rgba(255, 0, 255, 0.5);*/
-/*    -fx-effect: dropshadow(gaussian, rgba(255, 0, 255, 0.5), 10, 0.5, 0, 2);*/
-/*}*/
+.tab:selected {
+    -fx-background-color: rgba(255, 0, 255, 0.3);
+    -fx-border-color: rgba(255, 0, 255, 0.5);
+    -fx-effect: dropshadow(gaussian, rgba(255, 0, 255, 0.5), 10, 0.5, 0, 2);
+}
 
 .tab .tab-label {
     -fx-text-fill: #00ffff;
@@ -570,14 +570,14 @@
 }
 
 /*!* Tab content area *!*/
-/*.tab-pane .tab-content-area {*/
+.tab-pane .tab-content-area {
 /*    -fx-background-color: rgba(10, 5, 20, 0.7);*/
 /*    -fx-border-color: rgba(255, 0, 255, 0.3);*/
 /*    -fx-border-width: 0 1 1 1;*/
 /*    -fx-border-radius: 0 0 5 5;*/
 
-/*    -fx-padding: 15;*/
-/*}*/
+    -fx-padding: 15;
+}
 
 /* Focus indicator (remove default) */
 .tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
@@ -617,4 +617,36 @@
 /* Tab content area */
 .tab-content-area {
     -fx-padding: 15;
+}
+
+
+/*// Add this to your initialization or CSS file*/
+.playersContainer {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-spacing: 0;
+}
+
+/*// For the scroll pane*/
+   .scroll-pane {
+       -fx-background: transparent;
+       -fx-background-color: transparent;
+   }
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-pref-width: 6px;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: rgba(255, 0, 255, 0.5);
+    -fx-background-radius: 3px;
+}
+
+.scroll-bar:vertical .track {
+    -fx-background-color: transparent;
 }
