@@ -52,6 +52,7 @@ public class HomePageController {
     public StackPane logoutOverlay;
     public StackPane addFriendOverlay;
     public VBox addFriendPopupContainer;
+    public Button selfStatsButton;
     @FXML
     private VBox playersContainer;
     // Fields for game/home page
@@ -93,9 +94,6 @@ public class HomePageController {
     @FXML
     private BorderPane homePane;
 
-    @FXML
-    private Pane logoutPane; // the popup pane for logout
-
     // Fields for Friend Requests functionality
     @FXML
     private TextField searchField;
@@ -106,12 +104,14 @@ public class HomePageController {
 
     private String currentGameName;
 
+    private int playerId;
+
     @FXML
     public void initialize() {
         friendOpponentID = -1; // no friend is selected as opponent
 
         // Initialize Home Page components
-        int playerId = LoginController.loginId;
+        playerId = LoginController.loginId;
         // Optionally, set welcome text if you have a username available
         // String playerName = UserDatabase.getUserById(playerId).getUsername();
         // welcomeLabel.setText("Welcome, " + playerName + "!");
@@ -705,7 +705,6 @@ public class HomePageController {
 
 // Within showFriendProfilePopup(), after creating the modal and overlay:
         final StackPane finalOverlay = overlay;  // Capture overlay for the lambda
-
 // Create the extra button in the popup
         Button extraButton = new Button("REMOVE FRIEND");
         extraButton.setStyle("-fx-background-color: #00ccff;" +
@@ -721,12 +720,17 @@ public class HomePageController {
                 mainContainer.setEffect(null);
             });
         });
+        HBox buttonContainer = new HBox(closeButton);
+        if (username.equals(PlayerDatabase.getPlayerByUserID(playerId).getUsername())) {
+            extraButton.setVisible(false);
+
+            buttonContainer.setAlignment(Pos.CENTER);
+        }else {
+            buttonContainer = new HBox(10, extraButton, closeButton);
+            buttonContainer.setAlignment(Pos.CENTER);
+        }
 
 
-
-// Instead of adding just the closeButton, create an HBox that holds both buttons
-        HBox buttonContainer = new HBox(10, extraButton, closeButton);
-        buttonContainer.setAlignment(Pos.CENTER);
 
 // Create a spacer region for separation (if needed)
         Region spacer = new Region();
@@ -1050,8 +1054,10 @@ public class HomePageController {
     }
 
 
-
-
+    public void showStatsOverlay(ActionEvent event) {
+        String selfUsername = PlayerDatabase.getPlayerByUserID(LoginController.loginId).getUsername();
+        showFriendProfilePopup(selfUsername);
+    }
 }
 
 

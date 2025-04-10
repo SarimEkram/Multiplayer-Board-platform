@@ -47,6 +47,12 @@
                         <!-- Spacer -->
                         <Region HBox.hgrow="ALWAYS"/>
 
+                        <Button fx:id="selfStatsButton"
+                                text="🎖️STATS"
+                                onAction="#showStatsOverlay"
+                                styleClass="logout-button"
+                                prefWidth="120"
+                                prefHeight="40"/>
                         <!-- Profile Icon -->
                         <ImageView fx:id="profileIcon"
                                    fitHeight="45" fitWidth="45"
@@ -97,8 +103,8 @@
                     </VBox>
                 </center>
                 <bottom>
-                    <!-- LEFT: SIDEBAR PANEL -->
-                    <HBox fx:id="sidebar"
+
+                    <HBox fx:id="bottomBar"
                           alignment="TOP_CENTER"
                           spacing="20"
                           prefWidth="100"
@@ -128,7 +134,6 @@
                             <Label text="C" styleClass="friend-initial"/>
                             <Label text="CyberWarrior" styleClass="friend-name"/>
                             <Region HBox.hgrow="ALWAYS"/>
-                            <Button text="✖" styleClass="remove-button" onAction="#handleRemoveFriend"/>
                         </HBox>
                     </VBox>
 
