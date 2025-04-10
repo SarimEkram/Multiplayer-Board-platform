@@ -168,6 +168,6 @@ public class LeaderboardController {
 
     @FXML
     public void handleBack() {
-        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "home.css");
+        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml");
     }
 }
