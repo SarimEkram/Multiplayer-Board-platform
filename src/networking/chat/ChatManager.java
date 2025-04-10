@@ -73,13 +73,11 @@ public class ChatManager {
      */
     public void addMessage(String playerId, String message) {
         if (message == null || message.trim().isEmpty()) {
-            //System.out.println("Message cannot be empty!");
             return;
         }
 
         // Check for bad words
         if (containsBadword(message)) {
-            //System.out.println("Warning: Message contains inappropriate content!");
             return;
         }
 
@@ -122,6 +120,6 @@ public class ChatManager {
      */
     public void clearChatHistory() {
         chatHistory.clear();
-        //System.out.println("Chat history has been cleared.");
+
     }
 }
