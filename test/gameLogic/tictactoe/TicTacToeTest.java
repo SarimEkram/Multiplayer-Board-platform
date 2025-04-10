@@ -12,11 +12,12 @@ public class TicTacToeTest {
 
     @BeforeEach
     public void setUp() {
-        board = new TicTacToeBoard();
+        board = new TicTacToeBoard(); // creates a 3X3 board
         game = new TicTacToe(board);
         board.createBoard();
     }
 
+    // This test ensures that the start of the game the grid is empty.
     @Test
     public void testStartEmptyBoard() {
         game.start();
@@ -27,6 +28,7 @@ public class TicTacToeTest {
         }
     }
 
+    // Checks that calling the changeActivePlayer function will successfully switch the current player.
     @Test
     public void testChangeActivePlayer() {
         char initialPlayer = game.getActivePlayer();
@@ -35,12 +37,14 @@ public class TicTacToeTest {
         assertNotEquals(initialPlayer, newPlayer);
     }
 
+    // Checks that whilst choosing the forfeit option, the opponent is declared as the winner.
     @Test
     public void testForfeit() {
         assertEquals('X', game.forfeitGame('O'));
         assertEquals('O', game.forfeitGame('X'));
     }
 
+    // Winning condition
     @Test
     public void testGameOverPlayerWins() {
         board.placePiece(0, 0, 'X');
@@ -49,12 +53,14 @@ public class TicTacToeTest {
         assertTrue(game.isGameOver());
     }
 
+    // Checks for a full board situation
     @Test
     public void testGameOverFullBoard() {
         fillBoardWithoutWin();
         assertTrue(game.isGameOver());
     }
 
+    // Checks for a draw - board is full and no one has won so the game should end.
     private void fillBoardWithoutWin() {
         char[][] pattern = {
                 {'X', 'O', 'X'},
