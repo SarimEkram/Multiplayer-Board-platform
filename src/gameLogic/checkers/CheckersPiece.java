@@ -21,7 +21,7 @@ public class CheckersPiece {
 
     public void setHasAnimatedKing(boolean hasAnimatedKing) {
         this.hasAnimatedKing = hasAnimatedKing;
-    }
+    }       // Set the animation state for becoming king
 
     public boolean hasAnimatedKing ;
     private final Colour colour;

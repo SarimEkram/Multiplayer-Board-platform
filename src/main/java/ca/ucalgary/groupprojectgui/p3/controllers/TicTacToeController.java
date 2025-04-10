@@ -58,10 +58,10 @@ public class TicTacToeController {
     public Button leaveGame;
 
     @FXML
-    private StackPane boardContainer;
+    public StackPane boardContainer;
 
     @FXML
-    private Label turnLabel;
+    public Label turnLabel;
 
     @FXML
     private TextArea chatArea;
@@ -70,31 +70,31 @@ public class TicTacToeController {
     private TextField chatInput;
 
     @FXML
-    private Label localPlayerLabel;
+    public Label localPlayerLabel;
     @FXML
-    private Label opponentLabel;
-    private GameProcessor gameProcessor;
+    public Label opponentLabel;
+    public GameProcessor gameProcessor;
 
-    private TicTacToeBoard logicBoard;
-    private TicTacToe gameLogic;
+    public TicTacToeBoard logicBoard;
+    public TicTacToe gameLogic;
 
     private GridPane grid;
-    private char currentPlayer;
+    public char currentPlayer;
 
     // Track the current player. True = Player X, False = Player O.
-    private boolean playerXTurn = true;
+    public boolean playerXTurn = true;
 
     //Prevents further interaction after game ends
     private boolean gameOver = false;
     private TicTacToeMatchmaking matchmaking;
-    private Player localPlayer;
+    public Player localPlayer;
     private int player1Id;       // Local player's ID (from matchmaking)
     private int opponentId;      // Opponent's player ID
-    private Player opponentPlayer;
-    private final GameType gameType = GameType.TIC_TAC_TOE;
+    public Player opponentPlayer;
+    public final GameType gameType = GameType.TIC_TAC_TOE;
     private Timeline timeline;
     private int secondsElapsed = 0;
-    private GridPane tttgrid;
+    public GridPane tttgrid;
     private int messageCount = 0;
 
     //Chat session
@@ -102,7 +102,7 @@ public class TicTacToeController {
 
     //Turn timer
     private TurnTimer timerX;
-    private TurnTimer timerO;
+    public TurnTimer timerO;
     private Timeline turnCheckTimeline;
     private boolean warningSentX = false;
     private boolean warningSentO = false;
@@ -116,7 +116,6 @@ public class TicTacToeController {
     public void initialize() {
 
         setupHeaderWithSpacing();
-        initializeChat();
 
         // Draw board
         createBoard();
@@ -143,8 +142,8 @@ public class TicTacToeController {
                 opponentPlayer = matchmaking.findOpponent(localPlayer.getUserID());
 
             } catch (IOException e) {
-                // This needs to be implemented
-                // addMessage("SYSTEM", "Matchmaking error: " + e.getMessage(), true);
+                // uncommented addMessage as its implemented now
+                 addMessage("SYSTEM", "Matchmaking error: " + e.getMessage(), true);
             }
         } else {
             localPlayer = PlayerDatabase.getPlayerByUserID(LoginController.loginId);
@@ -156,6 +155,7 @@ public class TicTacToeController {
         logicBoard = new TicTacToeBoard();
         gameLogic = new TicTacToe(logicBoard);
         gameLogic.start();
+        // create a new game processor class to update result
         gameProcessor = new GameProcessor(localPlayer, opponentPlayer, gameType);
         currentPlayer = 'X';
         turnLabel.setText("X: " + localPlayer.getUsername() + "'s Turn");
@@ -183,7 +183,7 @@ public class TicTacToeController {
     /**
      * Create a 3x3 Tic Tac Toe grid and add it to the boardContainer.
      */
-    private void createBoard() {
+    public void createBoard() {
         tttgrid = new GridPane();
         tttgrid.setHgap(10);
         tttgrid.setVgap(10);
@@ -218,7 +218,7 @@ public class TicTacToeController {
      */
 
 
-    private void handleCellClick(int row, int col, StackPane cell) {
+    public void handleCellClick(int row, int col, StackPane cell) {
         //  Ignore if the game is over or cell is already filled
         if (gameOver || !cell.getChildren().isEmpty() || !logicBoard.isCellEmpty(row, col)) return;
 
@@ -244,12 +244,14 @@ public class TicTacToeController {
                 showGameOverPopup(localPlayer.getUsername(), true);
                 gameOver = true;
                 stopTimer();
+                // updates the result, local player wins
                 gameProcessor.UpdateResults(localPlayer, opponentPlayer, gameType);
                 return;
             } else {
                 showGameOverPopup(opponentPlayer.getUsername(), true);
                 gameOver = true;
                 stopTimer();
+                // updates the result, opponent player wins
                 gameProcessor.UpdateResults(opponentPlayer, localPlayer, gameType);
                 return;
             }
@@ -318,7 +320,7 @@ public class TicTacToeController {
         mainMenuButton.getStyleClass().add("popup-button");
         mainMenuButton.setOnAction(e -> {
             ((Pane) boardContainer.getParent()).getChildren().remove(overlay);
-            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "Home.css");
+            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/views/homePage.fxml");
         });
 
         popup.getChildren().addAll(title, message, mainMenuButton);
@@ -344,7 +346,7 @@ public class TicTacToeController {
         yesButton.getStyleClass().add("popup-button");
         yesButton.setOnAction(e -> {
             boardContainer.getChildren().remove(overlay);
-            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "home.css");
+            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/views/homePage.fxml");
         });
         Button cancelButton = new Button("Cancel");
         cancelButton.getStyleClass().add("popup-button");
@@ -558,18 +560,19 @@ public class TicTacToeController {
                     // Player X's time expired, Player O wins
 //                    scorePlayerO++; // Increment score for Player O
 //                    score2.setText("Score: " + scorePlayerO); // Update UI for Player O's score
+                    // updates the result, opponent player wins
                     gameProcessor.UpdateResults(opponentPlayer, localPlayer, gameType);
                 } else {
                     //
                     // Player O's time expired, Player X wins
 //                    scorePlayerX++; // Increment score for Player X
 //                    score1.setText("Score: " + scorePlayerX); // Update UI for Player X's score
+                    // updates the result, local player wins
                     gameProcessor.UpdateResults(localPlayer, opponentPlayer, gameType);
                 }
                 addMessage("SYSTEM", loser + " ⏰ Time's up! " + winner + " wins!", true);
                 showGameOverPopup(winner, true);
                 gameOver = true;
-                boardContainer.setDisable(true);
                 stopTimer();
                 stopTurnTimer();
             }

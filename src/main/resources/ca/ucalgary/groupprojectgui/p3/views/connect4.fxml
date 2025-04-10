@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane fx:id="root" maxHeight="-1" maxWidth="-1" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.Connect4Controller"
+
+stylesheets="@../styles/connect4.css">
+
+    <children>
+        <!-- BACKGROUND LAYERS -->
+        <Region fx:id="backgroundLayer" maxHeight="-1" maxWidth="-1" />
+        <Region fx:id="glowLayer" maxHeight="-1" maxWidth="-1" mouseTransparent="true" />
+        <Region fx:id="scanlinesLayer" maxHeight="-1" maxWidth="-1" mouseTransparent="true" />
+
+        <!-- MAIN CONTAINER: Using a BorderPane as mainGamePane -->
+        <BorderPane fx:id="mainGamePane" maxHeight="-1" maxWidth="-1">
+
+            <center>
+                <HBox fx:id="container" alignment="CENTER" maxHeight="-1" maxWidth="-1" spacing="10">
+                    <children>
+                        <!-- GAME AREA -->
+                        <VBox fx:id="gameArea" alignment="TOP_CENTER" maxHeight="-1" maxWidth="-1" spacing="15" HBox.hgrow="ALWAYS">
+                            <children>
+                                <!-- Game Title -->
+                                <Label fx:id="gameTitle" text="GAME NAME" />
+                                <!-- Player Info -->
+                                <HBox fx:id="playerInfo" alignment="CENTER" spacing="20">
+                                    <children>
+                                        <!-- Left player container -->
+                                        <VBox fx:id="player1DiscContainer" alignment="CENTER" spacing="5" HBox.hgrow="ALWAYS">
+                                            <children>
+                                                <Label fx:id="avatar1" text="P1" />
+                                                <Label fx:id="name1" styleClass="player-name" text="ALLIGATOR" />
+                                                <Label fx:id="score1" text="Score: 0" />
+                                            </children>
+                                        </VBox>
+
+                                        <!-- Optional: a central vs badge -->
+                                        <Label fx:id="vsBadge" styleClass="vs-badge" text="VS" />
+
+                                        <!-- Right player container -->
+                                        <VBox fx:id="player2DiscContainer" alignment="CENTER" spacing="5" HBox.hgrow="ALWAYS">
+                                            <children>
+                                                <Label fx:id="avatar2" text="P2" />
+                                                <Label fx:id="name2" styleClass="player-name" text="CHAMELEON" />
+                                                <Label fx:id="score2" text="Score: 0" />
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </HBox>
+                                <!-- Row for time and moves placed just above the board -->
+                                <HBox alignment="CENTER" spacing="20">
+                                    <children>
+                                        <Label fx:id="timeElapsed" text="TIME: 00:00" styleClass="time-label"/>
+                                        <Region HBox.hgrow="ALWAYS" />
+                                        <Label fx:id="movesCount" text="MOVES: 0" styleClass="moves-label"/>
+                                    </children>
+                                </HBox>
+
+                                <!-- Board Container -->
+                                <StackPane fx:id="boardContainer" style="-fx-alignment: center;" VBox.vgrow="ALWAYS">
+                                    <children>
+                                        <!-- Connect 4 Board Grid -->
+                                        <GridPane fx:id="connect4Grid" alignment="CENTER" hgap="5" vgap="5">
+                                            <padding>
+                                                <Insets bottom="25" left="25" right="25" top="25" />
+                                            </padding>
+                                        </GridPane>
+                                        <!-- Column selection indicators -->
+                                        <HBox fx:id="columnSelectors" alignment="CENTER" mouseTransparent="true" spacing="5">
+                                            <padding>
+                                                <Insets bottom="10" />
+                                            </padding>
+                                        </HBox>
+                                    </children>
+                                </StackPane>
+                                <!-- Game Controls -->
+                                <HBox fx:id="gameControls" alignment="CENTER" spacing="20">
+                                    <children>
+                                        <Button fx:id="leaveGameBtn" text="Leave Game" /> <!-- New Leave Game button -->
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+
+
+
+                        <!-- CHAT SIDEBAR -->
+                        <VBox fx:id="chatSidebar" maxHeight="-1" maxWidth="400" minWidth="250" prefWidth="350" spacing="15">
+                            <children>
+                                <!-- Chat Header -->
+                                <Label fx:id="chatHeader" alignment="CENTER" maxWidth="Infinity" style="-fx-font-size: 18px; -fx-font-weight: bold;" text="NEON NETWORK">
+                                    <padding>
+                                        <Insets bottom="10" />
+                                    </padding>
+                                </Label>
+                                <!-- Chat Messages inside a ScrollPane -->
+                                <ScrollPane fx:id="chatScrollPane" fitToWidth="true" prefHeight="300" style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;" VBox.vgrow="ALWAYS">
+                                    <content>
+                                        <VBox fx:id="chatMessages" spacing="8" style="-fx-background-color: rgba(0, 0, 0, 0.3); -fx-padding: 15; -fx-font-size: 16px; -fx-border-radius: 5; -fx-border-color: rgba(255, 0, 255, 0.2); -fx-background-radius: 5; -fx-effect: innershadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0, 0, 0);" />
+                                    </content>
+                                </ScrollPane>
+                                <!-- Chat Input Area -->
+                                <HBox fx:id="chatInputArea" alignment="CENTER" spacing="10">
+                                    <children>
+                                        <TextField fx:id="chatInput" onAction="#onSendMessage" promptText="Type message..." HBox.hgrow="ALWAYS" />
+                                        <Button fx:id="sendBtn" onAction="#onSendMessage" text="SEND" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+            </center>
+        </BorderPane>
+
+        <!-- CORNER ACCENTS -->
+        <Pane fx:id="cornersPane" maxHeight="-1" maxWidth="-1" mouseTransparent="true" prefHeight="421.0" prefWidth="674.0">
+            <children>
+                <Region fx:id="topLeft" />
+                <Region fx:id="topRight" />
+                <Region fx:id="bottomLeft" />
+                <Region fx:id="bottomRight" />
+            </children>
+         <stylesheets>
+            <URL value="@../styles/connect4.css" />
+            <URL value="@../styles/connect4.css" />
+         </stylesheets>
+        </Pane>
+    </children>
+</StackPane>

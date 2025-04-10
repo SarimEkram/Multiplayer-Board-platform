@@ -6,9 +6,19 @@ import java.util.*;
 import java.time.LocalDateTime;
 import java.util.Base64;
 
+/**
+ * This class handles password reset logic including token generation,
+ * password validation, and secure update of user credentials.
+ */
 public class ResetUserPassword {
     private static final Map<String, ResetTokenData> tokenStore = new HashMap<>();
 
+    /**
+     * Initiates a password reset request by generating a token.
+     *
+     * @param email The email of the user requesting password reset.
+     * @return The reset token (to be emailed in real systems), or null if user not found.
+     */
     public String resetRequest(String email) {
         User user = UserDatabase.getUserByEmail(email);
         if (user == null) return null;
@@ -21,6 +31,13 @@ public class ResetUserPassword {
         return token;
     }
 
+    /**
+     * Resets the user's password using the provided valid token.
+     *
+     * @param token The reset token issued to the user.
+     * @param newPassword The new password to be set.
+     * @return true if password reset is successful, false otherwise.
+     */
     public boolean resetPassword(String token, String newPassword) {
         ResetTokenData data = tokenStore.get(token);
         if (data == null || data.isExpired()) {
@@ -57,6 +74,12 @@ public class ResetUserPassword {
         return storedHash != null && storedHash.equals(inputHash);
     }
 
+    /**
+     * Hashes a password using SHA-256 and Base64 encoding.
+     *
+     * @param password The plain text password.
+     * @return The hashed password in Base64 format.
+     */
     private String hashPassword(String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");

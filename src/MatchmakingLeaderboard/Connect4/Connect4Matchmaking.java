@@ -132,7 +132,7 @@ public class Connect4Matchmaking extends AbstractConnect4Matchmaking{
      */
     @Override
     public boolean checkPlayers(Player player1, Player player2) {
-        if ((player1.getRank(GameType.CONNECT_FOUR).getCurrentTier() == player2.getRank(GameType.CONNECT_FOUR).getCurrentTier()) && (player1.getGameSignal(GameType.CONNECT_FOUR) == player2.getGameSignal(GameType.CONNECT_FOUR))&&(player1.getUserID()!= player2.getUserID())){
+        if ((player1.rankForPlayer(GameType.CONNECT_FOUR) == player2.rankForPlayer(GameType.CONNECT_FOUR)) && (player1.getGameSignal(GameType.CONNECT_FOUR) == player2.getGameSignal(GameType.CONNECT_FOUR))&&(player1.getUserID()!= player2.getUserID())){
             return Math.abs((player1.getLevel() - player2.getLevel())) <= 10;
         }
         return false;

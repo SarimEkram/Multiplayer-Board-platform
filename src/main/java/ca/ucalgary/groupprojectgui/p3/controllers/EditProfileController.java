@@ -163,7 +163,7 @@ public class EditProfileController {
             node.setVisible(true);
             node.setManaged(true);
         }
-        }
+    }
     /**
      * Handles the Save Changes button action.
      * Validates input and attempts to update the user's profile.
@@ -240,6 +240,6 @@ public class EditProfileController {
      */
     @FXML
     private void handleBack() {
-        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/ManageProfile.fxml", "Manage Profile", "manage_profile.css");
+        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/views/manageProfile.fxml");
     }
 }

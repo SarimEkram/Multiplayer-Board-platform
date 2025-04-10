@@ -6,9 +6,7 @@ import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.layout.Pane;
 import javafx.util.Duration;
-import javafx.scene.Node;
 
 public class LogoutPanelController {
 
@@ -54,12 +52,12 @@ public class LogoutPanelController {
     private void cancelLogout() {
         // Instead of removing the node from its parent, just set it invisible.
         logoutPanel.setVisible(false);
-        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "Home.css");
+        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/views/homePage.fxml");
 
     }
 
     @FXML
     private void confirmLogout() {
-        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/login.fxml", "Login Page", "login.css");
+        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/views/login.fxml");
     }
 }

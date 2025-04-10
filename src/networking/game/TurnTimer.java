@@ -30,7 +30,6 @@ public class TurnTimer {
     public void startTimer() {
         this.startTime = System.currentTimeMillis();
         this.isPaused = false;
-        System.out.println("Turn timer started for player: " + playerId);
     }
 
 
@@ -39,7 +38,6 @@ public class TurnTimer {
      */
     public void resetTimer() {
         this.remainingTime = turnDuration * 1000L;
-        System.out.println("Timer reset for player: " + playerId);
     }
 
     /**

@@ -5,20 +5,21 @@ package gameLogic.checkers;
  */
 public class CheckersBoard {
     
-    public final CheckersPiece[][] board;
+    public final CheckersPiece[][] board;       // 8x8 board of Checkers pieces
 
     /**
      * Constructs a new CheckersBoard with an 8x8 grid.
      */
     public CheckersBoard() {
         this.board = new CheckersPiece[8][8];
-    }
+    }       // Initialize an empty 8x8 board
 
     /**
      * Places all the checkers pieces on the board in their initial positions.
      */
     public void placeAllPieces() {
-        this.clearBoard();
+        this.clearBoard();                  // Clear any existing pieces before setting up
+        // Place black pieces (top 3 rows)
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 8; j++) {
                 if ((i + j) % 2 == 1) {
@@ -26,7 +27,7 @@ public class CheckersBoard {
                 }
             }
         }
-        // Place red pieces (bottom 3 rows)
+        // Place white pieces (bottom 3 rows)
         for (int i = 5; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if ((i + j) % 2 == 1) {
@@ -40,9 +41,10 @@ public class CheckersBoard {
      * Clears the board by removing all checkers pieces.
      */
     public void clearBoard() {
+        // Iterate through each board cell
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                this.board[i][j] = null;
+                this.board[i][j] = null;        // Set each cell to null
             }
         }
     }
@@ -55,5 +57,5 @@ public class CheckersBoard {
      */
     public void removePiece(int row, int col) {
         this.board[row][col] = null;
-    }
+    }       // Remove piece at specified location
 }

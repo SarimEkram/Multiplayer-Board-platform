@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.geometry.Pos?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.ManageProfileController"
+           prefWidth="1200" prefHeight="800"
+           styleClass="root"
+           stylesheets="@../styles/manage-profile.css">
+
+    <!-- Background layers: identical to Login scene -->
+    <Pane fx:id="gridBackground" prefWidth="1200" prefHeight="800">
+        <!-- A Canvas for the grid will be set up in your controller -->
+        <Canvas fx:id="gridCanvas" width="1200" height="800"/>
+    </Pane>
+    <Pane fx:id="cyberGlow" prefWidth="1200" prefHeight="800">
+        <!-- A Rectangle for the pulsing glow will be set up in your controller -->
+        <Rectangle fx:id="glowRect" width="1200" height="800"/>
+    </Pane>
+
+    <!-- Centered neon glowing box (same design as Login box) -->
+    <VBox fx:id="profileBox" alignment="CENTER" spacing="30"
+          styleClass="login-box"
+          maxWidth="400" maxHeight="550">
+
+        <!-- Title (uses same style as in Login) -->
+        <Label text="Manage Profile"
+               styleClass="section-title"
+               alignment="CENTER"/>
+
+        <!-- Instead of login fields, these are our profile option buttons -->
+        <VBox spacing="20" alignment="CENTER">
+            <Button text="Edit Profile"
+                    onAction="#handleEditProfileButtonClick"
+                    styleClass="neon-outline-button"
+                    prefWidth="300" prefHeight="50"/>
+
+            <Button text="Change Password"
+                    onAction="#handleChangePasswordButtonClick"
+                    styleClass="neon-outline-button"
+                    prefWidth="300" prefHeight="50"/>
+
+            <Button text="Delete Profile"
+                    onAction="#handleDeleteProfile"
+                    styleClass="danger-outline-button"
+                    prefWidth="300" prefHeight="50"/>
+        </VBox>
+
+        <!-- Back Button (consistent with Login back button style) -->
+        <Button text="← Back"
+                onAction="#handleBackButtonClick"
+                styleClass="neon-outline-button"
+                prefWidth="140" prefHeight="40"/>
+    </VBox>
+</StackPane>

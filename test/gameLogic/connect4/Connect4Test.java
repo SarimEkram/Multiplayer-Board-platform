@@ -30,6 +30,23 @@ public class Connect4Test {
     }
 
     @Test
+    public void testPlayOnFullColumn() {
+        // Fill up column 0 completely (6 rows high)
+        board.playPiece(0); // P1
+        board.playPiece(0); // P2
+        board.playPiece(0); // P1
+        board.playPiece(0); // P2
+        board.playPiece(0); // P1
+        board.playPiece(0); // P2
+
+        // Try to play a piece again in column 0 which is now full
+        int result = Connect4.play(board.getBoard(), 0, player1);
+
+        // The method should return -2, showing the column is full
+        assertEquals(-2, result);
+    }
+
+    @Test
     public void testHorizontalWin() {
         board.playPiece(0); // P1
         board.playPiece(0); // P2
@@ -168,4 +185,13 @@ public class Connect4Test {
         assertFalse(board.isGameOver());
     }
 
+    @Test
+    public void testPlayOutOfBounds() {
+        // Expects an exception when trying to play in an invalid column
+        // Right bound test (index 7)
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> Connect4.play(board.getBoard(), 7, player1));
+
+        // Left bound test (index -1)
+        assertThrows(ArrayIndexOutOfBoundsException.class, () -> Connect4.play(board.getBoard(), -1, player1));
+    }
 }
