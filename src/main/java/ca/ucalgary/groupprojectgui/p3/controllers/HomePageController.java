@@ -1,9 +1,12 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
 
 import Authentication.*;
+import MatchmakingLeaderboard.GameType;
 import MatchmakingLeaderboard.Player;
 import MatchmakingLeaderboard.PlayerDatabase;
+import MatchmakingLeaderboard.RankTier;
 import javafx.animation.FadeTransition;
+import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
@@ -11,6 +14,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.effect.DropShadow;
@@ -20,7 +24,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import ca.ucalgary.groupprojectgui.p3.SceneManager;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Popup;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.util.List;
@@ -530,139 +539,325 @@ public class HomePageController {
     }
 
 
-    private void showFriendProfilePopup(String username) {
-        // Sample data lookup
-        String email = username.toLowerCase() + "@example.com";
-        int level = 20;
 
-        // Apply blur to the main container
+    private void showFriendProfilePopup(String username) {
+        // Retrieve friend data
+        Player player = PlayerDatabase.getPlayerByUsername(username);
+        User friend = UserDatabase.getUserById(player.getUserID());
+        if (friend == null) {
+            System.err.println("Friend not found for username: " + username);
+            return;
+        }
+        int friendId = friend.getUserID();
+        String email = friend.getEmail();
+        int level = friend.getLevel();
+        String onlineStatus = friend.isOnline() ? "Online" : "Offline";
+
+        Scene scene = mainContainer.getScene();
+        if (scene == null) {
+            System.err.println("mainContainer is not attached to a scene!");
+            return;
+        }
         BoxBlur blur = new BoxBlur(10, 10, 3);
         mainContainer.setEffect(blur);
+        StackPane rootPane = (StackPane) scene.getRoot();
 
-        StackPane rootPane = (StackPane) mainContainer.getScene().getRoot();
-
-        // Create overlay for dimming background
         StackPane overlay = new StackPane();
-        overlay.setStyle("-fx-background-color: rgba(0,0,0,0.7);");
+        overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.7);");
         overlay.prefWidthProperty().bind(rootPane.widthProperty());
         overlay.prefHeightProperty().bind(rootPane.heightProperty());
 
-        // Create modal that is centered in the overlay
-        VBox modal = new VBox(20);
+        // Create modal container with adjusted width (480px)
+        VBox modal = new VBox(18); // Slightly increased spacing from 15 to 18
         modal.setAlignment(Pos.CENTER);
-        modal.setPadding(new Insets(20));
-
-// BINDING FOR RESPONSIVENESS
-        // For example, let the modal be 50% of the parent’s width, 40% of the parent’s height
-        modal.prefWidthProperty().bind(rootPane.widthProperty().multiply(0.5));
-        modal.prefHeightProperty().bind(rootPane.heightProperty().multiply(0.4));
-
-        // Ensure it doesn't go too small or too big
-        modal.setMinWidth(300);
-        modal.setMinHeight(200);
-        modal.setMaxWidth(800);
-        modal.setMaxHeight(600);
-
+        modal.setPadding(new Insets(25)); // Increased padding from 20 to 25
+        modal.setPrefWidth(480);
+        modal.setMaxWidth(480);
+        modal.setPrefHeight(550);
+        modal.setMaxHeight(550);
         modal.setStyle(
-                "-fx-background-color: #0d0d0d;" +
-                        "-fx-background-radius: 15;" +
-                        "-fx-border-color: #ff00ff;" +
-                        "-fx-border-width: 2px;"
+                "-fx-background-color: rgba(10, 5, 20, 0.95);" +
+                        "-fx-background-radius: 10;" +
+                        "-fx-border-color: rgba(255, 0, 255, 0.5);" +
+                        "-fx-border-width: 1;"
         );
+        DropShadow neonShadow = new DropShadow();
+        neonShadow.setOffsetX(0);
+        neonShadow.setOffsetY(0);
+        neonShadow.setRadius(30);
+        neonShadow.setColor(Color.rgb(255, 0, 255, 0.5));
+        modal.setEffect(neonShadow);
+        modal.setTranslateY(20);
 
-        Label title = new Label("Friend Profile");
-        title.setStyle("-fx-text-fill: #00ffff; -fx-font-size: 24px; -fx-font-family: 'Orbitron';");
+        // Header section - adjusted with slightly more space
+        HBox headerBox = new HBox(12); // Increased spacing from 10 to 12
+        headerBox.setAlignment(Pos.CENTER_LEFT);
 
-        Label avatar = new Label(username.substring(0, 1).toUpperCase());
-        avatar.setMinSize(80, 80);
-        avatar.setAlignment(Pos.CENTER);
-        avatar.setStyle(
+        Label avatarLabel = new Label(username.substring(0, 1).toUpperCase());
+        avatarLabel.setMinSize(70, 70); // Increased from 60 to 70
+        avatarLabel.setAlignment(Pos.CENTER);
+        avatarLabel.setStyle(
                 "-fx-background-color: linear-gradient(to bottom, #ff00ff, #00ffff);" +
-                        "-fx-text-fill: black; -fx-font-size: 48px; -fx-background-radius: 40px;"
+                        "-fx-text-fill: black;" +
+                        "-fx-font-size: 28px;" + // Increased from 24px to 28px
+                        "-fx-background-radius: 35px;" // Increased from 30px to 35px
         );
 
-        Label nameLabel = new Label(username);
-        nameLabel.setStyle("-fx-text-fill: white; -fx-font-size: 20px; -fx-font-family: 'Orbitron';");
+        VBox infoBox = new VBox(4); // Slightly increased spacing from 3 to 4
+        Label nameLabel = new Label(username.toUpperCase());
+        nameLabel.setStyle("-fx-text-fill: white; -fx-font-size: 22px; -fx-font-family: 'Orbitron';"); // Increased from 20px to 22px
+        Label statusLabel = new Label(onlineStatus);
+        statusLabel.setStyle("-fx-text-fill: " + (friend.isOnline() ? "#00ff00" : "#ff0000") +
+                "; -fx-font-size: 13px;"); // Increased from 12px to 13px
+        infoBox.getChildren().addAll(nameLabel, statusLabel);
+        headerBox.getChildren().addAll(avatarLabel, infoBox);
 
-        Label emailLabel = new Label("Email: " + email);
-        emailLabel.setStyle("-fx-text-fill: white;");
+        // Personal Details Section - slightly more spacious
+        HBox idBox = createDetailLabel("User ID:", String.valueOf(friendId)); // Restored full label
+        HBox emailBox = createDetailLabel("Email:", email);
+        HBox levelBox = createDetailLabel("Level:", String.valueOf(level));
+        VBox personalInfoBox = new VBox(10, idBox, emailBox, levelBox); // Increased spacing from 8 to 10
+        personalInfoBox.setPadding(new Insets(10)); // Increased from 8 to 10
+        personalInfoBox.setStyle("-fx-background-color: rgba(0, 0, 0, 0.3);" +
+                "-fx-background-radius: 5;" +
+                "-fx-border-color: rgba(0, 255, 255, 0.2);" +
+                "-fx-border-width: 1;" +
+                "-fx-border-radius: 5;");
 
-        Label levelLabel = new Label("Level: " + level);
-        levelLabel.setStyle("-fx-text-fill: white;");
+        // Separator - adjusted to new width
+        Rectangle headerSeparator = new Rectangle(440, 1.5); // Increased width from 400 to 440, height from 1 to 1.5
+        headerSeparator.setFill(new LinearGradient(
+                0, 0, 1, 0, true, CycleMethod.NO_CYCLE,
+                new Stop(0, Color.TRANSPARENT),
+                new Stop(0.3, Color.web("#ff00ff")),
+                new Stop(0.7, Color.web("#00ffff")),
+                new Stop(1, Color.TRANSPARENT)
+        ));
+        headerSeparator.setEffect(new DropShadow(4, 0, 2, Color.rgb(0, 0, 0, 0.6)));
 
-        Button closeBtn = new Button("Close");
-        closeBtn.setStyle("-fx-background-color: #ff00ff; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5;");
-        closeBtn.setOnAction(ev -> {
+        TabPane gameStatsTabPane = new TabPane();
+        gameStatsTabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+        gameStatsTabPane.setPrefWidth(500); // Match content width
+        gameStatsTabPane.setMinWidth(500);
+        gameStatsTabPane.setMaxWidth(500);
+
+
+        // Create tab content container with proper width constraints
+        for (GameType game : GameType.values()) {
+            Tab tab = new Tab(game.toString().replace("_", " "));
+            VBox tabContent = new VBox();
+            tabContent.setPrefWidth(500);
+            tabContent.setMinWidth(500);
+            tabContent.setMaxWidth(500);
+            tabContent.getChildren().add(createGameStatsContent(player, game));
+            tab.setContent(tabContent);
+            gameStatsTabPane.getTabs().add(tab);
+
+            System.out.println("Before update: " + player.getRank(game).getRankingPoints() + ", Tier: " + player.getRank(game).getCurrentTier());
+// Code that should update ranking...
+            Player refreshedPlayer = PlayerDatabase.getPlayerByUserID(player.getUserID());
+            System.out.println("After update: " + refreshedPlayer.getRank(game).getRankingPoints() + ", Tier: " + refreshedPlayer.getRank(game).getCurrentTier());
+
+        }
+
+        Rectangle overallLevelBar = new Rectangle(300, 8); // Increased width from 280 to 300
+        overallLevelBar.setFill(new LinearGradient(
+                0, 0, 1, 0, true, CycleMethod.NO_CYCLE,
+                new Stop(0, Color.web("#00ffff")),
+                new Stop(1, Color.web("#ff00ff"))
+        ));
+
+        // Close button - restored to original size
+        Button closeButton = new Button("CLOSE");
+        closeButton.setStyle("-fx-background-color: #ff00ff;" +
+                "-fx-text-fill: white;" +
+                "-fx-font-weight: bold;" +
+                "-fx-font-family: 'Orbitron';" +
+                "-fx-background-radius: 5;" +
+                "-fx-padding: 8 20;"); // Restored original padding
+        closeButton.setOnAction(e -> {
             rootPane.getChildren().remove(overlay);
             mainContainer.setEffect(null);
         });
+        closeButton.setOnMouseEntered(e -> {
+            closeButton.setStyle("-fx-background-color: #ff33ff;" +
+                    "-fx-text-fill: white;" +
+                    "-fx-font-weight: bold;" +
+                    "-fx-font-family: 'Orbitron';" +
+                    "-fx-background-radius: 5;" +
+                    "-fx-padding: 8 20;" +
+                    "-fx-effect: dropshadow(gaussian, rgba(255, 0, 255, 0.8), 10, 0.5, 0, 0);");
+        });
+        closeButton.setOnMouseExited(e -> {
+            closeButton.setStyle("-fx-background-color: #ff00ff;" +
+                    "-fx-text-fill: white;" +
+                    "-fx-font-weight: bold;" +
+                    "-fx-font-family: 'Orbitron';" +
+                    "-fx-background-radius: 5;" +
+                    "-fx-padding: 8 20;");
+        });
 
-        modal.getChildren().addAll(title, avatar, nameLabel, emailLabel, levelLabel, closeBtn);
-        overlay.getChildren().add(modal);
+// Within showFriendProfilePopup(), after creating the modal and overlay:
+        final StackPane finalOverlay = overlay;  // Capture overlay for the lambda
 
-// Optional fade-in effect
-        FadeTransition ft = new FadeTransition(Duration.millis(300), overlay);
-        ft.setFromValue(0.0);
-        ft.setToValue(1.0);
-        ft.play();
+// Create the extra button in the popup
+        Button extraButton = new Button("REMOVE FRIEND");
+        extraButton.setStyle("-fx-background-color: #00ccff;" +
+                "-fx-text-fill: black;" +
+                "-fx-font-weight: bold;" +
+                "-fx-font-family: 'Orbitron';" +
+                "-fx-background-radius: 5;" +
+                "-fx-padding: 8 20;");
+        extraButton.setOnAction(e -> {
+            confirmRemoveFriend(username, () -> {
+                Pane parent = (Pane) finalOverlay.getParent();
+                parent.getChildren().remove(finalOverlay);
+                mainContainer.setEffect(null);
+            });
+        });
+
+
+
+// Instead of adding just the closeButton, create an HBox that holds both buttons
+        HBox buttonContainer = new HBox(10, extraButton, closeButton);
+        buttonContainer.setAlignment(Pos.CENTER);
+
+// Create a spacer region for separation (if needed)
+        Region spacer = new Region();
+        spacer.setPrefHeight(20);
+        VBox.setMargin(spacer, new Insets(5, 0, 5, 0));
+
+// Build the bottom section with the button container
+        VBox bottomSection = new VBox(10, spacer, buttonContainer);
+        bottomSection.setAlignment(Pos.CENTER);
+        bottomSection.setPadding(new Insets(10, 0, 0, 0));
+
+// Add the bottom section to your modal content
+
+// Update the modal content creation to include proper spacing
+        VBox modalContent = new VBox(15, headerBox, personalInfoBox, headerSeparator, gameStatsTabPane);
+        modalContent.setAlignment(Pos.CENTER);
+        modalContent.setMaxWidth(500);
+
+
+        modalContent.getChildren().add(bottomSection);
+        // Add margin to the tierBox to further separate it from the tab pane
+
+        overlay.getChildren().add(modalContent);
+        StackPane.setAlignment(modalContent, Pos.CENTER);
+
+        TranslateTransition tt = new TranslateTransition(Duration.millis(300), modalContent);
+        tt.setFromY(20);
+        tt.setToY(0);
+        tt.play();
 
         rootPane.getChildren().add(overlay);
         overlay.toFront();
     }
+    private VBox createGameStatsContent(Player player, GameType game) {
+        VBox contentBox = new VBox(15); // Adjusted spacing
+        contentBox.setAlignment(Pos.TOP_LEFT);
+        contentBox.setPadding(new Insets(15, 20, 15, 20));
+        contentBox.setStyle("-fx-background-color: rgba(0, 0, 0, 0.3);" +
+                "-fx-border-color: rgba(0, 255, 255, 0.2);" +
+                "-fx-border-width: 1;" +
+                "-fx-border-radius: 5;");
+        contentBox.setPrefWidth(440); // Match tab pane width
+        contentBox.setMinWidth(440);
+        contentBox.setMaxWidth(440);
+
+        // Ranking Points
+        HBox pointsBox = createStatBox("RANKING POINTS",
+                String.valueOf(player.getRank(game).getRankingPoints()),
+                "#00ffff");
+
+        // Tier
+        RankTier tier = player.getRank(game).getCurrentTier();
+        HBox tierBox = createStatBox("TIER",
+                tier.toString(),
+                getTierColor(tier));
+
+        // Win Ratio
+        double winRatio = player.getWinRatio(game);
+        HBox winRatioBox = createStatBox("WIN RATIO",
+                String.format("%.1f%%", winRatio),
+                "#ff00ff");
+
+
+        contentBox.getChildren().addAll(pointsBox, tierBox, winRatioBox);
+        return contentBox;
+    }
+
+    private HBox createStatBox(String label, String value, String color) {
+        HBox box = new HBox(10);
+        box.setAlignment(Pos.CENTER_LEFT);
+        box.setPadding(new Insets(5, 15, 5, 15));
+
+        Label nameLabel = new Label(label);
+        nameLabel.setStyle("-fx-text-fill: #cccccc;" +
+                "-fx-font-size: 12px;" +
+                "-fx-font-family: 'Rajdhani';" +
+                "-fx-min-width: 120px;");
+
+        Label valueLabel = new Label(value);
+        valueLabel.setStyle("-fx-text-fill: " + color + ";" +
+                "-fx-font-size: 16px;" +
+                "-fx-font-family: 'Orbitron';" +
+                "-fx-font-weight: bold;");
+
+        box.getChildren().addAll(nameLabel, valueLabel);
+        return box;
+    }
+
+    private HBox createDetailLabel(String title, String value) {
+        HBox box = new HBox(5);
+        box.setAlignment(Pos.CENTER_LEFT);
+
+        Label titleLabel = new Label(title);
+        titleLabel.setStyle("-fx-text-fill: #00ffff;" +
+                "-fx-font-size: 14px;" +
+                "-fx-font-family: 'Rajdhani';" +
+                "-fx-font-weight: bold;");
+
+        Label valueLabel = new Label(value);
+        valueLabel.setStyle("-fx-text-fill: white;" +
+                "-fx-font-size: 14px;" +
+                "-fx-font-family: 'Rajdhani';");
+
+        box.getChildren().addAll(titleLabel, valueLabel);
+        return box;
+    }
+
+    private String getTierColor(RankTier tier) {
+        switch (tier) {
+            case DIAMOND:
+                return "#00ffff";   // Cyan
+            case GOLD:
+                return "#ffd700";   // Gold
+            case SILVER:
+                return "#c0c0c0";   // Silver
+            case BRONZE:
+                return "#cd7f32";   // Bronze
+            default:
+                return "white";
+        }
+    }
+
+
 
     @FXML
     public void handleRemoveFriend(ActionEvent event) {
         Button removeButton = (Button) event.getSource();
         HBox friendItem = (HBox) removeButton.getParent();
-
-        Label usernameLabel = (Label) friendItem.getChildren().get(1); // index 1 = full username
+        Label usernameLabel = (Label) friendItem.getChildren().get(1);
         String friendUsername = usernameLabel.getText();
 
-        Popup popup = new Popup();
-
-        VBox popupContent = new VBox(15);
-        popupContent.setAlignment(Pos.CENTER);
-        popupContent.setStyle(
-                "-fx-background-color: radial-gradient(radius 100%, #111, #333);" +
-                        "-fx-padding: 15;" +
-                        "-fx-border-color: #00ffff;" +
-                        "-fx-border-width: 2;" +
-                        "-fx-background-radius: 10;" +
-                        "-fx-border-radius: 10;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(0,255,255,0.75), 10, 0.5, 0, 0);"
-        );
-
-        Label message = new Label("Remove friend: " + friendUsername + "?");
-        message.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
-
-        HBox buttonBox = new HBox(10);
-        buttonBox.setAlignment(Pos.CENTER);
-
-        Button yesButton = new Button("Yes");
-        yesButton.setStyle("-fx-background-color: #00ffff; -fx-text-fill: black; -fx-font-weight: bold; -fx-background-radius: 5;");
-
-        Button noButton = new Button("No");
-        noButton.setStyle("-fx-background-color: #ff00ff; -fx-text-fill: black; -fx-font-weight: bold; -fx-background-radius: 5;");
-
-        buttonBox.getChildren().addAll(yesButton, noButton);
-        popupContent.getChildren().addAll(message, buttonBox);
-        popup.getContent().add(popupContent);
-
-        Bounds bounds = friendItem.localToScreen(friendItem.getBoundsInLocal());
-        popup.show(removeButton.getScene().getWindow(), bounds.getMinX() + 50, bounds.getMinY() + 20);
-
-        yesButton.setOnAction(e -> {
+        // Use the helper and remove the friend item from the UI after successful removal.
+        confirmRemoveFriend(friendUsername, () -> {
             playersContainer.getChildren().remove(friendItem);
-            popup.hide();
-            System.out.println("Removed friend: " + friendUsername);
-            FriendDatabase.removeFriend(LoginController.loginId, PlayerDatabase.getPlayerByUsername(friendUsername).getUserID());
-        });
-
-        noButton.setOnAction(e -> {
-            popup.hide();
-            System.out.println("Removal canceled for friend: " + friendUsername);
         });
     }
+
 
     @FXML
     private void openAddFriendPopup() {
@@ -765,6 +960,56 @@ public class HomePageController {
         friendPopupPlaceholder.setManaged(true);
     }
 
+    private void confirmRemoveFriend(String friendUsername, Runnable postRemovalAction) {
+        Popup popup = new Popup();
+        VBox popupContent = new VBox(15);
+        popupContent.setAlignment(Pos.CENTER);
+        popupContent.setStyle("-fx-background-color: radial-gradient(radius 100%, #111, #333);" +
+                "-fx-padding: 15;" +
+                "-fx-border-color: #00ffff;" +
+                "-fx-border-width: 2;" +
+                "-fx-background-radius: 10;" +
+                "-fx-border-radius: 10;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0,255,255,0.75), 10, 0.5, 0, 0);");
+
+        Label message = new Label("Remove friend: " + friendUsername + "?");
+        message.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
+
+        HBox buttonBox = new HBox(10);
+        buttonBox.setAlignment(Pos.CENTER);
+
+        Button yesButton = new Button("Yes");
+        yesButton.setStyle("-fx-background-color: #00ffff; -fx-text-fill: black; -fx-font-weight: bold; -fx-background-radius: 5;");
+
+        Button noButton = new Button("No");
+        noButton.setStyle("-fx-background-color: #ff00ff; -fx-text-fill: black; -fx-font-weight: bold; -fx-background-radius: 5;");
+
+        buttonBox.getChildren().addAll(yesButton, noButton);
+        popupContent.getChildren().addAll(message, buttonBox);
+        popup.getContent().add(popupContent);
+
+        // Show the confirmation popup centered over the application window.
+        Stage stage = (Stage) mainContainer.getScene().getWindow();
+        popup.show(stage);
+
+        yesButton.setOnAction(e -> {
+            int friendID = PlayerDatabase.getPlayerByUsername(friendUsername).getUserID();
+            FriendDatabase.removeFriend(LoginController.loginId, friendID);
+            // Execute any additional UI cleanup (e.g., removing the friend item or closing the popup overlay)
+            if (postRemovalAction != null) {
+                postRemovalAction.run();
+            }
+            // Refresh friend list if needed.
+            loadFriendList();
+            popup.hide();
+            System.out.println("Removed friend: " + friendUsername);
+        });
+
+        noButton.setOnAction(e -> {
+            popup.hide();
+            System.out.println("Removal canceled for friend: " + friendUsername);
+        });
+    }
 
 
 

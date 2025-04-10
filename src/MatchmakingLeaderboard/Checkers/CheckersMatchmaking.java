@@ -39,7 +39,7 @@ public class CheckersMatchmaking extends AbstractCheckersMatchmaking {
     }
 
     /**
-     * function that simulates matchmaking for TicTacToe
+     * function that simulates matchmaking for Checkers
      */
     public void startMatchmaking(){
         if (checkMatchmaking()) {
