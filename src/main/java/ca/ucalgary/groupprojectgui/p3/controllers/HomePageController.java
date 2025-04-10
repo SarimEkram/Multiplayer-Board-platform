@@ -235,7 +235,6 @@ public class HomePageController {
     }
 
 
-
     private void sendFriendRequest(String username) {
         int currentUserId = LoginController.loginId;
         Player friendUser = PlayerDatabase.getPlayerByUsername(username);
@@ -256,6 +255,8 @@ public class HomePageController {
 
         if (success) {
             showOverlayAlert("Success", "Friend added successfully!");
+            // Refresh the friend list so the new friend appears immediately.
+            loadFriendList();
         } else {
             showOverlayAlert("Error", "Failed to add friend.");
         }
@@ -1135,29 +1136,133 @@ public class HomePageController {
     }
 
     private void confirmRemoveFriend(String friendUsername, Runnable postRemovalAction) {
-        Popup popup = new Popup();
-        VBox popupContent = new VBox(15);
+        // Create a semi-transparent overlay that allows clicking through to background
+        StackPane overlay = new StackPane();
+        overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
+        overlay.setPickOnBounds(true); // Allows clicks to pass through
+
+        // Create the popup content with enhanced styling
+        VBox popupContent = new VBox(20);
         popupContent.setAlignment(Pos.CENTER);
-        popupContent.setStyle("-fx-background-color: radial-gradient(radius 100%, #111, #333);" +
-                "-fx-padding: 15;" +
-                "-fx-border-color: #00ffff;" +
-                "-fx-border-width: 2;" +
-                "-fx-background-radius: 10;" +
-                "-fx-border-radius: 10;" +
-                "-fx-effect: dropshadow(gaussian, rgba(0,255,255,0.75), 10, 0.5, 0, 0);");
-        Label message = new Label("Remove friend: " + friendUsername + "?");
-        message.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
-        HBox buttonBox = new HBox(10);
+        popupContent.setPadding(new Insets(25));
+        popupContent.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, #1a0033, #330066);" +
+                        "-fx-background-radius: 15;" +
+                        "-fx-border-color: linear-gradient(to right, #ff00ff, #00ffff);" +
+                        "-fx-border-width: 2;" +
+                        "-fx-border-radius: 15;" +
+                        "-fx-effect: dropshadow(gaussian, rgba(0, 255, 255, 0.8), 20, 0.5, 0, 0);"
+        );
+
+        // Add glowing title
+        Label title = new Label("CONFIRM REMOVAL");
+        title.setStyle(
+                "-fx-text-fill: white;" +
+                        "-fx-font-size: 18px;" +
+                        "-fx-font-family: 'Orbitron';" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-text-fill: linear-gradient(to right, #ff00ff, #00ffff);"
+        );
+
+        // Add the friend username with styling
+        Label message = new Label("Remove " + friendUsername + " from friends?");
+        message.setStyle(
+                "-fx-text-fill: white;" +
+                        "-fx-font-size: 16px;" +
+                        "-fx-font-family: 'Rajdhani';" +
+                        "-fx-font-weight: bold;"
+        );
+
+        // Create button container
+        HBox buttonBox = new HBox(20);
         buttonBox.setAlignment(Pos.CENTER);
-        Button yesButton = new Button("Yes");
-        yesButton.setStyle("-fx-background-color: #00ffff; -fx-text-fill: black; -fx-font-weight: bold; -fx-background-radius: 5;");
-        Button noButton = new Button("No");
-        noButton.setStyle("-fx-background-color: #ff00ff; -fx-text-fill: black; -fx-font-weight: bold; -fx-background-radius: 5;");
-        buttonBox.getChildren().addAll(yesButton, noButton);
-        popupContent.getChildren().addAll(message, buttonBox);
-        popup.getContent().add(popupContent);
-        Stage stage = (Stage) mainContainer.getScene().getWindow();
-        popup.show(stage);
+
+        // Yes button with hover effects
+        Button yesButton = new Button("CONFIRM");
+        yesButton.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, #ff00ff, #cc00ff);" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-family: 'Orbitron';" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-padding: 8 25;" +
+                        "-fx-background-radius: 5;" +
+                        "-fx-effect: dropshadow(gaussian, rgba(255, 0, 255, 0.5), 5, 0.5, 0, 1);"
+        );
+        yesButton.setOnMouseEntered(e -> {
+            yesButton.setStyle(
+                    "-fx-background-color: linear-gradient(to bottom, #ff33ff, #cc33ff);" +
+                            "-fx-text-fill: white;" +
+                            "-fx-font-family: 'Orbitron';" +
+                            "-fx-font-weight: bold;" +
+                            "-fx-font-size: 14px;" +
+                            "-fx-padding: 8 25;" +
+                            "-fx-background-radius: 5;" +
+                            "-fx-effect: dropshadow(gaussian, rgba(255, 0, 255, 0.8), 10, 0.5, 0, 2);"
+            );
+        });
+        yesButton.setOnMouseExited(e -> {
+            yesButton.setStyle(
+                    "-fx-background-color: linear-gradient(to bottom, #ff00ff, #cc00ff);" +
+                            "-fx-text-fill: white;" +
+                            "-fx-font-family: 'Orbitron';" +
+                            "-fx-font-weight: bold;" +
+                            "-fx-font-size: 14px;" +
+                            "-fx-padding: 8 25;" +
+                            "-fx-background-radius: 5;" +
+                            "-fx-effect: dropshadow(gaussian, rgba(255, 0, 255, 0.5), 5, 0.5, 0, 1);"
+            );
+        });
+
+        // No button with hover effects
+        Button noButton = new Button("CANCEL");
+        noButton.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, #00ccff, #0099cc);" +
+                        "-fx-text-fill: black;" +
+                        "-fx-font-family: 'Orbitron';" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-padding: 8 25;" +
+                        "-fx-background-radius: 5;" +
+                        "-fx-effect: dropshadow(gaussian, rgba(0, 204, 255, 0.5), 5, 0.5, 0, 1);"
+        );
+        noButton.setOnMouseEntered(e -> {
+            noButton.setStyle(
+                    "-fx-background-color: linear-gradient(to bottom, #33ffff, #00ccff);" +
+                            "-fx-text-fill: black;" +
+                            "-fx-font-family: 'Orbitron';" +
+                            "-fx-font-weight: bold;" +
+                            "-fx-font-size: 14px;" +
+                            "-fx-padding: 8 25;" +
+                            "-fx-background-radius: 5;" +
+                            "-fx-effect: dropshadow(gaussian, rgba(0, 204, 255, 0.8), 10, 0.5, 0, 2);"
+            );
+        });
+        noButton.setOnMouseExited(e -> {
+            noButton.setStyle(
+                    "-fx-background-color: linear-gradient(to bottom, #00ccff, #0099cc);" +
+                            "-fx-text-fill: black;" +
+                            "-fx-font-family: 'Orbitron';" +
+                            "-fx-font-weight: bold;" +
+                            "-fx-font-size: 14px;" +
+                            "-fx-padding: 8 25;" +
+                            "-fx-background-radius: 5;" +
+                            "-fx-effect: dropshadow(gaussian, rgba(0, 204, 255, 0.5), 5, 0.5, 0, 1);"
+            );
+        });
+
+        buttonBox.getChildren().addAll(noButton, yesButton);
+        popupContent.getChildren().addAll(title, message, buttonBox);
+
+        // Add the popup content to the overlay
+        overlay.getChildren().add(popupContent);
+        StackPane.setAlignment(popupContent, Pos.CENTER);
+
+        // Get the root pane and add our overlay
+        StackPane rootPane = (StackPane) mainContainer.getScene().getRoot();
+        rootPane.getChildren().add(overlay);
+
+        // Set up button actions
         yesButton.setOnAction(e -> {
             int friendID = PlayerDatabase.getPlayerByUsername(friendUsername).getUserID();
             FriendDatabase.removeFriend(LoginController.loginId, friendID);
@@ -1165,15 +1270,25 @@ public class HomePageController {
                 postRemovalAction.run();
             }
             loadFriendList();
-            popup.hide();
-            System.out.println("Removed friend: " + friendUsername);
+            rootPane.getChildren().remove(overlay);
         });
-        noButton.setOnAction(e -> {
-            popup.hide();
-            System.out.println("Removal canceled for friend: " + friendUsername);
-        });
-    }
 
+        noButton.setOnAction(e -> {
+            rootPane.getChildren().remove(overlay);
+        });
+
+        // Add animation for appearance
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(300), overlay);
+        fadeIn.setFromValue(0);
+        fadeIn.setToValue(1);
+
+        TranslateTransition slideIn = new TranslateTransition(Duration.millis(300), popupContent);
+        slideIn.setFromY(20);
+        slideIn.setToY(0);
+
+        ParallelTransition openTransition = new ParallelTransition(fadeIn, slideIn);
+        openTransition.play();
+    }
     public void showStatsOverlay(ActionEvent event) {
         String selfUsername = PlayerDatabase.getPlayerByUserID(LoginController.loginId).getUsername();
         showFriendProfilePopup(selfUsername);
