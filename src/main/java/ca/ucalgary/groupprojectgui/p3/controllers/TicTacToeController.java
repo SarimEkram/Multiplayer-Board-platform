@@ -573,7 +573,6 @@ public class TicTacToeController {
                 addMessage("SYSTEM", loser + " ⏰ Time's up! " + winner + " wins!", true);
                 showGameOverPopup(winner, true);
                 gameOver = true;
-                boardContainer.setDisable(true);
                 stopTimer();
                 stopTurnTimer();
             }
