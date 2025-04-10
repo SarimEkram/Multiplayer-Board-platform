@@ -1131,6 +1131,7 @@ public class HomePageController {
             addFriendOverlay.setVisible(false);
             addFriendOverlay.setManaged(false);
             mainContainer.setEffect(null);
+            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "Home.css");
         });
         fadeOut.play();
     }
