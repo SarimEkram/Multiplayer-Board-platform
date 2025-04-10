@@ -143,8 +143,8 @@ public class TicTacToeController {
                 opponentPlayer = matchmaking.findOpponent(localPlayer.getUserID());
 
             } catch (IOException e) {
-                // This needs to be implemented
-                // addMessage("SYSTEM", "Matchmaking error: " + e.getMessage(), true);
+                // uncommented addMessage as its implemented now
+                 addMessage("SYSTEM", "Matchmaking error: " + e.getMessage(), true);
             }
         } else {
             localPlayer = PlayerDatabase.getPlayerByUserID(LoginController.loginId);
