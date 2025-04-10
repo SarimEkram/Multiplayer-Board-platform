@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.LeaderboardController"
+           prefWidth="1200" prefHeight="800"
+           stylesheets="@styles/leaderboard.css"
+           styleClass="root">
+
+    <VBox alignment="TOP_CENTER" spacing="30" styleClass="leaderboard-card" prefWidth="1000" prefHeight="700">
+
+        <!-- Header with Logo and Title -->
+        <HBox spacing="15" alignment="CENTER_LEFT">
+            <ImageView fx:id="gameLogo" fitHeight="50" fitWidth="50"/>
+            <Label text="🎮 OMG" styleClass="logo-label"/>
+        </HBox>
+
+        <!-- Section Title -->
+        <Label text="Leaderboard" styleClass="section-title"/>
+
+        <!-- Tabs for Games -->
+        <TabPane fx:id="gameTabs" tabClosingPolicy="UNAVAILABLE" styleClass="tab-pane"
+                 maxWidth="1000" maxHeight="600" prefWidth="1000" prefHeight="600" tabMinWidth="150" tabMaxWidth="150" tabMinHeight="40">
+
+            <Tab text="Tic Tac Toe">
+                <ScrollPane vbarPolicy="ALWAYS" hbarPolicy="NEVER" fitToWidth="true" fitToHeight="true" styleClass="scroll-pane">
+                    <VBox fx:id="ticTacToeLeaderboard" alignment="TOP_CENTER" spacing="10" styleClass="content-box" />
+                </ScrollPane>
+            </Tab>
+
+            <Tab text="Checkers">
+                <ScrollPane vbarPolicy="ALWAYS" hbarPolicy="NEVER" fitToWidth="true" fitToHeight="true" styleClass="scroll-pane">
+                    <VBox fx:id="checkersLeaderboard" alignment="TOP_CENTER" spacing="10" styleClass="content-box" />
+                </ScrollPane>
+            </Tab>
+
+            <Tab text="Connect 4">
+                <ScrollPane vbarPolicy="ALWAYS" hbarPolicy="NEVER" fitToWidth="true" fitToHeight="true" styleClass="scroll-pane">
+                    <VBox fx:id="connect4Leaderboard" alignment="TOP_CENTER" spacing="10" styleClass="content-box" />
+                </ScrollPane>
+            </Tab>
+        </TabPane>
+
+        <!-- Back Button -->
+        <Button text="← Back"
+                onAction="#handleBack"
+                styleClass="neon-outline-button"
+                prefWidth="120" prefHeight="40"/>
+    </VBox>
+</StackPane>
