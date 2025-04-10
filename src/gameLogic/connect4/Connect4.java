@@ -3,9 +3,8 @@ package gameLogic.connect4;
 public class Connect4 {
 
     /**
-     * This class represents the game logic for a Connect 4 game. It manages game rules,
-     * checks for wins in various directions, and controls the gameplay flow.
-     * Connect 4 instance is created in ConnectBoard
+     * This class represents the game logic for a Connect 4 game.
+     * It manages game rules, checks for wins in various directions, and controls the gameplay flow.
      */
     ConnectBoard board;
     private boolean gameOver = false;
