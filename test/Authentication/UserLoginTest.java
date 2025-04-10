@@ -123,7 +123,7 @@ public class UserLoginTest {
     void testSessionExpiryTime() {
         UserLogin.loginUser(VALID_USERNAME, VALID_PASSWORD);
         
-        LocalDateTime expiry = UserLogin.sessionData.get(userId).getExpiryTime();
+        LocalDateTime expiry = UserLogin.sessionData.get(userId).getExpiry();
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime expectedExpiry = now.plusMinutes(60);
         
@@ -137,7 +137,7 @@ public class UserLoginTest {
     void testAuthTokenExpiryTime() {
         UserLogin.loginUser(VALID_USERNAME, VALID_PASSWORD);
         
-        LocalDateTime expiry = UserLogin.authTokens.get(userId).getExpiryTime();
+        LocalDateTime expiry = UserLogin.authTokens.get(userId).getExpiry();
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime expectedExpiry = now.plusMinutes(90);
         
