@@ -15,7 +15,7 @@ public class MMRCalculator {
      * @param gameSignal The game ID (1: TicTacToe, 2: Connect4, 3: Checkers)
      * @return MMR points to adjust (positive for win, negative for loss)
      */
-    public static int calculateMMR(Player p1, Player p2, boolean won, int gameSignal) {
+    public static int calculateMMR(Player p1, Player p2, boolean won, GameType gameSignal) {
         double skillDifference = p1.getWinRatio(gameSignal) - p2.getWinRatio(gameSignal);
 
         double modifier = 1 + (skillDifference * 0.5);
@@ -37,7 +37,7 @@ public class MMRCalculator {
      * @param gameSignal The game ID to use correct win ratio
      * @return MMR points to be added after a draw
      */
-    public static int calculateDraw(Player p1, Player p2, int gameSignal) {
+    public static int calculateDraw(Player p1, Player p2, GameType gameSignal) {
         double skillDifference = Math.abs(p1.getWinRatio(gameSignal) - p2.getWinRatio(gameSignal));
 
         double modifier = 1.0 - skillDifference;

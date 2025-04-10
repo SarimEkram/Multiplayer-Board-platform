@@ -78,8 +78,8 @@ public class FriendDatabase {
     public static boolean removeFriend(int userId, int friendId) {
         boolean removed1 = friendsMap.containsKey(userId) && friendsMap.get(userId).remove(friendId);
         boolean removed2 = friendsMap.containsKey(friendId) && friendsMap.get(friendId).remove(userId);
-
-        return saveToCSV() && (removed1 || removed2);
+        saveToCSV();
+        return (removed1 || removed2);
     }
 
     // Get all friends of a user

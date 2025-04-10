@@ -9,20 +9,20 @@ public class Rank {
     private RankTier currentTier;
 
     public Rank(){
-        this(0);
+        this.currentTier = RankTier.BRONZE;
     }
     /**
      * Constructor initializes player's rank based on points
      */
-    public Rank(int Points) {
-        this.rankingPoints = Math.max(0, Points);
+    public Rank(RankTier Tier) {
+        this.currentTier = Tier;
         updateRankTier();
     }
 
     /**
      * Adjusts points and updates tier
      */
-    public void adjustPoints(Player player,int points, int game) {
+    public void adjustPoints(Player player,int points, GameType game) {
         player.getRank(game).rankingPoints += points;
         player.getRank(game).rankingPoints = Math.max(0, player.getRank(game).rankingPoints);
         updateRankTier();
@@ -30,7 +30,7 @@ public class Rank {
     /**
      * updates the rank tier based on points
      */
-    private void updateRankTier() {
+    public void updateRankTier() {
 
         if (this.rankingPoints >= RankTier.DIAMOND.getThresholdPoints()){
             this.currentTier = RankTier.DIAMOND;

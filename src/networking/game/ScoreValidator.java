@@ -22,16 +22,24 @@ public class ScoreValidator  {
 
 
     public static boolean isScoreValid(String gameID, String playerId , int score, HashMap<String, Integer> playerScore, HashMap<String, HashMap<String, Integer>> gameScore) {
-        if(gameScore.containsKey(gameID) && (gameScore.get(gameID) == playerScore && playerScore.containsKey(playerId)) && playerScore.get(playerId) == score) { // checking if player score already exists
+        if(gameScore.containsKey(gameID) && gameScore.get(gameID).containsValue(playerScore.get(playerId)) && playerScore.containsKey(playerId) && playerScore.get(playerId) == score) { // checking if player score already exists
             System.out.println("Score already exists for player " + playerId); // error message
             return false;
-        }else {
-            if(score <0 || score > 1) { // checking if score is between 0 and 1
-                System.out.println("Error: Score must be between 0 and 1");
-                return false;
+        } else if (!gameScore.containsKey(gameID)) {
+            System.out.println("GameId not found for player " + playerId);
+            return false;
+
+        } else if (playerScore.size()>1) {
+            System.out.println("Cannot have more than 2 players in game");
+            return false;
+
+        } else {
+            if(score ==0 || score == 1  ){ // checking if score is between 0(lose) and 1(win)
+                return true;
             }
             else{
-                return true;
+                System.out.println("Error: Score must be  0 or 1");
+                return false;
             }
         }
 

@@ -7,21 +7,15 @@ import javafx.stage.Stage;
 public class MainApplication extends Application {
     @Override
     public void start(Stage primaryStage) {
-            // Verify fonts loaded
-            System.out.println("Loaded font families: " + Font.getFamilies());
-            System.out.println("Orbitron available: " +
-                    Font.getFamilies().contains("Orbitron"));
-            System.out.println("Rajdhani available: " +
-                    Font.getFamilies().contains("Rajdhani"));
+        Font sampleFont = Fonts.rajdhaniRegular(12);
 
 
         SceneManager.setStage(primaryStage);
         // Show the loading screen then load the HomePage.
         SceneManager.switchTo(
 
-                "/ca/ucalgary/groupprojectgui/p3/login.fxml",
-                "login Page",
-                "login.css"
+                "/ca/ucalgary/groupprojectgui/p3/views/login.fxml"
+
 
         );
         primaryStage.show();

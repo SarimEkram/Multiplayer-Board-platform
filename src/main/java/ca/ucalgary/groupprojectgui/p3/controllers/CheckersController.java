@@ -1,81 +1,78 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
 
+import MatchmakingLeaderboard.Checkers.CheckersMatchmaking;
+import MatchmakingLeaderboard.GameProcessor;
+import MatchmakingLeaderboard.GameType;
+import MatchmakingLeaderboard.Player;
+import MatchmakingLeaderboard.PlayerDatabase;
+import ca.ucalgary.groupprojectgui.p3.Fonts;
 import gameLogic.checkers.Checkers;
 import gameLogic.checkers.CheckersBoard;
 import gameLogic.checkers.CheckersPiece;
 import gameLogic.checkers.CheckersMove;
 import gameLogic.checkers.CheckersMove.Move;
+import networking.chat.InGameChat;
+import networking.chat.ChatMessage;
+import networking.game.TurnTimer;
 import ca.ucalgary.groupprojectgui.p3.SceneManager;
+import javafx.animation.KeyFrame;
 import javafx.animation.RotateTransition;
 import javafx.animation.ScaleTransition;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.effect.BoxBlur;
+import javafx.scene.control.*;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
-
+import java.io.*;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
-
+import static javafx.scene.paint.Color.rgb;
 public class CheckersController {
 
-    @FXML
-    public Label player1CapturedLabel;
+    @FXML public Circle turnPiece;
+    @FXML public VBox chatMessages;
+    @FXML public ScrollPane chatScrollPane;
+    @FXML public Label chatHeader;
+    @FXML public Button leaveGame;
+    @FXML public Label gameTitle;
+    @FXML public Label timeElapsed;
+    @FXML public TextField chatInput;
+    @FXML public Label turnLabel; // Turn indicator label
+    @FXML public StackPane boardContainer;
+    @FXML public Circle checkerCircle1;      // Player 1's circle
+    @FXML public Circle checkerCircle2;      // Player 2's circle
+    @FXML public Label player1Name;
+    @FXML public Label player2Name;
 
-    @FXML
-    public Label player2CapturedLabel;
-
-    @FXML
-    public Circle turnPiece;
-
-    @FXML
-    private Label turnLabel; // Turn indicator label
-
-    @FXML
-    private StackPane boardContainer;
-
-    @FXML
-    private StackPane checkerPiece1;
-
-    @FXML
-    private Circle checkerCircle1;      // Player 1's circle
-
-    @FXML
-    private StackPane checkerPiece2;
-
-    @FXML
-    private Circle checkerCircle2;      // Player 2's circle
-
-    @FXML
-    private BorderPane mainGamePane;
-
-    @FXML
-    private TextArea chatArea;
-
-    @FXML
-    private TextField chatInput;
-
-    @FXML
-    private Label winnerLabel;
+    @FXML private Label winnerLabel;
+    @FXML private CheckersMatchmaking matchmaking;
+    @FXML private Player localPlayer;
+    @FXML private int player1Id;       // Local player's ID (from matchmaking)
+    @FXML private int opponentId;      // Opponent's player ID
+    @FXML private Player opponentPlayer;
 
     // Board constants
     private static final int BOARD_ROWS = 8;
     private static final int BOARD_COLUMNS = 8;
-    private static final double BOARD_MARGIN = 20.0;
+    private static final double BOARD_MARGIN = 15.0;
 
     private GridPane boardGrid;
     private Rectangle boardBackground;
@@ -84,12 +81,28 @@ public class CheckersController {
     private Checkers gameLogic;
 
     // UI cell mapping for board cells
-    private StackPane[][] cellPanes = new StackPane[BOARD_ROWS][BOARD_COLUMNS];
+    public StackPane[][] cellPanes = new StackPane[BOARD_ROWS][BOARD_COLUMNS];
 
     // For tracking selection and valid moves (using Move objects)
     private Position selectedPiecePosition = null;
     private boolean isPieceSelected = false;
     private ArrayList<Move> validMoves = new ArrayList<>();
+
+    private int messageCount = 0;
+    private GameProcessor gameProcessor;
+    private final GameType gameType = GameType.CHECKERS;
+    private Timeline timeline;
+    private int secondsElapsed = 0;
+
+    public InGameChat chatSession;
+
+    private TurnTimer timerWhite;
+    private TurnTimer timerBlack;
+    private Timeline turnCheckTimeline;
+    private boolean warningSentWhite = false;
+    private boolean warningSentBlack = false;
+
+    private static final String CHECKERS_CHAT_CSV = "checkersChatHistory.csv";
 
     private static class Position {
         int row, col;
@@ -101,10 +114,73 @@ public class CheckersController {
 
     @FXML
     public void initialize() {
+        setupHeaderWithSpacing();
+
+        gameTitle.setText("OMG CHECKERS");
+
+        matchmaking = new CheckersMatchmaking();
+
+        if (HomePageController.friendOpponentID == -1) {
+            try {
+                matchmaking.matchmakingConnect();
+                localPlayer = PlayerDatabase.getPlayerByUserID(LoginController.loginId);
+                player1Id = localPlayer.getUserID();
+                matchmaking.joinQueue(localPlayer);
+                for (Player player : PlayerDatabase.getAllPlayers()) {
+                    if (player.getGameSignal(gameType) == gameType.getGameCode())
+                        matchmaking.joinQueue(player);
+                }
+                opponentPlayer = matchmaking.findOpponent(localPlayer.getUserID());
+            } catch (IOException e) {
+                addMessage("SYSTEM", "Matchmaking error: " + e.getMessage(), true);
+            }
+        } else {
+            localPlayer = PlayerDatabase.getPlayerByUserID(LoginController.loginId);
+            opponentPlayer = PlayerDatabase.getPlayerByUserID(HomePageController.friendOpponentID);
+        }
+
+        // --- End of matchmaking integration ---
+
         checkersBoard = new CheckersBoard();
         gameLogic = new Checkers(checkersBoard);
         gameLogic.start();
+        createBoard();
+        player1Name.setText(localPlayer != null ? localPlayer.getUsername().toUpperCase() : "PLAYER 1");
+        player1Name.setPadding(new Insets(5, 10, 5, 10));
+        player1Name.setFont(Fonts.rajdhaniBold(16));
 
+        player2Name.setText(opponentPlayer != null ? opponentPlayer.getUsername().toUpperCase() : "PLAYER 2");
+        player2Name.setPadding(new Insets(5, 10, 5, 10));
+        player2Name.setFont(Fonts.rajdhaniBold(16));
+
+        // create a game processor object to update the result
+        gameProcessor = new GameProcessor(localPlayer, opponentPlayer, gameType);
+
+        startTimer();
+        // Step 3: Initialize the chat session using player info
+        String sessionId = localPlayer.getUserID() + "_vs_" + opponentPlayer.getUserID();
+
+        chatSession = new InGameChat(sessionId);
+        chatSession.establishConnection();
+        initializeChat();
+        clearChatHistoryCSV();
+
+        chatInput.setOnKeyPressed(event -> {
+            if (event.getCode().toString().equals("ENTER")) {
+                onSendMessage();
+            }
+        });
+        timerBlack = new TurnTimer(localPlayer.getUsername(), 30);
+        timerWhite = new TurnTimer(opponentPlayer.getUsername(), 30);
+
+        // Start the shared monitoring timeline
+        startTurnTimer();
+
+        // Black always goes first in Checkers
+        timerBlack.startTimer();
+    }
+
+    public void createBoard() {
         Image crown = new Image(getClass().getResourceAsStream("/ca/ucalgary/groupprojectgui/p3/images/crown.png"));
         ImageView crownImage = new ImageView(crown);
         crownImage.setFitWidth(45);
@@ -121,26 +197,45 @@ public class CheckersController {
         for (int row = 0; row < BOARD_ROWS; row++) {
             for (int col = 0; col < BOARD_COLUMNS; col++) {
                 StackPane cell = new StackPane();
-                cell.setPrefSize(80, 80);
-                Rectangle square = new Rectangle(80, 80);
+                cell.setPrefSize(66, 66);
+                Rectangle square = new Rectangle(66, 66);
                 square.getStyleClass().add("board-square");
                 if ((row + col) % 2 == 0) {
-                    square.setFill(Color.BEIGE);
+                    square.setFill(Color.valueOf("#16858c"));
+                    square.setStroke(Color.rgb(0, 255, 255, 0.3)); // Cyan border
+                    square.setStrokeWidth(2);
                 } else {
-                    square.setFill(Color.BROWN);
+                    square.setFill(Color.valueOf("#a7759c"));  // Or Color.GRAY if preferred
+                    square.setStroke(Color.rgb(255, 0, 255, 0.3)); // Magenta border
+                    square.setStrokeWidth(2);
                 }
                 cell.getChildren().add(square);
 
                 // Place initial pieces based on backend setup
                 if (row < 3 && (row + col) % 2 == 1) {
-                    Circle whitePiece = new Circle(35);
+                    Circle whitePiece = new Circle(31);
                     whitePiece.getStyleClass().addAll(checkerCircle1.getStyleClass());
                     cell.getChildren().add(whitePiece);
                 } else if (row > 4 && (row + col) % 2 == 1) {
-                    Circle blackPiece = new Circle(35);
+                    Circle blackPiece = new Circle(31);
                     blackPiece.getStyleClass().addAll(checkerCircle2.getStyleClass());
                     cell.getChildren().add(blackPiece);
                 }
+                square.setStrokeWidth(2);
+
+                DropShadow shadow = new DropShadow();
+                shadow.setRadius(3);
+                shadow.setOffsetX(1);
+                shadow.setOffsetY(1);
+                shadow.setColor(Color.rgb(0, 0, 0, 0.25));
+                square.setEffect(shadow);
+
+                // Padding between tiles using margin
+                GridPane.setMargin(square, new javafx.geometry.Insets(1));
+
+                // Optional hover effect: scale transition
+                square.setOnMouseEntered(e -> animateHover(square, 1.05));
+                square.setOnMouseExited(e -> animateHover(square, 1.0));
 
                 cellPanes[row][col] = cell;
                 final int currentRow = row;
@@ -155,9 +250,27 @@ public class CheckersController {
         boardContainer.getChildren().addAll(boardBackground, boardGrid);
         boardContainer.widthProperty().addListener((obs, oldVal, newVal) -> updateBoardLayout());
         boardContainer.heightProperty().addListener((obs, oldVal, newVal) -> updateBoardLayout());
-
-        chatArea.setEditable(false);
         updateTurnIndicator();
+
+        if (leaveGame != null) {
+            leaveGame.setOnAction(e -> onLeaveGame());
+        }
+    }
+
+    private void startTimer() {
+        if (timeline != null) {
+            timeline.stop();
+        }
+        timeElapsed.setText(String.format("⏳ TURN TIME: %02d:%02d", secondsElapsed / 60, secondsElapsed % 60));
+
+        timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+            secondsElapsed++;
+            int minutes = secondsElapsed / 60;
+            int seconds = secondsElapsed % 60;
+            timeElapsed.setText(String.format("⏳ TURN TIME: %02d:%02d", minutes, seconds));
+        }));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
     }
 
     private void updateBoardLayout() {
@@ -175,52 +288,44 @@ public class CheckersController {
             }
         }
     }
-
-    @FXML
-    private void onLeaveGame() {
-        BoxBlur blur = new BoxBlur(10, 10, 3);
-        mainGamePane.setEffect(blur);
-        StackPane rootPane = (StackPane) mainGamePane.getScene().getRoot();
-        StackPane overlay = new StackPane();
-        overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
-        overlay.prefWidthProperty().bind(rootPane.widthProperty());
-        overlay.prefHeightProperty().bind(rootPane.heightProperty());
-        VBox modal = new VBox(20);
-        modal.setAlignment(Pos.CENTER);
-        modal.setPadding(new Insets(20));
-        modal.setStyle("-fx-background-color: rgba(0, 0, 0, 0.8); -fx-background-radius: 10;");
-        modal.setMinWidth(300);
-        modal.setMinHeight(150);
-        Label prompt = new Label("Are you sure you want to leave the game?");
-        prompt.setStyle("-fx-text-fill: white; -fx-font-size: 16px;");
-        Button yesButton = new Button("Yes, Leave");
-        Button cancelButton = new Button("Cancel");
-        yesButton.setStyle("-fx-background-color: #5f27cd; -fx-text-fill: white; -fx-background-radius: 10;");
-        cancelButton.setStyle("-fx-background-color: #341f97; -fx-text-fill: white; -fx-background-radius: 10;");
-        HBox buttonBox = new HBox(10, yesButton, cancelButton);
-        buttonBox.setAlignment(Pos.CENTER);
-        modal.getChildren().addAll(prompt, buttonBox);
-        overlay.getChildren().add(modal);
-        rootPane.getChildren().add(overlay);
-        overlay.toFront();
-        yesButton.setOnAction(e -> {
-            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/HomePage.fxml", "Home Page", "home.css");
-            rootPane.getChildren().remove(overlay);
-            mainGamePane.setEffect(null);
-        });
-        cancelButton.setOnAction(e -> {
-            rootPane.getChildren().remove(overlay);
-            mainGamePane.setEffect(null);
-        });
+    private void animateHover(Rectangle square, double scale) {
+        ScaleTransition st = new ScaleTransition(Duration.millis(150), square);
+        st.setToX(scale);
+        st.setToY(scale);
+        st.play();
     }
 
-    @FXML
-    private void onSendMessage() {
-        String message = chatInput.getText();
-        if (!message.trim().isEmpty()) {
-            chatArea.appendText("You: " + message + "\n");
-            chatInput.clear();
-        }
+    private void onLeaveGame() {
+        Pane parent = (Pane) boardGrid.getParent();
+        StackPane overlay = new StackPane();
+        overlay.getStyleClass().add("popup-overlay");
+        overlay.setPrefSize(parent.getWidth(), parent.getHeight());
+        VBox popup = new VBox();
+        popup.getStyleClass().add("popup-dialog");
+        popup.setAlignment(Pos.CENTER);
+        popup.setSpacing(15);
+        popup.setPadding(new Insets(20));
+
+        Text title = new Text("Confirm Quit");
+        title.getStyleClass().add("popup-title");
+        Text message = new Text("Are you sure you want to quit the game?");
+        message.getStyleClass().add("popup-message");
+        Button yesButton = new Button("Yes");
+        yesButton.getStyleClass().add("popup-button");
+        yesButton.setOnAction(e -> {
+            parent.getChildren().remove(overlay);
+            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/views/homePage.fxml");
+        });
+        Button cancelButton = new Button("Cancel");
+        cancelButton.getStyleClass().add("popup-button");
+        cancelButton.setOnAction(e -> {
+            parent.getChildren().remove(overlay);
+        });
+        HBox buttonBox = new HBox(15, yesButton, cancelButton);
+        buttonBox.setAlignment(Pos.CENTER);
+        popup.getChildren().addAll(title, message, buttonBox);
+        overlay.getChildren().add(popup);
+        parent.getChildren().add(overlay);
     }
 
     private void handleCellClick(int row, int col) {
@@ -235,18 +340,53 @@ public class CheckersController {
             }
             if (selectedMove != null) {
                 CheckersPiece selectedPiece = checkersBoard.board[selectedPiecePosition.row][selectedPiecePosition.col];
-                // Process the move using the detailed Move object
                 gameLogic.processMove(selectedPiece, selectedPiecePosition.row, selectedPiecePosition.col, selectedMove);
                 clearHighlights();
                 isPieceSelected = false;
                 selectedPiecePosition = null;
                 validMoves.clear();
                 updateBoardUI();
+                // First, check standard win by piece count.
                 Checkers.WINNER winner = gameLogic.checkWin();
+                // Then check if the current turn has any valid moves.
+                if (winner == Checkers.WINNER.NONE) {
+                    if (!hasAnyValidMovesForTurn(gameLogic.getTurn())) {
+                        // No moves available: current turn loses; opponent wins.
+                        if (gameLogic.getTurn() == Checkers.Turn.WHITE) {
+                            turnPiece.getStyleClass().clear();
+                            turnPiece.getStyleClass().add("checker-black");
+                            turnLabel.setText(opponentPlayer.getUsername() + " wins!");
+                        } else {
+                            turnPiece.getStyleClass().clear();
+                            turnPiece.getStyleClass().add("checker-white");
+                            turnLabel.setText(opponentPlayer.getUsername() + " wins!");
+                        }
+                        boardGrid.setDisable(true);
+                        return;
+                    }
+                }
                 if (winner != Checkers.WINNER.NONE) {
                     checkForWinnerAndShowLabel();
+                    stopTimer(); // Stop timer when game ends
+                    return;
                 } else {
                     updateTurnIndicator();
+                    // Reset GUI Timer
+                    secondsElapsed = 0;
+                    startTimer(); // GUI clock
+
+                    // Reset warning flags
+                    warningSentBlack = false;
+                    warningSentWhite = false;
+
+                    // Restart only the current turn's timer
+                    if (gameLogic.getTurn() == Checkers.Turn.BLACK) {
+                        timerBlack.resetTimer();
+                        timerBlack.startTimer();
+                    } else {
+                        timerWhite.resetTimer();
+                        timerWhite.startTimer();
+                    }// <-- start new turn timer when turn changes
                 }
                 return;
             } else {
@@ -256,6 +396,7 @@ public class CheckersController {
                 validMoves.clear();
             }
         }
+
         CheckersPiece piece = checkersBoard.board[row][col];
         if (piece != null) {
             if (!isPieceOfCurrentTurn(piece)) {
@@ -264,7 +405,6 @@ public class CheckersController {
             selectedPiecePosition = new Position(row, col);
             isPieceSelected = true;
             validMoves.clear();
-            // Get available moves as an array of Move objects
             Move[] moves = CheckersMove.availableMoves(checkersBoard, piece, row, col);
             for (Move move : moves) {
                 validMoves.add(move);
@@ -303,6 +443,25 @@ public class CheckersController {
         return false;
     }
 
+    // Helper method: returns true if at least one piece of the specified turn has valid moves.
+    private boolean hasAnyValidMovesForTurn(Checkers.Turn turn) {
+        for (int row = 0; row < BOARD_ROWS; row++) {
+            for (int col = 0; col < BOARD_COLUMNS; col++) {
+                CheckersPiece piece = checkersBoard.board[row][col];
+                if (piece != null) {
+                    if ((turn == Checkers.Turn.WHITE && piece.getColour() == CheckersPiece.Colour.WHITE) ||
+                            (turn == Checkers.Turn.BLACK && piece.getColour() == CheckersPiece.Colour.BLACK)) {
+                        CheckersMove.Move[] moves = CheckersMove.availableMoves(checkersBoard, piece, row, col);
+                        if (moves.length > 0) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     private void highlightValidMoveCell(int row, int col) {
         Rectangle tint = new Rectangle();
         tint.setFill(Color.rgb(255, 255, 0, 0.3));
@@ -329,7 +488,7 @@ public class CheckersController {
         }
     }
 
-    private void clearHighlights() {
+    public void clearHighlights() {
         for (int row = 0; row < BOARD_ROWS; row++) {
             for (int col = 0; col < BOARD_COLUMNS; col++) {
                 cellPanes[row][col].getChildren().removeIf(node -> {
@@ -352,7 +511,7 @@ public class CheckersController {
                 cell.getChildren().removeIf(node -> node instanceof Circle || node instanceof ImageView);
                 CheckersPiece piece = checkersBoard.board[row][col];
                 if (piece != null) {
-                    Circle pieceCircle = new Circle(35);
+                    Circle pieceCircle = new Circle(31);
                     if (piece.getColour() == CheckersPiece.Colour.WHITE) {
                         pieceCircle.getStyleClass().addAll(checkerCircle2.getStyleClass());
                     } else {
@@ -383,7 +542,7 @@ public class CheckersController {
         }
     }
 
-    private void updateTurnIndicator() {
+    public void updateTurnIndicator() {
         Checkers.Turn currentTurn = gameLogic.getTurn();
         if (currentTurn == Checkers.Turn.BLACK) {
             turnPiece.getStyleClass().clear();
@@ -399,17 +558,317 @@ public class CheckersController {
     private void checkForWinnerAndShowLabel() {
         Checkers.WINNER winner = gameLogic.checkWin();
         if (winner != Checkers.WINNER.NONE) {
-            String message = (winner == Checkers.WINNER.WHITE) ? "White wins!" : "Black wins!";
-            turnLabel.setText(message);
-            boardGrid.setDisable(true);
-            turnPiece.getStyleClass().clear();
             if (winner == Checkers.WINNER.WHITE) {
-                turnPiece.getStyleClass().add("checker-white");
-                turnLabel.setText("White wins!");
+                showGameOverPopup(opponentPlayer.getUsername(), true);
+                // update game result opponentPlayer wins
+                gameProcessor.UpdateResults(opponentPlayer, localPlayer, gameType);
             } else {
-                turnPiece.getStyleClass().add("checker-black");
-                turnLabel.setText("Black wins!");
+                showGameOverPopup(localPlayer.getUsername(), true);
+                // update game result, local player wins
+                gameProcessor.UpdateResults(localPlayer, opponentPlayer, gameType);
             }
+            boardGrid.setDisable(true);
         }
     }
+
+    private void showGameOverPopup(String winner, boolean isWin) {
+        leaveGame.setVisible(false);
+        StackPane overlay = new StackPane();
+        overlay.getStyleClass().add("popup-overlay");
+        overlay.setPrefSize(boardGrid.getWidth(), boardGrid.getHeight());
+
+        VBox popup = new VBox();
+        popup.getStyleClass().add("popup-dialog");
+        popup.setAlignment(Pos.CENTER);
+        popup.setSpacing(10);
+        popup.setPadding(new Insets(20));
+
+        Text title = new Text("Game Over");
+        title.getStyleClass().add("popup-title");
+
+        Text message = new Text();
+        message.getStyleClass().add("popup-message");
+        if (isWin) {
+            message.setText("Winner: " + winner);
+        } else {
+            message.setText("It's a draw!");
+        }
+
+        Button mainMenuButton = new Button("Main Menu");
+        mainMenuButton.getStyleClass().add("popup-button");
+        mainMenuButton.setOnAction(e -> {
+            boardGrid.getChildren().remove(overlay);
+            SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/views/homePage.fxml");
+        });
+
+        popup.getChildren().addAll(title, message, mainMenuButton);
+        overlay.getChildren().add(popup);
+        ((Pane) boardGrid.getParent()).getChildren().add(overlay);
+    }
+
+    private void setupHeaderWithSpacing() {
+        chatHeader.setText("");
+        chatHeader.setAlignment(Pos.CENTER);
+        chatHeader.setMaxWidth(Double.MAX_VALUE);
+
+        VBox container = new VBox();
+        container.setAlignment(Pos.CENTER);
+        container.setPadding(new Insets(0, 0, 10, 0));
+
+        HBox textContainer = new HBox(2);
+        textContainer.setAlignment(Pos.CENTER);
+
+        String headerText = "OMG NETWORK";
+        for (char c : headerText.toCharArray()) {
+            Text letter = new Text(String.valueOf(c));
+            letter.setFont(Fonts.orbitron(FontWeight.NORMAL, 24));
+            letter.setFill(Color.WHITE);
+            letter.setEffect(new DropShadow(5, rgb(0, 255, 255)));
+            letter.setEffect(new DropShadow(10, rgb(0, 255, 255)));
+            textContainer.getChildren().add(letter);
+        }
+
+        Rectangle underline = new Rectangle(150, 2);
+        underline.setFill(new LinearGradient(
+                0, 0, 1, 0, true, CycleMethod.NO_CYCLE,
+                new Stop(0, Color.TRANSPARENT),
+                new Stop(0.3, rgb(255, 0, 255)),
+                new Stop(0.7, rgb(0, 255, 255)),
+                new Stop(1, Color.TRANSPARENT)
+        ));
+
+        VBox.setMargin(underline, new Insets(5, 0, 0, 0));
+        container.getChildren().addAll(textContainer, underline);
+
+        chatHeader.setGraphic(container);
+        chatHeader.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+    }
+
+    /**
+     * Initializes the chat view and adds initial messages.
+     */
+    private void initializeChat() {
+        try {
+            URL cssUrl = getClass().getResource("/ca/ucalgary/groupprojectgui/p3/styles/checkers.css");
+            if (cssUrl != null) {
+                chatMessages.getStylesheets().add(cssUrl.toExternalForm());
+            }
+            addMessage("SYSTEM", "Welcome to Neon Checkers", true);
+            addMessage("SYSTEM", "Game initialized", true);
+            addMessage("SYSTEM", "Make your move in 30 seconds", true);
+        } catch (Exception e) {
+            System.err.println("Error initializing chat: " + e.getMessage());
+        }
+    }
+
+    private void stopTimer() {
+        if (timeline != null) {
+            timeline.stop();
+        }
+    }
+
+    @FXML
+    public void onSendMessage() {
+        String message = chatInput.getText();
+        if (message == null || message.trim().isEmpty()) {
+            return;
+        }
+
+        // You are always BLACK
+        String sender = (gameLogic.getTurn() == Checkers.Turn.BLACK)
+                ? localPlayer.getUsername()
+                : opponentPlayer.getUsername();
+
+        // Send the message using networking
+        chatSession.sendMessage(sender, message);
+
+        // Check if the message went through (was not blocked by the filter)
+        var history = chatSession.chatManager.getChatHistory();
+        if (!history.isEmpty()) {
+            ChatMessage lastMessage = history.get(history.size() - 1);
+            if (lastMessage.getPlayerId().equals(sender) && lastMessage.getMessage().equals(message)) {
+                addMessage(sender, message, false);
+            } else {
+                addMessage("SYSTEM", "Warning: Inappropriate content!", true);
+            }
+        } else {
+            addMessage("SYSTEM", "Warning: Inappropriate content!", true);
+        }
+
+        chatInput.clear();
+        Platform.runLater(() -> chatScrollPane.setVvalue(1.0));
+    }
+
+    /**
+     * Adds a message to the chat view.
+     * Uses inline styles to force the text color and a 3px left border
+     * so that the message’s appearance (both text and border) remains
+     * constant based on whether it’s a system message or which player sent it.
+     *
+     * @param sender   the sender of the message
+     * @param text     the message text
+     * @param isSystem flag indicating if this is a system message
+     */
+    public void addMessage(String sender, String text, boolean isSystem) {
+        if (chatMessages == null) {
+            System.err.println("Cannot add message - chatMessages is null");
+            return;
+        }
+
+        // Track message in chat history
+        ChatMessage lastMessage = null;
+        for (ChatMessage msg : chatSession.chatManager.getChatHistory()) {
+            if (msg.getPlayerId().equals(sender) && msg.getMessage().equals(text)) {
+                lastMessage = msg;
+                break;
+            }
+        }
+
+        if (lastMessage != null) {
+            lastMessage.markAsRead(String.valueOf(LoginController.loginId));
+
+            // Only log non-system messages OR system messages that are not time warnings
+            if (!isSystem || !(text.contains("⚠") || text.contains("Time's up"))) {
+                writeChatHistoryToCSV();
+            }
+        }
+
+        // Get timestamp if available
+        String timestamp = (lastMessage != null)
+                ? lastMessage.getTimestamp().format(DateTimeFormatter.ofPattern("HH:mm:ss"))
+                : "";
+
+        // Set up chat container
+        HBox messageContainer = new HBox(5);
+        messageContainer.getStyleClass().add("chat-message");
+
+        // Determine color
+        String colorCode;
+        if (isSystem) {
+            colorCode = "#ffff00";  // Yellow
+        } else if (localPlayer != null && sender.equalsIgnoreCase(localPlayer.getUsername())) {
+            colorCode = "#ff00ff";  // Neon pink
+        } else if (opponentPlayer != null && sender.equalsIgnoreCase(opponentPlayer.getUsername())) {
+            colorCode = "#00ffff";  // Neon cyan
+        } else {
+            colorCode = "#ffffff";  // Default white
+        }
+
+        messageContainer.setStyle("-fx-border-width: 0 0 0 3px; -fx-border-color: " + colorCode + ";");
+
+        // Sender label
+        Label senderLabel = new Label(sender + ":");
+
+        senderLabel.setFont(Fonts.rajdhani(FontWeight.BOLD, 14));
+
+        // Message label
+        Label messageLabel = new Label(text);
+        messageLabel.setFont(Fonts.rajdhaniRegular(14));
+
+        senderLabel.setStyle("-fx-text-fill: " + colorCode + ";");
+        messageLabel.setStyle("-fx-text-fill: " + colorCode + ";");
+
+        // DropShadow for system messages
+        if (isSystem) {
+            messageLabel.setEffect(new DropShadow(5, Color.YELLOW));
+        }
+
+        messageContainer.getChildren().addAll(senderLabel, messageLabel);
+        chatMessages.getChildren().add(messageContainer);
+
+        messageCount++;
+
+        if (chatScrollPane != null) {
+            Platform.runLater(() -> chatScrollPane.setVvalue(1.0));
+        }
+    }
+
+
+    private void startTurnTimer() {
+        if (turnCheckTimeline != null) {
+            turnCheckTimeline.stop();
+        }
+
+        turnCheckTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+            if (gameLogic == null || checkersBoard == null || gameLogic.checkWin() != Checkers.WINNER.NONE) return;
+
+            Checkers.Turn currentTurn = gameLogic.getTurn();
+            TurnTimer currentTimer = (currentTurn == Checkers.Turn.WHITE) ? timerWhite : timerBlack;
+            boolean isWhiteTurn = currentTurn == Checkers.Turn.WHITE;
+
+            long elapsedTime = System.currentTimeMillis() - currentTimer.getStartTime();
+            long remainingMillis = currentTimer.getRemainingTime() - elapsedTime;
+            int remainingSec = (int) (remainingMillis / 1000);
+
+            // 10-second warning
+            if (remainingSec <= 10) {
+                if (isWhiteTurn && !warningSentWhite) {
+                    addMessage("SYSTEM", "⚠ " + opponentPlayer.getUsername() + " has 10 seconds left!", true);
+                    warningSentWhite = true;
+                } else if (!isWhiteTurn && !warningSentBlack) {
+                    addMessage("SYSTEM", "⚠ " + localPlayer.getUsername() + " has 10 seconds left!", true);
+                    warningSentBlack = true;
+                }
+            }
+
+            // Time's up — end game
+            if (currentTimer.isTimeExpired()) {
+                Platform.runLater(() -> {
+                    String loser = isWhiteTurn ? opponentPlayer.getUsername() : localPlayer.getUsername();
+                    String winner = isWhiteTurn ? localPlayer.getUsername() : opponentPlayer.getUsername();
+
+                    addMessage("SYSTEM", loser + " ⏰ Time's up! " + winner + " wins!", true);
+                    showGameOverPopup(winner, true);
+                    turnLabel.setText(winner + " wins!");
+                    turnPiece.getStyleClass().clear();
+                    turnPiece.getStyleClass().add(isWhiteTurn ? "checker-black" : "checker-white");
+
+                    boardGrid.setDisable(true);
+                    stopTimer();
+                    stopTurnTimer();
+
+                    if (isWhiteTurn) {
+                        gameProcessor.UpdateResults(localPlayer, opponentPlayer, gameType);  // White timed out
+                    } else {
+                        gameProcessor.UpdateResults(opponentPlayer, localPlayer, gameType);  // Black timed out
+                    }
+                });
+            }
+        }));
+
+        turnCheckTimeline.setCycleCount(Timeline.INDEFINITE);
+        turnCheckTimeline.play();
+    }
+
+
+    private void stopTurnTimer() {
+        if (turnCheckTimeline != null) {
+            turnCheckTimeline.stop();
+        }
+    }
+
+
+    private void writeChatHistoryToCSV() {
+        List<ChatMessage> history = chatSession.chatManager.getChatHistory();
+        try (PrintWriter writer = new PrintWriter(new FileWriter(CHECKERS_CHAT_CSV))) {
+            writer.println("Timestamp,Sender,Message,ReadBy");
+            for (ChatMessage msg : history) {
+                String timestamp = msg.getTimestamp().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+                String readers = String.join(";", msg.getReaders());
+                writer.printf("\"%s\",\"%s\",\"%s\",\"%s\"%n", timestamp, msg.getPlayerId(), msg.getMessage(), readers);
+            }
+        } catch (IOException e) {
+            System.err.println("Failed to write chat history: " + e.getMessage());
+        }
+    }
+
+    private void clearChatHistoryCSV() {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(CHECKERS_CHAT_CSV))) {
+            writer.println("Timestamp,Sender,Message,ReadBy"); // CSV header
+        } catch (IOException e) {
+            System.err.println("Failed to clear chat history: " + e.getMessage());
+        }
+    }
+
+
 }

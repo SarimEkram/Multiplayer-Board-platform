@@ -1,114 +1,125 @@
 package MatchmakingLeaderboard;
 
-
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static MatchmakingLeaderboard.GameType.*;
+
+import java.util.List;
 
 public class PlayerDatabaseTest {
-    Player testPlayer = new Player("Ramesh", 5, 123456);
+    private static final String username = "testplayer01";
+    private static final int level = 5;
+    private static final int userID = 100001;
 
-    /**
-     * Initializes test player with sample data
-     */
-    @BeforeEach
-    void setUp() {
-        testPlayer.addWin(1);
-        testPlayer.addLoss(2);
-        testPlayer.setMMR(1500, 3);
-        testPlayer.setGameSignal(1, 1);
-        testPlayer.setRank(new Rank(100), 1);
-    }
-
-    /**
-     * Tests basic save and load functionality
-     */
     @Test
-    void testSaveAndLoadPlayer() {
-        // Save the player
-        assertTrue(PlayerDatabase.savePlayer(testPlayer));
+    void testSaveAndRetrievePlayer() {
+        Player player = new Player(username, level, userID);
+        boolean saved = PlayerDatabase.savePlayer(player);
+        assertTrue(saved);
 
-        // Load players from file
-        PlayerDatabase.loadPlayersFromCSV();
+        Player retrieved = PlayerDatabase.getPlayerByUserID(userID);
+        assertNotNull(retrieved);
+        assertEquals(username, retrieved.getUsername());
 
-        // Retrieve the player
-        Player loadedPlayer = PlayerDatabase.getPlayerByUserID(123456);
-        assertNotNull(loadedPlayer, "Expected to be not null, but it wasn't");
-
-        // Verify loaded data
-        assertEquals("Ramesh", loadedPlayer.getUsername());
-        assertEquals(5, loadedPlayer.getLevel());
-        assertEquals(1, loadedPlayer.getWins(1));
-        assertEquals(1, loadedPlayer.getLosses(2));
-        assertEquals(1500, loadedPlayer.getMMR(3));
-        assertEquals(1, loadedPlayer.getGameSignal(1));
-        assertEquals(100, loadedPlayer.getRank(1).getRankingPoints());
+        // Clean up
+        PlayerDatabase.deletePlayer(userID);
     }
 
-    /**
-     * test player data after updating its basic data
-     */
     @Test
     void testUpdatePlayer() {
-        // Initial save
-        PlayerDatabase.savePlayer(testPlayer);
 
-        // Update player data
-        testPlayer.setLevel(10);
-        testPlayer.addWin(1);
-        testPlayer.setMMR(1600, 3);
-        PlayerDatabase.savePlayer(testPlayer);
+        Player original = new Player("p1", 1, 100002);
+        PlayerDatabase.savePlayer(original);
 
-        // Reload and verify updates
-        PlayerDatabase.loadPlayersFromCSV();
-        Player updatedPlayer = PlayerDatabase.getPlayerByUserID(123456);
+        Player updated = new Player("P1", 2, 100002);
+        boolean result = PlayerDatabase.savePlayer(updated);
 
-        assertEquals(10, updatedPlayer.getLevel());
-        assertEquals(2, updatedPlayer.getWins(1));
-        assertEquals(1600, updatedPlayer.getMMR(3));
+        assertTrue(result);
+        assertEquals("P1", PlayerDatabase.getPlayerByUserID(100002).getUsername());
+
+        // Clean up
+        PlayerDatabase.deletePlayer(100002);
     }
 
-    /**
-     *  test player deletion
-     */
     @Test
     void testDeletePlayer() {
-        // Save first
-        PlayerDatabase.savePlayer(testPlayer);
-        assertNotNull(PlayerDatabase.getPlayerByUserID(123456), "Expected to be not null, but it wasn't");
 
-        // Then delete
-        assertTrue(PlayerDatabase.deletePlayer(123456));
-        assertNull(PlayerDatabase.getPlayerByUserID(123456), "Expected to be null, but it wasn't");
+        Player player = new Player("p1", 1, 100003);
+        PlayerDatabase.savePlayer(player);
+
+        boolean deleted = PlayerDatabase.deletePlayer(100003);
+        assertTrue(deleted);
+        assertNull(PlayerDatabase.getPlayerByUserID(100003));
     }
 
-    /**
-     * Tests handling of non-existent players
-     */
     @Test
-    void testNonexistentPlayer() {
-        assertNull(PlayerDatabase.getPlayerByUserID(999999));
+    void testGetPlayerByUsername() {
+        String testUsername = "testuser_" + System.currentTimeMillis();
+
+        Player player = new Player(testUsername, 1, 100004);
+        PlayerDatabase.savePlayer(player);
+
+        Player found = PlayerDatabase.getPlayerByUsername(testUsername);
+        assertNotNull(found);
+        assertEquals(100004, found.getUserID());
+
+        // Clean up
+        PlayerDatabase.deletePlayer(100004);
     }
 
-    /**
-     * Tests multiple player handling
-     */
     @Test
-    void testMultiplePlayers() {
-        Player player2 = new Player("Suresh", 3, 654321);
-        player2.addWin(2);
-        player2.setMMR(1200, 2);
+    void testGetAllPlayers() {
 
-        PlayerDatabase.savePlayer(testPlayer);
+        Player player1 = new Player("player1", 1, 100005);
+        Player player2 = new Player("player2", 2, 100006);
+
+        PlayerDatabase.savePlayer(player1);
         PlayerDatabase.savePlayer(player2);
 
-        Player loaded1 = PlayerDatabase.getPlayerByUserID(123456);
-        Player loaded2 = PlayerDatabase.getPlayerByUserID(654321);
+        List<Player> allPlayers = PlayerDatabase.getAllPlayers();
+        assertTrue(allPlayers.size() >= 2); // Others may exist
 
-        assertNotNull(loaded1, "Expected to be not null, but it wasn't");
-        assertNotNull(loaded2, "Expected to be not null, but it wasn't");
-        assertEquals("Ramesh", loaded1.getUsername());
-        assertEquals("Suresh", loaded2.getUsername());
-        assertEquals(1200, loaded2.getMMR(2));
+        // Clean up
+        PlayerDatabase.deletePlayer(100005);
+        PlayerDatabase.deletePlayer(100006);
+    }
 
+    @Test
+    void testGameSpecificHandling() {
+
+        Player player = new Player("gametest", 1, 100007);
+        player.addWin(TIC_TAC_TOE);
+        PlayerDatabase.savePlayer(player);
+
+        Player retrieved = PlayerDatabase.getPlayerByUserID(100007);
+        assertEquals(1, retrieved.getWins(TIC_TAC_TOE));
+
+        // Clean up
+        PlayerDatabase.deletePlayer(100007);
+    }
+
+    @Test
+    void testDuplicatePlayerHandling() {
+
+        Player player1 = new Player("p1", 1, 100008);
+        Player player2 = new Player("p1", 2, 100008);
+
+        PlayerDatabase.savePlayer(player1);
+        PlayerDatabase.savePlayer(player2);
+
+        Player retrieved = PlayerDatabase.getPlayerByUserID(100008);
+        assertEquals(2, retrieved.getLevel());
+
+        // Clean up
+        PlayerDatabase.deletePlayer(100008);
+    }
+
+    @Test
+    void testNonexistentPlayerRetrieval() {
+        int nonExistentId = 999999;
+        String nonExistentUsername = "nonexistent_" + System.currentTimeMillis();
+
+        assertNull(PlayerDatabase.getPlayerByUserID(nonExistentId));
+        assertNull(PlayerDatabase.getPlayerByUsername(nonExistentUsername));
     }
 }

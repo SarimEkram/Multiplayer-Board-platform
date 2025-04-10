@@ -2,17 +2,18 @@ package MatchmakingLeaderboard.Connect4.Leaderboard;
 
 import MatchmakingLeaderboard.Player;
 import MatchmakingLeaderboard.PlayerDatabase;
-
+import MatchmakingLeaderboard.GameType;
 import java.util.ArrayList;
 import java.util.List;
 
+import static MatchmakingLeaderboard.GameType.CONNECT_FOUR;
 /**
  * Concrete class for Connect-4 leaderboard management.
  */
 public class Connect4Leaderboard extends AbstractConnect4Leaderboard {
 
     private static final Connect4Leaderboard instance = new Connect4Leaderboard();
-    private static final int GAME_TYPE = 3;
+
 
     private Connect4Leaderboard() {
     }
@@ -27,7 +28,7 @@ public class Connect4Leaderboard extends AbstractConnect4Leaderboard {
         return new ArrayList<>(players);
     }
 
-    public static void updatePlayer(Player player, boolean Won, int gameType) {
+    public static void updatePlayer(Player player, boolean Won, GameType gameType) {
         instance.addPlayer(player, gameType);
         instance.sortLeaderboard();
     }
@@ -39,7 +40,7 @@ public class Connect4Leaderboard extends AbstractConnect4Leaderboard {
 
         List<Player> connect4Players = new ArrayList<>();
         for (Player player : allPlayers) {
-            if (player.getMMR(GAME_TYPE) > 0) {
+            if (player.getMMR(CONNECT_FOUR) >= 0) {
                 connect4Players.add(player);
             }
         }
@@ -49,6 +50,6 @@ public class Connect4Leaderboard extends AbstractConnect4Leaderboard {
     }
 
     public void sortLeaderboard() {
-        players.sort((p1, p2) -> Integer.compare(p2.getMMR(GAME_TYPE), p1.getMMR(GAME_TYPE)));
+        players.sort((p1, p2) -> Integer.compare(p2.getMMR(CONNECT_FOUR), p1.getMMR(CONNECT_FOUR)));
     }
 }

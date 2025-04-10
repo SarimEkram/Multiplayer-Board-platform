@@ -30,7 +30,6 @@ public class TurnTimer {
     public void startTimer() {
         this.startTime = System.currentTimeMillis();
         this.isPaused = false;
-        System.out.println("Turn timer started for player: " + playerId);
     }
 
 
@@ -39,7 +38,6 @@ public class TurnTimer {
      */
     public void resetTimer() {
         this.remainingTime = turnDuration * 1000L;
-        System.out.println("Timer reset for player: " + playerId);
     }
 
     /**
@@ -100,7 +98,6 @@ public class TurnTimer {
      * Simulated method for disconnecting an inactive player via the networking system.
      */
     private void disconnectPlayer() {
-        // TODO: Implement network call to remove the player from the game session
         System.out.println("Network: Player " + playerId + " removed from session.");
     }
 
@@ -108,14 +105,13 @@ public class TurnTimer {
      * Simulated method for sending a warning notification to the player.
      */
     private void sendWarningNotification() {
-        // TODO: Implement server message or client UI alert
         System.out.println("Network: Warning sent to player " + playerId);
     }
 
-
-
-
-
-
-
+    public long getStartTime() {
+        return this.startTime;
+    }
+    public long getRemainingTime() {
+        return this.remainingTime;
+    }
 }

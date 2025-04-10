@@ -2,14 +2,15 @@ package MatchmakingLeaderboard.TicTacToe.Leaderboard;
 
 import MatchmakingLeaderboard.Player;
 import MatchmakingLeaderboard.PlayerDatabase;
-
+import MatchmakingLeaderboard.GameType;
+import static MatchmakingLeaderboard.GameType.TIC_TAC_TOE;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TicTacToeLeaderboard extends AbstractTicTacToeLeaderboard {
 
     private static final TicTacToeLeaderboard instance = new TicTacToeLeaderboard();
-    private static final int GAME_TYPE = 1;
+
 
     private TicTacToeLeaderboard() {
     }
@@ -24,7 +25,7 @@ public class TicTacToeLeaderboard extends AbstractTicTacToeLeaderboard {
         return new ArrayList<>(players);
     }
 
-    public static void updatePlayer(Player player, boolean Won, int gameType) {
+    public static void updatePlayer(Player player, boolean Won, GameType gameType) {
         instance.addPlayer(player, gameType);
         instance.sortLeaderboard();
     }
@@ -36,7 +37,7 @@ public class TicTacToeLeaderboard extends AbstractTicTacToeLeaderboard {
 
         List<Player> ticTacToePlayers = new ArrayList<>();
         for (Player player : allPlayers) {
-            if (player.getMMR(GAME_TYPE) > 0) {
+            if (player.getMMR(TIC_TAC_TOE) >= 0) {
                 ticTacToePlayers.add(player);
             }
         }
@@ -46,6 +47,6 @@ public class TicTacToeLeaderboard extends AbstractTicTacToeLeaderboard {
     }
 
     public void sortLeaderboard() {
-        players.sort((p1, p2) -> Integer.compare(p2.getMMR(GAME_TYPE), p1.getMMR(GAME_TYPE)));
+        players.sort((p1, p2) -> Integer.compare(p2.getMMR(TIC_TAC_TOE), p1.getMMR(TIC_TAC_TOE)));
     }
 }

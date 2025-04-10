@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import java.lang.String?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           stylesheets="@../styles/home.css"
+           fx:controller="ca.ucalgary.groupprojectgui.p3.controllers.HomePageController"
+           styleClass="home-background"
+           prefWidth="1200" prefHeight="800">
+
+    <!-- Main content container -->
+    <HBox fx:id="mainContainer" spacing="40" style="-fx-padding: 30;">
+
+        <!-- CENTER + RIGHT AREA -->
+        <HBox spacing="20" fillHeight="true" HBox.hgrow="ALWAYS">
+            <!-- CENTER: MAIN CONTENT AREA -->
+            <BorderPane fx:id="homePane"
+                        styleClass="main-glow-box"
+                        prefWidth="1000"
+                        HBox.hgrow="ALWAYS"
+                        style="-fx-padding: 40; -fx-background-radius: 20;"
+                        VBox.vgrow="ALWAYS">
+                <!-- TOP: Search Field -->
+                <top>
+                    <HBox spacing="20" alignment="CENTER" styleClass="top-header">
+                        <!-- Logo Image -->
+                        <ImageView fx:id="img" fitHeight="90" preserveRatio="true" pickOnBounds="true"/>
+
+                        <!-- Spacer -->
+                        <Region HBox.hgrow="ALWAYS"/>
+
+                        <!-- Game Search Field with Magnifier Icon -->
+                        <StackPane alignment="CENTER_RIGHT" maxWidth="400">
+                            <TextField fx:id="gameSearchField"
+                                       promptText="Search games..."
+                                       styleClass="search-text-field"
+                                       prefWidth="800"
+                                       prefHeight="50"/>
+                            <Label text="🔍"
+                                   mouseTransparent="true"
+                                   style="-fx-font-size: 16px; -fx-text-fill: #bbbbbb; -fx-padding: 0 12 0 0;"/>
+                        </StackPane>
+
+                        <!-- Spacer -->
+                        <Region HBox.hgrow="ALWAYS"/>
+
+                        <Button fx:id="selfStatsButton"
+                                text="🎖️STATS"
+                                onAction="#showStatsOverlay"
+                                styleClass="logout-button"
+                                prefWidth="120"
+                                prefHeight="40"/>
+                        <!-- Profile Icon -->
+                        <ImageView fx:id="profileIcon"
+                                   fitHeight="45" fitWidth="45"
+                                   pickOnBounds="true"
+                                   onMouseClicked="#openManageProfile"/>
+
+                        <Button fx:id="logoutButton"
+                                text="⎋ Logout"
+                                onAction="#showLogoutOverlay"
+                                styleClass="logout-button"
+                                prefWidth="120"
+                                prefHeight="40"/>
+
+                    </HBox>
+                </top>
+
+
+                <!-- CENTER: Game UI -->
+                <center>
+                    <VBox alignment="TOP_CENTER" spacing="30" style="-fx-padding: 30;">
+                        <Label text="CHOOSE A GAME" styleClass="section-title"/>
+                        <HBox fx:id="gameTilePane" alignment="CENTER" spacing="40">
+                            <!-- TIC TAC TOE CARD -->
+                            <VBox alignment="TOP_CENTER" spacing="15" styleClass="game-card">
+                                <Label text="Tic Tac Toe" styleClass="game-title"/>
+                                <ImageView fx:id="tttImage" fitWidth="220" fitHeight="130" preserveRatio="true" styleClass="game-preview"/>
+                                <Label text="Battle in a grid of 3x3. Outsmart your opponent in a retro showdown!"
+                                       wrapText="true" maxWidth="250" styleClass="game-description"/>
+                                <Button fx:id="tttBtn" text="PLAY NOW" onAction="#onTicTacToeClick" styleClass="play-now-button"/>
+                            </VBox>
+                            <!-- CONNECT 4 CARD -->
+                            <VBox alignment="TOP_CENTER" spacing="15" styleClass="game-card">
+                                <Label text="Connect 4" styleClass="game-title"/>
+                                <ImageView fx:id="connect4Image" fitWidth="220" fitHeight="130" preserveRatio="true" styleClass="game-preview"/>
+                                <Label text="Classic vertical strategy game with a neon twist. Connect four of your pieces to win!"
+                                       wrapText="true" maxWidth="250" styleClass="game-description"/>
+                                <Button fx:id="connect4Btn" text="PLAY NOW" onAction="#onConnect4Click" styleClass="play-now-button"/>
+                            </VBox>
+                            <!-- CHECKERS CARD -->
+                            <VBox alignment="TOP_CENTER" spacing="15" styleClass="game-card">
+                                <Label text="Checkers" styleClass="game-title"/>
+                                <ImageView fx:id="checkersImage" fitWidth="220" fitHeight="130" preserveRatio="true" styleClass="game-preview"/>
+                                <Label text="Jump your way to victory in this classic game with a neon twist."
+                                       wrapText="true" maxWidth="250" styleClass="game-description"/>
+                                <Button fx:id="checkersBtn" text="PLAY NOW" onAction="#onCheckersClick" styleClass="play-now-button"/>
+                            </VBox>
+                        </HBox>
+                    </VBox>
+                </center>
+                <bottom>
+
+                    <HBox fx:id="bottomBar"
+                          alignment="TOP_CENTER"
+                          spacing="20"
+                          prefWidth="100"
+                          styleClass="neon-sidebar"
+                          style="-fx-background-radius: 20; -fx-padding: 25;"
+                          HBox.Hgrow="ALWAYS">
+                        <Button fx:id="leaderboardBtn" text="🏆 LEADER BOARD" onAction="#onLeaderboardClick" styleClass="neon-icon-button" prefWidth="200" prefHeight="35"/>
+                    </HBox>
+                </bottom>
+            </BorderPane>
+
+            <!-- RIGHT: FRIENDS PANEL -->
+            <VBox fx:id="friendsPanel" spacing="20" styleClass="right-sidebar" prefWidth="300">
+                <!-- Header: Inline style set for header friends -->
+                    <!-- Header: Inline style set for header friends -->
+                    <HBox alignment="CENTER_LEFT">
+                        <Label text="Friends" style="-fx-font-family: 'Orbitron'; -fx-font-size: 18px; -fx-text-fill: #00ffff; -fx-text-shadow: 0 0 5px #00ffff;"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <!-- Use literal plus sign "+" and assign a custom style class -->
+                        <Button text="+" onAction="#openAddFriendPopup" styleClass="add-friend-button"/>
+                    </HBox>
+                    <!-- Other nodes -->
+
+                <!-- StackPane allows popup to float over the list -->
+                <StackPane VBox.vgrow="ALWAYS">
+                    <!-- Friend list container -->
+                    <VBox fx:id="playersContainer" styleClass="friends-list-container" VBox.vgrow="ALWAYS">
+                        <!-- Friend Items -->
+                        <HBox alignment="CENTER_LEFT" spacing="15" styleClass="friend-item">
+                            <Label text="C" styleClass="friend-initial"/>
+                            <Label text="CyberWarrior" styleClass="friend-name"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Popup that floats over the friend list -->
+                    <VBox fx:id="friendPopupPlaceholder"
+                          visible="false"
+                          managed="false"
+                          alignment="CENTER"
+                          style="-fx-translate-y: -60; -fx-alignment: center;">
+                    </VBox>
+                </StackPane>
+            </VBox>
+        </HBox>
+    </HBox>
+
+    <!-- Opponent Selection Overlay (hidden by default) -->
+    <StackPane fx:id="opponentOverlay" visible="false" opacity="0.0" styleClass="friend-selection-overlay">
+        <VBox spacing="25"
+              alignment="CENTER"
+              prefWidth="350"
+              prefHeight="200"
+              minWidth="300"
+              minHeight="150"
+              maxWidth="450"
+              maxHeight="250"
+              style="-fx-background-color: #0d0d0d;
+                 -fx-background-radius: 15;
+                 -fx-border-color: #ff00ff;
+                 -fx-border-width: 2px;
+                 -fx-border-radius: 15;">
+            <Label text="WHOM  DO  YOU  WANNA  PLAY  WITH??" style="-fx-text-fill: white; -fx-font-size: 20px;"/>
+            <HBox spacing="20" alignment="CENTER">
+                <Button fx:id="randomButton" text="Random" prefWidth="100" prefHeight="40" style="-fx-background-color: #5f27cd; -fx-text-fill: white; -fx-background-radius: 10;"/>
+                <Button fx:id="friendButton" text="Friend" prefWidth="100" prefHeight="40" style="-fx-background-color: #5f27cd; -fx-text-fill: white; -fx-background-radius: 10;"/>
+            </HBox>
+            <Button fx:id="switchGameButton" text="Switch Game" style="-fx-background-color: #5f27cd; -fx-text-fill: white; -fx-background-radius: 10;"/>
+        </VBox>
+    </StackPane>
+
+    <!-- Friend Selection Overlay (hidden by default) -->
+    <StackPane fx:id="friendSelectionOverlay"
+               visible="false"
+               StackPane.alignment="CENTER">
+        <VBox spacing="25"
+              alignment="CENTER"
+              prefWidth="350"
+              prefHeight="200"
+              minWidth="300"
+              minHeight="150"
+              maxWidth="450"
+              style="-fx-background-color: #0d0d0d;
+                 -fx-background-radius: 15;
+                 -fx-border-color: #ff00ff;
+                 -fx-border-width: 2px;
+                 -fx-border-radius: 15;">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <Label text="⚔️CHOOSE  A  FRIEND⚔️"
+                   style="-fx-text-fill: white; -fx-font-size: 22px;" />
+            <ListView fx:id="friendListView"
+                      styleClass="friend-list"
+                      prefWidth="150"
+                      prefHeight="200"/>
+            <HBox alignment="CENTER" spacing="20">
+                <Button text="Confirm" onAction="#onConfirmFriendSelection"
+                        style="-fx-background-color: #4a90e2; -fx-text-fill: white; -fx-background-radius: 10;" />
+                <Button text="Cancel" onAction="#onCancelFriendSelection"
+                        style="-fx-background-color: #ff4444; -fx-text-fill: white; -fx-background-radius: 10;" />
+            </HBox>
+        </VBox>
+    </StackPane>
+
+    <!-- AddFriendPopup Overlay -->
+    <StackPane fx:id="addFriendOverlay"
+               visible="false"
+               managed="false"
+               StackPane.alignment="CENTER">
+        <VBox fx:id="addFriendPopupContainer" spacing="20" alignment="CENTER" maxWidth="400"/>
+    </StackPane>
+
+
+    <StackPane fx:id="logoutOverlay"
+               visible="false"
+               StackPane.alignment="CENTER">
+
+        <VBox spacing="25"
+              alignment="CENTER"
+              prefWidth="350"
+              prefHeight="200"
+              minWidth="300"
+              minHeight="150"
+              maxWidth="450"
+              maxHeight="250"
+              style="-fx-background-color: #0d0d0d;
+                 -fx-background-radius: 15;
+                 -fx-border-color: #ff00ff;
+                 -fx-border-width: 2px;
+                 -fx-border-radius: 15;">
+
+            <Label text="Are you sure you want to log out?"
+                   wrapText="true"
+                   alignment="CENTER"
+                   style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-family: 'Orbitron';"/>
+
+            <HBox spacing="20" alignment="CENTER">
+                <Button fx:id="confirmLogoutButton"
+                        text="Yes"
+                        prefWidth="100" prefHeight="40"
+                        style="-fx-background-color: #ff0044; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;"
+                        onAction="#confirmLogout"/>
+
+                <Button fx:id="cancelLogoutButton"
+                        text="Cancel"
+                        prefWidth="100" prefHeight="40"
+                        style="-fx-background-color: transparent; -fx-border-color: white; -fx-text-fill: white; -fx-border-width: 2px; -fx-background-radius: 8; -fx-border-radius: 8;"
+                        onAction="#cancelLogout"/>
+            </HBox>
+        </VBox>
+    </StackPane>
+
+    <!-- POPUP CONTAINER (on top of everything) -->
+    <StackPane fx:id="popupContainer"
+               style="-fx-background-color: transparent;"
+               visible="false"
+               alignment="CENTER">
+        <!-- Popups will be added here programmatically -->
+    </StackPane>
+</StackPane>
+

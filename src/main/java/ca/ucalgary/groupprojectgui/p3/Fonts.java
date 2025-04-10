@@ -53,6 +53,6 @@ public class Fonts {
         return Font.font("Rajdhani", FontWeight.BOLD, size);
     }
     public static Font rajdhani(FontWeight weight, double size) {
-        return Font.font("rajdhani", weight, size);
+        return Font.font("Rajdhani", weight, size);
     }
 }
