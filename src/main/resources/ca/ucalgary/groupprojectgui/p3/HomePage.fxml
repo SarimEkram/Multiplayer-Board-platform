@@ -144,6 +144,19 @@
         </HBox>
     </HBox>
 
+    <!-- Opponent Selection Overlay (hidden by default) -->
+    <StackPane fx:id="opponentOverlay" visible="false" opacity="0.0" styleClass="friend-selection-overlay">
+        <VBox spacing="20" alignment="CENTER" style="-fx-background-color: rgba(0, 0, 0, 0.8); -fx-background-radius: 10;" minWidth="300" minHeight="150">
+            <HBox alignment="CENTER_RIGHT" maxHeight="150" maxWidth="500">
+                <Button fx:id="cancelButton" text="❌" styleClass="remove-button"/>
+            </HBox>
+            <Label text="WHOM  DO  YOU  WANNA  PLAY  WITH??" style="-fx-text-fill: white; -fx-font-size: 20px;"/>
+            <HBox spacing="20" alignment="CENTER">
+                <Button fx:id="randomButton" text="Random" style="-fx-background-color: #5f27cd; -fx-text-fill: white; -fx-background-radius: 10;"/>
+                <Button fx:id="friendButton" text="Friend" style="-fx-background-color: #341f97; -fx-text-fill: white; -fx-background-radius: 10;"/>
+            </HBox>
+        </VBox>
+    </StackPane>
 
     <!-- Friend Selection Overlay (hidden by default) -->
     <StackPane fx:id="friendSelectionOverlay"

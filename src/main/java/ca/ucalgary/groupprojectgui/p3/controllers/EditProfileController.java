@@ -53,7 +53,7 @@ public class EditProfileController {
         // Set up the neon background (grid and pulsing gradient).
         setupBackground();
 
-        // Optional: Bind the save button width to the text field if desired.
+        // Bind the save button width to the text field if desired.
         if (usernameField != null) {
             saveBtn.prefWidthProperty().bind(usernameField.widthProperty());
         }
@@ -67,6 +67,9 @@ public class EditProfileController {
         // Instead of pre-filling the text fields, show the current info at the top.
         loadUserInfo();
     }
+    /**
+     * Loads and displays the current user's information into UI elements.
+     */
     private void loadUserInfo() {
         userIdLabel.setText(String.valueOf(currentUser.getUserID()));
         // Editable fields remain empty for new input but you can also set prompt texts.
@@ -87,8 +90,8 @@ public class EditProfileController {
 
     /**
      * Sets up the background to match the login scene:
-     * - A grid drawn on a Canvas (in gridBackground)
-     * - A pulsing radial gradient overlay (in cyberGlow)
+     * A grid drawn on a Canvas (in gridBackground)
+     * A pulsing radial gradient overlay (in cyberGlow)
      */
     private void setupBackground() {
         // Create and bind a Canvas to the gridBackground pane.
@@ -232,8 +235,6 @@ public class EditProfileController {
             showNode(infoLabel);
         }
     }
-
-
     /**
      * Navigates back to the Manage Profile screen.
      */

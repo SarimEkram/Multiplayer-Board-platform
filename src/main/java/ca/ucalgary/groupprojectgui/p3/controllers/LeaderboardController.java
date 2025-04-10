@@ -53,6 +53,40 @@ public class LeaderboardController {
     private void populateLeaderboard(GameType gameType, VBox leaderboardBox) {
         leaderboardBox.getChildren().clear();
 
+        // Add header row
+        HBox header = new HBox(20);
+        header.setAlignment(Pos.CENTER);
+        header.getStyleClass().add("leaderboard-data-header");
+
+        Label rankHeader = new Label("Rank");
+        rankHeader.setAlignment(Pos.CENTER);
+        rankHeader.setMinWidth(40);
+
+        Label idHeader = new Label("User ID");
+        idHeader.setAlignment(Pos.CENTER);
+        idHeader.setMinWidth(120);
+
+        Label usernameHeader = new Label("Username");
+        usernameHeader.setAlignment(Pos.CENTER);
+        usernameHeader.setMinWidth(180);
+
+        Label levelHeader = new Label("Level");
+        levelHeader.setAlignment(Pos.CENTER);
+        levelHeader.setMinWidth(100);
+
+        Label mmrHeader = new Label("MMR");
+        mmrHeader.setAlignment(Pos.CENTER);
+        mmrHeader.setMinWidth(120);
+
+        Label rankTierHeader = new Label("Rank Tier");
+        rankTierHeader.setAlignment(Pos.CENTER);
+        rankTierHeader.setMinWidth(150);
+
+        header.getChildren().addAll(rankHeader, idHeader, usernameHeader, levelHeader, mmrHeader, rankTierHeader);
+        leaderboardBox.getChildren().add(header);
+        leaderboardBox.setPrefWidth(800);
+        leaderboardBox.setAlignment(Pos.TOP_CENTER);
+
         List<Player> players = switch (gameType) {
             case TIC_TAC_TOE -> {
                 TicTacToeLeaderboard.getInstance().displayLeaderboard();
@@ -72,34 +106,39 @@ public class LeaderboardController {
             Label noData = new Label("No players found.");
             noData.setStyle("-fx-text-fill: white; -fx-font-size: 16;");
             leaderboardBox.getChildren().add(noData);
+            leaderboardBox.setPrefWidth(800);
+            leaderboardBox.setAlignment(Pos.TOP_CENTER);
         } else {
             int rank = 1;
             for (Player player : players) {
                 String rankTier = player.rankForPlayer(gameType);
 
                 HBox row = new HBox(20);
-                row.setAlignment(Pos.CENTER_LEFT);
+                row.setAlignment(Pos.CENTER);
                 row.getStyleClass().add("leaderboard-entry");
 
-                Label rankLabel = new Label(rank + ".");
+                Label rankLabel = new Label(String.valueOf(rank));
                 rankLabel.setMinWidth(40);
-                rankLabel.setAlignment(Pos.CENTER_LEFT);
 
-                Label idLabel = new Label("ID: " + player.getUserID());
+                Label idLabel = new Label(String.valueOf(player.getUserID()));
+                idLabel.setAlignment(Pos.CENTER);
                 idLabel.setMinWidth(120);
 
-                Label usernameLabel = new Label("Username: " + player.getUsername());
+                Label usernameLabel = new Label(player.getUsername());
+                usernameLabel.setAlignment(Pos.CENTER);
                 usernameLabel.setMinWidth(180);
 
-                Label levelLabel = new Label("Level: " + player.getLevel());
+                Label levelLabel = new Label(String.valueOf(player.getLevel()));
+                levelLabel.setAlignment(Pos.CENTER);
                 levelLabel.setMinWidth(100);
 
-                Label mmrLabel = new Label("MMR: " + player.getMMR(gameType));
+                Label mmrLabel = new Label(String.valueOf(player.getMMR(gameType)));
+                mmrLabel.setAlignment(Pos.CENTER);
                 mmrLabel.setMinWidth(120);
 
-                Label rankTierLabel = new Label("Rank: " + rankTier);
+                Label rankTierLabel = new Label(rankTier);
                 rankTierLabel.setMinWidth(150);
-                HBox.setHgrow(rankTierLabel, Priority.ALWAYS);
+                rankTierLabel.setAlignment(Pos.CENTER);
 
                 row.getChildren().addAll(rankLabel, idLabel, usernameLabel, levelLabel, mmrLabel, rankTierLabel);
                 leaderboardBox.getChildren().add(row);

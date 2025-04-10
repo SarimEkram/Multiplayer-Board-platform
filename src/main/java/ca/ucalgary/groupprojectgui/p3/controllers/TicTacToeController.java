@@ -159,8 +159,8 @@ public class TicTacToeController {
         gameProcessor = new GameProcessor(localPlayer, opponentPlayer, gameType);
         currentPlayer = 'X';
         turnLabel.setText("X: " + localPlayer.getUsername() + "'s Turn");
-        localPlayerLabel.setText(localPlayer.getUsername());
-        opponentLabel.setText(opponentPlayer.getUsername());
+        localPlayerLabel.setText(localPlayer.getUsername().toUpperCase());
+        opponentLabel.setText(opponentPlayer.getUsername().toUpperCase());
 
         chatSession = new InGameChat("TicTacToe-" + localPlayer.getUserID()); // or a real session ID if you have one
         chatSession.establishConnection();
@@ -243,7 +243,6 @@ public class TicTacToeController {
             if (symbol == 'X') {
                 showGameOverPopup(localPlayer.getUsername(), true);
                 gameOver = true;
-                boardContainer.setDisable(true);
                 stopTimer();
                 gameProcessor.UpdateResults(localPlayer, opponentPlayer, gameType);
                 return;
