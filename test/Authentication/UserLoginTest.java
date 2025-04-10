@@ -105,7 +105,7 @@ public class UserLoginTest {
         assertNotNull(sessionData, "Session data should be created");
         assertEquals(userId, sessionData.getUserId(), "Session should be associated with correct user");
         assertNotNull(sessionData.getToken(), "Session should have a token");
-        assertNotNull(sessionData.getExpiryTime(), "Session should have expiry time");
+        assertNotNull(sessionData.getExpiry(), "Session should have expiry time");
     }
     
     @Test
@@ -116,7 +116,7 @@ public class UserLoginTest {
         assertNotNull(authToken, "Auth token should be created");
         assertEquals(userId, authToken.getUserId(), "Auth token should be associated with correct user");
         assertNotNull(authToken.getToken(), "Auth token should have a token value");
-        assertNotNull(authToken.getExpiryTime(), "Auth token should have expiry time");
+        assertNotNull(authToken.getExpiry(), "Auth token should have expiry time");
     }
     
     @Test
