@@ -156,6 +156,7 @@ public class TicTacToeController {
         logicBoard = new TicTacToeBoard();
         gameLogic = new TicTacToe(logicBoard);
         gameLogic.start();
+        // create a new game processor class to update result
         gameProcessor = new GameProcessor(localPlayer, opponentPlayer, gameType);
         currentPlayer = 'X';
         turnLabel.setText("X: " + localPlayer.getUsername() + "'s Turn");
@@ -244,12 +245,14 @@ public class TicTacToeController {
                 showGameOverPopup(localPlayer.getUsername(), true);
                 gameOver = true;
                 stopTimer();
+                // updates the result, local player wins
                 gameProcessor.UpdateResults(localPlayer, opponentPlayer, gameType);
                 return;
             } else {
                 showGameOverPopup(opponentPlayer.getUsername(), true);
                 gameOver = true;
                 stopTimer();
+                // updates the result, opponent player wins
                 gameProcessor.UpdateResults(opponentPlayer, localPlayer, gameType);
                 return;
             }
@@ -558,12 +561,14 @@ public class TicTacToeController {
                     // Player X's time expired, Player O wins
 //                    scorePlayerO++; // Increment score for Player O
 //                    score2.setText("Score: " + scorePlayerO); // Update UI for Player O's score
+                    // updates the result, opponent player wins
                     gameProcessor.UpdateResults(opponentPlayer, localPlayer, gameType);
                 } else {
                     //
                     // Player O's time expired, Player X wins
 //                    scorePlayerX++; // Increment score for Player X
 //                    score1.setText("Score: " + scorePlayerX); // Update UI for Player X's score
+                    // updates the result, local player wins
                     gameProcessor.UpdateResults(localPlayer, opponentPlayer, gameType);
                 }
                 addMessage("SYSTEM", loser + " ⏰ Time's up! " + winner + " wins!", true);

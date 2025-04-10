@@ -148,6 +148,8 @@ public class Connect4Controller {
             opponentPlayer = PlayerDatabase.getPlayerByUserID(HomePageController.friendOpponentID);
         }
         // --- End matchmaking integration ---
+
+        // create a new game processor class to update result
         gameProcessor = new GameProcessor(localPlayer, opponentPlayer, gameType);
 
 
@@ -722,11 +724,13 @@ public class Connect4Controller {
                 if (isP1) {
                     // Player 1 time expired, Player 2 wins
                     scorePlayer2++; // Increment score for Player 2
+                    // update the result, opponent player wins
                     gameProcessor.UpdateResults(opponentPlayer,localPlayer, gameType);
                     score2.setText("Score: " + scorePlayer2); // Update UI for Player 2's score
                 } else {
                     // Player 2 time expired, Player 1 wins
                     scorePlayer1++; // Increment score for Player 1
+                    // update the result, local player wins
                     gameProcessor.UpdateResults(localPlayer, opponentPlayer, gameType);
                     score1.setText("Score: " + scorePlayer1); // Update UI for Player 1's score
                 }

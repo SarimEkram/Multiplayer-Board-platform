@@ -186,6 +186,7 @@ public class CheckersController {
         player2Name.setPadding(new Insets(5, 10, 5, 10));
         player2Name.setFont(Fonts.rajdhaniBold(16));
 
+        // create a game processor object to update the result
         gameProcessor = new GameProcessor(localPlayer, opponentPlayer, gameType);
 
         startTimer();
@@ -595,9 +596,11 @@ public class CheckersController {
         if (winner != Checkers.WINNER.NONE) {
             if (winner == Checkers.WINNER.WHITE) {
                 showGameOverPopup(opponentPlayer.getUsername(), true);
+                // update game result opponentPlayer wins
                 gameProcessor.UpdateResults(opponentPlayer, localPlayer, gameType);
             } else {
                 showGameOverPopup(localPlayer.getUsername(), true);
+                // update game result, local player wins
                 gameProcessor.UpdateResults(localPlayer, opponentPlayer, gameType);
             }
             boardGrid.setDisable(true);

@@ -90,17 +90,27 @@ public class LeaderboardController {
         leaderboardBox.setPrefWidth(800);
         leaderboardBox.setAlignment(Pos.TOP_CENTER);
 
+        // Define a list of players based on the leaderboard scores for different games
         List<Player> players = switch (gameType) {
+            // Case for Tic Tac Toe game
             case TIC_TAC_TOE -> {
+                // Display the leaderboard for Tic Tac Toe on the console or GUI
                 TicTacToeLeaderboard.getInstance().displayLeaderboard();
+                // Fetch and yield the list of players with their scores from the Tic Tac Toe leaderboard
                 yield TicTacToeLeaderboard.getInstance().getScores();
             }
+            // Case for Checkers game
             case CHECKERS -> {
+                // Display the leaderboard for Checkers on the console or GUI
                 CheckersLeaderboard.getInstance().displayLeaderboard();
+                // Fetch and yield the list of players with their scores from the Checkers leaderboard
                 yield CheckersLeaderboard.getInstance().getScores();
             }
+            // Case for Connect Four game
             case CONNECT_FOUR -> {
+                // Display the leaderboard for Connect Four on the console or GUI
                 Connect4Leaderboard.getInstance().displayLeaderboard();
+                // Fetch and yield the list of players with their scores from the Connect Four leaderboard
                 yield Connect4Leaderboard.getInstance().getScores();
             }
         };
@@ -112,8 +122,12 @@ public class LeaderboardController {
             leaderboardBox.setPrefWidth(800);
             leaderboardBox.setAlignment(Pos.TOP_CENTER);
         } else {
+            // Initialize the rank starting at 1 for the first player
             int rank = 1;
+            // Iterate through the list of players retrieved from the leaderboard
             for (Player player : players) {
+                // Obtain the rank tier for each player based on the game type
+                // This method might return a ranking category ("Bronze", "Gold", "Silver") based on the player's score
                 String rankTier = player.rankForPlayer(gameType);
 
                 HBox row = new HBox(20);
@@ -146,6 +160,7 @@ public class LeaderboardController {
 
                 row.getChildren().addAll(rankLabel, idLabel, usernameLabel, levelLabel, mmrLabel, rankTierLabel);
                 leaderboardBox.getChildren().add(row);
+                // increment rank
                 rank++;
             }
         }
