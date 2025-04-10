@@ -11,7 +11,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.effect.DropShadow;
@@ -32,9 +31,12 @@ public class HomePageController {
     public HBox gameFriend;
     public HBox mainContainer;
     public StackPane opponentOverlay;
-    public Button cancelButton;
+    public Button switchGameButton;
     public Button randomButton;
     public Button friendButton;
+    public Button cancelLogoutButton;
+    public Button confirmLogoutButton;
+    public StackPane logoutOverlay;
     @FXML
     private VBox playersContainer;
     // Fields for game/home page
@@ -297,11 +299,6 @@ public class HomePageController {
     }
 
     @FXML
-    private void handleLogout() {
-        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/LogoutConfirmationPanel.fxml", "Confirm Logout", null);
-    }
-
-    @FXML
     public void launchGame(String gameName) {
         System.out.println("Launching game: " + gameName);
 
@@ -369,8 +366,8 @@ public class HomePageController {
         opponentOverlay.setVisible(true);
         opponentOverlay.setOpacity(1.0);
 
-        // Cancel button behavior
-        cancelButton.setOnAction(e -> {
+        // Switch Game button behavior
+        switchGameButton.setOnAction(e -> {
             opponentOverlay.setVisible(false);
             opponentOverlay.setOpacity(0.0);
             mainContainer.setEffect(null);
@@ -409,7 +406,7 @@ public class HomePageController {
             Player friend = PlayerDatabase.getPlayerByUserID(friendId);
             User onlineUser = UserDatabase.getUserById(friendId);
             // Check if the friend exists and is online (assuming isOnline() exists)
-            if (friend != null && onlineUser.isOnline() ) {
+            if (friend != null && onlineUser != null && onlineUser.isOnline() ) {
                 friendListView.getItems().add(friend.getUsername());
                 // Update ListView display properties dynamically based on the number of items
                 friendListView.setFixedCellSize(32);
@@ -467,19 +464,24 @@ public class HomePageController {
 
     // ---------------- Nested Logout Confirmation Controller ----------------
 
-    public class LogoutConfirmationController {
+    @FXML
+    public void showLogoutOverlay() {
+        logoutOverlay.setVisible(true);
+        BoxBlur blur = new BoxBlur(10, 10, 3);
+        mainContainer.setEffect(blur); // mainContainer should be your root layout pane
+    }
 
-        @FXML
-        private void confirmLogout() {
-            System.out.println("User confirmed logout.");
-            // Do logout logic here (e.g., navigate to login screen)
-        }
+    @FXML
+    public void confirmLogout() {
+        System.out.println("User confirmed logout");
+        // Navigate to login or home screen
+        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/Login.fxml", "Login", "login.css");
+    }
 
-        @FXML
-        private void cancelLogout() {
-            System.out.println("User canceled logout.");
-            // Close/hide this popup
-        }
+    @FXML
+    public void cancelLogout() {
+        logoutOverlay.setVisible(false);
+        mainContainer.setEffect(null);
     }
 
 
@@ -514,11 +516,11 @@ public class HomePageController {
         Label friendStatus = new Label("⚪️");
         friendStatus.setStyle("-fx-font-size: 12px;");
         User onlineUser = UserDatabase.getUserById(friendId);
-        if(onlineUser.isOnline())
+        if(onlineUser!= null && onlineUser.isOnline())
             friendStatus.setText("🟢");
         else
             friendStatus.setText("🔴");
-// Set an event handler on the entire friend item.
+        // Set an event handler on the entire friend item.
         // This handler will show the friend profile popup.
         friendItem.setOnMouseClicked(event -> {
             showFriendProfilePopup(username);

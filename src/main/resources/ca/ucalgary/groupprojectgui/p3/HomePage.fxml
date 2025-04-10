@@ -55,7 +55,7 @@
 
                         <Button fx:id="logoutButton"
                                 text="⎋ Logout"
-                                onAction="#handleLogout"
+                                onAction="#showLogoutOverlay"
                                 styleClass="logout-button"
                                 prefWidth="120"
                                 prefHeight="40"/>
@@ -146,15 +146,25 @@
 
     <!-- Opponent Selection Overlay (hidden by default) -->
     <StackPane fx:id="opponentOverlay" visible="false" opacity="0.0" styleClass="friend-selection-overlay">
-        <VBox spacing="20" alignment="CENTER" style="-fx-background-color: rgba(0, 0, 0, 0.8); -fx-background-radius: 10;" minWidth="300" minHeight="150">
-            <HBox alignment="CENTER_RIGHT" maxHeight="150" maxWidth="500">
-                <Button fx:id="cancelButton" text="❌" styleClass="remove-button"/>
-            </HBox>
+        <VBox spacing="25"
+              alignment="CENTER"
+              prefWidth="350"
+              prefHeight="200"
+              minWidth="300"
+              minHeight="150"
+              maxWidth="450"
+              maxHeight="250"
+              style="-fx-background-color: #0d0d0d;
+                 -fx-background-radius: 15;
+                 -fx-border-color: #ff00ff;
+                 -fx-border-width: 2px;
+                 -fx-border-radius: 15;">
             <Label text="WHOM  DO  YOU  WANNA  PLAY  WITH??" style="-fx-text-fill: white; -fx-font-size: 20px;"/>
             <HBox spacing="20" alignment="CENTER">
-                <Button fx:id="randomButton" text="Random" style="-fx-background-color: #5f27cd; -fx-text-fill: white; -fx-background-radius: 10;"/>
-                <Button fx:id="friendButton" text="Friend" style="-fx-background-color: #341f97; -fx-text-fill: white; -fx-background-radius: 10;"/>
+                <Button fx:id="randomButton" text="Random" prefWidth="100" prefHeight="40" style="-fx-background-color: #5f27cd; -fx-text-fill: white; -fx-background-radius: 10;"/>
+                <Button fx:id="friendButton" text="Friend" prefWidth="100" prefHeight="40" style="-fx-background-color: #5f27cd; -fx-text-fill: white; -fx-background-radius: 10;"/>
             </HBox>
+            <Button fx:id="switchGameButton" text="Switch Game" style="-fx-background-color: #5f27cd; -fx-text-fill: white; -fx-background-radius: 10;"/>
         </VBox>
     </StackPane>
 
@@ -162,7 +172,18 @@
     <StackPane fx:id="friendSelectionOverlay"
                visible="false"
                StackPane.alignment="CENTER">
-        <VBox alignment="CENTER" spacing="20" styleClass="friend-selection-modal">
+        <VBox spacing="25"
+              alignment="CENTER"
+              prefWidth="350"
+              prefHeight="200"
+              minWidth="300"
+              minHeight="150"
+              maxWidth="450"
+              style="-fx-background-color: #0d0d0d;
+                 -fx-background-radius: 15;
+                 -fx-border-color: #ff00ff;
+                 -fx-border-width: 2px;
+                 -fx-border-radius: 15;">
             <padding>
                 <Insets top="20" right="20" bottom="20" left="20"/>
             </padding>
@@ -177,6 +198,46 @@
                         style="-fx-background-color: #4a90e2; -fx-text-fill: white; -fx-background-radius: 10;" />
                 <Button text="Cancel" onAction="#onCancelFriendSelection"
                         style="-fx-background-color: #ff4444; -fx-text-fill: white; -fx-background-radius: 10;" />
+            </HBox>
+        </VBox>
+    </StackPane>
+
+    <StackPane fx:id="logoutOverlay"
+               visible="false"
+               style="friendSelectionOverly"
+               StackPane.alignment="CENTER">
+
+        <VBox spacing="25"
+              alignment="CENTER"
+              prefWidth="350"
+              prefHeight="200"
+              minWidth="300"
+              minHeight="150"
+              maxWidth="450"
+              maxHeight="250"
+              style="-fx-background-color: #0d0d0d;
+                 -fx-background-radius: 15;
+                 -fx-border-color: #ff00ff;
+                 -fx-border-width: 2px;
+                 -fx-border-radius: 15;">
+
+            <Label text="Are you sure you want to log out?"
+                   wrapText="true"
+                   alignment="CENTER"
+                   style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-family: 'Orbitron';"/>
+
+            <HBox spacing="20" alignment="CENTER">
+                <Button fx:id="confirmLogoutButton"
+                        text="Yes"
+                        prefWidth="100" prefHeight="40"
+                        style="-fx-background-color: #ff0044; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;"
+                        onAction="#confirmLogout"/>
+
+                <Button fx:id="cancelLogoutButton"
+                        text="Cancel"
+                        prefWidth="100" prefHeight="40"
+                        style="-fx-background-color: transparent; -fx-border-color: white; -fx-text-fill: white; -fx-border-width: 2px; -fx-background-radius: 8; -fx-border-radius: 8;"
+                        onAction="#cancelLogout"/>
             </HBox>
         </VBox>
     </StackPane>
