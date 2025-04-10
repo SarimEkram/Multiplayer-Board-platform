@@ -64,6 +64,20 @@ public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
     }
 
     /**
+     * function to check if the two players are comparable in their skills and stats
+     * @param player1 the first player added to queue chronologically
+     * @param player2 the second player added to queue chronologically
+     * @return boolean representing compatibility
+     */
+    @Override
+    public boolean checkPlayers(Player player1, Player player2) {
+        if ((player1.getRank(GameType.TIC_TAC_TOE).getCurrentTier() == player2.getRank(GameType.TIC_TAC_TOE).getCurrentTier()) && (player1.getGameSignal(GameType.TIC_TAC_TOE) == player2.getGameSignal(GameType.TIC_TAC_TOE)) && (player1.getUserID()!= player2.getUserID())){
+            return Math.abs((player1.getLevel() - player2.getLevel())) <= 10;
+        }
+        return false;
+    }
+
+    /**
      * function used by players to join the queue
      *
      * @param player player to add to the queue
@@ -131,19 +145,5 @@ public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
     @Override
     public void signalAddPlayer(Player player) {
         System.out.printf("Signal database to add player to the game simulation %d ", player.getUserID());
-    }
-
-    /**
-     * function to check if the two players are comparable in their skills and stats
-     * @param player1 the first player added to queue chronologically
-     * @param player2 the second player added to queue chronologically
-     * @return boolean representing compatibility
-     */
-    @Override
-    public boolean checkPlayers(Player player1, Player player2) {
-        if ((player1.getRank(GameType.TIC_TAC_TOE).getCurrentTier() == player2.getRank(GameType.TIC_TAC_TOE).getCurrentTier()) && (player1.getGameSignal(GameType.TIC_TAC_TOE) == player2.getGameSignal(GameType.TIC_TAC_TOE)) && (player1.getUserID()!= player2.getUserID())){
-            return Math.abs((player1.getLevel() - player2.getLevel())) <= 10;
-        }
-        return false;
     }
 }
