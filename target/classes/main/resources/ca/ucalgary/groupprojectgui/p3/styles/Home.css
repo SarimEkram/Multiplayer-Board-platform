@@ -1,104 +1,104 @@
 /* -------------------------
     Typography & Labels
   -------------------------- */
-  .logo-label {
-     -fx-text-fill: #ffffff;
-     -fx-font-size: 28px;
-     -fx-font-weight: bold;
-     -fx-effect: dropshadow(gaussian, #ff00ff, 6, 0.4, 0, 1);
-  }
+.logo-label {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, #ff00ff, 6, 0.4, 0, 1);
+}
 
 
-  .welcome-label {
-     -fx-text-fill: #eeeeee;
-     -fx-font-size: 16px;
-     -fx-effect: dropshadow(gaussian, #ffffff, 4, 0.2, 0, 0);
-  }
+.welcome-label {
+    -fx-text-fill: #eeeeee;
+    -fx-font-size: 16px;
+    -fx-effect: dropshadow(gaussian, #ffffff, 4, 0.2, 0, 0);
+}
 
 
-  .section-title {
-     -fx-font-family: 'Orbitron', sans-serif;
-     -fx-font-size: 40px;
-     -fx-font-weight: 900;
-     -fx-text-fill: #fff;
-     -fx-effect: dropshadow(gaussian, #ff00ff, 10, 0.5, 0, 0);
-     -fx-padding: 0 0 20 0;
-     -fx-font-weight: bold;
-     -fx-effect: dropshadow(gaussian, #ff66ff, 8, 0.4, 0, 1);
-  }
+.section-title {
+    -fx-font-family: 'Orbitron', sans-serif;
+    -fx-font-size: 40px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #fff;
+    -fx-effect: dropshadow(gaussian, #ff00ff, 10, 0.5, 0, 0);
+    -fx-padding: 0 0 20 0;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, #ff66ff, 8, 0.4, 0, 1);
+}
 
 
-  .sidebar-title {
-     -fx-text-fill: #ffccff;
-     -fx-font-size: 16px;
-     -fx-font-weight: bold;
-     -fx-background-color: rgba(20, 20, 20, 0.5);
-     -fx-effect: dropshadow(gaussian, black, 30, 0.3, 0, 0);
-     -fx-border-color: rgba(255, 255, 255, 0.15);
-  }
+.sidebar-title {
+    -fx-text-fill: #ffccff;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-color: rgba(20, 20, 20, 0.5);
+    -fx-effect: dropshadow(gaussian, black, 30, 0.3, 0, 0);
+    -fx-border-color: rgba(255, 255, 255, 0.15);
+}
 
 
-  /* -------------------------
-    Buttons
-  -------------------------- */
-  .logout-button {
-     -fx-background-color: linear-gradient(to right, #ff416c, #ff4b2b);
-     -fx-text-fill: white;
-     -fx-font-weight: bold;
-     -fx-background-radius: 12;
-     -fx-cursor: hand;
-     -fx-effect: dropshadow(gaussian, #ff4b2b, 6, 0.4, 0, 0);
-  }
+/* -------------------------
+  Buttons
+-------------------------- */
+.logout-button {
+    -fx-background-color: linear-gradient(to right, #ff416c, #ff4b2b);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 12;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, #ff4b2b, 6, 0.4, 0, 0);
+}
 
 
-  .manage-profile-button {
-     -fx-background-color: linear-gradient(to right, #8e2de2, #4a00e0);
-     -fx-text-fill: white;
-     -fx-font-weight: bold;
-     -fx-background-radius: 20;
-     -fx-cursor: hand;
-     -fx-effect: dropshadow(gaussian, #8e2de2, 6, 0.4, 0, 0);
-  }
+.manage-profile-button {
+    -fx-background-color: linear-gradient(to right, #8e2de2, #4a00e0);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, #8e2de2, 6, 0.4, 0, 0);
+}
 
 
-  .neon-icon-button {
-     -fx-background-color: #00ffcc;
-     -fx-text-fill: black;
-     -fx-background-radius: 10;
-     -fx-font-size: 14px;
-     -fx-cursor: hand;
-     -fx-effect: dropshadow(gaussian, #00ffff, 10, 0.5, 0, 0);
-  }
+.neon-icon-button {
+    -fx-background-color: #00ffcc;
+    -fx-text-fill: black;
+    -fx-background-radius: 10;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, #00ffff, 10, 0.5, 0, 0);
+}
 
 
-  .game-button {
-     -fx-background-color: linear-gradient(to bottom, #00c6ff, #0072ff);
-     -fx-text-fill: white;
-     -fx-font-weight: bold;
-     -fx-font-size: 16px;
-     -fx-background-radius: 15;
-     -fx-cursor: hand;
-     -fx-effect: dropshadow(gaussian, #00ffff, 10, 0.5, 0, 0);
-     -fx-transition: all 0.3s ease-in-out;
-  }
+.game-button {
+    -fx-background-color: linear-gradient(to bottom, #00c6ff, #0072ff);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-background-radius: 15;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, #00ffff, 10, 0.5, 0, 0);
+    -fx-transition: all 0.3s ease-in-out;
+}
 
 
-  .game-button:hover {
-     -fx-scale-x: 1.05;
-     -fx-scale-y: 1.05;
-     -fx-opacity: 0.9;
-  }
+.game-button:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-opacity: 0.9;
+}
 
 
-  /* -------------------------
-    Sidebar & Icons
-  -------------------------- */
- .neon-sidebar {
-     -fx-background-color: linear-gradient(to bottom, #2a004f, #5900a6);
-     -fx-background-radius: 20;
-     -fx-padding: 25 10;
-     -fx-effect: dropshadow(gaussian, #ff00ff, 15, 0.3, 0, 0); /* smaller glow */
- }
+/* -------------------------
+  Sidebar & Icons
+-------------------------- */
+.neon-sidebar {
+    -fx-background-color: linear-gradient(to bottom, #2a004f, #5900a6);
+    -fx-background-radius: 20;
+    -fx-padding: 25 10;
+    -fx-effect: dropshadow(gaussian, #ff00ff, 15, 0.3, 0, 0); /* smaller glow */
+}
 
 
 .right-sidebar {
@@ -111,166 +111,166 @@
 
 
 .header-icon {
-     -fx-cursor: hand;
-     -fx-effect: dropshadow(gaussian, #00ffcc, 10, 0.5, 0, 0);
-     -fx-opacity: 0.85;
-  }
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, #00ffcc, 10, 0.5, 0, 0);
+    -fx-opacity: 0.85;
+}
 
 
-  .header-icon:hover {
-     -fx-opacity: 1.0;
-     -fx-scale-x: 1.1;
-     -fx-scale-y: 1.1;
-  }
+.header-icon:hover {
+    -fx-opacity: 1.0;
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}
 
 
-  .icon-box {
-     -fx-background-color: #1a1a1a;
-     -fx-padding: 10;
-     -fx-background-radius: 10;
-     -fx-effect: dropshadow(gaussian, #00ffff, 8, 0.5, 0, 0);
-     -fx-alignment: center;
-     -fx-cursor: hand;
-  }
+.icon-box {
+    -fx-background-color: #1a1a1a;
+    -fx-padding: 10;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, #00ffff, 8, 0.5, 0, 0);
+    -fx-alignment: center;
+    -fx-cursor: hand;
+}
 
 
-  .icon-box:hover {
-     -fx-background-color: #333;
-     -fx-effect: dropshadow(gaussian, #ff00ff, 12, 0.7, 0, 0);
-  }
+.icon-box:hover {
+    -fx-background-color: #333;
+    -fx-effect: dropshadow(gaussian, #ff00ff, 12, 0.7, 0, 0);
+}
 
 
-  /* -------------------------
-    Layout Containers
-  -------------------------- */
-  .home-background {
-     -fx-background-image: url("../images/HomePage.jpg");
-     -fx-background-size: cover;
-     -fx-background-position: center center;
-     -fx-background-repeat: no-repeat;
-  }
+/* -------------------------
+  Layout Containers
+-------------------------- */
+.home-background {
+    -fx-background-image: url("../images/HomePage.jpg");
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+    -fx-background-repeat: no-repeat;
+}
 
 
-  .main-glow-box {
-      -fx-background-color: #0d0d0d;
-      -fx-background-radius: 20;
-      -fx-border-color: #ff00ff;
-      -fx-border-width: 2;
-      -fx-border-radius: 20;
-      -fx-effect: dropshadow(gaussian, #ff00ff, 15, 0.3, 0, 0); /* smaller glow */
-  }
+.main-glow-box {
+    -fx-background-color: #0d0d0d;
+    -fx-background-radius: 20;
+    -fx-border-color: #ff00ff;
+    -fx-border-width: 2;
+    -fx-border-radius: 20;
+    -fx-effect: dropshadow(gaussian, #ff00ff, 15, 0.3, 0, 0); /* smaller glow */
+}
 
 
 
-  /* -------------------------
-    Top Bar
-  -------------------------- */
-  .top-header {
-     -fx-background-color: rgba(0, 0, 0, 0.3);
-     -fx-border-color: rgba(255, 255, 255, 0.1);
-     -fx-border-width: 0 0 1 0;
-     -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.08), 10, 0.3, 0, 2);
-  }
+/* -------------------------
+  Top Bar
+-------------------------- */
+.top-header {
+    -fx-background-color: rgba(0, 0, 0, 0.3);
+    -fx-border-color: rgba(255, 255, 255, 0.1);
+    -fx-border-width: 0 0 1 0;
+    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.08), 10, 0.3, 0, 2);
+}
 
 
-  /* -------------------------
-    Search Field
-  -------------------------- */
-  .search-text-field {
-     -fx-background-color: rgba(255, 255, 255, 0.1);
-     -fx-text-fill: white;
-     -fx-font-size: 14px;
-     -fx-background-radius: 12;
-     -fx-border-radius: 12;
-     -fx-border-color: rgba(255, 255, 255, 0.2);
-     -fx-border-width: 1;
-     -fx-prompt-text-fill: #aaaaaa;
-     -fx-padding: 6 28 6 10;
-  }
+/* -------------------------
+  Search Field
+-------------------------- */
+.search-text-field {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(255, 255, 255, 0.2);
+    -fx-border-width: 1;
+    -fx-prompt-text-fill: #aaaaaa;
+    -fx-padding: 6 28 6 10;
+}
 
 
-  /* -------------------------
-    List View
-  -------------------------- */
-  .list-view {
-     -fx-background-color: rgba(30, 30, 30, 0.5);
-     -fx-control-inner-background: transparent;
-     -fx-text-fill: white;
-     -fx-border-color: rgba(255, 255, 255, 0.2);
-     -fx-border-radius: 10;
-  }
+/* -------------------------
+  List View
+-------------------------- */
+.list-view {
+    -fx-background-color: rgba(30, 30, 30, 0.5);
+    -fx-control-inner-background: transparent;
+    -fx-text-fill: white;
+    -fx-border-color: rgba(255, 255, 255, 0.2);
+    -fx-border-radius: 10;
+}
 
-  .play-now-button {
-     -fx-background-color: linear-gradient(to right, #ff00ff, #00ffff);
-     -fx-text-fill: black;
-     -fx-font-size: 16px;
-     -fx-font-weight: bold;
-     -fx-background-radius: 20;
-     -fx-padding: 10 20;
-     -fx-effect: dropshadow(gaussian, #00ffff, 10, 0.5, 0, 0);
-     -fx-cursor: hand;
-  }
-
-
-  .play-now-button:hover {
-     -fx-scale-x: 1.05;
-     -fx-scale-y: 1.05;
-     -fx-opacity: 0.9;
-  }
-  /* -------------------------
-    Game Selection Cards
-  -------------------------- */
+.play-now-button {
+    -fx-background-color: linear-gradient(to right, #ff00ff, #00ffff);
+    -fx-text-fill: black;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-padding: 10 20;
+    -fx-effect: dropshadow(gaussian, #00ffff, 10, 0.5, 0, 0);
+    -fx-cursor: hand;
+}
 
 
-  .game-card {
-     -fx-background-color: rgba(20, 20, 20, 0.6);
-     -fx-padding: 20;
-     -fx-background-radius: 20;
-     -fx-border-color: #ff00ff44;
-     -fx-border-width: 1;
-     -fx-border-radius: 20;
-     -fx-effect: dropshadow(gaussian, #ff00ff, 12, 0.5, 0, 0);
-     -fx-max-width: 280;
-     -fx-alignment: center;
-     -fx-spacing: 10;
-  }
+.play-now-button:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-opacity: 0.9;
+}
+/* -------------------------
+  Game Selection Cards
+-------------------------- */
 
 
-  .game-title {
-     -fx-text-fill: #fff;
-     -fx-effect: dropshadow(gaussian, #ff00ff, 10, 0.5, 0, 0);
-     -fx-font-size: 20px;
-     -fx-font-weight: bold;
-
-  }
-
-
-  .game-description {
-     -fx-text-fill: #dddddd;
-     -fx-font-size: 14px;
-     -fx-padding: 10 0 10 0;
-     -fx-wrap-text: true;
-     -fx-text-alignment: center;
-  }
+.game-card {
+    -fx-background-color: rgba(20, 20, 20, 0.6);
+    -fx-padding: 20;
+    -fx-background-radius: 20;
+    -fx-border-color: #ff00ff44;
+    -fx-border-width: 1;
+    -fx-border-radius: 20;
+    -fx-effect: dropshadow(gaussian, #ff00ff, 12, 0.5, 0, 0);
+    -fx-max-width: 280;
+    -fx-alignment: center;
+    -fx-spacing: 10;
+}
 
 
-  .play-now-button {
-     -fx-background-color: linear-gradient(to bottom, #00c6ff, #0072ff);
-     -fx-text-fill: white;
-     -fx-font-weight: bold;
-     -fx-font-size: 14px;
-     -fx-background-radius: 15;
-     -fx-padding: 10 20;
-     -fx-effect: dropshadow(gaussian, #00ffff, 10, 0.5, 0, 0);
-     -fx-cursor: hand;
-  }
+.game-title {
+    -fx-text-fill: #fff;
+    -fx-effect: dropshadow(gaussian, #ff00ff, 10, 0.5, 0, 0);
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+
+}
 
 
-  .play-now-button:hover {
-     -fx-scale-x: 1.05;
-     -fx-scale-y: 1.05;
-     -fx-opacity: 0.9;
-  }
+.game-description {
+    -fx-text-fill: #dddddd;
+    -fx-font-size: 14px;
+    -fx-padding: 10 0 10 0;
+    -fx-wrap-text: true;
+    -fx-text-alignment: center;
+}
+
+
+.play-now-button {
+    -fx-background-color: linear-gradient(to bottom, #00c6ff, #0072ff);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-background-radius: 15;
+    -fx-padding: 10 20;
+    -fx-effect: dropshadow(gaussian, #00ffff, 10, 0.5, 0, 0);
+    -fx-cursor: hand;
+}
+
+
+.play-now-button:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-opacity: 0.9;
+}
 
 .blur-overlay {
     -fx-background-color: rgba(0,0,0,0.6);
@@ -393,7 +393,6 @@
 
 /* Individual friend item styling */
 .friend-item {
-    -fx-background-color: #1a0033; /* Deep purple background */
     -fx-background-radius: 10;
     -fx-padding: 10;
     -fx-alignment: CENTER_LEFT;
@@ -520,6 +519,148 @@
 
 .logout-button:hover {
     -fx-background-color: rgba(255, 0, 0, 0.5);
+
     -fx-translate-x: 3px;
 }
+/* TabPaneStyles.css */
 
+/* Main TabPane styling */
+.tab-pane {
+    -fx-background-color: transparent;
+    -fx-tab-min-width: 120px;
+    -fx-tab-max-width: 150px;
+}
+
+/* Tab header area */
+.tab-pane .tab-header-area {
+    -fx-background-color: transparent;
+    /*-fx-padding: 0 0 0 10px;*/
+}
+
+.tab-pane .tab-header-background {
+    -fx-background-color: transparent;
+}
+
+/* Individual tabs */
+.tab {
+    -fx-background-color: rgba(10, 5, 20, 0.85);
+    -fx-background-radius: 5 5 0 0;
+    -fx-border-color: rgba(0, 255, 255, 0.3);
+    -fx-border-width: 1 1 0 1;
+    -fx-border-radius: 5 5 0 0;
+    /*-fx-padding: 30 30 30 30;*/
+}
+
+.tab:selected {
+    -fx-background-color: rgba(255, 0, 255, 0.3);
+    -fx-border-color: rgba(255, 0, 255, 0.5);
+    -fx-effect: dropshadow(gaussian, rgba(255, 0, 255, 0.5), 10, 0.5, 0, 2);
+}
+
+.tab .tab-label {
+    -fx-text-fill: #00ffff;
+    -fx-font-family: 'Orbitron';
+    -fx-font-size: 12px;
+}
+
+.tab:selected .tab-label {
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 255, 255, 0.8), 5, 0.5, 0, 0);
+}
+
+/*!* Tab content area *!*/
+.tab-pane .tab-content-area {
+/*    -fx-background-color: rgba(10, 5, 20, 0.7);*/
+/*    -fx-border-color: rgba(255, 0, 255, 0.3);*/
+/*    -fx-border-width: 0 1 1 1;*/
+/*    -fx-border-radius: 0 0 5 5;*/
+
+    -fx-padding: 15;
+}
+
+/* Focus indicator (remove default) */
+.tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
+    -fx-border-color: transparent;
+}
+
+/*Hover effect*/
+.tab:hover {
+    -fx-background-color: rgba(255, 0, 255, 0.2);
+}
+
+
+/* Remove default tab pane padding */
+.tab-pane {
+    -fx-padding: 0;
+}
+
+/* Tab header area background */
+.tab-header-area {
+    -fx-padding: 0 15 0 15; /* Match our container padding */
+}
+
+/* Individual tabs */
+.tab {
+    -fx-padding: 8 15;
+    -fx-background-insets: 0;
+    -fx-background-radius: 5 5 0 0;
+}
+
+/* Selected tab styling */
+.tab:selected {
+    -fx-background-color: rgba(255, 0, 255, 0.3);
+    -fx-border-color: #00ffff;
+    -fx-border-width: 0 0 2 0;
+}
+
+/* Tab content area */
+.tab-content-area {
+    -fx-padding: 15;
+}
+
+
+/*// Add this to your initialization or CSS file*/
+.playersContainer {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-spacing: 0;
+}
+
+/*// For the scroll pane*/
+   .scroll-pane {
+       -fx-background: transparent;
+       -fx-background-color: transparent;
+   }
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-pref-width: 6px;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: rgba(255, 0, 255, 0.5);
+    -fx-background-radius: 3px;
+}
+
+.scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+}
+
+.add-friend-button {
+    -fx-background-color: transparent; /* No background */
+    -fx-border-color: transparent;       /* No border */
+    -fx-text-fill: rgba(255, 0, 255, 0.5); /* Soft pink with some transparency */
+    -fx-font-family: "Orbitron";         /* Use Orbitron font */
+    -fx-font-size: 24px;                 /* Set the font size */
+    -fx-effect: dropshadow(gaussian, rgba(255, 0, 255, 0.3), 2, 0.5, 0, 0); /* Subtle drop shadow for depth */
+}
+
+.add-friend-button:hover {
+    -fx-text-fill: rgba(255, 0, 255, 0.9); /* Brighter pink on hover */
+    -fx-effect: dropshadow(gaussian, rgba(255, 0, 255, 0.6), 3, 0.5, 0, 0); /* Slightly stronger shadow */
+    -fx-cursor: hand;                     /* Hand cursor on hover */
+}
