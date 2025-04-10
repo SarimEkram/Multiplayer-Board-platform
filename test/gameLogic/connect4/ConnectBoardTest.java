@@ -16,6 +16,24 @@ public class ConnectBoardTest {
     }
 
     @Test
+    public void testBoardSize() { // checks that the board has 6 rows and 7 columns as expected
+        assertEquals(6, board.getBoard().length); // rows
+        assertEquals(7, board.getBoard()[0].length); // columns
+    }
+
+    @Test
+    public void testCreateBoard() { // Check if board is properly created
+        int[][] boardGrid = board.getBoard();
+
+        // Checking every cell to see if it's initialized to 0
+        for (int row = 0; row < boardGrid.length; row++) {
+            for (int col = 0; col < boardGrid[row].length; col++) {
+                assertEquals(0, boardGrid[row][col]); // Each cell should be 0 when created
+            }
+        }
+    }
+
+    @Test
     // Checks if the game starts with player 1
     public void testInitialCurrentPlayer() {
         assertEquals(player1, board.getCurrentPlayer());
