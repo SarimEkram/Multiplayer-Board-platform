@@ -42,7 +42,7 @@ public class InGameChat extends NetworkHandler {
 
         chatManager.addMessage(playerId, message);
         stopTyping(playerId); //  Remove typing status once message is sent
-        System.out.println("Message sent: " + message);
+        //System.out.println("Message sent: " + message);
     }
 
     /**
@@ -75,7 +75,7 @@ public class InGameChat extends NetworkHandler {
     @Override
     public void establishConnection() {
         isConnected = true;
-        System.out.println("chat connection established.");
+        //System.out.println("chat connection established.");
     }
 
     /**
@@ -84,7 +84,7 @@ public class InGameChat extends NetworkHandler {
     @Override
     public void closeConnection() {
         isConnected = false;
-        System.out.println("chat connection closed.");
+        //System.out.println("chat connection closed.");
     }
 
     /**
@@ -101,7 +101,7 @@ public class InGameChat extends NetworkHandler {
 
         chatManager.addMessage(playerId, message);
         stopTyping(playerId); // Remove typing status on receive
-        System.out.println("New message received: " + message);
+        //System.out.println("New message received: " + message);
     }
 
     /**

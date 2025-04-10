@@ -192,9 +192,9 @@ public class CheckersController {
         startTimer();
         // Step 3: Initialize the chat session using player info
         String sessionId = localPlayer.getUserID() + "_vs_" + opponentPlayer.getUserID();
+
         chatSession = new InGameChat(sessionId);
         chatSession.establishConnection();
-
         initializeChat();
         clearChatHistoryCSV();
 

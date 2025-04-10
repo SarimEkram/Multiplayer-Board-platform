@@ -116,7 +116,6 @@ public class TicTacToeController {
     public void initialize() {
 
         setupHeaderWithSpacing();
-        initializeChat();
 
         // Draw board
         createBoard();
