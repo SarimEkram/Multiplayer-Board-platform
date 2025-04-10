@@ -876,45 +876,6 @@ public class CheckersController {
         turnCheckTimeline.play();
     }
 
-
-    private void updateTimerLabel() {
-        Platform.runLater(() -> {
-            int minutes = turnSecondsElapsed / 60;
-            int seconds = turnSecondsElapsed % 60;
-            timeElapsed.setText(String.format("⏳ TURN TIME: %02d:%02d", minutes, seconds));
-        });
-    }
-
-
-    private void handleTurnTimeout() {
-        Platform.runLater(() -> {
-            addMessage("SYSTEM", "⏰ Time's up!", true);
-            boardGrid.setDisable(true);
-
-            Checkers.Turn currentTurn = gameLogic.getTurn();
-
-            String winnerName = (currentTurn == Checkers.Turn.BLACK)
-                    ? opponentPlayer.getUsername()
-                    : localPlayer.getUsername();
-
-            turnPiece.getStyleClass().clear();
-            turnPiece.getStyleClass().add(currentTurn == Checkers.Turn.BLACK ? "checker-white" : "checker-black");
-            turnLabel.setText(winnerName + " wins!");
-
-            stopTimer(); // GUI clock
-            stopTurnTimer(); // stop the timeline loop
-
-            showGameOverPopup(winnerName, true);
-
-            if (currentTurn == Checkers.Turn.BLACK) {
-                gameProcessor.UpdateResults(opponentPlayer, localPlayer, gameType);
-            } else {
-                gameProcessor.UpdateResults(localPlayer, opponentPlayer, gameType);
-            }
-        });
-    }
-
-
     private void stopTurnTimer() {
         if (turnCheckTimeline != null) {
             turnCheckTimeline.stop();
