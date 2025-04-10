@@ -768,14 +768,22 @@ public class HomePageController {
 
         // Ranking Points
         HBox pointsBox = createStatBox("RANKING POINTS",
-                String.valueOf(player.getRank(game).getRankingPoints()),
+                String.valueOf(player.getMMR(game)),
                 "#00ffff");
 
         // Tier
-        RankTier tier = player.getRank(game).getCurrentTier();
+        String tier = player.rankForPlayer(game);
+
+
+        RankTier tierEnum;
+            tierEnum = RankTier.valueOf(String.valueOf(RankTier.valueOf(tier.toUpperCase())));
+
+
         HBox tierBox = createStatBox("TIER",
                 tier.toString(),
-                getTierColor(tier));
+                getTierColor(tierEnum));
+
+
 
         // Win Ratio
         double winRatio = player.getWinRatio(game);
