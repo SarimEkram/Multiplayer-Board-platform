@@ -125,4 +125,62 @@ public class CheckersMoveTest {
         CheckersMove.move(board, king, 4, 4, move);
         assertEquals(king, board.board[2][2]);
     }
+    @Test
+    public void testNoAvailableMovesWhenBlocked() {
+        board.clearBoard();
+        CheckersPiece white = new CheckersPiece(CheckersPiece.Colour.WHITE);
+        CheckersPiece black1 = new CheckersPiece(CheckersPiece.Colour.BLACK);
+        CheckersPiece black2 = new CheckersPiece(CheckersPiece.Colour.BLACK);
+        board.board[4][3] = white;
+        board.board[3][4] = black1;
+        board.board[2][5] = black2;
+
+        CheckersMove.Move[] moves = CheckersMove.availableMoves(board, white, 4, 3);
+        assertEquals(1, moves.length);
+    }
+
+    @Test
+    public void testNoMoveOutsideBoard() {
+        board.clearBoard();
+        CheckersPiece white = new CheckersPiece(CheckersPiece.Colour.WHITE);
+        board.board[0][0] = white;
+        CheckersMove.Move[] moves = CheckersMove.availableMoves(board, white, 0, 0);
+        assertEquals(0, moves.length);
+    }
+
+    @Test
+    public void testSimpleMoveNoCapture() {
+        board.clearBoard();
+        CheckersPiece black = new CheckersPiece(CheckersPiece.Colour.BLACK);
+        board.board[3][4] = black;
+        CheckersMove.Move move = new CheckersMove.Move(4, 3, new ArrayList<>());
+        CheckersMove.move(board, black, 3, 4, move);
+        assertEquals(black, board.board[4][3]);
+        assertNull(board.board[3][4]);
+    }
+
+    @Test
+    public void testInvalidChainCaptureNotListed() {
+        board.clearBoard();
+        CheckersPiece black = new CheckersPiece(CheckersPiece.Colour.BLACK);
+        board.board[2][1] = black;
+        board.board[3][2] = new CheckersPiece(CheckersPiece.Colour.WHITE);
+        board.board[4][3] = new CheckersPiece(CheckersPiece.Colour.BLACK); // blocks chain
+        CheckersMove.Move[] moves = CheckersMove.availableMoves(board, black, 2, 1);
+        for (CheckersMove.Move move : moves) {
+            assertTrue(move.capturedPositions.size() <= 1); // Chain is blocked
+        }
+    }
+
+    @Test
+    public void testJumpOverOwnPieceInvalid() {
+        board.clearBoard();
+        CheckersPiece white = new CheckersPiece(CheckersPiece.Colour.WHITE);
+        board.board[4][4] = white;
+        board.board[3][3] = new CheckersPiece(CheckersPiece.Colour.WHITE);
+        CheckersMove.Move[] moves = CheckersMove.availableMoves(board, white, 4, 4);
+        for (CheckersMove.Move move : moves) {
+            assertFalse(move.destRow == 2 && move.destCol == 2); // can't jump over own piece
+        }
+    }
 }

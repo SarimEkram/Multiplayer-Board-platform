@@ -26,10 +26,16 @@ public class CheckersBoardTest {
     }
 
     @Test
-    public void testRemovePiece() {
+    public void testRemovePiece1() {
         board.board[2][1] = new CheckersPiece(CheckersPiece.Colour.BLACK);
         board.removePiece(2, 1);
         assertNull(board.board[2][1]);
+    }
+    @Test
+    public void testRemovePiece2() {
+        board.board[1][1] = new CheckersPiece(CheckersPiece.Colour.BLACK);
+        board.removePiece(1, 1);
+        assertNull(board.board[1][1]);
     }
 
     @Test
