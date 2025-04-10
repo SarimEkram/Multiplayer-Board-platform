@@ -322,7 +322,6 @@ public class HomePageController {
 
     @FXML
     public void launchGame(String gameName) {
-        System.out.println("Launching game: " + gameName);
 
         String fxmlFile;
         String title;
@@ -468,7 +467,6 @@ public class HomePageController {
 
     @FXML
     private void onLeaderboardClick() {
-        System.out.println("Leaderboard button clicked!");
         // Example navigation
         SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/Leaderboard.fxml");
     }
@@ -493,7 +491,7 @@ public class HomePageController {
 
     @FXML
     public void confirmLogout() {
-        System.out.println("User confirmed logout");
+
         // Navigate to login or home screen
         SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/Login.fxml");
     }
@@ -707,11 +705,6 @@ public class HomePageController {
             tabContent.getChildren().add(createGameStatsContent(player, game));
             tab.setContent(tabContent);
             gameStatsTabPane.getTabs().add(tab);
-
-            System.out.println("Before update: " + player.getRank(game).getRankingPoints() + ", Tier: " + player.getRank(game).getCurrentTier());
-// Code that should update ranking...
-            Player refreshedPlayer = PlayerDatabase.getPlayerByUserID(player.getUserID());
-            System.out.println("After update: " + refreshedPlayer.getRank(game).getRankingPoints() + ", Tier: " + refreshedPlayer.getRank(game).getCurrentTier());
 
         }
 
