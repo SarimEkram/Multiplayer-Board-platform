@@ -1,13 +1,11 @@
 package ca.ucalgary.groupprojectgui.p3.controllers;
 
-import Authentication.User;
-import Authentication.UserDatabase;
-import Authentication.FriendDatabase;
-import Authentication.ViewFriendProfile;
+import Authentication.*;
 import MatchmakingLeaderboard.GameType;
 import MatchmakingLeaderboard.Player;
 import MatchmakingLeaderboard.PlayerDatabase;
 import MatchmakingLeaderboard.RankTier;
+import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -35,47 +33,82 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static javafx.scene.paint.Color.rgb;
-
 public class HomePageController {
-
     public HBox gameFriend;
     public HBox mainContainer;
-    @FXML private VBox playersContainer;
-    @FXML private TextField gameSearchField;
-    @FXML private HBox gameTilePane;
-    @FXML private ImageView img;
-    @FXML private StackPane popupContainer;
-    @FXML private StackPane friendSelectionOverlay;
-    @FXML private ListView<String> friendListView;
-    @FXML private ImageView profileIcon;
-    @FXML private VBox friendPopupPlaceholder;
-    @FXML private Button logoutButton;
-    @FXML private ImageView connect4Image;
-    @FXML private ImageView tttImage;
-    @FXML private ImageView checkersImage;
-    @FXML private Button connect4Btn;
-    @FXML private Button tttBtn;
-    @FXML private Button checkersBtn;
-    @FXML private BorderPane homePane;
-    @FXML private Pane logoutPane;
-    @FXML private TextField searchField;
+    public StackPane opponentOverlay;
+    public Button switchGameButton;
+    public Button randomButton;
+    public Button friendButton;
+    public Button cancelLogoutButton;
+    public Button confirmLogoutButton;
+    public StackPane logoutOverlay;
+    @FXML
+    private VBox playersContainer;
+    // Fields for game/home page
+    @FXML
+    private TextField gameSearchField;
+    @FXML
+    private HBox gameTilePane;
+    @FXML
+    private ImageView img;
+    @FXML
+    private StackPane popupContainer;
+    @FXML
+    private StackPane friendSelectionOverlay;
+    @FXML
+    private ListView<String> friendListView;
+
+    @FXML
+    private ImageView profileIcon;
+    @FXML
+    private VBox friendPopupPlaceholder;
+    @FXML
+    private Button logoutButton;
+    @FXML
+    private ImageView connect4Image;
+    @FXML
+    private ImageView tttImage;
+    @FXML
+    private ImageView checkersImage;
+
+    // Fields for preview feature
+    @FXML
+    private Button connect4Btn;
+    @FXML
+    private Button tttBtn;
+    @FXML
+    private Button checkersBtn;
+
+    // Field for home pane
+    @FXML
+    private BorderPane homePane;
+
+    @FXML
+    private Pane logoutPane; // the popup pane for logout
+
+    // Fields for Friend Requests functionality
+    @FXML
+    private TextField searchField;
 
     private List<Player> allPlayers;
+
     public static int friendOpponentID;
+
     private String currentGameName;
 
     @FXML
     public void initialize() {
         friendOpponentID = -1; // no friend is selected as opponent
 
-        // Setup Home Page components
+        // Initialize Home Page components
         int playerId = LoginController.loginId;
         // Optionally, set welcome text if you have a username available
+        // String playerName = UserDatabase.getUserById(playerId).getUsername();
+        // welcomeLabel.setText("Welcome, " + playerName + "!");
 
         // Setup game image previews
         connect4Image.setImage(new Image(getClass().getResource("/ca/ucalgary/groupprojectgui/p3/images/connect4_preview.jpg").toExternalForm()));
@@ -83,7 +116,7 @@ public class HomePageController {
         checkersImage.setImage(new Image(getClass().getResource("/ca/ucalgary/groupprojectgui/p3/images/chess_preview.jpg").toExternalForm()));
         setupGameSearch();
 
-        // Load logo
+        // Load the logo image
         var logoUrl = getClass().getResource("/ca/ucalgary/groupprojectgui/p3/images/img.png");
         if (logoUrl != null) {
             img.setImage(new Image(logoUrl.toExternalForm()));
@@ -91,37 +124,47 @@ public class HomePageController {
             System.err.println("⚠️ Logo image not found.");
         }
 
-        // Load profile icon
+// Load the profile icon image
         loadIcon(profileIcon, "/ca/ucalgary/groupprojectgui/p3/images/profile.png");
 
-        // Set hover effect for profile icon
+// Create a drop shadow effect for hovering
         DropShadow neonShadow = new DropShadow();
         neonShadow.setColor(Color.web("#ff00ff"));
         neonShadow.setRadius(20);
         neonShadow.setSpread(0.5);
 
+// Set up hover effect on the profile icon
         profileIcon.setOnMouseEntered(event -> {
+            // Scale up the icon slightly
             profileIcon.setScaleX(1.1);
             profileIcon.setScaleY(1.1);
             profileIcon.setCursor(Cursor.HAND);
+
+            // Set the drop shadow effect
             profileIcon.setEffect(neonShadow);
         });
         profileIcon.setOnMouseExited(event -> {
+            // Return the icon back to original scale
             profileIcon.setScaleX(1.0);
             profileIcon.setScaleY(1.0);
+            // Remove the drop shadow effect
             profileIcon.setEffect(null);
         });
+
+// Set up click event to open the Manage Profile page
         profileIcon.setOnMouseClicked((MouseEvent event) -> {
             SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/ManageProfile.fxml", "Manage Profile", "ManageProfile.css");
         });
 
-        // Initialize friend requests if components exist
+
+        // Initialize friend requests functionality if the FXML components exist on the Home page
         if (searchField != null && playersContainer != null) {
             initializeFriendRequests();
         }
         if (playersContainer != null) {
             loadFriendList();
         }
+
     }
 
     // ---------------- Friend Requests Methods ----------------
@@ -143,14 +186,18 @@ public class HomePageController {
         int count = 0;
         for (Player player : players) {
             playersContainer.getChildren().add(createPlayerEntry(player.getUsername()));
-            if (++count >= 3) return;
+            if (++count >= 3) {
+                return;
+            }
         }
     }
 
     private HBox createPlayerEntry(String username) {
         HBox entry = new HBox(10);
         entry.getStyleClass().add("player-box");
-        entry.setPrefWidth(250);
+
+        // Force the HBox to be a certain width
+        entry.setPrefWidth(250); // adjust as needed
         entry.setMinWidth(250);
         entry.setMaxWidth(250);
 
@@ -158,7 +205,7 @@ public class HomePageController {
         avatar.getStyleClass().add("avatar");
 
         Label nameLabel = new Label(username);
-        nameLabel.setPrefWidth(300);
+        nameLabel.setPrefWidth(300); // Set preferred width to 300 pixels
         nameLabel.getStyleClass().add("username-label");
 
         Region spacer = new Region();
@@ -175,19 +222,26 @@ public class HomePageController {
         return entry;
     }
 
+
+
     private void sendFriendRequest(String username) {
         int currentUserId = LoginController.loginId;
         Player friendUser = PlayerDatabase.getPlayerByUsername(username);
+
         if (friendUser == null) {
             showOverlayAlert("Error", "User not found.");
             return;
         }
+
         int friendId = friendUser.getUserID();
+
         if (FriendDatabase.areFriends(currentUserId, friendId)) {
             showOverlayAlert("Info", "You are already friends with this user.");
             return;
         }
+
         boolean success = FriendDatabase.addFriend(currentUserId, friendId);
+
         if (success) {
             showOverlayAlert("Success", "Friend added successfully!");
         } else {
@@ -195,6 +249,9 @@ public class HomePageController {
         }
     }
 
+    /**
+     * Displays an overlay popup on top of the current window.
+     */
     private void showOverlayAlert(String title, String message) {
         VBox overlay = new VBox(10);
         overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.7); -fx-padding: 20; -fx-background-radius: 10;");
@@ -212,32 +269,52 @@ public class HomePageController {
         Button closeButton = new Button("Close");
         closeButton.setOnAction(e -> {
             popupContainer.getChildren().remove(overlay);
-            popupContainer.setVisible(false);
+            popupContainer.setVisible(false);  // hide container when closed
         });
 
         overlay.getChildren().addAll(titleLabel, messageLabel, closeButton);
+
         popupContainer.getChildren().clear();
         popupContainer.getChildren().add(overlay);
         StackPane.setAlignment(overlay, Pos.CENTER);
-        popupContainer.setVisible(true);
+
+        popupContainer.setVisible(true);  // make container visible
+    }
+
+
+    private void closePanel() {
+        // Find and remove the top-level panel for friend requests
+        Node popup = playersContainer.getParent().getParent();
+        ((Pane) popup.getParent()).getChildren().remove(popup);
     }
 
     // ---------------- End of Friend Requests Methods ----------------
 
     // ---------------- Home Page Methods ----------------
 
-    @FXML private void onConnect4Click() { chooseOpponent("Connect 4"); }
-    @FXML private void onCheckersClick() { chooseOpponent("Checkers"); }
-    @FXML private void onTicTacToeClick() { chooseOpponent("Tic Tac Toe"); }
+    @FXML
+    private void onConnect4Click() {
+        chooseOpponent("Connect 4");
+    }
 
-    @FXML private void handleLogout() {
-        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/LogoutConfirmationPanel.fxml", "Confirm Logout", null);
+    @FXML
+    private void onCheckersClick() {
+        chooseOpponent("Checkers");
+    }
+
+    @FXML
+    private void onTicTacToeClick() {
+        chooseOpponent("Tic Tac Toe");
     }
 
     @FXML
     public void launchGame(String gameName) {
         System.out.println("Launching game: " + gameName);
-        String fxmlFile, title, cssFile;
+
+        String fxmlFile;
+        String title;
+        String cssFile;
+
         switch (gameName) {
             case "Connect 4":
                 fxmlFile = "/ca/ucalgary/groupprojectgui/p3/connect4UI.fxml";
@@ -258,6 +335,7 @@ public class HomePageController {
                 System.out.println("Game not recognized: " + gameName);
                 return;
         }
+
         SceneManager.showLoadingScreenAndLoadMain(
                 "/ca/ucalgary/groupprojectgui/p3/LoadingScreen.fxml",
                 fxmlFile,
@@ -288,44 +366,34 @@ public class HomePageController {
     @FXML
     public void chooseOpponent(String forGame) {
         currentGameName = forGame;
+
+        // Blur effect
         BoxBlur blur = new BoxBlur(10, 10, 3);
         mainContainer.setEffect(blur);
-        StackPane rootPane = (StackPane) mainContainer.getScene().getRoot();
 
-        StackPane overlay = new StackPane();
-        overlay.getStyleClass().add("friend-selection-overlay");
-        overlay.prefWidthProperty().bind(rootPane.widthProperty());
-        overlay.prefHeightProperty().bind(rootPane.heightProperty());
+        // Show overlay
+        opponentOverlay.setVisible(true);
+        opponentOverlay.setOpacity(1.0);
 
-        VBox modal = new VBox(20);
-        modal.setAlignment(Pos.CENTER);
-        modal.setPadding(new Insets(20));
-        modal.setStyle("-fx-background-color: rgba(0, 0, 0, 0.8); -fx-background-radius: 10;");
-        modal.setMinWidth(300);
-        modal.setMinHeight(150);
+        // Switch Game button behavior
+        switchGameButton.setOnAction(e -> {
+            opponentOverlay.setVisible(false);
+            opponentOverlay.setOpacity(0.0);
+            mainContainer.setEffect(null);
+        });
 
-        Label prompt = new Label("WHOM  DO  YOU  WANNA  PLAY  WITH??");
-        prompt.setStyle("-fx-text-fill: white; -fx-font-size: 20px;");
-
-        Button randomButton = new Button("Random");
-        Button friendButton = new Button("Friend");
-        randomButton.setStyle("-fx-background-color: #5f27cd; -fx-text-fill: white; -fx-background-radius: 10;");
-        friendButton.setStyle("-fx-background-color: #341f97; -fx-text-fill: white; -fx-background-radius: 10;");
-
-        HBox buttonBox = new HBox(10, randomButton, friendButton);
-        buttonBox.setAlignment(Pos.CENTER);
-        modal.getChildren().addAll(prompt, buttonBox);
-        overlay.getChildren().add(modal);
-        rootPane.getChildren().add(overlay);
-        overlay.toFront();
-
+        // Random button behavior
         randomButton.setOnAction(e -> {
-            rootPane.getChildren().remove(overlay);
+            opponentOverlay.setVisible(false);
+            opponentOverlay.setOpacity(0.0);
             mainContainer.setEffect(null);
             launchGame(currentGameName);
         });
+
+        // Friend button behavior
         friendButton.setOnAction(e -> {
-            rootPane.getChildren().remove(overlay);
+            opponentOverlay.setVisible(false);
+            opponentOverlay.setOpacity(0.0);
             mainContainer.setEffect(null);
             showFriendSelection();
         });
@@ -333,20 +401,29 @@ public class HomePageController {
 
     @FXML
     public void showFriendSelection() {
+        // Apply blur effect
         BoxBlur blur = new BoxBlur(10, 10, 3);
         mainContainer.setEffect(blur);
+
+        // Clear previous items (if any)
         friendListView.getItems().clear();
 
         int currentUserId = LoginController.loginId;
         Set<Integer> friendIds = FriendDatabase.getFriends(currentUserId);
+
         for (Integer friendId : friendIds) {
             Player friend = PlayerDatabase.getPlayerByUserID(friendId);
-            if (friend != null) {
+            User onlineUser = UserDatabase.getUserById(friendId);
+            // Check if the friend exists and is online (assuming isOnline() exists)
+            if (friend != null && onlineUser != null && onlineUser.isOnline() ) {
                 friendListView.getItems().add(friend.getUsername());
+                // Update ListView display properties dynamically based on the number of items
                 friendListView.setFixedCellSize(32);
                 friendListView.setPrefHeight(friendListView.getItems().size() * 32 + 2);
             }
         }
+
+        // Make the overlay visible
         friendSelectionOverlay.setVisible(true);
     }
 
@@ -356,9 +433,10 @@ public class HomePageController {
         if (selectedFriend != null) {
             Player friendDet = PlayerDatabase.getPlayerByUsername(selectedFriend);
             friendOpponentID = friendDet.getUserID();
+            // Hide the overlay and clear any blur effects, then launch the game
             friendSelectionOverlay.setVisible(false);
             mainContainer.setEffect(null);
-            launchGame(currentGameName);
+            launchGame(currentGameName);  // Pass the appropriate game name
         } else {
             System.out.println("Please select a friend.");
         }
@@ -366,9 +444,11 @@ public class HomePageController {
 
     @FXML
     private void onCancelFriendSelection(ActionEvent event) {
+        // Hide the overlay and clear blur effects
         friendSelectionOverlay.setVisible(false);
         mainContainer.setEffect(null);
     }
+
 
     @FXML
     private void openManageProfile(MouseEvent event) {
@@ -378,6 +458,7 @@ public class HomePageController {
     @FXML
     private void onLeaderboardClick() {
         System.out.println("Leaderboard button clicked!");
+        // Example navigation
         SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/Leaderboard.fxml", "Leaderboard", "leaderboard");
     }
 
@@ -390,39 +471,44 @@ public class HomePageController {
         }
     }
 
-    public void showLogoutOverlay(ActionEvent actionEvent) {
-    }
-
-    public void cancelLogout(ActionEvent actionEvent) {
-    }
-
-    public void confirmLogout(ActionEvent actionEvent) {
-    }
-
     // ---------------- Nested Logout Confirmation Controller ----------------
 
-    public class LogoutConfirmationController {
-        @FXML private void confirmLogout() {
-            System.out.println("User confirmed logout.");
-        }
-        @FXML private void cancelLogout() {
-            System.out.println("User canceled logout.");
-        }
+    @FXML
+    public void showLogoutOverlay() {
+        logoutOverlay.setVisible(true);
+        BoxBlur blur = new BoxBlur(10, 10, 3);
+        mainContainer.setEffect(blur); // mainContainer should be your root layout pane
     }
+
+    @FXML
+    public void confirmLogout() {
+        System.out.println("User confirmed logout");
+        // Navigate to login or home screen
+        SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/Login.fxml", "Login", "login.css");
+    }
+
+    @FXML
+    public void cancelLogout() {
+        logoutOverlay.setVisible(false);
+        mainContainer.setEffect(null);
+    }
+
 
     private void loadFriendList() {
         playersContainer.getChildren().clear();
+
         int currentUserId = LoginController.loginId;
         Set<Integer> friendIds = FriendDatabase.getFriends(currentUserId);
+
         for (Integer friendId : friendIds) {
             Player friend = PlayerDatabase.getPlayerByUserID(friendId);
             if (friend != null) {
-                playersContainer.getChildren().add(createFriendItem(friend.getUsername()));
+                playersContainer.getChildren().add(createFriendItem(friend.getUsername(), friendId));
             }
         }
     }
 
-    private HBox createFriendItem(String username) {
+    private HBox createFriendItem(String username, int friendId) {
         HBox friendItem = new HBox(15);
         friendItem.setAlignment(Pos.CENTER_LEFT);
         friendItem.getStyleClass().add("friend-item");
@@ -436,16 +522,23 @@ public class HomePageController {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        Button removeButton = new Button("✖");
-        removeButton.getStyleClass().add("remove-button");
-        removeButton.setOnAction(this::handleRemoveFriend);
-
+        Label friendStatus = new Label("⚪️");
+        friendStatus.setStyle("-fx-font-size: 12px;");
+        User onlineUser = UserDatabase.getUserById(friendId);
+        if(onlineUser!= null && onlineUser.isOnline())
+            friendStatus.setText("🟢");
+        else
+            friendStatus.setText("🔴");
+        // Set an event handler on the entire friend item.
+        // This handler will show the friend profile popup.
         friendItem.setOnMouseClicked(event -> {
             showFriendProfilePopup(username);
         });
-        friendItem.getChildren().addAll(avatar, nameLabel, spacer, removeButton);
+        friendItem.getChildren().addAll(avatar, nameLabel, spacer, friendStatus);
         return friendItem;
     }
+
+
 
     private void showFriendProfilePopup(String username) {
         // Retrieve friend data
@@ -547,9 +640,7 @@ public class HomePageController {
         gameStatsTabPane.setPrefWidth(500); // Match content width
         gameStatsTabPane.setMinWidth(500);
         gameStatsTabPane.setMaxWidth(500);
-        gameStatsTabPane.getStylesheets().add(
-                Objects.requireNonNull(getClass().getResource("/ca/ucalgary/groupprojectgui/p3/styles/Home.css")).toExternalForm()
-        );
+
 
         // Create tab content container with proper width constraints
         for (GameType game : GameType.values()) {
@@ -752,6 +843,8 @@ public class HomePageController {
         }
     }
 
+
+
     @FXML
     public void handleRemoveFriend(ActionEvent event) {
         Button removeButton = (Button) event.getSource();
@@ -773,13 +866,15 @@ public class HomePageController {
         VBox popupContent = new VBox(10);
         popupContent.setAlignment(Pos.TOP_CENTER);
         popupContent.setPrefSize(250, 320);
-        popupContent.setStyle("-fx-background-color: rgba(0, 0, 0, 0.9);" +
-                "-fx-padding: 15;" +
-                "-fx-background-radius: 12;" +
-                "-fx-border-color: #00ffff;" +
-                "-fx-border-width: 2;" +
-                "-fx-border-radius: 12;" +
-                "-fx-effect: dropshadow(gaussian, rgba(0,255,255,0.6), 10, 0.5, 0, 0);");
+        popupContent.setStyle(
+                "-fx-background-color: rgba(0, 0, 0, 0.9);" +
+                        "-fx-padding: 15;" +
+                        "-fx-background-radius: 12;" +
+                        "-fx-border-color: #00ffff;" +
+                        "-fx-border-width: 2;" +
+                        "-fx-border-radius: 12;" +
+                        "-fx-effect: dropshadow(gaussian, rgba(0,255,255,0.6), 10, 0.5, 0, 0);"
+        );
 
         Label title = new Label("Add Friend");
         title.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
@@ -788,6 +883,7 @@ public class HomePageController {
         friendUsernameField.setPromptText("Username...");
         friendUsernameField.setPrefWidth(200);
 
+        // Recommended friends section
         VBox recommendations = new VBox(8);
         recommendations.setAlignment(Pos.TOP_LEFT);
         int currentUserId = LoginController.loginId;
@@ -799,31 +895,42 @@ public class HomePageController {
                 .limit(5)
                 .collect(Collectors.toList());
 
+
         for (Player player : suggestedUsers) {
-            String name = player.getUsername();
+            String name = player.getUsername(); // 💡 Extract username
+
             HBox row = new HBox(8);
             Label nameLabel = new Label(name);
             nameLabel.setStyle("-fx-text-fill: white; -fx-font-size: 12px;");
             Button addBtn = new Button("+");
-            addBtn.setStyle("-fx-background-color: #00ffff;" +
-                    "-fx-text-fill: black;" +
-                    "-fx-font-weight: bold;" +
-                    "-fx-background-radius: 5;");
-            addBtn.setOnAction(e -> friendUsernameField.setText(name));
+            addBtn.setStyle(
+                    "-fx-background-color: #00ffff;" +
+                            "-fx-text-fill: black;" +
+                            "-fx-font-weight: bold;" +
+                            "-fx-background-radius: 5;"
+            );
+            addBtn.setOnAction(e -> {
+                friendUsernameField.setText(name); // auto-fill the search field
+            });
             row.getChildren().addAll(nameLabel, addBtn);
             recommendations.getChildren().add(row);
         }
 
+        // Action buttons
         Button sendRequestButton = new Button("Send");
-        sendRequestButton.setStyle("-fx-background-color: #00ffff;" +
-                "-fx-text-fill: black;" +
-                "-fx-font-weight: bold;" +
-                "-fx-background-radius: 6;");
+        sendRequestButton.setStyle(
+                "-fx-background-color: #00ffff;" +
+                        "-fx-text-fill: black;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-background-radius: 6;"
+        );
 
         Button closeBtn = new Button("Cancel");
-        closeBtn.setStyle("-fx-background-color: #ff0066;" +
-                "-fx-text-fill: white;" +
-                "-fx-background-radius: 6;");
+        closeBtn.setStyle(
+                "-fx-background-color: #ff0066;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-background-radius: 6;"
+        );
 
         sendRequestButton.setOnAction(e -> {
             String enteredName = friendUsernameField.getText().trim();
@@ -853,8 +960,6 @@ public class HomePageController {
         friendPopupPlaceholder.setManaged(true);
     }
 
-
-    // Add a helper method to show a confirmation popup and perform removal.
     private void confirmRemoveFriend(String friendUsername, Runnable postRemovalAction) {
         Popup popup = new Popup();
         VBox popupContent = new VBox(15);
@@ -906,4 +1011,9 @@ public class HomePageController {
         });
     }
 
+
+
+
 }
+
+
