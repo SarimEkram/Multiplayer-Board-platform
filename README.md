@@ -18,7 +18,9 @@
 1. After pulling the latest version from the repository, **rebuild the project**.
 2. Launch the game by running the `MainApplication` file located at:  
    `src/main/java/ca/ucalgary/groupprojectgui/p3/MainApplication.java`
-
+3. Initial Password for all user1 - user40 is 123456
+### **NOTE**
+- ***After running the test cases, Rollback for original Player Data***
 ---
 
 ##  Getting Started
