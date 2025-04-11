@@ -278,7 +278,7 @@
         }
 
         // New helper method to clear all text fields.
-        private void clearAllFields() {
+        protected void clearAllFields() {
             // Login Form
             if (loginUsername != null) loginUsername.clear();
             if (loginPassword != null) loginPassword.clear();
@@ -389,7 +389,7 @@
 
         // --- Forgot Password Handlers ---
         @FXML
-        private void proceedForgot() {
+        protected void proceedForgot() {
             String email = forgotEmail.getText().trim();
             if (email.isEmpty() || !email.contains("@")) {
                 forgotErrorLabel.setText("Please enter a valid email address.");
@@ -509,4 +509,5 @@
             }));
             delay.play();
         }
+
     }
