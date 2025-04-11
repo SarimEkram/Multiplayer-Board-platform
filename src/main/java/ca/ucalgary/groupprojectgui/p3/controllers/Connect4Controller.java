@@ -47,10 +47,12 @@ public class Connect4Controller {
      */
 
     /** Container for the chat messages (vertical list). */
-    @FXML private VBox chatMessages;
+    @FXML
+    VBox chatMessages;
 
     /** ScrollPane that contains the chat messages (to enable scrolling). */
-    @FXML private ScrollPane chatScrollPane;
+    @FXML
+    ScrollPane chatScrollPane;
 
     /** Custom header label to display a stylized "OMG Network" header. */
     @FXML private Label chatHeader;
@@ -62,10 +64,12 @@ public class Connect4Controller {
     @FXML private HBox columnSelectors;
 
     /** Label that displays the local player's name. */
-    @FXML private Label name1;
+    @FXML
+    Label name1;
 
     /** Label that displays the opponent's name. */
-    @FXML private Label name2;
+    @FXML
+    Label name2;
 
     /** A button that allows players to leave/quit the game. */
     @FXML private Button leaveGameBtn;
@@ -74,10 +78,12 @@ public class Connect4Controller {
     @FXML public Label gameTitle;
 
     /** Label to show the time elapsed for the current turn. */
-    @FXML private Label timeElapsed;
+    @FXML
+    Label timeElapsed;
 
     /** Label to show the number of moves made in the current game. */
-    @FXML private Label movesCount;
+    @FXML
+    Label movesCount;
 
     /** TextField for user input of chat messages. */
     @FXML private TextField chatInput;
@@ -87,7 +93,7 @@ public class Connect4Controller {
      */
 
     /** The inner grid that holds the 6x7 board circles. */
-    private GridPane cellsGrid;
+    GridPane cellsGrid;
 
     // Game board constants
     private static final int ROWS = 6;
@@ -128,7 +134,7 @@ public class Connect4Controller {
     private int moveCounter = 0;
 
     // In-game chat
-    private InGameChat chatSession;
+    InGameChat chatSession;
 
     // Turn timers
     private TurnTimer timerP1;
@@ -504,7 +510,7 @@ public class Connect4Controller {
      * @param col    the column index of the placed piece
      * @param player the player ID who placed the piece
      */
-    private void updateCell(int row, int col, int player) {
+    void updateCell(int row, int col, int player) {
         // Each slot is stored in cellsGrid's children in row-major order
         Circle cell = (Circle) cellsGrid.getChildren().get(row * COLUMNS + col);
         cell.setFill(player == PLAYER1_ID ? PLAYER1_COLOR : PLAYER2_COLOR);
@@ -743,7 +749,7 @@ public class Connect4Controller {
      * Starts or restarts a Timeline that updates the 'timeElapsed' label every second.
      * Displays how long the current turn has taken so far.
      */
-    private void startTimer() {
+    void startTimer() {
         if (timeline != null) {
             timeline.stop();
         }
