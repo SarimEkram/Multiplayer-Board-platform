@@ -783,7 +783,6 @@ public class Connect4Controller {
             boolean isP1 = (connectBoard.getCurrentPlayer() == PLAYER1_ID);
 
             // Each second, the timer "ticks"
-            currentTimer.notifyPlayer();
             long elapsed = System.currentTimeMillis() - currentTimer.getStartTime();
 
             /*
