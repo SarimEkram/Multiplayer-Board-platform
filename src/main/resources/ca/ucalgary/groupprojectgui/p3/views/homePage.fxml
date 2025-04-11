@@ -122,7 +122,15 @@
                 <!-- Header: Inline style set for header friends -->
                     <!-- Header: Inline style set for header friends -->
                     <HBox alignment="CENTER_LEFT">
-                        <Label text="Friends" style="-fx-font-family: 'Orbitron'; -fx-font-size: 18px; -fx-text-fill: #00ffff; -fx-text-shadow: 0 0 5px #00ffff;"/>
+                        <Label
+                                text="Friends"
+                                style="
+                                     -fx-font-family: 'Orbitron';
+                                    -fx-font-size: 18px;
+                                    -fx-text-fill: #00ffff;
+                                    -fx-effect: dropshadow(gaussian, #00ffff, 5, 0.5, 0, 0);"
+
+                        />
                         <Region HBox.hgrow="ALWAYS"/>
                         <!-- Use literal plus sign "+" and assign a custom style class -->
                         <Button text="+" onAction="#openAddFriendPopup" styleClass="add-friend-button"/>
@@ -168,7 +176,7 @@
                  -fx-border-color: #ff00ff;
                  -fx-border-width: 2px;
                  -fx-border-radius: 15;">
-            <Label text="WHOM  DO  YOU  WANNA  PLAY  WITH??" style="-fx-text-fill: white; -fx-font-size: 20px;"/>
+            <Label text="WHOM  DO  YOU  WANNA  PLAY  WITH?" style="-fx-text-fill: white; -fx-font-size: 20px;"/>
             <HBox spacing="20" alignment="CENTER">
                 <Button fx:id="randomButton" text="Random" prefWidth="100" prefHeight="40" style="-fx-background-color: #5f27cd; -fx-text-fill: white; -fx-background-radius: 10;"/>
                 <Button fx:id="friendButton" text="Friend" prefWidth="100" prefHeight="40" style="-fx-background-color: #5f27cd; -fx-text-fill: white; -fx-background-radius: 10;"/>

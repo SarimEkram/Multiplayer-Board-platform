@@ -11,83 +11,103 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.effect.Blend;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.InnerShadow;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.RadialGradient;
-import javafx.scene.paint.Stop;
+import javafx.scene.layout.*;
+import javafx.scene.paint.*;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
+/**
+ * Controller for the "Change Password" screen. Handles verification of the user's email,
+ * checking their old password, and submitting a new password for reset.
+ */
 public class ChangePasswordController {
 
-    // Root and background layers
-    @FXML private AnchorPane root;
+    // ----------------------------
+    // BACKGROUND & LAYOUT NODES
+    // ----------------------------
+
+    /** Pane used to draw a grid pattern in the background. */
     @FXML private Pane gridBackground;
-    @FXML private Pane animatedNeonLines;
+
+    /** Pane used to create a glowing radial effect. */
     @FXML private Pane cyberGlow;
 
-    // Container for the form (styled as the login box)
+    /**
+     * The container (styled box) holding the "Forgot Password" form and
+     * subsequent reset sections.
+     */
     @FXML private AnchorPane forgotBox;
 
-    // Forgot Password Form Container
+    // ----------------------------
+    // FORGOT / RESET SECTIONS
+    // ----------------------------
+
+    /** The overall VBox containing the form elements (verify section, reset section). */
     @FXML private VBox forgotForm;
 
-    // Email Verification Fields
+    /** The VBox holding the "verify email" UI elements. */
     @FXML private VBox verifyEmailSection;
+
+    /** TextField where the user enters the email for verification. */
     @FXML private TextField forgotEmail;
+
+    /** Button to verify the entered email. */
     @FXML private Button verifyEmailBtn;
+
+    /** Label to display any error or success message for email verification. */
     @FXML private Label forgotErrorLabel;
 
-    // Reset Password Section (initially hidden in FXML)
+    /** The VBox containing the reset password fields (initially hidden). */
     @FXML private VBox resetPasswordSection;
+
+    /** Field where the user enters their old (current) password. */
     @FXML private PasswordField oldPassword;
+
+    /** Field where the user enters the new password. */
     @FXML private PasswordField newPassword;
+
+    /** Field to confirm the new password. */
     @FXML private PasswordField confirmNewPassword;
+
+    /** Button to finalize the password reset process. */
     @FXML private Button resetBtn;
+
+    /** Label to display success or error messages for the password reset process. */
     @FXML private Label resetErrorLabel;
 
-    // Backend service instance
+    /** Backend service used to handle password reset logic. */
     private final ResetUserPassword resetUserPassword = new ResetUserPassword();
 
+    /**
+     * Initializes the controller once the FXML is loaded. Sets up the
+     * UI visuals, hides unnecessary panels, and prepares the background effects.
+     */
     @FXML
     public void initialize() {
-        // Hide error messages and reset password fields on startup.
+        // Hide error labels and password reset section by default.
         hideNode(forgotErrorLabel);
         hideNode(resetErrorLabel);
         hideNode(resetPasswordSection);
 
-        // Setup visual background and container effects.
+        // Set up the background with neon grid and glow effects.
         setupBackground();
+
+        // Configure the styling and effects of the "forgotBox".
         setupForgotBox();
 
-        // Show the forgot password form.
+        // Show the main form (email verification section).
         showNode(forgotForm);
     }
 
     /**
-     * Verifies the entered email against the current user's email.
-     * If valid, hides the email verification controls and reveals the reset password section.
+     * Verifies that the email entered by the user matches the email
+     * of the currently logged-in user. If valid, transitions to
+     * the password reset form.
      */
     @FXML
     private void proceedForgot() {
@@ -99,6 +119,7 @@ public class ChangePasswordController {
             return;
         }
 
+        // Retrieve the currently logged-in user from the database.
         User currentUser = UserDatabase.getUserById(LoginController.loginId);
         if (currentUser == null || !currentUser.getEmail().equalsIgnoreCase(email)) {
             forgotErrorLabel.setText("The entered email does not match the current user's email.");
@@ -107,14 +128,14 @@ public class ChangePasswordController {
             return;
         }
 
-        // Clear any previous error/success message.
+        // Clear any previous error/success messages.
         hideNode(forgotErrorLabel);
 
-        // Hide the email verification controls.
+        // Hide email verification controls.
         hideNode(verifyEmailSection);
         hideNode(verifyEmailBtn);
 
-        // Inform the user and then reveal the reset password section after a brief delay.
+        // Inform user of success and then reveal the reset password section.
         forgotErrorLabel.setText("Email verified. Please enter your old password and new password.");
         forgotErrorLabel.setStyle("-fx-text-fill: green;");
         showNode(forgotErrorLabel);
@@ -131,9 +152,8 @@ public class ChangePasswordController {
     }
 
     /**
-     * Resets the password by verifying that all fields are filled, that the new password and confirmation match,
-     * and that the provided old password is correct before generating a valid reset token.
-     * Displays proper error or success messages.
+     * Resets the password after validating old password correctness,
+     * ensuring new passwords match, and generating a valid reset token.
      */
     @FXML
     private void resetPassword() {
@@ -141,13 +161,15 @@ public class ChangePasswordController {
         String newPass = newPassword.getText().trim();
         String confirmPass = confirmNewPassword.getText().trim();
 
-        // Input validation.
+        // Input validation: ensure no fields are empty.
         if (oldPass.isEmpty() || newPass.isEmpty() || confirmPass.isEmpty()) {
             resetErrorLabel.setText("All fields must be filled.");
             resetErrorLabel.setStyle("-fx-text-fill: red;");
             showNode(resetErrorLabel);
             return;
         }
+
+        // Check that the new password matches its confirmation.
         if (!newPass.equals(confirmPass)) {
             resetErrorLabel.setText("New password and confirmation do not match.");
             resetErrorLabel.setStyle("-fx-text-fill: red;");
@@ -155,9 +177,10 @@ public class ChangePasswordController {
             return;
         }
 
-        // Hide previous error if any.
+        // Clear any previous error messages.
         hideNode(resetErrorLabel);
 
+        // Ensure the current user is found.
         User currentUser = UserDatabase.getUserById(LoginController.loginId);
         if (currentUser == null) {
             resetErrorLabel.setText("User not found.");
@@ -166,7 +189,7 @@ public class ChangePasswordController {
             return;
         }
 
-        // Verify if the provided old password is correct.
+        // Verify correctness of the old password.
         boolean validOld = resetUserPassword.verifyOldPassword(currentUser.getEmail(), oldPass);
         if (!validOld) {
             resetErrorLabel.setText("Old password does not match.");
@@ -175,7 +198,7 @@ public class ChangePasswordController {
             return;
         }
 
-        // Generate a valid reset token for the user.
+        // Generate a reset token.
         String token = resetUserPassword.resetRequest(currentUser.getEmail());
         if (token == null) {
             resetErrorLabel.setText("Unable to generate reset token.");
@@ -184,22 +207,21 @@ public class ChangePasswordController {
             return;
         }
 
-        // Attempt to reset the password using the token and the new password.
+        // Attempt the actual password reset using the token.
         boolean success = resetUserPassword.resetPassword(token, newPass);
         if (success) {
             resetErrorLabel.setText("Password reset successful!");
             resetErrorLabel.setStyle("-fx-text-fill: green;");
             showNode(resetErrorLabel);
-            System.out.println("Password reset successful!");
 
-            // Optionally, clear the fields or navigate to a different screen after a delay.
+            // Optionally clear fields or navigate away after delay.
             Timeline delay = new Timeline(new KeyFrame(Duration.seconds(2), e -> {
-                // Clear fields after successful reset
+                // Clear form fields upon success.
                 oldPassword.clear();
                 newPassword.clear();
                 confirmNewPassword.clear();
-                // You can add navigation logic here if needed.
-              handleBack();
+                // Navigate back to profile or any relevant screen.
+                handleBack();
             }));
             delay.play();
         } else {
@@ -218,20 +240,26 @@ public class ChangePasswordController {
     }
 
     /**
-     * Sets up the grid background and neon glow effect.
+     * Sets up the neon grid background by drawing lines onto a Canvas and
+     * applying a glowing radial gradient overlay.
      */
     private void setupBackground() {
+        // Create a canvas for the grid lines.
         Canvas gridCanvas = new Canvas();
         gridCanvas.widthProperty().bind(gridBackground.widthProperty());
         gridCanvas.heightProperty().bind(gridBackground.heightProperty());
+        // Redraw whenever the pane is resized.
         gridCanvas.widthProperty().addListener((obs, oldVal, newVal) -> drawGrid(gridCanvas));
         gridCanvas.heightProperty().addListener((obs, oldVal, newVal) -> drawGrid(gridCanvas));
         drawGrid(gridCanvas);
         gridBackground.getChildren().add(gridCanvas);
 
+        // Create a rectangle for the glow effect.
         Rectangle glowRect = new Rectangle();
         glowRect.widthProperty().bind(cyberGlow.widthProperty());
         glowRect.heightProperty().bind(cyberGlow.heightProperty());
+
+        // Define a radial gradient for the glow.
         RadialGradient gradient = new RadialGradient(
                 0, 0, 0.5, 0.5, 1, true, CycleMethod.NO_CYCLE,
                 new Stop(0, Color.rgb(255, 0, 255, 0.15)),
@@ -241,6 +269,7 @@ public class ChangePasswordController {
         glowRect.setFill(gradient);
         cyberGlow.getChildren().add(glowRect);
 
+        // Animate the glow rectangle to pulse in scale and opacity.
         Timeline pulse = new Timeline(
                 new KeyFrame(Duration.ZERO,
                         new javafx.animation.KeyValue(glowRect.opacityProperty(), 0.3),
@@ -259,14 +288,17 @@ public class ChangePasswordController {
     }
 
     /**
-     * Sets up the styling and visual effects for the forgotBox container.
+     * Configures the neon-styled box (forgotBox) that contains
+     * the password reset forms.
      */
     private void setupForgotBox() {
+        // Dark background with a slight border radius.
         forgotBox.setBackground(new Background(new BackgroundFill(
                 Color.rgb(0, 0, 0, 1),
                 new CornerRadii(10),
                 Insets.EMPTY
         )));
+        // Neon magenta border
         forgotBox.setBorder(new Border(new BorderStroke(
                 Color.rgb(255, 0, 255, 0.9),
                 BorderStrokeStyle.SOLID,
@@ -274,6 +306,7 @@ public class ChangePasswordController {
                 new BorderWidths(1, 0.5, 0.5, 0.5)
         )));
 
+        // Soft neon drop shadows
         DropShadow neonMagenta = new DropShadow();
         neonMagenta.setColor(Color.rgb(255, 255, 255, 0.3));
         neonMagenta.setRadius(20);
@@ -282,6 +315,7 @@ public class ChangePasswordController {
         neonCyan.setColor(Color.rgb(0, 255, 255, 0.2));
         neonCyan.setRadius(40);
 
+        // Blend the two drop shadows for a layered neon effect
         Blend outerBlend = new Blend();
         outerBlend.setMode(BlendMode.SRC_OVER);
         outerBlend.setBottomInput(neonMagenta);
@@ -294,11 +328,14 @@ public class ChangePasswordController {
 
         forgotBox.setEffect(finalBlend);
 
+        // Add a top line with a gradient
         Rectangle topLine = new Rectangle();
         topLine.setHeight(2);
         topLine.widthProperty().bind(forgotBox.widthProperty());
         topLine.setLayoutY(0);
         topLine.setManaged(false);
+
+        // Gradient for the top line
         LinearGradient lineGradient = new LinearGradient(
                 0, 0, 1, 0, true, CycleMethod.NO_CYCLE,
                 new Stop(0, Color.TRANSPARENT),
@@ -307,13 +344,17 @@ public class ChangePasswordController {
                 new Stop(1, Color.TRANSPARENT)
         );
         topLine.setFill(lineGradient);
+
+        // DropShadow for the top line
         DropShadow lineShadow = new DropShadow();
         lineShadow.setBlurType(javafx.scene.effect.BlurType.GAUSSIAN);
         lineShadow.setColor(Color.web("#00ffff"));
         lineShadow.setRadius(10);
         topLine.setEffect(lineShadow);
+
         forgotBox.getChildren().add(topLine);
 
+        // Subtle breathing animation for the box
         Timeline breathing = new Timeline(
                 new KeyFrame(Duration.ZERO,
                         new javafx.animation.KeyValue(forgotBox.scaleXProperty(), 1),
@@ -330,26 +371,42 @@ public class ChangePasswordController {
     }
 
     /**
-     * Draws a neon grid on the provided Canvas.
+     * Draws a simple neon grid on the provided {@link Canvas}.
+     *
+     * @param canvas the {@code Canvas} on which to draw the grid lines
      */
     private void drawGrid(Canvas canvas) {
         double width = canvas.getWidth();
         double height = canvas.getHeight();
+
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.setFill(Color.web("#0a0a12"));
         gc.fillRect(0, 0, width, height);
+
         gc.setFill(Color.web("#ff00ff", 0.05));
         double step = 40.0;
         double lineWidth = 2;
+
+        // Vertical lines
         for (double x = 0; x <= width; x += step) {
             gc.fillRect(x, 0, lineWidth, height);
         }
+
+        // Horizontal lines
         for (double y = 0; y <= height; y += step) {
             gc.fillRect(0, y, width, lineWidth);
         }
     }
 
-    // --- Helper Methods ---
+    // ----------------------------
+    // HELPER METHODS
+    // ----------------------------
+
+    /**
+     * Hides the given UI node (removes it from layout flow).
+     *
+     * @param node the node to hide
+     */
     private void hideNode(Node node) {
         if (node != null) {
             node.setVisible(false);
@@ -357,6 +414,11 @@ public class ChangePasswordController {
         }
     }
 
+    /**
+     * Shows the given UI node (restores it in layout flow).
+     *
+     * @param node the node to show
+     */
     private void showNode(Node node) {
         if (node != null) {
             node.setVisible(true);
