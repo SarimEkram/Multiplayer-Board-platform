@@ -11,7 +11,7 @@ public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
     private MatchmakingQueue queue;
 
     /**
-     * Constructor class for Connect4 Matchmaking
+     * Constructor class for TicTacToe Matchmaking
      */
     public TicTacToeMatchmaking(){
         queue = new MatchmakingQueue(GameType.TIC_TAC_TOE);
@@ -39,7 +39,7 @@ public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
     }
 
     /**
-     * function that simulates matchmaking for Connect4
+     * function that simulates matchmaking for TicTacToe
      */
     public void startMatchmaking(){
         if (checkMatchmaking()) {
