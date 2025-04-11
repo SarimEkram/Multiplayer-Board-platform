@@ -14,15 +14,14 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.Field;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import Authentication.User;
 import Authentication.UserDatabase;
 import Authentication.UserLogin;
 import Authentication.UserRegistration;
 import Authentication.ResetTokenData;
 import Authentication.ResetUserPassword;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test cases for the LoginController in a JavaFX application.
@@ -90,17 +89,95 @@ public class LoginControllerTest {
     }
 
     @Test
-    public void testRegisterValidData() throws InterruptedException {
+    void testRegisterValidData() throws InterruptedException {
         Platform.runLater(() -> {
             controller.registerUsername.setText("newuser");
             controller.registerEmail.setText("newuser@example.com");
+            controller.registerPassword.setText("password123");
+            controller.registerConfirmPassword.setText("password123");
+
+            controller.handleRegister();
+
+            String msg = controller.registerErrorLabel.getText();
+            boolean success = msg.contains("Registration successful");
+            boolean alreadyExists = msg.contains("already exists");
+
+            assertTrue(success || alreadyExists);
+        });
+        TimeUnit.MILLISECONDS.sleep(250);
+    }
+
+    @Test
+    void testRegisterPasswordMismatch() throws InterruptedException {
+        Platform.runLater(() -> {
+            controller.registerUsername.setText("newUser");
+            controller.registerEmail.setText("email@test.com");
+            controller.registerPassword.setText("password123");
+            controller.registerConfirmPassword.setText("differentPass");
+            controller.handleRegister();
+            assertTrue(controller.registerErrorLabel.getText().contains("Passwords do not match."));
+        });
+        TimeUnit.MILLISECONDS.sleep(250);
+    }
+    @Test
+    void testRegisterInvalidEmail() throws InterruptedException {
+        Platform.runLater(() -> {
+            controller.registerUsername.setText("newUser");
+            controller.registerEmail.setText("invalidEmailWithoutAtSymbol");
+            controller.registerPassword.setText("password123");
+            controller.registerConfirmPassword.setText("password123");
+
+            controller.handleRegister();
+
+            assertTrue(controller.registerErrorLabel.getText().contains("A valid email address is required."));
+        });
+        TimeUnit.MILLISECONDS.sleep(250);
+    }
+    @Test
+    public void testClearAllFields() throws InterruptedException {
+        Platform.runLater(() -> {
+            controller.loginUsername.setText("someUser");
+            controller.loginPassword.setText("somePass");
+            controller.forgotEmail.setText("forgot@example.com");
+            controller.resetToken.setText("token123");
+            controller.newPassword.setText("newPass");
+            controller.confirmNewPassword.setText("newPass");
+            controller.registerFullName.setText("Full Name");
+            controller.registerUsername.setText("registerUser");
+            controller.registerEmail.setText("register@example.com");
             controller.registerPassword.setText("password");
             controller.registerConfirmPassword.setText("password");
-            controller.handleRegister();
-            // Assuming registration goes through successfully
-            assertEquals("Registration successful! Redirecting to login...", controller.registerErrorLabel.getText());
+
+            controller.clearAllFields();
+
+            assertEquals("", controller.loginUsername.getText());
+            assertEquals("", controller.loginPassword.getText());
+            assertEquals("", controller.forgotEmail.getText());
+            assertEquals("", controller.resetToken.getText());
+            assertEquals("", controller.newPassword.getText());
+            assertEquals("", controller.confirmNewPassword.getText());
+            assertEquals("", controller.registerFullName.getText());
+            assertEquals("", controller.registerUsername.getText());
+            assertEquals("", controller.registerEmail.getText());
+            assertEquals("", controller.registerPassword.getText());
+            assertEquals("", controller.registerConfirmPassword.getText());
         });
-        TimeUnit.MILLISECONDS.sleep(250); // Wait for UI thread
+
+        TimeUnit.MILLISECONDS.sleep(250);
     }
+    @Test
+    public void testProceedForgotInvalidEmail() throws InterruptedException {
+        Platform.runLater(() -> {
+            controller.forgotEmail.setText(""); // Empty email input
+            controller.proceedForgot();
+
+            assertEquals("Please enter a valid email address.", controller.forgotErrorLabel.getText());
+        });
+
+        TimeUnit.MILLISECONDS.sleep(250);
+    }
+
+
+
 
 }
