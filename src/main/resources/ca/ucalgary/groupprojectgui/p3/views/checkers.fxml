@@ -97,7 +97,7 @@
                             <ScrollPane fx:id="chatScrollPane" VBox.vgrow="ALWAYS" fitToWidth="true"
                                         prefHeight="300"
                                         style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;">
-                                <VBox fx:id="chatMessages" spacing="8" style="chat-message"/>
+                                <VBox fx:id="chatMessages" spacing="8" styleClass="chat-message"/>
                             </ScrollPane>
                             <!-- Chat Input Area -->
                             <HBox fx:id="chatInputArea" alignment="CENTER" spacing="10">
