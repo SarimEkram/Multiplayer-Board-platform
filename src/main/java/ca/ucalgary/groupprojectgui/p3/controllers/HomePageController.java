@@ -56,21 +56,21 @@ public class HomePageController {
     public Button selfStatsButton;
     // Container for friends list
     @FXML
-    private VBox playersContainer;
+    protected VBox playersContainer;
     // Game Search Fields
     @FXML
-    private TextField gameSearchField;
+    protected TextField gameSearchField;
     @FXML
     private HBox gameTilePane;
     @FXML
     private ImageView img;
     @FXML
-    private StackPane popupContainer;
+    protected StackPane popupContainer;
     @FXML
     private StackPane friendSelectionOverlay;
     // List of friends to play with
     @FXML
-    private ListView<String> friendListView;
+    protected ListView<String> friendListView;
     //Profile Icon
     @FXML
     private ImageView profileIcon;
@@ -267,7 +267,7 @@ public class HomePageController {
     /**
      * Displays an overlay popup on top of the current window.
      */
-    private void showOverlayAlert(String title, String message) {
+    protected void showOverlayAlert(String title, String message) {
         // Create a vertical container (VBox) to hold the popup content
         VBox overlay = new VBox(10);
         overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.7); -fx-padding: 20; -fx-background-radius: 10;");
@@ -888,7 +888,7 @@ public class HomePageController {
     }
 //Creates an HBox (horizontal container) to display a single game statistic.
 //  Each stat box shows a label (e.g., RANKING POINTS) and its corresponding value.
-    private HBox createStatBox(String label, String value, String color) {
+    protected HBox createStatBox(String label, String value, String color) {
         HBox box = new HBox(10);
         box.setAlignment(Pos.CENTER_LEFT);
         box.setPadding(new Insets(5, 15, 5, 15));
@@ -916,7 +916,7 @@ public class HomePageController {
     // *
     // * This method formats the information as a key-value pair:
     // * Example → User ID: 101
-    private HBox createDetailLabel(String title, String value) {
+    protected HBox createDetailLabel(String title, String value) {
         HBox box = new HBox(5);
         box.setAlignment(Pos.CENTER_LEFT);
 
@@ -939,7 +939,7 @@ public class HomePageController {
     }
 //Returns the color code (as a String) associated with a given RankTier.
 //  This color is used to style the player's tier text in the UI.
-    private String getTierColor(RankTier tier) {
+    protected String getTierColor(RankTier tier) {
         // Use a switch statement to check which tier the player belongs to
         switch (tier) {
             case DIAMOND:
