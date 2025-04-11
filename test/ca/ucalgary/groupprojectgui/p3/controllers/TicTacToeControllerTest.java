@@ -2,7 +2,10 @@ package ca.ucalgary.groupprojectgui.p3.controllers;
 
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
@@ -64,13 +67,12 @@ public class TicTacToeControllerTest {
 
     // Use @BeforeAll to reliably initialize the JavaFX toolkit.
     @BeforeAll
-    public static void initToolkit() throws InterruptedException {
-        CountDownLatch latch = new CountDownLatch(1);
-        Platform.startup(() -> {
-            // Platform is initialized.
-            latch.countDown();
-        });
-        latch.await(); // Wait until toolkit is properly initialized.
+    static void initJavaFX() throws InterruptedException {
+        // Using a JFXPanel is a safe way to initialize the JavaFX toolkit.
+        // If JavaFX is already started by your test runner, this will not re-initialize it.
+        new JFXPanel();
+        // A short sleep may help ensure the toolkit is fully ready.
+        TimeUnit.MILLISECONDS.sleep(200);
     }
 
     @BeforeEach
