@@ -15,7 +15,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class Connect4MatchmakingTest {
     private Connect4Matchmaking matchmaking;
     private Player player1, player2;
-    private int gameType = 1;
 
     /**
      * Initializes a new matchmaking instance and two player objects before each test.
@@ -117,7 +116,7 @@ public class Connect4MatchmakingTest {
         player1.setLevel(38);
         player2.setLevel(26);
 
-        assertFalse(matchmaking.checkPlayers(player1, player2)); // Rank too different
+        assertFalse(matchmaking.checkPlayers(player1, player2)); // level difference is too big
     }
 
     /**
@@ -133,7 +132,7 @@ public class Connect4MatchmakingTest {
         player1.setLevel(27);
         player2.setLevel(16);
 
-        assertFalse(matchmaking.checkPlayers(player1, player2)); // Skill gap too large
+        assertFalse(matchmaking.checkPlayers(player1, player2)); // Different Rank
     }
 
     /**
@@ -143,13 +142,13 @@ public class Connect4MatchmakingTest {
     public void testCheckPlayers_NotCompatibleThree() {
         player1.setRank(new Rank(RankTier.GOLD), GameType.CONNECT_FOUR);
         player2.setRank(new Rank(RankTier.BRONZE), GameType.CONNECT_FOUR);
-        player1.setGameSignal(1, GameType.TIC_TAC_TOE); // Different game
+        player1.setGameSignal(1, GameType.TIC_TAC_TOE);
         player1.setGameSignal(0,GameType.CONNECT_FOUR);
         player2.setGameSignal(1, GameType.CONNECT_FOUR);
         player1.setLevel(27);
         player2.setLevel(26);
 
-        assertFalse(matchmaking.checkPlayers(player1, player2)); // Missing game signal
+        assertFalse(matchmaking.checkPlayers(player1, player2)); // Different Game signal
     }
 
     /**

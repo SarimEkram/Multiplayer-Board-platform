@@ -74,7 +74,6 @@ public class CheckersMatchmakingTest {
      */
     @Test
     public void testCheckMatchmaking_Up() {
-        matchmaking = new CheckersMatchmaking();
         matchmaking.matchmakingUp = true; // Set matchmaking as up
         assertTrue(matchmaking.checkMatchmaking()); // Should return true
     }
@@ -103,7 +102,7 @@ public class CheckersMatchmakingTest {
     }
 
     /**
-     * Tests incompatibility due to significant rank difference.
+     * Tests incompatibility due to significant level difference.
      */
     @Test
     public void testCheckPlayers_NotCompatibleOne() {
@@ -112,11 +111,11 @@ public class CheckersMatchmakingTest {
         player1.setLevel(38);
         player2.setLevel(26);
 
-        assertFalse(matchmaking.checkPlayers(player1, player2)); // Too much rank gap
+        assertFalse(matchmaking.checkPlayers(player1, player2)); // Big level gap
     }
 
     /**
-     * Tests incompatibility due to extreme skill differences.
+     * Tests incompatibility due to Rank differences.
      */
     @Test
     public void testCheckPlayers_NotCompatibleTwo() {
@@ -124,23 +123,23 @@ public class CheckersMatchmakingTest {
         player1.getRank(GameType.CHECKERS).adjustPoints(player1,500,GameType.CHECKERS);
         player1.setLevel(27);
         player2.setLevel(16);
-        assertFalse(matchmaking.checkPlayers(player1, player2)); // Skill gap too large
+        assertFalse(matchmaking.checkPlayers(player1, player2)); // Different Rank
     }
 
     /**
-     * Redundant test similar to testCheckPlayers_NotCompatibleTwo, for added validation.
+     * Tests compatibility of players trying to play different games.
      */
     @Test
     public void testCheckPlayers_NotCompatibleThree() {
         player1.setRank(new Rank(RankTier.GOLD), GameType.CHECKERS);
         player2.setRank(new Rank(RankTier.BRONZE), GameType.CHECKERS);
-        player1.setGameSignal(1, GameType.TIC_TAC_TOE); // Different game
+        player1.setGameSignal(1, GameType.TIC_TAC_TOE);
         player1.setGameSignal(0,GameType.CHECKERS);
         player2.setGameSignal(1, GameType.CHECKERS);
         player1.setLevel(27);
         player2.setLevel(26);
 
-        assertFalse(matchmaking.checkPlayers(player1, player2)); // Same issue: large mismatch
+        assertFalse(matchmaking.checkPlayers(player1, player2)); //
     }
 
     /**

@@ -74,7 +74,8 @@ public class TicTacToeMatchmakingTest {
      */
     @Test
     public void testCheckMatchmaking_Up() {
-        assertFalse(matchmaking.checkMatchmaking()); // Should be true by default
+        matchmaking.matchmakingUp = true;
+        assertTrue(matchmaking.checkMatchmaking()); // Should be true by default
     }
 
     /**
@@ -103,7 +104,7 @@ public class TicTacToeMatchmakingTest {
     }
 
     /**
-     * Tests compatibility of players with different ranks.
+     * Tests compatibility of players with a big level gap.
      */
     @Test
     public void testCheckPlayers_NotCompatibleOne() {
@@ -113,7 +114,7 @@ public class TicTacToeMatchmakingTest {
         player2.setGameSignal(1, GameType.TIC_TAC_TOE);
         player1.setLevel(38);
         player2.setLevel(26);
-        assertFalse(matchmaking.checkPlayers(player1, player2)); // Not compatible due to rank difference
+        assertFalse(matchmaking.checkPlayers(player1, player2)); // Not compatible due to level difference
     }
 
     /**
