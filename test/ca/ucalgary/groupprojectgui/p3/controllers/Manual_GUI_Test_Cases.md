@@ -48,4 +48,30 @@
 | GUI-POP-03   | Friend Selection    | Start a friendly game  | Friend selection popup appears with list of active players only |
 | GUI-POP-04   | Invalid Input       | Attempt invalid move   | Appropriate error shown or move rejected                        |
 
+### Login Screen
 
+| Test Case ID   | Scenario         | Steps                                          | Expected Outcome                                     |
+|----------------|------------------|------------------------------------------------|------------------------------------------------------|
+| GUI-LOGIN-01   | Load Login Screen | Launch app                                    | Login screen with "Enter your username" and "Enter your password" fields loads |
+| GUI-LOGIN-02   | Login Success     | Enter valid username and password, click "Login" | User successfully logs in and is directed to home screen |
+| GUI-LOGIN-03   | Login Failure     | Enter invalid username/password, click "Login" | Error message appears for invalid credentials |
+| GUI-LOGIN-04   | Forgot Password   | Click "Forgot password?" link                  | Redirected to the forgot password screen            |
+| GUI-LOGIN-05   | Register Account  | Click "Register" link                          | Redirected to the registration screen               |
+
+### User Registration Screen
+
+| Test Case ID   | Scenario         | Steps                                              | Expected Outcome                                           |
+|----------------|------------------|----------------------------------------------------|------------------------------------------------------------|
+| GUI-REGISTER-01 | Load Registration Screen | Click "Register" link on Login screen            | Registration screen loads with fields for full name, username, email, password, and confirm password |
+| GUI-REGISTER-02 | Register New User | Fill out all fields (Full Name, Username, Email, Password, Confirm Password) and click "Register" | New user is registered successfully and redirected to the login screen |
+| GUI-REGISTER-03 | Invalid Email     | Enter an invalid email format, fill other fields, click "Register" | Error message appears for invalid email format |
+| GUI-REGISTER-04 | Password Mismatch | Enter different values in "Password" and "Confirm Password", click "Register" | Error message appears indicating passwords do not match |
+
+### Forgot Password Screen
+
+| Test Case ID   | Scenario         | Steps                                          | Expected Outcome                                                                           |
+|----------------|------------------|------------------------------------------------|--------------------------------------------------------------------------------------------|
+| GUI-FORGOT-01  | Load Forgot Password Screen | Click "Forgot password?" link on Login screen  | Forgot password screen loads with email input field                                        |
+| GUI-FORGOT-02  | Verify Email      | Enter a registered email, click "Verify Email" | Verification token is copied to clipboard, and user is redirected to reset password screen |
+| GUI-FORGOT-03  | Invalid Email     | Enter a non-registered email, click "Verify Email" | Error message appears for unregistered email                                               |
+| GUI-FORGOT-04  | Reset Password    | Enter the verification token, new password, and confirm password, click "Reset Password" | Password is reset successfully, and user is redirected to the login screen                 |
