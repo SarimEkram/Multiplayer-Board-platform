@@ -70,21 +70,21 @@ public class CheckersController {
     public Label localPlayerLabel;
 
     @FXML
-    private Label turnLabel; // Turn indicator label
+    Label turnLabel; // Turn indicator label
 
     @FXML
-    private StackPane boardContainer;
+    StackPane boardContainer;
 
     @FXML
-    private Circle checkerCircle1;      // Player 1's circle
+    Circle checkerCircle1;      // Player 1's circle
 
     @FXML
-    private Circle checkerCircle2;      // Player 2's circle
+    Circle checkerCircle2;      // Player 2's circle
 
     @FXML
-    private Label player1Name;
+    Label player1Name;
     @FXML
-    private Label player2Name;
+    Label player2Name;
 
     @FXML
     private Label winnerLabel;
@@ -106,7 +106,7 @@ public class CheckersController {
     private Checkers gameLogic;
 
     // UI cell mapping for board cells
-    private StackPane[][] cellPanes = new StackPane[BOARD_ROWS][BOARD_COLUMNS];
+    StackPane[][] cellPanes = new StackPane[BOARD_ROWS][BOARD_COLUMNS];
 
     // For tracking selection and valid moves (using Move objects)
     private Position selectedPiecePosition = null;
@@ -119,7 +119,7 @@ public class CheckersController {
     private Timeline timeline;
     private int secondsElapsed = 0;
 
-    private InGameChat chatSession;
+    InGameChat chatSession;
 
     private TurnTimer timerWhite;
     private TurnTimer timerBlack;
@@ -524,7 +524,7 @@ public class CheckersController {
         }
     }
 
-    private void clearHighlights() {
+    void clearHighlights() {
         for (int row = 0; row < BOARD_ROWS; row++) {
             for (int col = 0; col < BOARD_COLUMNS; col++) {
                 cellPanes[row][col].getChildren().removeIf(node -> {
@@ -578,7 +578,7 @@ public class CheckersController {
         }
     }
 
-    private void updateTurnIndicator() {
+    void updateTurnIndicator() {
         Checkers.Turn currentTurn = gameLogic.getTurn();
         if (currentTurn == Checkers.Turn.BLACK) {
             turnPiece.getStyleClass().clear();
@@ -704,7 +704,7 @@ public class CheckersController {
     }
 
     @FXML
-    private void onSendMessage() {
+    void onSendMessage() {
         String message = chatInput.getText();
         if (message == null || message.trim().isEmpty()) {
             return;
