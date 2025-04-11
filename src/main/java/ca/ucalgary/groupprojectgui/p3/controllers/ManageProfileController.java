@@ -36,7 +36,7 @@ public class ManageProfileController {
     public Pane gridBackground;
     public Pane cyberGlow;
     @FXML
-    private VBox profileBox;
+    VBox profileBox;
 
 
 
@@ -48,7 +48,7 @@ public class ManageProfileController {
      * Navigates the user back to the home page.
      */
     @FXML
-    private void handleBackButtonClick() {
+    void handleBackButtonClick() {
         SceneManager.switchTo(
                 "/ca/ucalgary/groupprojectgui/p3/views/homePage.fxml"
         );
@@ -57,7 +57,7 @@ public class ManageProfileController {
      * Navigates to the Edit Profile screen.
      */
     @FXML
-    private void handleEditProfileButtonClick() {
+    void handleEditProfileButtonClick() {
         SceneManager.switchTo(
                 "/ca/ucalgary/groupprojectgui/p3/views/editProfile.fxml"
         );
@@ -66,7 +66,7 @@ public class ManageProfileController {
      * Navigates to the Change Password screen.
      */
     @FXML
-    private void handleChangePasswordButtonClick() {
+    void handleChangePasswordButtonClick() {
         SceneManager.switchTo(
                 "/ca/ucalgary/groupprojectgui/p3/views/changePassword.fxml"
         );
@@ -76,7 +76,7 @@ public class ManageProfileController {
      * If confirmed, deletes the user's account and navigates to login screen.
      */
     @FXML
-    private void handleDeleteProfile() {
+    void handleDeleteProfile() {
         // Reference to the main root node
         Node mainRoot = profileBox.getScene().getRoot();
         // Apply a Gaussian blur effect to the background
@@ -202,7 +202,7 @@ public class ManageProfileController {
     }
 
 
-    private void setupBackground() {
+    void setupBackground() {
         // Instead of drawing a grid, set the background of gridBackground to pure black.
         gridBackground.setStyle("-fx-background-color: black;");
 
