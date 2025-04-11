@@ -22,20 +22,14 @@ public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
      */
     public void startMatchmaking(){
         if (checkMatchmaking()) {
+            Player player1 = queue.getNextPlayer();
+            Player player2 = findOpponent(player1.getUserID());
+            queue.matchReady();
             if (queue.readyToMatch()) {
-                Player player1 = queue.getNextPlayer();
-                Player player2 = queue.getNextPlayer();
-                boolean iscompatible = checkPlayers(player1, player2);
-                while (iscompatible) {
-                    iscompatible = checkPlayers(player1, player2);
-                    player2 = queue.getNextPlayer();
-                }
                 this.findMatch(player1, player2);
-                this.signalAddPlayer(player1);
-                this.signalAddPlayer(player2);
                 this.signalStartGame();
             } else {
-                System.out.println("Matchmaking cancelled! Not enough players...please try again later!");
+                System.out.println("Matchmaking cancelled! Not enough players...please try again!");
             }
         } else {
             System.out.println("Matchmaking is down. Please try again in some time. The issue has been reported");
