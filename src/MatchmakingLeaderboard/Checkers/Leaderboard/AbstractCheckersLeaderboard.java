@@ -19,6 +19,11 @@ public abstract class AbstractCheckersLeaderboard implements IGameLeaderboard {
     protected static GameType  gameType = GameType.CHECKERS;
 
 
+    /**
+     * Adds a player to the leaderboard if they aren't already present.
+     * @param player
+     * @param gameType
+     */
     public void addPlayer(Player player, GameType gameType) {
         if (player == null) {
             throw new NullPointerException("player is null");
@@ -29,10 +34,16 @@ public abstract class AbstractCheckersLeaderboard implements IGameLeaderboard {
     }
 
 
-
+    /**
+     * Retrieves the leaderboard scores.
+     */
     public abstract List<Player> getScores();
 
-
+    /**
+     * Finds a player in the leaderboard by their unique ID.
+     * @param playerId
+     * @return
+     */
     public Player findPLayerById(int playerId) {
         for (Player player : players) {
             if (player.getUserID() == playerId) {
