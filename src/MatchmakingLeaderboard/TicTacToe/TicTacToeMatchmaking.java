@@ -6,34 +6,15 @@ import java.io.IOException;
 import java.util.Random;
 
 public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
-    protected boolean matchmakingUp = true;
-    private final double probabilityOfNetworkFailure = 0.0125;
+    protected boolean matchmakingUp = false;
+    private final double probabilityOfNetworkFailure = 0.0210;
     private MatchmakingQueue queue;
 
     /**
-     * Constructor class for TicTacToe Matchmaking
+     * Constructor class for Connect4 Matchmaking
      */
-    public TicTacToeMatchmaking() {
+    public TicTacToeMatchmaking(){
         queue = new MatchmakingQueue(GameType.TIC_TAC_TOE);
-    }
-
-    /**
-     * function that simulates matchmaking for TicTacToe
-     */
-    public void startMatchmaking(){
-        if (checkMatchmaking()) {
-            Player player1 = queue.getNextPlayer();
-            Player player2 = findOpponent(player1.getUserID());
-            queue.matchReady();
-            if (queue.readyToMatch()) {
-                this.findMatch(player1, player2);
-                this.signalStartGame();
-            } else {
-                System.out.println("Matchmaking cancelled! Not enough players...please try again!");
-            }
-        } else {
-            System.out.println("Matchmaking is down. Please try again in some time. The issue has been reported");
-        }
     }
 
     /**
@@ -58,17 +39,22 @@ public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
     }
 
     /**
-     * function to check if the two players are comparable in their skills and stats
-     * @param player1 the first player added to queue chronologically
-     * @param player2 the second player added to queue chronologically
-     * @return boolean representing compatibility
+     * function that simulates matchmaking for Connect4
      */
-    @Override
-    public boolean checkPlayers(Player player1, Player player2) {
-        if ((player1.rankForPlayer(GameType.TIC_TAC_TOE) == player2.rankForPlayer(GameType.TIC_TAC_TOE)) && (player1.getGameSignal(GameType.TIC_TAC_TOE) == player2.getGameSignal(GameType.TIC_TAC_TOE)) && (player1.getUserID()!= player2.getUserID())){
-            return Math.abs((player1.getLevel() - player2.getLevel())) <= 10;
+    public void startMatchmaking(){
+        if (checkMatchmaking()) {
+            Player player1 = queue.getNextPlayer();
+            Player player2 = findOpponent(player1.getUserID());
+            queue.matchReady();
+            if (queue.readyToMatch()) {
+                this.findMatch(player1, player2);
+                this.signalStartGame();
+            } else {
+                System.out.println("Matchmaking cancelled! Not enough players...please try again!");
+            }
+        } else {
+            System.out.println("Matchmaking is down. Please try again in some time. The issue has been reported");
         }
-        return false;
     }
 
     /**
@@ -81,6 +67,17 @@ public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
         queue.addPlayer(player);
     }
 
+    public Player findOpponent(int playerID) {
+        Player player1 = PlayerDatabase.getPlayerByUserID(playerID);
+
+        Player player2 = queue.getNextPlayer();
+        boolean iscompatible = checkPlayers(player1, player2);
+        while (!iscompatible) {
+            player2 = queue.getNextPlayer();
+            iscompatible = checkPlayers(player1, player2);
+        }
+        return player2;
+    }
     /**
      * Function used by player to leave the matchmaking queue
      *
@@ -97,20 +94,6 @@ public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
     @Override
     public void findMatch(Player Player1, Player Player2) {
         System.out.println("Generate a request to the backend asking for an unpopulated game simulation");
-    }
-
-    @Override
-    public Player findOpponent(int playerID) {
-        Player player1 = PlayerDatabase.getPlayerByUserID(playerID);
-
-        Player player2 = queue.getNextPlayer();
-
-        boolean iscompatible = checkPlayers(player1, player2);
-        while (!iscompatible) {
-            player2 = queue.getNextPlayer();
-            iscompatible = checkPlayers(player1, player2);
-        }
-        return player2;
     }
 
     /**
@@ -140,4 +123,20 @@ public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
     public void signalAddPlayer(Player player) {
         System.out.printf("Signal database to add player to the game simulation %d ", player.getUserID());
     }
+
+    /**
+     * function to check if the two players are comparable in their skills and stats
+     * @param player1 the first player added to queue chronologically
+     * @param player2 the second player added to queue chronologically
+     * @return boolean representing compatibility
+     */
+    @Override
+    public boolean checkPlayers(Player player1, Player player2) {
+        if ((player1.rankForPlayer(GameType.TIC_TAC_TOE) == player2.rankForPlayer(GameType.TIC_TAC_TOE)) && (player1.getGameSignal(GameType.TIC_TAC_TOE) == player2.getGameSignal(GameType.TIC_TAC_TOE))&&(player1.getUserID()!= player2.getUserID())){
+            return Math.abs((player1.getLevel() - player2.getLevel())) <= 10;
+        }
+        return false;
+    }
+
+
 }

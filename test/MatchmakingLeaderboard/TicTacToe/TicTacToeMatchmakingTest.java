@@ -74,7 +74,7 @@ public class TicTacToeMatchmakingTest {
      */
     @Test
     public void testCheckMatchmaking_Up() {
-        assertTrue(matchmaking.checkMatchmaking()); // Should be true by default
+        assertFalse(matchmaking.checkMatchmaking()); // Should be true by default
     }
 
     /**
