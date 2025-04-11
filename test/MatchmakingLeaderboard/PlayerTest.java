@@ -6,13 +6,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static MatchmakingLeaderboard.GameType.*;
 
 public class PlayerTest {
-    private Player player = new Player("TestPlayer", 1, 1001);;
+    private Player player = new Player("TestPlayer", 1, 100100);;
 
     @Test
     void testConstructorInitialization() {
         assertEquals("TestPlayer", player.getUsername());
         assertEquals(1, player.getLevel());
-        assertEquals(1001, player.getUserID());
+        assertEquals(100100, player.getUserID());
 
         // Verify default values for each game type
         for (GameType gameType : GameType.values()) {
@@ -161,8 +161,8 @@ public class PlayerTest {
         assertEquals(10, player.getLevel());
 
         // Test userID
-        player.setUserID(2002);
-        assertEquals(2002, player.getUserID());
+        player.setUserID(200200);
+        assertEquals(200200, player.getUserID());
     }
 
     @Test
