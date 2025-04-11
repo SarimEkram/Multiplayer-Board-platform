@@ -13,11 +13,17 @@ import MatchmakingLeaderboard.GameType;
  * @author Rahnuha Nurain
  * @author Neel Savani
  */
+
 public abstract class AbstractConnect4Leaderboard implements IGameLeaderboard {
     protected List<Player> players = new ArrayList<>();
     protected static final GameType gameType = GameType.CONNECT_FOUR;
 
 
+    /**
+     * Adds a player to the leaderboard if they aren't already present.
+     * @param player
+     * @param gameType
+     */
     public void addPlayer(Player player, GameType gameType) {
         if (player == null) {
             throw new NullPointerException("player is null");
@@ -27,12 +33,18 @@ public abstract class AbstractConnect4Leaderboard implements IGameLeaderboard {
         }
     }
 
-    //public abstract void updatePlayer(Player player, boolean won);
 
+    /**
+     * Retrieves the leaderboard scores.
+     */
     public abstract List<Player> getScores();
 
-    //public abstract List<Player> getTopPlayers();
 
+    /**
+     * Finds a player in the leaderboard by their unique ID.
+     * @param playerId
+     * @return
+     */
     public Player findPLayerById(int playerId) {
         for (Player player : players) {
             if (player.getUserID() == playerId) {
