@@ -1,4 +1,4 @@
-//Controller for the Home page view
+// Controller for the Home page view
 package ca.ucalgary.groupprojectgui.p3.controllers;
 
 import Authentication.*;
@@ -20,7 +20,6 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Label;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
@@ -39,25 +38,31 @@ import javafx.util.Duration;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-//Main controller class for yhr Home page view
+
+/**
+ * Main controller class for the Home page view.
+ * <p>
+ * This class manages the interactions for the home page, including game selection,
+ * friend requests, profile actions, and handling UI transitions.
+ * </p>
+ */
 public class HomePageController {
-    // UI Components related to the Game selection and Friend System
-    public HBox gameFriend;
+
+    // UI Components related to game selection and friend system
     public HBox mainContainer;
     public StackPane opponentOverlay;
     public Button switchGameButton;
     public Button randomButton;
     public Button friendButton;
-    public Button cancelLogoutButton;
-    public Button confirmLogoutButton;
-    public StackPane logoutOverlay;
+    public StackPane logoutOverlay;  // Used for logout confirmation
     public StackPane addFriendOverlay;
     public VBox addFriendPopupContainer;
     public Button selfStatsButton;
+
     // Container for friends list
     @FXML
     protected VBox playersContainer;
-    // Game Search Fields
+    // Game search field for filtering game tiles dynamically
     @FXML
     protected TextField gameSearchField;
     @FXML
@@ -68,16 +73,12 @@ public class HomePageController {
     protected StackPane popupContainer;
     @FXML
     private StackPane friendSelectionOverlay;
-    // List of friends to play with
+    // ListView for displaying friends
     @FXML
     protected ListView<String> friendListView;
-    //Profile Icon
+    // Profile Icon for navigation to manage profile
     @FXML
     private ImageView profileIcon;
-    @FXML
-    private VBox friendPopupPlaceholder;
-    @FXML
-    private Button logoutButton;
     @FXML
     private ImageView connect4Image;
     @FXML
@@ -85,33 +86,34 @@ public class HomePageController {
     @FXML
     private ImageView checkersImage;
 
-    // Buttons for selecting games
-    @FXML
-    private Button connect4Btn;
-    @FXML
-    private Button tttBtn;
-    @FXML
-    private Button checkersBtn;
-
-    // Field for home pane
-    @FXML
-    private BorderPane homePane;
-
-    // Fields for Friend Requests functionality
+    // Field for friend requests functionality from the home page
     @FXML
     private TextField searchField;
 
+    // List of all players for friend search functionality
     private List<Player> allPlayers;
 
+    /**
+     * Static field to store the selected friend's opponent ID.
+     */
     public static int friendOpponentID;
 
+    // Currently selected game name (e.g., "Connect 4", "Checkers", "Tic Tac Toe")
     private String currentGameName;
-
+    // Current logged-in player's ID
     private int playerId;
 
+    /**
+     * Initializes the Home page controller.
+     * <p>
+     * This method sets up UI components, images, friend requests functionality, and hover effects.
+     * It is automatically called after the FXML file is loaded.
+     * </p>
+     */
     @FXML
     public void initialize() {
-        friendOpponentID = -1; // no friend is selected as opponent
+        // No friend is selected initially
+        friendOpponentID = -1;
 
         // Initialize Home Page components
         playerId = LoginController.loginId;
@@ -122,7 +124,7 @@ public class HomePageController {
         checkersImage.setImage(new Image(getClass().getResource("/ca/ucalgary/groupprojectgui/p3/images/chess_preview.jpg").toExternalForm()));
         setupGameSearch();
 
-        // Load the logo image
+        // Load the logo image and set it to the img ImageView
         var logoUrl = getClass().getResource("/ca/ucalgary/groupprojectgui/p3/images/img.png");
         if (logoUrl != null) {
             img.setImage(new Image(logoUrl.toExternalForm()));
@@ -130,38 +132,29 @@ public class HomePageController {
             System.err.println("⚠️ Logo image not found.");
         }
 
-// Load the profile icon image
-        loadIcon(profileIcon, "/ca/ucalgary/groupprojectgui/p3/images/profile.png");
-
-// Create a drop shadow effect for hovering
+        // Create a drop shadow effect for hovering
         DropShadow neonShadow = new DropShadow();
         neonShadow.setColor(Color.web("#ff00ff"));
         neonShadow.setRadius(20);
         neonShadow.setSpread(0.5);
 
-// Set up hover effect on the profile icon
+        // Set up hover effect on the profile icon
         profileIcon.setOnMouseEntered(event -> {
-            // Scale up the icon slightly
             profileIcon.setScaleX(1.1);
             profileIcon.setScaleY(1.1);
             profileIcon.setCursor(Cursor.HAND);
-
-            // Set the drop shadow effect
             profileIcon.setEffect(neonShadow);
         });
         profileIcon.setOnMouseExited(event -> {
-            // Return the icon back to original scale
             profileIcon.setScaleX(1.0);
             profileIcon.setScaleY(1.0);
-            // Remove the drop shadow effect
             profileIcon.setEffect(null);
         });
 
-// Set up click event to open the Manage Profile page
+        // On profile icon click, navigate to the Manage Profile page
         profileIcon.setOnMouseClicked((MouseEvent event) -> {
             SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/views/manageProfile.fxml");
         });
-
 
         // Initialize friend requests functionality if the FXML components exist on the Home page
         if (searchField != null && playersContainer != null) {
@@ -170,27 +163,35 @@ public class HomePageController {
         if (playersContainer != null) {
             loadFriendList();
         }
-
     }
 
     // ---------------- Friend Requests Methods ----------------
 
+    /**
+     * Initializes friend request functionality by loading all players from the database,
+     * displaying them, and setting up a dynamic search filter.
+     */
     private void initializeFriendRequests() {
-        //players from database
+        // Retrieve all players from the database for friend management
         allPlayers = PlayerDatabase.getAllPlayers();
         loadPlayerList(allPlayers);
-        // Add a listener to the searchField to dynamically filter the list of players as the user types
+        // Add a listener to dynamically filter the list as the user types
         searchField.textProperty().addListener((obs, oldText, newText) -> {
-            // Filter the list of all players based on the search input (case-insensitive)
+            // Filter players by username, case-insensitive
             List<Player> filtered = allPlayers.stream()
                     .filter(player -> player.getUsername().toLowerCase().contains(newText.toLowerCase()))
                     .collect(Collectors.toList());
-            // Update the UI to show only the filtered players
+            // Update the UI to show only filtered players
             loadPlayerList(filtered);
         });
     }
-//Loads a list of players into the playersContainer.
-//This method clears the current list and adds a maximum of 3 player entries to the UI.
+
+    /**
+     * Loads a list of players into the playersContainer.
+     * Clears the current list and shows a maximum of 3 player entries.
+     *
+     * @param players the list of players to load into the UI
+     */
     private void loadPlayerList(List<Player> players) {
         playersContainer.getChildren().clear();
         int count = 0;
@@ -201,27 +202,37 @@ public class HomePageController {
             }
         }
     }
-//Creates a UI component (HBox) representing a single player entry
-// with their avatar (initial), username, and an add friend button.
+
+    /**
+     * Creates a UI component (HBox) representing a single player entry.
+     * The entry shows an avatar, username, and an add friend button.
+     *
+     * @param username the username of the player
+     * @return the HBox representing the player entry
+     */
     private HBox createPlayerEntry(String username) {
         HBox entry = new HBox(10);
         entry.getStyleClass().add("player-box");
 
-        // Force the HBox to be a certain width
-        entry.setPrefWidth(250); // adjust as needed
+        // Set fixed width for the HBox
+        entry.setPrefWidth(250);
         entry.setMinWidth(250);
         entry.setMaxWidth(250);
 
+        // Avatar: first character of the username
         Label avatar = new Label(username.substring(0, 1).toUpperCase());
         avatar.getStyleClass().add("avatar");
 
+        // Username label with preferred width
         Label nameLabel = new Label(username);
-        nameLabel.setPrefWidth(300); // Set preferred width to 300 pixels
+        nameLabel.setPrefWidth(300);
         nameLabel.getStyleClass().add("username-label");
-        // Create a spacer to push the add friend button to the far right
+
+        // Spacer to push the add friend button to the right
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
-        // Create the 'Add Friend' button with a friend icon
+
+        // 'Add Friend' button with a friend icon
         Button addBtn = new Button("👤+");
         addBtn.setPrefWidth(50);
         addBtn.setMinWidth(50);
@@ -233,31 +244,30 @@ public class HomePageController {
         return entry;
     }
 
-//Sends a friend request to the specified user.
-// Handles all necessary checks such as verifying if the user exists,
-// checking if they are already friends, and displaying appropriate messages.
+    /**
+     * Sends a friend request to the specified user.
+     * Checks for user existence, duplicate friend connections, and displays an appropriate alert.
+     *
+     * @param username the username of the friend to add
+     */
     private void sendFriendRequest(String username) {
-        // Get the current logged-in user's ID
         int currentUserId = LoginController.loginId;
         Player friendUser = PlayerDatabase.getPlayerByUsername(username);
-        // Check if the user exists in the database
         if (friendUser == null) {
             showOverlayAlert("Error", "User not found.");
             return;
         }
-        // Get the friend's user ID
         int friendId = friendUser.getUserID();
-        // Check if the current user and the selected friend are already friends
+        // Check if already friends
         if (FriendDatabase.areFriends(currentUserId, friendId)) {
             showOverlayAlert("Info", "You are already friends with this user.");
             return;
         }
-        // Attempt to add the friend to the friend database
+        // Attempt to add friend in the database
         boolean success = FriendDatabase.addFriend(currentUserId, friendId);
-
         if (success) {
             showOverlayAlert("Success", "Friend added successfully!");
-            // Refresh the friend list so the new friend appears immediately.
+            // Refresh friend list to immediately display new friend
             loadFriendList();
         } else {
             showOverlayAlert("Error", "Failed to add friend.");
@@ -265,112 +275,126 @@ public class HomePageController {
     }
 
     /**
-     * Displays an overlay popup on top of the current window.
+     * Displays an overlay popup with a custom title and message.
+     *
+     * @param title   the title of the alert
+     * @param message the message displayed in the alert
      */
     protected void showOverlayAlert(String title, String message) {
-        // Create a vertical container (VBox) to hold the popup content
+        // Create a vertical container for the popup content
         VBox overlay = new VBox(10);
         overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.7); -fx-padding: 20; -fx-background-radius: 10;");
         overlay.setMaxWidth(300);
         overlay.setAlignment(Pos.CENTER);
         overlay.setMaxHeight(100);
-        // Create a message label for the detailed text and apply styling
+
+        // Title label styling
         Label titleLabel = new Label(title);
         titleLabel.setStyle("-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;");
+        // Message label styling
         Label messageLabel = new Label(message);
         messageLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");
         messageLabel.setWrapText(true);
         messageLabel.setMaxWidth(280);
-        // Handle the close button action: remove the overlay and hide the popup container
+
+        // Close button to dismiss the popup
         Button closeButton = new Button("Close");
         closeButton.setOnAction(e -> {
             popupContainer.getChildren().remove(overlay);
-            popupContainer.setVisible(false);  // hide container when closed
+            popupContainer.setVisible(false);
         });
 
         overlay.getChildren().addAll(titleLabel, messageLabel, closeButton);
 
         popupContainer.getChildren().clear();
-        // Add the newly created overlay to the popupContainer
+        // Add overlay to the container and center it
         popupContainer.getChildren().add(overlay);
         StackPane.setAlignment(overlay, Pos.CENTER);
-        // Make the popupContainer visible so the alert is shown
-        popupContainer.setVisible(true);  // make container visible
+        popupContainer.setVisible(true);
     }
 
-
+    /**
+     * Closes the friend request panel by removing its parent node.
+     */
     private void closePanel() {
-        // Find and remove the top-level panel for friend requests
         Node popup = playersContainer.getParent().getParent();
         ((Pane) popup.getParent()).getChildren().remove(popup);
     }
 
     // ---------------- End of Friend Requests Methods ----------------
-
     // ---------------- Home Page Methods ----------------
-//event handler for when the C4 game is clicker
+
+    /**
+     * Event handler for when the Connect 4 game is clicked.
+     */
     @FXML
     private void onConnect4Click() {
         chooseOpponent("Connect 4");
     }
-    //event handler for when the Checkers game is clicker
+
+    /**
+     * Event handler for when the Checkers game is clicked.
+     */
     @FXML
     private void onCheckersClick() {
         chooseOpponent("Checkers");
     }
-    //event handler for when the ttt game is clicker
+
+    /**
+     * Event handler for when the Tic Tac Toe game is clicked.
+     */
     @FXML
     private void onTicTacToeClick() {
         chooseOpponent("Tic Tac Toe");
     }
 
-//Launches the selected game by switching to its respective FXML view.
-//Displays a loading screen before launching the game scene.
+    /**
+     * Launches the selected game by switching to its respective FXML view.
+     * Displays a loading screen before launching the game scene.
+     *
+     * @param gameName the name of the selected game
+     */
     @FXML
     public void launchGame(String gameName) {
-
         String fxmlFile;
-        String title;
-        // Determine which FXML file to load based on the selected game
+        // Determine the FXML file based on the game name
         switch (gameName) {
             case "Connect 4":
                 fxmlFile = "/ca/ucalgary/groupprojectgui/p3/views/connect4.fxml";
-
                 break;
             case "Checkers":
                 fxmlFile = "/ca/ucalgary/groupprojectgui/p3/views/checkers.fxml";
-
                 break;
             case "Tic Tac Toe":
                 fxmlFile = "/ca/ucalgary/groupprojectgui/p3/views/ticTacToe.fxml";
-
                 break;
             default:
                 System.out.println("Game not recognized: " + gameName);
                 return;
         }
-        // Show loading screen and then load the selected game scene
+        // Show a loading screen and then load the selected game scene
         SceneManager.showLoadingScreenAndLoadMain(
                 "/ca/ucalgary/groupprojectgui/p3/views/loadingScreen.fxml",
                 fxmlFile
         );
     }
-//Sets up the search functionality for filtering available games.
-// As the user types in the search bar, the game tiles are dynamically shown or hidden
-// based on whether their title matches the search query.
+
+    /**
+     * Sets up the search functionality for filtering available games.
+     * Game tiles are dynamically shown or hidden based on the search query.
+     */
     private void setupGameSearch() {
         gameSearchField.textProperty().addListener((obs, oldVal, newVal) -> {
             String query = newVal.toLowerCase();
-            // Loop through each game card (VBox) inside the gameTilePane (HBox)
+            // Loop through each game card (VBox) in the gameTilePane (HBox)
             for (Node node : gameTilePane.getChildren()) {
                 if (node instanceof VBox card) {
-                    // Loop through each child element of the card
+                    // Check if the card's label contains the game title and matches the search query
                     for (Node inner : card.getChildren()) {
                         if (inner instanceof Label label && label.getStyleClass().contains("game-title")) {
                             String gameName = label.getText().toLowerCase();
                             boolean match = gameName.contains(query);
-                            // Show or hide the card based on whether it matches the search
-
+                            // Set visibility based on match
                             card.setVisible(match);
                             card.setManaged(match);
                             break;
@@ -380,30 +404,35 @@ public class HomePageController {
             }
         });
     }
-//Displays the opponent selection overlay when a game is chosen.
-// Provides options to either play against a random opponent or a friend.
-// Applies a blur effect to the background when the overlay is shown.
+
+    /**
+     * Displays the opponent selection overlay when a game is chosen.
+     * Provides options for a random opponent or a friend,
+     * and applies a blur effect to the background.
+     *
+     * @param forGame the selected game name
+     */
     @FXML
     public void chooseOpponent(String forGame) {
-        // Store the name of the currently selected game
+        // Store the currently selected game
         currentGameName = forGame;
 
-        // Blur effect
+        // Apply blur effect to main container
         BoxBlur blur = new BoxBlur(10, 10, 3);
         mainContainer.setEffect(blur);
 
-        // Show overlay
+        // Show opponent overlay
         opponentOverlay.setVisible(true);
         opponentOverlay.setOpacity(1.0);
 
-        // Switch Game button behavior
+        // Switch game button hides the overlay and removes blur
         switchGameButton.setOnAction(e -> {
             opponentOverlay.setVisible(false);
             opponentOverlay.setOpacity(0.0);
             mainContainer.setEffect(null);
         });
 
-        // Random button behavior
+        // Random button launches the game with a random opponent
         randomButton.setOnAction(e -> {
             opponentOverlay.setVisible(false);
             opponentOverlay.setOpacity(0.0);
@@ -411,7 +440,7 @@ public class HomePageController {
             launchGame(currentGameName);
         });
 
-        // Friend button behavior
+        // Friend button opens friend selection overlay
         friendButton.setOnAction(e -> {
             opponentOverlay.setVisible(false);
             opponentOverlay.setOpacity(0.0);
@@ -420,83 +449,94 @@ public class HomePageController {
         });
     }
 
+    /**
+     * Shows the friend selection overlay allowing the user to choose a friend to play with.
+     */
     @FXML
     public void showFriendSelection() {
-        // Apply blur effect
+        // Apply a blur effect to the main container
         BoxBlur blur = new BoxBlur(10, 10, 3);
         mainContainer.setEffect(blur);
 
-        // Clear previous items (if any)
+        // Clear previous friend selections
         friendListView.getItems().clear();
-
         int currentUserId = LoginController.loginId;
         Set<Integer> friendIds = FriendDatabase.getFriends(currentUserId);
 
+        // Populate friend list with online friends only
         for (Integer friendId : friendIds) {
             Player friend = PlayerDatabase.getPlayerByUserID(friendId);
             User onlineUser = UserDatabase.getUserById(friendId);
-            // Check if the friend exists and is online (assuming isOnline() exists)
-            if (friend != null && onlineUser != null && onlineUser.isOnline() ) {
+            if (friend != null && onlineUser != null && onlineUser.isOnline()) {
                 friendListView.getItems().add(friend.getUsername());
-                // Update ListView display properties dynamically based on the number of items
                 friendListView.setFixedCellSize(32);
                 friendListView.setPrefHeight(friendListView.getItems().size() * 32 + 2);
             }
         }
-
-        // Make the overlay visible
         friendSelectionOverlay.setVisible(true);
     }
-//Handles the event when the user confirms their friend selection
-//  to play a game against them.
-// This method retrieves the selected friend from the ListView,
-// stores their user ID, hides the overlay, removes the blur effect,
-// and launches the selected game.
+
+    /**
+     * Handles the event when the user confirms their friend selection to play a game.
+     * Retrieves the selected friend's ID, hides the overlay, removes the blur, and launches the game.
+     *
+     * @param event the action event triggering friend selection confirmation
+     */
     @FXML
     private void onConfirmFriendSelection(ActionEvent event) {
         String selectedFriend = friendListView.getSelectionModel().getSelectedItem();
-        // Check if a friend was actually selected
         if (selectedFriend != null) {
             Player friendDet = PlayerDatabase.getPlayerByUsername(selectedFriend);
             friendOpponentID = friendDet.getUserID();
-            // Hide the overlay and clear any blur effects, then launch the game
             friendSelectionOverlay.setVisible(false);
-            // Remove any blur effect applied to the background
             mainContainer.setEffect(null);
-            // Launch the selected game (either Connect 4, Checkers, or Tic Tac Toe)
-            launchGame(currentGameName);  // Pass the appropriate game name
+            launchGame(currentGameName);
         } else {
             System.out.println("Please select a friend.");
         }
     }
-//Handles the event when the user cancels friend selection.
-// * Hides the friend selection overlay and removes the blur effect from the main UI.
+
+    /**
+     * Handles the event when the user cancels friend selection.
+     * Hides the friend selection overlay and removes the blur effect.
+     *
+     * @param event the action event triggering cancellation
+     */
     @FXML
     private void onCancelFriendSelection(ActionEvent event) {
-        // Hide the overlay and clear blur effects
         friendSelectionOverlay.setVisible(false);
         mainContainer.setEffect(null);
     }
 
-//Handles the event when the user clicks on their profile icon.
-// Navigates the user to the Manage Profile page.
+    /**
+     * Event handler for clicking on the profile icon.
+     * Navigates the user to the Manage Profile page.
+     *
+     * @param event the mouse event triggered on the profile icon
+     */
     @FXML
     private void openManageProfile(MouseEvent event) {
         SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/views/manageProfile.fxml");
     }
-    //Handles the event when the user clicks on the leaderboard button.
-    // * Navigates the user to the leaderboard page.
+
+    /**
+     * Handles the event when the user clicks the leaderboard button.
+     * Navigates the user to the leaderboard page.
+     */
     @FXML
     private void onLeaderboardClick() {
-        // Example navigation
         SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/views/leaderboard.fxml");
     }
-//Loads an image from the given path and sets it to the provided ImageView.
-// *
+
+    /**
+     * Loads an icon image from the given path and sets it to the provided ImageView.
+     *
+     * @param view the ImageView to load the image into
+     * @param path the path to the image resource
+     */
     private void loadIcon(ImageView view, String path) {
         var url = getClass().getResource(path);
         if (url != null) {
-            // If the image is found, display it in the ImageView
             view.setImage(new Image(url.toExternalForm()));
         } else {
             System.err.println("❌ Icon not found: " + path);
@@ -504,44 +544,46 @@ public class HomePageController {
     }
 
     // ---------------- Nested Logout Confirmation Controller ----------------
-//Displays the logout confirmation overlay on the screen.
-// Applies a blur effect to the background to focus user attention on the popup
+
+    /**
+     * Displays the logout confirmation overlay and applies a blur effect to the background.
+     */
     @FXML
     public void showLogoutOverlay() {
         logoutOverlay.setVisible(true);
         BoxBlur blur = new BoxBlur(10, 10, 3);
-        mainContainer.setEffect(blur); // mainContainer should be your root layout pane
+        mainContainer.setEffect(blur);
     }
-//Handles the event when the user confirms the logout action.
-// Navigates the user back to the login page.
+
+    /**
+     * Confirms the logout action and navigates back to the login page.
+     */
     @FXML
     public void confirmLogout() {
-
-        // Navigate to login or home screen
         SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/views/login.fxml");
     }
-//Handles the event when the user cancels the logout action.
-// Hides the logout confirmation overlay and removes the blur effect from the UI.
+
+    /**
+     * Cancels the logout process by hiding the logout overlay and removing the blur effect.
+     */
     @FXML
     public void cancelLogout() {
         logoutOverlay.setVisible(false);
         mainContainer.setEffect(null);
     }
-//Loads and displays the current user's friend list on the Home Page UI.
-// This method dynamically creates a scrollable list of friends with their
-// usernames and statuses, and adds them to the playersContainer.
-    private void loadFriendList() {
-        // Clear the existing content
-        playersContainer.getChildren().clear();
 
-        // Create a ScrollPane to contain the friends list
+    /**
+     * Loads the current user's friend list into the Home Page UI.
+     * Creates a scrollable list of friends with their usernames and statuses.
+     */
+    private void loadFriendList() {
+        playersContainer.getChildren().clear();
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         scrollPane.setFitToWidth(true);
         scrollPane.setStyle("-fx-background: transparent; -fx-background-color: transparent;");
 
-        // Create a VBox to hold the friend items with left alignment
         VBox friendsContent = new VBox(10);
         friendsContent.setPadding(new Insets(10));
         friendsContent.setAlignment(Pos.TOP_LEFT);
@@ -557,7 +599,7 @@ public class HomePageController {
         scrollPane.setContent(friendsContent);
         playersContainer.getChildren().add(scrollPane);
 
-        // Hide the vertical scrollbar by setting its opacity and preferred width to zero
+        // Hide the vertical scrollbar by setting its opacity and width to zero
         Platform.runLater(() -> {
             Node vBar = scrollPane.lookup(".scroll-bar:vertical");
             if (vBar != null) {
@@ -568,11 +610,15 @@ public class HomePageController {
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
         scrollPane.setMaxHeight(Double.MAX_VALUE);
     }
-//Creates a UI component (HBox) representing a friend item
-// in the friend list. Each friend item displays:
-// Avatar (first letter of username)
-// Username
-// Online/offline status
+
+    /**
+     * Creates a UI component (HBox) representing a friend item in the friend list.
+     * Displays an avatar, username, and an online/offline status indicator.
+     *
+     * @param username the username of the friend
+     * @param friendId the ID of the friend
+     * @return the HBox representing the friend item
+     */
     private HBox createFriendItem(String username, int friendId) {
         HBox friendItem = new HBox(15);
         friendItem.setAlignment(Pos.CENTER_LEFT);
@@ -580,7 +626,7 @@ public class HomePageController {
         friendItem.setMaxWidth(Double.MAX_VALUE);
         friendItem.setPrefHeight(40);
 
-        // Avatar styled to match HTML using Orbitron font and gradient background.
+        // Create avatar label with gradient background
         Label avatar = new Label(username.substring(0, 1).toUpperCase());
         avatar.setStyle(
                 "-fx-background-color: linear-gradient(to bottom, #ff00ff, #00ffff);" +
@@ -593,15 +639,17 @@ public class HomePageController {
                         "-fx-alignment: center;"
         );
 
-        // Username label with updated inline style using Orbitron font.
+        // Username label
         Label nameLabel = new Label(username);
         nameLabel.getStyleClass().add("friend-name");
         nameLabel.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(nameLabel, Priority.ALWAYS);
-        // Spacer region to push the status indicator (online/offline) to the far right
+
+        // Spacer to push status indicator to the right
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.NEVER);
-        // Create a label to show the friend's online status (using colored symbols)
+
+        // Online/offline status indicator
         Label friendStatus = new Label("⚪️");
         friendStatus.setStyle("-fx-font-size: 12px;");
         User onlineUser = UserDatabase.getUserById(friendId);
@@ -610,26 +658,28 @@ public class HomePageController {
         } else {
             friendStatus.setText("🔴");
         }
-        // Add hover effect to the entire friend item (visual feedback when hovering)
+
+        // Add hover effects for visual feedback
         friendItem.setOnMouseEntered(e -> {
             friendItem.setStyle("-fx-background-color: rgba(255, 0, 255, 0.1); -fx-cursor: hand;");
         });
-        // Remove hover effect when the mouse leaves the friend item
         friendItem.setOnMouseExited(e -> {
             friendItem.setStyle("-fx-background-color: transparent;");
         });
-        // Handle click event: Show the friend's profile popup when the user clicks on this item
         friendItem.setOnMouseClicked(event -> {
             showFriendProfilePopup(username);
         });
-        // Add all components (avatar, name label, spacer, and status) to the HBox (friendItem)
+
         friendItem.getChildren().addAll(avatar, nameLabel, spacer, friendStatus);
         return friendItem;
     }
-//Displays a popup overlay showing the selected friend's profile information
-// * such as username, email, level, online status, and game stats.
+
+    /**
+     * Displays a popup overlay showing the selected friend's profile information.
+     *
+     * @param username the username of the friend to show profile details for
+     */
     private void showFriendProfilePopup(String username) {
-        // Retrieve friend data
         Player player = PlayerDatabase.getPlayerByUsername(username);
         User friend = UserDatabase.getUserById(player.getUserID());
         if (friend == null) {
@@ -646,6 +696,7 @@ public class HomePageController {
             System.err.println("mainContainer is not attached to a scene!");
             return;
         }
+        // Apply blur effect to background
         BoxBlur blur = new BoxBlur(10, 10, 3);
         mainContainer.setEffect(blur);
         StackPane rootPane = (StackPane) scene.getRoot();
@@ -655,10 +706,10 @@ public class HomePageController {
         overlay.prefWidthProperty().bind(rootPane.widthProperty());
         overlay.prefHeightProperty().bind(rootPane.heightProperty());
 
-        // Create modal container with adjusted width (480px)
-        VBox modal = new VBox(18); // Slightly increased spacing from 15 to 18
+        // Modal container with defined dimensions and styles
+        VBox modal = new VBox(18);
         modal.setAlignment(Pos.CENTER);
-        modal.setPadding(new Insets(25)); // Increased padding from 20 to 25
+        modal.setPadding(new Insets(25));
         modal.setPrefWidth(480);
         modal.setMaxWidth(480);
         modal.setPrefHeight(550);
@@ -677,43 +728,43 @@ public class HomePageController {
         modal.setEffect(neonShadow);
         modal.setTranslateY(20);
 
-        // Header section - adjusted with slightly more space
-        HBox headerBox = new HBox(12); // Increased spacing from 10 to 12
+        // Header section with avatar and info
+        HBox headerBox = new HBox(12);
         headerBox.setAlignment(Pos.CENTER_LEFT);
 
         Label avatarLabel = new Label(username.substring(0, 1).toUpperCase());
-        avatarLabel.setMinSize(70, 70); // Increased from 60 to 70
+        avatarLabel.setMinSize(70, 70);
         avatarLabel.setAlignment(Pos.CENTER);
         avatarLabel.setStyle(
                 "-fx-background-color: linear-gradient(to bottom, #ff00ff, #00ffff);" +
                         "-fx-text-fill: black;" +
-                        "-fx-font-size: 28px;" + // Increased from 24px to 28px
-                        "-fx-background-radius: 35px;" // Increased from 30px to 35px
+                        "-fx-font-size: 28px;" +
+                        "-fx-background-radius: 35px;"
         );
 
-        VBox infoBox = new VBox(4); // Slightly increased spacing from 3 to 4
+        VBox infoBox = new VBox(4);
         Label nameLabel = new Label(username.toUpperCase());
-        nameLabel.setStyle("-fx-text-fill: white; -fx-font-size: 22px; -fx-font-family: 'Orbitron';"); // Increased from 20px to 22px
+        nameLabel.setStyle("-fx-text-fill: white; -fx-font-size: 22px; -fx-font-family: 'Orbitron';");
         Label statusLabel = new Label(onlineStatus);
         statusLabel.setStyle("-fx-text-fill: " + (friend.isOnline() ? "#00ff00" : "#ff0000") +
-                "; -fx-font-size: 13px;"); // Increased from 12px to 13px
+                "; -fx-font-size: 13px;");
         infoBox.getChildren().addAll(nameLabel, statusLabel);
         headerBox.getChildren().addAll(avatarLabel, infoBox);
 
-        // Personal Details Section - slightly more spacious
-        HBox idBox = createDetailLabel("User ID:", String.valueOf(friendId)); // Restored full label
+        // Personal details section
+        HBox idBox = createDetailLabel("User ID:", String.valueOf(friendId));
         HBox emailBox = createDetailLabel("Email:", email);
         HBox levelBox = createDetailLabel("Level:", String.valueOf(level));
-        VBox personalInfoBox = new VBox(10, idBox, emailBox, levelBox); // Increased spacing from 8 to 10
-        personalInfoBox.setPadding(new Insets(10)); // Increased from 8 to 10
+        VBox personalInfoBox = new VBox(10, idBox, emailBox, levelBox);
+        personalInfoBox.setPadding(new Insets(10));
         personalInfoBox.setStyle("-fx-background-color: rgba(0, 0, 0, 0.3);" +
                 "-fx-background-radius: 5;" +
                 "-fx-border-color: rgba(0, 255, 255, 0.2);" +
                 "-fx-border-width: 1;" +
                 "-fx-border-radius: 5;");
 
-        // Separator - adjusted to new width
-        Rectangle headerSeparator = new Rectangle(440, 1.5); // Increased width from 400 to 440, height from 1 to 1.5
+        // Separator for header
+        Rectangle headerSeparator = new Rectangle(440, 1.5);
         headerSeparator.setFill(new LinearGradient(
                 0, 0, 1, 0, true, CycleMethod.NO_CYCLE,
                 new Stop(0, Color.TRANSPARENT),
@@ -723,14 +774,14 @@ public class HomePageController {
         ));
         headerSeparator.setEffect(new DropShadow(4, 0, 2, Color.rgb(0, 0, 0, 0.6)));
 
+        // TabPane for game statistics (one tab per game)
         TabPane gameStatsTabPane = new TabPane();
         gameStatsTabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-        gameStatsTabPane.setPrefWidth(500); // Match content width
+        gameStatsTabPane.setPrefWidth(500);
         gameStatsTabPane.setMinWidth(500);
         gameStatsTabPane.setMaxWidth(500);
 
-
-        // Create tab content container with proper width constraints
+        // Create a tab for each game type and add its corresponding stats content
         for (GameType game : GameType.values()) {
             Tab tab = new Tab(game.toString().replace("_", " "));
             VBox tabContent = new VBox();
@@ -740,24 +791,24 @@ public class HomePageController {
             tabContent.getChildren().add(createGameStatsContent(player, game));
             tab.setContent(tabContent);
             gameStatsTabPane.getTabs().add(tab);
-
         }
 
-        Rectangle overallLevelBar = new Rectangle(300, 8); // Increased width from 280 to 300
+        // Overall level bar (decoration)
+        Rectangle overallLevelBar = new Rectangle(300, 8);
         overallLevelBar.setFill(new LinearGradient(
                 0, 0, 1, 0, true, CycleMethod.NO_CYCLE,
                 new Stop(0, Color.web("#00ffff")),
                 new Stop(1, Color.web("#ff00ff"))
         ));
 
-        // Close button - restored to original size
+        // Close button to dismiss friend profile popup
         Button closeButton = new Button("CLOSE");
         closeButton.setStyle("-fx-background-color: #ff00ff;" +
                 "-fx-text-fill: white;" +
                 "-fx-font-weight: bold;" +
                 "-fx-font-family: 'Orbitron';" +
                 "-fx-background-radius: 5;" +
-                "-fx-padding: 8 20;"); // Restored original padding
+                "-fx-padding: 8 20;");
         closeButton.setOnAction(e -> {
             rootPane.getChildren().remove(overlay);
             mainContainer.setEffect(null);
@@ -780,9 +831,7 @@ public class HomePageController {
                     "-fx-padding: 8 20;");
         });
 
-// Within showFriendProfilePopup(), after creating the modal and overlay:
-        final StackPane finalOverlay = overlay;  // Capture overlay for the lambda
-// Create the extra button in the popup
+        // Extra button for friend removal, visible only if not self
         Button extraButton = new Button("REMOVE FRIEND");
         extraButton.setStyle("-fx-background-color: #00ccff;" +
                 "-fx-text-fill: black;" +
@@ -790,49 +839,45 @@ public class HomePageController {
                 "-fx-font-family: 'Orbitron';" +
                 "-fx-background-radius: 5;" +
                 "-fx-padding: 8 20;");
+        // Use a lambda to confirm removal and update UI accordingly
         extraButton.setOnAction(e -> {
             confirmRemoveFriend(username, () -> {
-                Pane parent = (Pane) finalOverlay.getParent();
-                parent.getChildren().remove(finalOverlay);
+                Pane parent = (Pane) overlay.getParent();
+                parent.getChildren().remove(overlay);
                 mainContainer.setEffect(null);
             });
         });
-        HBox buttonContainer = new HBox(closeButton);
+        HBox buttonContainer;
+        // Hide the extra button if viewing own profile
         if (username.equals(PlayerDatabase.getPlayerByUserID(playerId).getUsername())) {
             extraButton.setVisible(false);
-
+            buttonContainer = new HBox(closeButton);
             buttonContainer.setAlignment(Pos.CENTER);
-        }else {
+        } else {
             buttonContainer = new HBox(10, extraButton, closeButton);
             buttonContainer.setAlignment(Pos.CENTER);
         }
 
-
-
-// Create a spacer region for separation (if needed)
+        // Spacer for separation in modal
         Region spacer = new Region();
         spacer.setPrefHeight(20);
         VBox.setMargin(spacer, new Insets(5, 0, 5, 0));
 
-// Build the bottom section with the button container
+        // Build bottom section with buttons
         VBox bottomSection = new VBox(10, spacer, buttonContainer);
         bottomSection.setAlignment(Pos.CENTER);
         bottomSection.setPadding(new Insets(10, 0, 0, 0));
 
-// Add the bottom section to your modal content
-
-// Update the modal content creation to include proper spacing
+        // Assemble modal content
         VBox modalContent = new VBox(15, headerBox, personalInfoBox, headerSeparator, gameStatsTabPane);
         modalContent.setAlignment(Pos.CENTER);
         modalContent.setMaxWidth(500);
-
-
         modalContent.getChildren().add(bottomSection);
-        // Add margin to the tierBox to further separate it from the tab pane
 
         overlay.getChildren().add(modalContent);
         StackPane.setAlignment(modalContent, Pos.CENTER);
 
+        // Animate modal appearance
         TranslateTransition tt = new TranslateTransition(Duration.millis(300), modalContent);
         tt.setFromY(20);
         tt.setToY(0);
@@ -841,19 +886,24 @@ public class HomePageController {
         rootPane.getChildren().add(overlay);
         overlay.toFront();
     }
-    //Creates a VBox (vertical container) that displays a player's game statistics
-    // for a specific game. Shows Ranking Points, Tier, and Win Ratio.
+
+    /**
+     * Creates a VBox that displays a player's game statistics for a specific game.
+     * Displays Ranking Points, Tier, and Win Ratio.
+     *
+     * @param player the player whose stats are to be displayed
+     * @param game   the game type
+     * @return a VBox containing game stats
+     */
     private VBox createGameStatsContent(Player player, GameType game) {
-        VBox contentBox = new VBox(15); // Adjusted spacing
+        VBox contentBox = new VBox(15);
         contentBox.setAlignment(Pos.TOP_LEFT);
         contentBox.setPadding(new Insets(15, 20, 15, 20));
-        // Apply background styling, border color, width, and rounded corners
         contentBox.setStyle("-fx-background-color: rgba(0, 0, 0, 0.3);" +
                 "-fx-border-color: rgba(0, 255, 255, 0.2);" +
                 "-fx-border-width: 1;" +
                 "-fx-border-radius: 5;");
-        // Set width constraints for the content box to fit properly in the tab
-        contentBox.setPrefWidth(440); // Match tab pane width
+        contentBox.setPrefWidth(440);
         contentBox.setMinWidth(440);
         contentBox.setMaxWidth(440);
 
@@ -864,17 +914,11 @@ public class HomePageController {
 
         // Tier
         String tier = player.rankForPlayer(game);
-
-
-        RankTier tierEnum;
-            tierEnum = RankTier.valueOf(String.valueOf(RankTier.valueOf(tier.toUpperCase())));
-
+        RankTier tierEnum = RankTier.valueOf(tier.toUpperCase());
 
         HBox tierBox = createStatBox("TIER",
                 tier.toString(),
                 getTierColor(tierEnum));
-
-
 
         // Win Ratio
         double winRatio = player.getWinRatio(game);
@@ -882,26 +926,30 @@ public class HomePageController {
                 String.format("%.1f%%", winRatio),
                 "#ff00ff");
 
-
         contentBox.getChildren().addAll(pointsBox, tierBox, winRatioBox);
         return contentBox;
     }
-//Creates an HBox (horizontal container) to display a single game statistic.
-//  Each stat box shows a label (e.g., RANKING POINTS) and its corresponding value.
+
+    /**
+     * Creates an HBox displaying a single game statistic.
+     *
+     * @param label the label for the stat (e.g., "RANKING POINTS")
+     * @param value the value of the stat
+     * @param color the text color for the stat value
+     * @return an HBox containing the statistic details
+     */
     protected HBox createStatBox(String label, String value, String color) {
         HBox box = new HBox(10);
         box.setAlignment(Pos.CENTER_LEFT);
         box.setPadding(new Insets(5, 15, 5, 15));
 
         Label nameLabel = new Label(label);
-        // Apply styling to the name label (light gray color, font size, and font family)
         nameLabel.setStyle("-fx-text-fill: #cccccc;" +
                 "-fx-font-size: 12px;" +
                 "-fx-font-family: 'Rajdhani';" +
                 "-fx-min-width: 120px;");
 
         Label valueLabel = new Label(value);
-        // Apply styling to the value label (dynamic color, bold, custom font)
         valueLabel.setStyle("-fx-text-fill: " + color + ";" +
                 "-fx-font-size: 16px;" +
                 "-fx-font-family: 'Orbitron';" +
@@ -911,25 +959,24 @@ public class HomePageController {
         return box;
     }
 
-    //Creates an HBox (horizontal container) to display detailed information
-    // * such as user profile data (e.g., User ID, Email, Level).
-    // *
-    // * This method formats the information as a key-value pair:
-    // * Example → User ID: 101
+    /**
+     * Creates an HBox to display detailed user profile information in a key-value format.
+     *
+     * @param title the label title (e.g., "User ID:")
+     * @param value the corresponding value
+     * @return an HBox displaying the detail
+     */
     protected HBox createDetailLabel(String title, String value) {
         HBox box = new HBox(5);
         box.setAlignment(Pos.CENTER_LEFT);
 
         Label titleLabel = new Label(title);
-        // Apply styling to the title label (cyan color, font size, bold)
         titleLabel.setStyle("-fx-text-fill: #00ffff;" +
                 "-fx-font-size: 14px;" +
                 "-fx-font-family: 'Rajdhani';" +
                 "-fx-font-weight: bold;");
 
         Label valueLabel = new Label(value);
-
-        // Apply styling to the value label (white color, font size)
         valueLabel.setStyle("-fx-text-fill: white;" +
                 "-fx-font-size: 14px;" +
                 "-fx-font-family: 'Rajdhani';");
@@ -937,10 +984,14 @@ public class HomePageController {
         box.getChildren().addAll(titleLabel, valueLabel);
         return box;
     }
-//Returns the color code (as a String) associated with a given RankTier.
-//  This color is used to style the player's tier text in the UI.
+
+    /**
+     * Returns the color code associated with a given RankTier.
+     *
+     * @param tier the RankTier enum
+     * @return the corresponding color code as a String
+     */
     protected String getTierColor(RankTier tier) {
-        // Use a switch statement to check which tier the player belongs to
         switch (tier) {
             case DIAMOND:
                 return "#00ffff";   // Cyan
@@ -955,37 +1006,41 @@ public class HomePageController {
         }
     }
 
-
-//Handles the event when the user clicks the 'Remove Friend' button.
-// Identifies the friend to be removed and calls confirmRemoveFriend
-// to handle the removal logic and UI update.
+    /**
+     * Handles the event for the 'Remove Friend' button.
+     * Identifies the friend to be removed and calls confirmRemoveFriend
+     * to execute removal and update the UI.
+     *
+     * @param event the action event triggered by the remove button
+     */
     @FXML
     public void handleRemoveFriend(ActionEvent event) {
-        // Get the remove button that was clicked
         Button removeButton = (Button) event.getSource();
         HBox friendItem = (HBox) removeButton.getParent();
         Label usernameLabel = (Label) friendItem.getChildren().get(1);
         String friendUsername = usernameLabel.getText();
 
-        // Use the helper and remove the friend item from the UI after successful removal.
+        // Remove friend from UI after confirming removal
         confirmRemoveFriend(friendUsername, () -> {
             playersContainer.getChildren().remove(friendItem);
         });
     }
 
-//Opens the 'Add Friend' popup window with a blurred background.
-// Dynamically creates and styles the modal content (size, padding, colors, effects).
+    /**
+     * Opens the 'Add Friend' popup window with a blurred background.
+     * Dynamically creates and styles the modal content.
+     */
     @FXML
     private void openAddFriendPopup() {
-        // Apply blur effect to the background (main container)
+        // Apply blur effect to main container
         BoxBlur blur = new BoxBlur(10, 10, 3);
         mainContainer.setEffect(blur);
+
         VBox modalContent = new VBox(15);
         modalContent.setAlignment(Pos.TOP_CENTER);
         modalContent.setPrefSize(400, 500);
         modalContent.setMaxSize(400, 500);
         modalContent.setPadding(new Insets(25));
-        // Apply custom CSS styling for the modal background, border, and shadow effect
         modalContent.setStyle(
                 "-fx-background-color: rgba(10, 5, 20, 0.95);" +
                         "-fx-background-radius: 15;" +
@@ -994,13 +1049,11 @@ public class HomePageController {
                         "-fx-border-radius: 15;" +
                         "-fx-effect: dropshadow(gaussian, rgba(255, 0, 255, 0.5), 30, 0.5, 0, 0);"
         );
-// Create an HBox for the header section of the popup
-// This will hold the title "ADD FRIEND" and the close button
+        // Header section with title and close button
         HBox headerBox = new HBox();
         headerBox.setAlignment(Pos.CENTER_LEFT);
         headerBox.setPadding(new Insets(0, 0, 15, 0));
         Label titleLabel = new Label("ADD FRIEND");
-        // Apply CSS styling to the title label
         titleLabel.setStyle(
                 "-fx-text-fill: #00ffff;" +
                         "-fx-font-size: 20px;" +
@@ -1008,10 +1061,8 @@ public class HomePageController {
                         "-fx-font-weight: bold;" +
                         "-fx-text-shadow: 0 0 5px #00ffff;"
         );
-        // Create a spacer to push close button to the right
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
-        // Create the close button
         Button closeButton = new Button();
         Text closeIcon = new Text("✕");
         closeIcon.setStyle("-fx-font-size: 20px; -fx-fill: #ff00ff;");
@@ -1022,11 +1073,11 @@ public class HomePageController {
         closeButton.setOnMouseExited(e -> closeButton.setRotate(0));
         closeButton.setOnAction(e -> closeAddFriendPopup());
         headerBox.getChildren().addAll(titleLabel, spacer, closeButton);
-        // Create search field for finding players
+
+        // Search field for players
         TextField searchField = new TextField();
         searchField.setPromptText("Search players...");
         searchField.setPrefWidth(350);
-        // Apply styling to search field
         searchField.setStyle(
                 "-fx-background-color: rgba(0, 0, 0, 0.5);" +
                         "-fx-text-fill: white;" +
@@ -1038,7 +1089,7 @@ public class HomePageController {
                         "-fx-border-radius: 10;" +
                         "-fx-border-width: 1;"
         );
-        // Create ListView to display search results
+        // ListView for displaying search results
         ListView<Player> resultsListView = new ListView<>();
         resultsListView.setPrefHeight(300);
         resultsListView.setStyle(
@@ -1112,18 +1163,16 @@ public class HomePageController {
                 });
                 cellContainer.getChildren().addAll(avatarLabel, nameLabel, cellSpacer, addButton);
             }
-            // This method updates each cell in the ListView based on the Player object
+
             @Override
             protected void updateItem(Player player, boolean empty) {
                 super.updateItem(player, empty);
-                // If the cell is empty or there is no player to display
                 if (empty || player == null) {
                     setGraphic(null);
                 } else {
                     avatarLabel.setText(player.getUsername().substring(0, 1).toUpperCase());
                     nameLabel.setText(player.getUsername());
-                    // Set action for the add button to send a friend request
-                    // and remove the player from the search results once added
+                    // Action for add button: send friend request and remove player from the list
                     addButton.setOnAction(e -> {
                         sendFriendRequest(player.getUsername());
                         getListView().getItems().remove(player);
@@ -1135,15 +1184,13 @@ public class HomePageController {
 
         int currentUserId = LoginController.loginId;
         User currentUser = UserDatabase.getUserById(currentUserId);
-        // Generate a list of potential friends
-// Exclude the current user and users who are already friends
+        // Generate a list of potential friends (excluding current user and already friends)
         List<Player> potentialFriends = PlayerDatabase.getAllPlayers().stream()
                 .filter(p -> !p.getUsername().equalsIgnoreCase(currentUser.getUsername()))
                 .filter(p -> !FriendDatabase.areFriends(currentUserId, p.getUserID()))
                 .collect(Collectors.toList());
         ObservableList<Player> searchResults = FXCollections.observableArrayList(potentialFriends);
         Node resultNode;
-        // If there are no players available to add as friends
         if (searchResults.isEmpty()) {
             Label noFriendsLabel = new Label("No players available to add as friend.");
             noFriendsLabel.setStyle("-fx-text-fill: #ff00ff; -fx-font-family: 'Orbitron'; -fx-font-size: 16px;");
@@ -1152,7 +1199,7 @@ public class HomePageController {
             resultsListView.setItems(searchResults);
             resultNode = resultsListView;
         }
-        // Add a listener to the search field for dynamic filtering based on user input
+        // Add listener for dynamic filtering based on user input
         searchField.textProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal == null || newVal.isEmpty()) {
                 resultsListView.setItems(searchResults);
@@ -1161,7 +1208,6 @@ public class HomePageController {
                 List<Player> filtered = potentialFriends.stream()
                         .filter(p -> p.getUsername().toLowerCase().contains(query))
                         .collect(Collectors.toList());
-                // If no matching players found
                 if (filtered.isEmpty()) {
                     Label noResultsLabel = new Label("No players match your search.");
                     noResultsLabel.setStyle("-fx-text-fill: #ff00ff; -fx-font-family: 'Orbitron'; -fx-font-size: 16px;");
@@ -1175,6 +1221,8 @@ public class HomePageController {
         addFriendPopupContainer.getChildren().setAll(modalContent);
         addFriendOverlay.setVisible(true);
         addFriendOverlay.setManaged(true);
+
+        // Animate the popup appearance
         FadeTransition fadeIn = new FadeTransition(Duration.millis(300), addFriendOverlay);
         fadeIn.setFromValue(0);
         fadeIn.setToValue(1);
@@ -1184,7 +1232,10 @@ public class HomePageController {
         ParallelTransition openTransition = new ParallelTransition(fadeIn, slideIn);
         openTransition.play();
     }
-    // Method to close the 'Add Friend' popup window
+
+    /**
+     * Closes the 'Add Friend' popup window.
+     */
     private void closeAddFriendPopup() {
         FadeTransition fadeOut = new FadeTransition(Duration.millis(200), addFriendOverlay);
         fadeOut.setFromValue(1);
@@ -1198,14 +1249,19 @@ public class HomePageController {
         });
         fadeOut.play();
     }
-    // Method to show a confirmation popup for removing a friend
+
+    /**
+     * Shows a confirmation popup for removing a friend.
+     *
+     * @param friendUsername    the username of the friend to remove
+     * @param postRemovalAction a Runnable to execute after successful removal
+     */
     private void confirmRemoveFriend(String friendUsername, Runnable postRemovalAction) {
-        // Create a semi-transparent overlay that allows clicking through to background
+        // Create semi-transparent overlay
         StackPane overlay = new StackPane();
         overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
-        overlay.setPickOnBounds(true); // Allows clicks to pass through
+        overlay.setPickOnBounds(true);
 
-        // Create the popup content with enhanced styling
         VBox popupContent = new VBox(20);
         popupContent.setAlignment(Pos.CENTER);
         popupContent.setPadding(new Insets(25));
@@ -1218,7 +1274,7 @@ public class HomePageController {
                         "-fx-effect: dropshadow(gaussian, rgba(0, 255, 255, 0.8), 20, 0.5, 0, 0);"
         );
 
-        // Add glowing title
+        // Title and message for confirmation
         Label title = new Label("CONFIRM REMOVAL");
         title.setStyle(
                 "-fx-text-fill: white;" +
@@ -1228,7 +1284,6 @@ public class HomePageController {
                         "-fx-text-fill: linear-gradient(to right, #ff00ff, #00ffff);"
         );
 
-        // Add the friend username with styling
         Label message = new Label("Remove " + friendUsername + " from friends?");
         message.setStyle(
                 "-fx-text-fill: white;" +
@@ -1237,11 +1292,10 @@ public class HomePageController {
                         "-fx-font-weight: bold;"
         );
 
-        // Create button container
         HBox buttonBox = new HBox(20);
         buttonBox.setAlignment(Pos.CENTER);
 
-        // Yes button with hover effects
+        // Yes button for confirming removal
         Button yesButton = new Button("CONFIRM");
         yesButton.setStyle(
                 "-fx-background-color: linear-gradient(to bottom, #ff00ff, #cc00ff);" +
@@ -1278,7 +1332,7 @@ public class HomePageController {
             );
         });
 
-        // No button with hover effects
+        // No button to cancel removal
         Button noButton = new Button("CANCEL");
         noButton.setStyle(
                 "-fx-background-color: linear-gradient(to bottom, #00ccff, #0099cc);" +
@@ -1317,16 +1371,13 @@ public class HomePageController {
 
         buttonBox.getChildren().addAll(noButton, yesButton);
         popupContent.getChildren().addAll(title, message, buttonBox);
-
-        // Add the popup content to the overlay
         overlay.getChildren().add(popupContent);
         StackPane.setAlignment(popupContent, Pos.CENTER);
 
-        // Get the root pane and add our overlay
         StackPane rootPane = (StackPane) mainContainer.getScene().getRoot();
         rootPane.getChildren().add(overlay);
 
-        // Set up button actions
+        // Action for confirming removal: remove friend from database, update UI, and dismiss overlay
         yesButton.setOnAction(e -> {
             int friendID = PlayerDatabase.getPlayerByUsername(friendUsername).getUserID();
             FriendDatabase.removeFriend(LoginController.loginId, friendID);
@@ -1341,7 +1392,7 @@ public class HomePageController {
             rootPane.getChildren().remove(overlay);
         });
 
-        // Add animation for appearance
+        // Animate popup appearance
         FadeTransition fadeIn = new FadeTransition(Duration.millis(300), overlay);
         fadeIn.setFromValue(0);
         fadeIn.setToValue(1);
@@ -1353,10 +1404,14 @@ public class HomePageController {
         ParallelTransition openTransition = new ParallelTransition(fadeIn, slideIn);
         openTransition.play();
     }
+
+    /**
+     * Opens the stats overlay for the current user by displaying their own friend profile.
+     *
+     * @param event the action event triggering the display
+     */
     public void showStatsOverlay(ActionEvent event) {
         String selfUsername = PlayerDatabase.getPlayerByUserID(LoginController.loginId).getUsername();
         showFriendProfilePopup(selfUsername);
     }
 }
-
-
