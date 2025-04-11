@@ -64,7 +64,7 @@ public class TicTacToeController {
     @FXML
     public Label turnLabel;
     @FXML
-    private TextField chatInput;
+    public TextField chatInput;
     @FXML
     public Label localPlayerLabel;
     @FXML
