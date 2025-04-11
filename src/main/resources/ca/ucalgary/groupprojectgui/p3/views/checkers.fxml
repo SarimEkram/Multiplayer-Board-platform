@@ -93,6 +93,7 @@
                                     <Insets bottom="10"/>
                                 </padding>
                             </Label>
+
                             <!-- Chat Messages inside a ScrollPane -->
                             <ScrollPane fx:id="chatScrollPane" VBox.vgrow="ALWAYS" fitToWidth="true"
                                         prefHeight="300"
