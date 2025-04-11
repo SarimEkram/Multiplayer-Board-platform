@@ -581,6 +581,7 @@ public class HomePageController {
 
         // Game stats tab pane
         TabPane gameStatsTabPane = new TabPane();
+
         gameStatsTabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         gameStatsTabPane.setPrefWidth(500);
         gameStatsTabPane.setMinWidth(500);
@@ -600,6 +601,8 @@ public class HomePageController {
 
         // Close button
         Button closeButton = new Button("CLOSE");
+        closeButton.setCursor(Cursor.HAND);
+
         closeButton.setStyle("-fx-background-color: #ff00ff;" +
                 "-fx-text-fill: white;" +
                 "-fx-font-weight: bold;" +
@@ -631,6 +634,7 @@ public class HomePageController {
         // "REMOVE FRIEND" button
         final StackPane finalOverlay = overlay;
         Button extraButton = new Button("REMOVE FRIEND");
+        extraButton.setCursor(Cursor.HAND);
         extraButton.setStyle("-fx-background-color: #00ccff;" +
                 "-fx-text-fill: black;" +
                 "-fx-font-weight: bold;" +
@@ -1101,6 +1105,7 @@ public class HomePageController {
         buttonBox.setAlignment(Pos.CENTER);
 
         Button yesButton = new Button("CONFIRM");
+        yesButton.setCursor(Cursor.HAND);
         yesButton.setStyle(
                 "-fx-background-color: linear-gradient(to bottom, #ff00ff, #cc00ff);" +
                         "-fx-text-fill: white;" +
@@ -1133,6 +1138,8 @@ public class HomePageController {
         ));
 
         Button noButton = new Button("CANCEL");
+        noButton.setCursor(Cursor.HAND);
+
         noButton.setStyle(
                 "-fx-background-color: linear-gradient(to bottom, #00ccff, #0099cc);" +
                         "-fx-text-fill: black;" +
@@ -1221,7 +1228,7 @@ public class HomePageController {
                         "-fx-background-radius: 15;" +
                         "-fx-border-color: #ff00ff;" +
                         "-fx-border-width: 2;" +
-                        "-fx-border-radius: 15;" +
+                        "-fx-border-radius: 5;" +
                         "-fx-effect: dropshadow(gaussian, rgba(255, 0, 255, 0.5), 30, 0.5, 0, 0);"
         );
 
@@ -1236,8 +1243,9 @@ public class HomePageController {
                         "-fx-font-size: 20px;" +
                         "-fx-font-family: 'Orbitron';" +
                         "-fx-font-weight: bold;" +
-                        "-fx-text-shadow: 0 0 5px #00ffff;"
+                        "-fx-effect: dropshadow(gaussian, #00ffff, 5, 0.1, 0, 0);"
         );
+
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
