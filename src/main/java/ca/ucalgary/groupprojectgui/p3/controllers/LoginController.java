@@ -60,33 +60,33 @@
         @FXML private VBox registerForm;
 
         // --- Login Form Fields ---
-        @FXML private TextField loginUsername;
-        @FXML private PasswordField loginPassword;
-        @FXML private Button loginButton;
-        @FXML private Label loginErrorLabel;
+        @FXML protected TextField loginUsername;
+        @FXML protected PasswordField loginPassword;
+        @FXML protected Button loginButton;
+        @FXML protected Label loginErrorLabel;
 
         // --- Forgot Password Form Fields ---
         @FXML private VBox verifyEmailSection;
-        @FXML private TextField forgotEmail;
-        @FXML private Button verifyEmailBtn;
-        @FXML private Label forgotErrorLabel; // error message for forgot password validation
+        @FXML protected TextField forgotEmail;
+        @FXML protected Button verifyEmailBtn;
+        @FXML protected Label forgotErrorLabel; // error message for forgot password validation
 
         // Forgot form - reset password section (initially hidden)
         @FXML private VBox resetPasswordSection;
-        @FXML private TextField resetToken;
-        @FXML private PasswordField newPassword;
-        @FXML private PasswordField confirmNewPassword;
-        @FXML private Button resetBtn;
-        @FXML private Label resetErrorLabel; // error message in reset password section
+        @FXML protected TextField resetToken;
+        @FXML protected PasswordField newPassword;
+        @FXML protected PasswordField confirmNewPassword;
+        @FXML protected Button resetBtn;
+        @FXML protected Label resetErrorLabel; // error message in reset password section
 
         // --- Register Form Fields ---
-        @FXML private TextField registerFullName;
-        @FXML private TextField registerUsername;
-        @FXML private TextField registerEmail;
-        @FXML private PasswordField registerPassword;
-        @FXML private PasswordField registerConfirmPassword;
-        @FXML private Button registerBtn;
-        @FXML private Label registerErrorLabel; // error message for registration validation
+        @FXML protected TextField registerFullName;
+        @FXML protected TextField registerUsername;
+        @FXML protected TextField registerEmail;
+        @FXML protected PasswordField registerPassword;
+        @FXML protected PasswordField registerConfirmPassword;
+        @FXML protected Button registerBtn;
+        @FXML protected Label registerErrorLabel; // error message for registration validation
 
         // Instance of backend classes for registration and password reset
         private final ResetUserPassword resetUserPassword = new ResetUserPassword();
@@ -278,7 +278,7 @@
         }
 
         // New helper method to clear all text fields.
-        private void clearAllFields() {
+        protected void clearAllFields() {
             // Login Form
             if (loginUsername != null) loginUsername.clear();
             if (loginPassword != null) loginPassword.clear();
@@ -343,7 +343,7 @@
 
         // --- Login Form Handler (Integrated with backend) ---
         @FXML
-        private void handleLogin() {
+        protected void handleLogin() {
             String user = loginUsername.getText().trim();
             String pass = loginPassword.getText().trim();
 
@@ -389,7 +389,7 @@
 
         // --- Forgot Password Handlers ---
         @FXML
-        private void proceedForgot() {
+        protected void proceedForgot() {
             String email = forgotEmail.getText().trim();
             if (email.isEmpty() || !email.contains("@")) {
                 forgotErrorLabel.setText("Please enter a valid email address.");
@@ -452,7 +452,7 @@
         }
 
         @FXML
-        private void handleRegister() {
+        protected void handleRegister() {
             String usernameInput = registerUsername.getText().trim();
             String emailInput = registerEmail.getText().trim();
             String passwordInput = registerPassword.getText().trim();
@@ -509,4 +509,5 @@
             }));
             delay.play();
         }
+
     }

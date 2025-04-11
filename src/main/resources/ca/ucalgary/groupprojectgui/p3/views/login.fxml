@@ -63,7 +63,7 @@
                                         <HBox alignment="CENTER" styleClass="action-links">
                                             <children>
                                                 <Text styleClass="account-prompt">Don't Have an Account? </Text>
-                                                <Hyperlink onAction="#showRegisterForm" style="-fx-text-fill: #f0fff" styleClass="link " text=" Register" />
+                                                <Hyperlink onAction="#showRegisterForm"  styleClass="link" text=" Register" />
                                             </children>
                                         </HBox>
                                     </children>

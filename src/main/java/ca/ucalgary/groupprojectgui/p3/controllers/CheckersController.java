@@ -38,36 +38,61 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+
 import java.io.*;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+
 import static javafx.scene.paint.Color.rgb;
+
 public class CheckersController {
 
-    @FXML public Circle turnPiece;
-    @FXML public VBox chatMessages;
-    @FXML public ScrollPane chatScrollPane;
-    @FXML public Label chatHeader;
-    @FXML public Button leaveGame;
-    @FXML public Label gameTitle;
-    @FXML public Label timeElapsed;
-    @FXML public TextField chatInput;
-    @FXML public Label turnLabel; // Turn indicator label
-    @FXML public StackPane boardContainer;
-    @FXML public Circle checkerCircle1;      // Player 1's circle
-    @FXML public Circle checkerCircle2;      // Player 2's circle
-    @FXML public Label player1Name;
-    @FXML public Label player2Name;
+    @FXML
+    public Circle turnPiece;
 
-    @FXML private Label winnerLabel;
-    @FXML private CheckersMatchmaking matchmaking;
-    @FXML private Player localPlayer;
-    @FXML private int player1Id;       // Local player's ID (from matchmaking)
-    @FXML private int opponentId;      // Opponent's player ID
-    @FXML private Player opponentPlayer;
+    @FXML
+    public VBox chatMessages;
+
+    @FXML
+    public ScrollPane chatScrollPane;
+
+    @FXML
+    public Label chatHeader;
+    public Button leaveGame;
+    public Label gameTitle;
+    public Label timeElapsed;
+    public TextField chatInput;
+    public Label localPlayerLabel;
+
+    @FXML
+    Label turnLabel; // Turn indicator label
+
+    @FXML
+    StackPane boardContainer;
+
+    @FXML
+    Circle checkerCircle1;      // Player 1's circle
+
+    @FXML
+    Circle checkerCircle2;      // Player 2's circle
+
+    @FXML
+    Label player1Name;
+    @FXML
+    Label player2Name;
+
+    @FXML
+    private Label winnerLabel;
+    private CheckersMatchmaking matchmaking;
+    private Player localPlayer;
+    private int player1Id;       // Local player's ID (from matchmaking)
+    private int opponentId;      // Opponent's player ID
+    private Player opponentPlayer;
 
     // Board constants
     private static final int BOARD_ROWS = 8;
@@ -81,7 +106,7 @@ public class CheckersController {
     private Checkers gameLogic;
 
     // UI cell mapping for board cells
-    public StackPane[][] cellPanes = new StackPane[BOARD_ROWS][BOARD_COLUMNS];
+    StackPane[][] cellPanes = new StackPane[BOARD_ROWS][BOARD_COLUMNS];
 
     // For tracking selection and valid moves (using Move objects)
     private Position selectedPiecePosition = null;
@@ -94,7 +119,7 @@ public class CheckersController {
     private Timeline timeline;
     private int secondsElapsed = 0;
 
-    public InGameChat chatSession;
+    InGameChat chatSession;
 
     private TurnTimer timerWhite;
     private TurnTimer timerBlack;
@@ -102,7 +127,15 @@ public class CheckersController {
     private boolean warningSentWhite = false;
     private boolean warningSentBlack = false;
 
+
+    private Timeline turnCountdown;
+    private int turnSecondsElapsed = 0;
+
     private static final String CHECKERS_CHAT_CSV = "checkersChatHistory.csv";
+
+
+
+
 
     private static class Position {
         int row, col;
@@ -178,9 +211,11 @@ public class CheckersController {
 
         // Black always goes first in Checkers
         timerBlack.startTimer();
+
+
     }
 
-    public void createBoard() {
+    private void createBoard() {
         Image crown = new Image(getClass().getResourceAsStream("/ca/ucalgary/groupprojectgui/p3/images/crown.png"));
         ImageView crownImage = new ImageView(crown);
         crownImage.setFitWidth(45);
@@ -245,6 +280,7 @@ public class CheckersController {
                 cell.setOnMouseExited(e -> handleCellHoverExit(currentRow, currentCol));
                 boardGrid.add(cell, col, row);
             }
+
         }
 
         boardContainer.getChildren().addAll(boardBackground, boardGrid);
@@ -255,6 +291,7 @@ public class CheckersController {
         if (leaveGame != null) {
             leaveGame.setOnAction(e -> onLeaveGame());
         }
+
     }
 
     private void startTimer() {
@@ -396,7 +433,6 @@ public class CheckersController {
                 validMoves.clear();
             }
         }
-
         CheckersPiece piece = checkersBoard.board[row][col];
         if (piece != null) {
             if (!isPieceOfCurrentTurn(piece)) {
@@ -488,7 +524,7 @@ public class CheckersController {
         }
     }
 
-    public void clearHighlights() {
+    void clearHighlights() {
         for (int row = 0; row < BOARD_ROWS; row++) {
             for (int col = 0; col < BOARD_COLUMNS; col++) {
                 cellPanes[row][col].getChildren().removeIf(node -> {
@@ -542,7 +578,7 @@ public class CheckersController {
         }
     }
 
-    public void updateTurnIndicator() {
+    void updateTurnIndicator() {
         Checkers.Turn currentTurn = gameLogic.getTurn();
         if (currentTurn == Checkers.Turn.BLACK) {
             turnPiece.getStyleClass().clear();
@@ -668,7 +704,7 @@ public class CheckersController {
     }
 
     @FXML
-    public void onSendMessage() {
+    void onSendMessage() {
         String message = chatInput.getText();
         if (message == null || message.trim().isEmpty()) {
             return;
@@ -838,6 +874,44 @@ public class CheckersController {
 
         turnCheckTimeline.setCycleCount(Timeline.INDEFINITE);
         turnCheckTimeline.play();
+    }
+
+
+    private void updateTimerLabel() {
+        Platform.runLater(() -> {
+            int minutes = turnSecondsElapsed / 60;
+            int seconds = turnSecondsElapsed % 60;
+            timeElapsed.setText(String.format("⏳ TURN TIME: %02d:%02d", minutes, seconds));
+        });
+    }
+
+
+    private void handleTurnTimeout() {
+        Platform.runLater(() -> {
+            addMessage("SYSTEM", "⏰ Time's up!", true);
+            boardGrid.setDisable(true);
+
+            Checkers.Turn currentTurn = gameLogic.getTurn();
+
+            String winnerName = (currentTurn == Checkers.Turn.BLACK)
+                    ? opponentPlayer.getUsername()
+                    : localPlayer.getUsername();
+
+            turnPiece.getStyleClass().clear();
+            turnPiece.getStyleClass().add(currentTurn == Checkers.Turn.BLACK ? "checker-white" : "checker-black");
+            turnLabel.setText(winnerName + " wins!");
+
+            stopTimer(); // GUI clock
+            stopTurnTimer(); // stop the timeline loop
+
+            showGameOverPopup(winnerName, true);
+
+            if (currentTurn == Checkers.Turn.BLACK) {
+                gameProcessor.UpdateResults(opponentPlayer, localPlayer, gameType);
+            } else {
+                gameProcessor.UpdateResults(localPlayer, opponentPlayer, gameType);
+            }
+        });
     }
 
 

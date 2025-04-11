@@ -21,6 +21,8 @@ public class TicTacToeControllerTest {
 
     // Dummy subclass to bypass matchmaking integration.
     public class DummyTicTacToeController extends TicTacToeController {
+        public char currentPlayer;
+
         @Override
         public void initialize() {
             // Create dummy players using the correct constructor parameters.

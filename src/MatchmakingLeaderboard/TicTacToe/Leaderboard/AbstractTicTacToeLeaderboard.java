@@ -15,7 +15,11 @@ public abstract class AbstractTicTacToeLeaderboard implements IGameLeaderboard {
     protected List<Player> players = new ArrayList<>();
     protected static final GameType gameType = GameType.TIC_TAC_TOE;
 
-
+    /**
+     * Adds a player to the leaderboard if they aren't already present.
+     * @param player
+     * @param gameType
+     */
     public void addPlayer(Player player, GameType gameType) {
         if (player == null) {
             throw new NullPointerException("player is null");
@@ -25,12 +29,16 @@ public abstract class AbstractTicTacToeLeaderboard implements IGameLeaderboard {
         }
     }
 
-    //public abstract void updatePlayer(Player player, boolean won);
-
+    /**
+     * Retrieves the leaderboard scores.
+     */
     public abstract List<Player> getScores();
 
-    //public abstract List<Player> getTopPlayers();
-
+    /**
+     * Finds a player in the leaderboard by their unique ID.
+     * @param playerId
+     * @return player
+     */
     public Player findPLayerById(int playerId) {
         for (Player player : players) {
             if (player.getUserID() == playerId) {
