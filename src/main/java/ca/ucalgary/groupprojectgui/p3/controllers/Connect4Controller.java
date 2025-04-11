@@ -58,7 +58,8 @@ public class Connect4Controller {
     @FXML private Label chatHeader;
 
     /** The main grid container for the Connect 4 board. */
-    @FXML private GridPane connect4Grid;
+    @FXML
+    GridPane connect4Grid;
 
     /** The horizontal container above the board for column selection indicators. */
     @FXML private HBox columnSelectors;
@@ -86,7 +87,8 @@ public class Connect4Controller {
     Label movesCount;
 
     /** TextField for user input of chat messages. */
-    @FXML private TextField chatInput;
+    @FXML
+    TextField chatInput;
 
     /*
      * INTERNAL FIELDS AND CONSTANTS
@@ -113,7 +115,7 @@ public class Connect4Controller {
     private static final String CONNECT4_CHAT_CSV = "connect4ChatHistory.csv";
 
     // Game logic
-    private ConnectBoard connectBoard;
+    ConnectBoard connectBoard;
     private GameProcessor gameProcessor;
 
     // Game type enumeration
@@ -429,7 +431,7 @@ public class Connect4Controller {
      *
      * @param column the column index (0-based) where the player is dropping a piece
      */
-    private void handleMove(int column) {
+    void handleMove(int column) {
         /*
          * connectBoard.playPiece(column) returns the row index where the piece
          * lands, or -1 if the column is already full.
@@ -767,7 +769,7 @@ public class Connect4Controller {
     /**
      * Stops the current Timeline that tracks turn time.
      */
-    private void stopTimer() {
+    void stopTimer() {
         if (timeline != null) {
             timeline.stop();
         }
@@ -854,6 +856,8 @@ public class Connect4Controller {
         }
     }
 
+
+
     /**
      * Clears the chat history CSV file (used when starting a new session).
      */
@@ -864,5 +868,14 @@ public class Connect4Controller {
         } catch (IOException e) {
             System.err.println("Failed to clear chat history: " + e.getMessage());
         }
+
+
+
+
+
     }
+
+
+
+
 }
