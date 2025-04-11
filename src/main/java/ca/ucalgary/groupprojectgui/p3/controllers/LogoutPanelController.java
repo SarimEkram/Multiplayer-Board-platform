@@ -16,9 +16,9 @@ import javafx.util.Duration;
  */
 public class LogoutPanelController {
 
-    @FXML private Button confirmLogoutButton; // Button to confirm logout action.
-    @FXML private Button cancelLogoutButton;  // Button to cancel logout action.
-    @FXML private Node logoutPanel;           // The entire logout panel container.
+    @FXML protected Button confirmLogoutButton; // Button to confirm logout action.
+    @FXML protected Button cancelLogoutButton;  // Button to cancel logout action.
+    @FXML protected Node logoutPanel;           // The entire logout panel container.
 
     /**
      * Initializes the logout panel controller.
@@ -39,7 +39,7 @@ public class LogoutPanelController {
      * @param button   the button to which the effect is applied.
      * @param glowColor the glow color specified in hexadecimal format.
      */
-    private void applyFloatingEffect(Button button, String glowColor) {
+    protected void applyFloatingEffect(Button button, String glowColor) {
         // Create a translate transition for moving the button slightly upward.
         TranslateTransition floatUp = new TranslateTransition(Duration.millis(150), button);
         floatUp.setByY(-3);
@@ -80,7 +80,7 @@ public class LogoutPanelController {
      * </p>
      */
     @FXML
-    private void cancelLogout() {
+    protected void cancelLogout() {
         // Instead of removing the node, simply hide the logout panel.
         logoutPanel.setVisible(false);
         SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/views/homePage.fxml");
@@ -93,7 +93,7 @@ public class LogoutPanelController {
      * </p>
      */
     @FXML
-    private void confirmLogout() {
+    protected void confirmLogout() {
         SceneManager.switchTo("/ca/ucalgary/groupprojectgui/p3/views/login.fxml");
     }
 }
