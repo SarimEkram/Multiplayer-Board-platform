@@ -1,19 +1,19 @@
 
 
-# 🎮 Online Multiplayer Game Platform
+#  Online Multiplayer Game Platform
 **Team Project – SENG 300 (Winter 2025)**  
 **Group Number: P20**
 
 ---
 
-## ✅ Requirements
+##  Requirements
 
 - Java JDK **23.0.2**
 - JavaFX **23.0.2**
 
 ---
 
-## 🚀 How to Run
+##  How to Run
 
 1. After pulling the latest version from the repository, **rebuild the project**.
 2. Launch the game by running the `MainApplication` file located at:  
@@ -21,7 +21,7 @@
 
 ---
 
-## 🧭 Getting Started
+##  Getting Started
 
 When the application launches:
 
@@ -38,7 +38,7 @@ Once logged in, users can:
 
 ---
 
-## 🎯 Game Objectives
+##  Game Objectives
 
 This platform includes three classic games, redesigned for online multiplayer:
 
@@ -54,31 +54,31 @@ All games feature:
 
 ---
 
-## 🛠 Feature Overview
+##  Feature Overview
 
-### 👤 User Management
+###  User Management
 - Secure registration/login with email & password
 - Profile updates and account deletion
 - Password reset support
 
-### 🤝 Matchmaking & Gameplay
+###  Matchmaking & Gameplay
 - Smart matchmaking based on skill level
 - Session-based game state management
 - Smooth transitions via modular controllers
 
-### 💬 In-Game Chat
+###  In-Game Chat
 - Real-time messaging between players during matches
 
-### 🏆 Leaderboard
+###  Leaderboard
 - MMR-based ranking system
 - Tier levels: **Bronze**, **Silver**, **Gold**, **Diamond**
 
-### 🖥 User Interface
+###  User Interface
 - Built entirely in **JavaFX**
 - Responsive, intuitive layout and navigation
 - Animated transitions between views
 
-### 🧪 Testing
+###  Testing
 - **JUnit 5** unit tests for core modules:
     - Game logic
     - Matchmaking & leaderboard
@@ -88,7 +88,7 @@ All games feature:
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ### From the `src/` folder, the codebase is organized into clear, modular packages:
 
@@ -108,7 +108,7 @@ All games feature:
 
 
 
-### 📄 CSV Files
+###  CSV Files
 - `playerdata.csv`: Stores stats (wins, losses, MMR, tier, etc.)
 - `userdata.csv`: Stores credentials (username, email, password hashes)
 - `friends.csv`: Records in-game friendships for social features

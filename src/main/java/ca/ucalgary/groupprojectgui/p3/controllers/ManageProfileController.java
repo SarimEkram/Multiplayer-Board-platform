@@ -241,22 +241,6 @@ public class ManageProfileController {
         pulseTimeline.play();
     }
 
-    private void drawGrid(Canvas canvas) {
-        double width = canvas.getWidth();
-        double height = canvas.getHeight();
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.setFill(Color.web("#0a0a12"));
-        gc.fillRect(0, 0, width, height);
-        gc.setFill(Color.web("#ff00ff", 0.05));
-        double step = 40.0;
-        double lineWidth = 2;
-        for (double x = 0; x <= width; x += step) {
-            gc.fillRect(x, 0, lineWidth, height);
-        }
-        for (double y = 0; y <= height; y += step) {
-            gc.fillRect(0, y, width, lineWidth);
-        }
-    }
 
 
 

@@ -656,11 +656,15 @@
     -fx-text-fill: rgba(255, 0, 255, 0.5); /* Soft pink with some transparency */
     -fx-font-family: "Orbitron";         /* Use Orbitron font */
     -fx-font-size: 24px;                 /* Set the font size */
-    -fx-effect: dropshadow(gaussian, rgba(255, 0, 255, 0.3), 2, 0.5, 0, 0); /* Subtle drop shadow for depth */
+    -fx-effect: dropshadow(gaussian, rgba(255, 0, 255, 0.3), 2, 0.5, 0, 0);
 }
 
 .add-friend-button:hover {
     -fx-text-fill: rgba(255, 0, 255, 0.9); /* Brighter pink on hover */
-    -fx-effect: dropshadow(gaussian, rgba(255, 0, 255, 0.6), 3, 0.5, 0, 0); /* Slightly stronger shadow */
+    -fx-effect: dropshadow(gaussian, rgba(255, 0, 255, 0.6), 3, 0.5, 0, 0);
     -fx-cursor: hand;                     /* Hand cursor on hover */
+}
+
+.tab-pane .tab-header-area .tab {
+    -fx-cursor: hand;
 }
