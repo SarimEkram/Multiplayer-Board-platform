@@ -67,6 +67,11 @@ public class TicTacToeMatchmaking extends AbstractTicTacToeMatchmaking{
         queue.addPlayer(player);
     }
 
+    /**
+     * Function to find opponent if
+     * @param playerID id of the player to find opponent of
+     * @return  the opponent Player
+     */
     public Player findOpponent(int playerID) {
         Player player1 = PlayerDatabase.getPlayerByUserID(playerID);
 
