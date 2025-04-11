@@ -12,15 +12,15 @@
 
 ## Home Page & Navigation
 
-| Test Case ID | Scenario                | Steps                                | Expected Outcome                                           |
-|--------------|-------------------------|--------------------------------------|------------------------------------------------------------|
-| GUI-HOME-01  | Load Home Page          | Launch app                           | Home screen loads with navigation buttons                  |
-| GUI-HOME-02  | Navigate to Game        | Click on “Play” / "Start Game"       | Game mode selection popup appears                          |
-| GUI-HOME-03  | Navigate to Leaderboard | Click “Leaderboard”                  | Leaderboard screen loads properly                          |
-| GUI-HOME-04  | Log Out                 | Click “Logout” button                | Logout confirmation popup appears                          |
-| GUI-HOME-05  | Remove Friend           | Click dot and select "remove friend" | Confirmation popup appears and friend is removed from list |
-| GUI-HOME-06  | Add Friend              | Click add button and select friend   | Friend is added to list                                    |
-|              |                         |                                      |                                                            |
+| Test Case ID | Scenario                   | Steps                                | Expected Outcome                                           |
+|--------------|----------------------------|--------------------------------------|------------------------------------------------------------|
+| GUI-HOME-01  | Load Home Page             | Launch app                           | Home screen loads with navigation buttons                  |
+| GUI-HOME-02  | Navigate to Game           | Click on “Play” / "Start Game"       | Game mode selection popup appears                          |
+| GUI-HOME-03  | Navigate to Leaderboard    | Click “Leaderboard”                  | Leaderboard screen loads properly                          |
+| GUI-HOME-04  | Log Out                    | Click “Logout” button                | Logout confirmation popup appears                          |
+| GUI-HOME-05  | Remove Friend              | Click dot and select "remove friend" | Confirmation popup appears and friend is removed from list |
+| GUI-HOME-06  | Add Friend                 | Click add button and select friend   | Friend is added to list                                    |
+| GUI-HOME-06  | Navigate to manage profile | Click profile icon                   | Manage Profile options load                                |
 
 
 ## Game Screens (TicTacToe, Connect4 & Checkers)
