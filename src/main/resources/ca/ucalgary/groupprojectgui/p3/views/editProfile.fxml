@@ -42,17 +42,6 @@
                         <Label styleClass="form-label" text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
                         <TextField fx:id="emailField" promptText="Enter new email" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-                        <!-- Row 3: Win Ratio (Info only) -->
-                        <Label styleClass="form-label" text="Win Ratio:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-                        <Label fx:id="winRatioLabel" styleClass="form-label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-
-                        <!-- Row 4: Level (Info only) -->
-                        <Label styleClass="form-label" text="Level:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-                        <Label fx:id="levelLabel" styleClass="form-label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-
-                        <!-- Row 5: Online Status (Info only) -->
-                        <Label styleClass="form-label" text="Online:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
-                        <Label fx:id="onlineStatusLabel" styleClass="form-label" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                         <columnConstraints>
                             <ColumnConstraints />
                             <ColumnConstraints />

@@ -42,9 +42,6 @@ public class EditProfileController {
     // Status label for messages
     @FXML private Label statusLabel;
     @FXML private Label userIdLabel;
-    @FXML private Label winRatioLabel;
-    @FXML private Label levelLabel;
-    @FXML private Label onlineStatusLabel;
 
     private User currentUser; // Holds the currently logged-in user's data
 
@@ -75,9 +72,6 @@ public class EditProfileController {
         // Editable fields remain empty for new input but you can also set prompt texts.
         usernameField.setPromptText(currentUser.getUsername());
         emailField.setPromptText(currentUser.getEmail());
-        winRatioLabel.setText(String.format("%.2f", currentUser.getWinRatio()));
-        levelLabel.setText(String.valueOf(currentUser.getLevel()));
-        onlineStatusLabel.setText(currentUser.isOnline() ? "Yes" : "No");
     }
 
     /**
