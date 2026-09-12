@@ -1,6 +1,6 @@
 <!--
 Sync Impact Report
-- Version change: 2.0.0 → 3.0.0
+- Version change: 2.0.0 → 3.0.0 → 3.0.1
 - Modified principles:
   - "IV. Data Safety (CSV Files)" → replaced by "IV. Data Safety (Persistent Store)"
     (redefines the persistence mechanism from CSV files to a relational database
@@ -10,11 +10,16 @@ Sync Impact Report
 - Removed sections: none (Technology & Data Constraints updated in place, not removed)
 - Follow-up TODOs:
   - TODO(RATIFICATION_DATE): original adoption date still unknown.
-- Rationale for MAJOR bump: this redefines a Core Principle's non-negotiable rule
+- Rationale for 3.0.0 (MAJOR): this redefines a Core Principle's non-negotiable rule
   (the persistence mechanism itself) rather than clarifying or extending it, and it
   reverses the prior principle's explicit requirement that no new persistence
   mechanism be introduced without an amendment — this amendment IS that required
   change, made in response to the `001-postgres-migration` feature.
+- Rationale for 3.0.1 (PATCH): after 3.0.0 was ratified, the CSV files were actually
+  migrated (verified against real PostgreSQL) and removed from the working tree, so the
+  Technology & Data Constraints wording was corrected from "retained as an archival
+  backup" (implying they're still tracked) to "removed from the working tree,
+  recoverable from git history" — a factual clarification, not a rule change.
 -->
 
 # Online Multiplayer Game Platform Constitution
@@ -72,9 +77,10 @@ this principle was written to address.
   `UserDatabase`, `PlayerDatabase`, and `FriendDatabase` classes (Principle IV); no
   further change of persistence mechanism may be introduced without a constitution
   amendment.
-- The original `userdata.csv`, `playerdata.csv`, and `friends.csv` files are retained
-  only as a one-time migration source and archival backup; the running application does
-  not read from or write to them.
+- The original `userdata.csv`, `playerdata.csv`, and `friends.csv` files served only as
+  a one-time migration source; once migrated and verified, they were removed from the
+  working tree (recoverable from git history) rather than kept as tracked archival
+  copies. The running application does not read from or write to them.
 - All connections to the database MUST be encrypted in transit (TLS); at-rest
   encryption is not required.
 - Networking code (`networking` package) MUST NOT assume a specific deployment
@@ -108,4 +114,4 @@ logic), Principle II (non-author approval + passing CI), and Principle IV (persi
 store data safety). Any deviation MUST be called out and justified in the PR description
 rather than silently merged.
 
-**Version**: 3.0.0 | **Ratified**: TODO(RATIFICATION_DATE): original adoption date unknown | **Last Amended**: 2026-09-12
+**Version**: 3.0.1 | **Ratified**: TODO(RATIFICATION_DATE): original adoption date unknown | **Last Amended**: 2026-09-12
