@@ -10,17 +10,32 @@
 
 - Java JDK **23.0.2**
 - JavaFX **23.0.2**
+- Docker (only needed to run a real PostgreSQL instance locally — see below)
 
 ---
 
 ##  How to Run
 
 1. After pulling the latest version from the repository, **rebuild the project**.
-2. Launch the game by running the `MainApplication` file located at:  
-   `src/main/java/ca/ucalgary/groupprojectgui/p3/MainApplication.java`
-3. Initial Password for all user1 - user40 is 123456
-### **NOTE**
-- ***After running the test cases, Rollback for original Player Data***
+2. **Running the automated tests** (`mvn test` or your IDE's test runner) needs no setup at all —
+   they run against a clean, in-memory database automatically. No CSV files to roll back anymore.
+3. **Running the app locally against a real database**:
+   - Generate a one-time local dev TLS certificate: `db/certs/generate-dev-cert.sh`
+   - Start PostgreSQL: `docker compose up -d`
+   - Migrate any existing player data (see step 5 below), or just register a new account
+   - Set `DATABASE_URL=jdbc:postgresql://localhost:5432/p3?sslmode=require`,
+     `DATABASE_USER=p3`, and `DATABASE_PASSWORD=p3` as environment variables (or JVM system
+     properties) before launching the app
+   - Launch the game by running the `MainApplication` file located at:
+     `src/main/java/ca/ucalgary/groupprojectgui/p3/MainApplication.java`
+   - If none of the above environment variables are set, the app falls back to the same
+     in-memory database the tests use — useful for a quick local check without Docker.
+4. Initial Password for all user1 - user40 is 123456
+5. **One-time data migration**: the original `userdata.csv`/`playerdata.csv`/`friends.csv` files
+   are no longer in this repository (they've already been migrated — see git history if you need
+   them). If you're bringing your own copies forward from an older checkout, see
+   `specs/001-postgres-migration/quickstart.md` Step 3 to migrate them into the database.
+
 ---
 
 ##  Getting Started
@@ -110,10 +125,12 @@ All games feature:
 
 
 
-###  CSV Files
-- `playerdata.csv`: Stores stats (wins, losses, MMR, tier, etc.)
-- `userdata.csv`: Stores credentials (username, email, password hashes)
-- `friends.csv`: Records in-game friendships for social features
+###  Data Storage
+Player, account, and friendship data is stored in a PostgreSQL database, accessed only through
+`UserDatabase`, `PlayerDatabase`, and `FriendDatabase` (see
+`specs/001-postgres-migration/data-model.md`). The original `playerdata.csv`, `userdata.csv`, and
+`friends.csv` files have been migrated and removed from the repository (available in git history
+if needed) — the running application no longer reads or writes them.
 
 ---
 

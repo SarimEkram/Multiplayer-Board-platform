@@ -81,16 +81,20 @@ is a low-stakes choice either way.
 ## 7. One-time CSV → database migration
 
 **Decision**: A standalone runnable class, `CsvToPostgresMigrator` (under
-`src/main/java/.../p3/tools/`), that reads `userdata.csv`, `playerdata.csv`, and `friends.csv`
-using the *existing* CSV-parsing logic already in the current `*Database` classes (extracted, not
-rewritten) and calls the new PostgreSQL-backed `saveUser` / `savePlayer` / `addFriend` methods to
-populate the database — reusing the real write path rather than a separate bespoke inserter, so
-migrated data is guaranteed to be valid for the new schema. Malformed or orphaned rows are logged
-(per FR-012) and skipped rather than aborting the whole run, per spec FR-005 / edge cases.
+`src/main/java/.../p3/tools/`), that parses each CSV file directly and upserts rows via its own
+SQL, preserving the exact `user_id` values from the CSVs. **Revised during implementation**: an
+earlier version of this decision proposed reusing `UserDatabase.saveUser`/
+`PlayerDatabase.savePlayer`/`FriendDatabase.addFriend` directly, but those methods assign a
+brand-new random ID to any `user_id` they don't already recognize (the correct behavior for new
+accounts created by the running application) — which would silently discard the original IDs that
+`playerdata.csv` and `friends.csv` cross-reference, breaking every relationship between the three
+files. The migrator instead upserts directly (insert if the ID is new, update in place on a
+re-run), keeping the original IDs intact. Malformed or orphaned rows are logged (per FR-012) and
+skipped rather than aborting the whole run, per spec FR-005 / edge cases.
 
-**Rationale**: Reusing the production save path (instead of writing raw SQL `INSERT`s) means the
-migration can't produce data the application itself wouldn't consider valid, and keeps the
-migration logic small.
+**Rationale**: Preserving original IDs is required for playerdata.csv/friends.csv's
+cross-references to remain valid after migration; a direct, ID-preserving upsert also keeps the
+migration naturally idempotent on re-run.
 
 ## 8. Identity & uniqueness rules
 

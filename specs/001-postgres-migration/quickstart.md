@@ -23,35 +23,29 @@ docker compose up -d
 **Expected outcome**: A `postgres:16` container starts, reachable at `localhost:5432`, with TLS
 enabled per [research.md](./research.md) §5. This proves the Docker Compose success criterion.
 
-## 3. Run the schema migrations
-
-Migrations run automatically via `MigrationRunner` the first time the application (or the CSV
-migration tool) connects with `DATABASE_URL` pointed at the Compose Postgres instance. To confirm
-manually:
+## 3. Migrate existing CSV data (this also applies the schema migrations)
 
 ```sh
-mvn exec:java -Dexec.mainClass="ca.ucalgary.groupprojectgui.p3.tools.MigrationCheck"
+export DATABASE_URL="jdbc:postgresql://localhost:5432/p3?sslmode=require"
+export DATABASE_USER=p3
+export DATABASE_PASSWORD=p3
+mvn exec:java
 ```
 
 **Expected outcome**: The `users`, `players`, `player_game_stats`, `friendships`, and
-`game_history` tables exist, matching [data-model.md](./data-model.md).
+`game_history` tables are created (matching [data-model.md](./data-model.md)), then every account
+in `userdata.csv`, every player's stats in `playerdata.csv`, and every friendship in `friends.csv`
+are migrated into them, reachable via the same `getUserById` / `getPlayerByUserID` / `getFriends`
+calls the application already uses. Any malformed/orphaned row is logged (per FR-012), not
+silently dropped, and does not abort the run. This proves FR-005 and User Story 3.
 
-## 4. Migrate existing CSV data
-
-```sh
-mvn exec:java -Dexec.mainClass="ca.ucalgary.groupprojectgui.p3.tools.CsvToPostgresMigrator"
-```
-
-**Expected outcome**: Every account in `userdata.csv`, every player's stats in `playerdata.csv`,
-and every friendship in `friends.csv` now exist in the database, reachable via the same
-`getUserById` / `getPlayerByUserID` / `getFriends` calls the application already uses. Any
-malformed/orphaned row is logged (per FR-012), not silently dropped, and does not abort the run.
-This proves FR-005 and User Story 3.
-
-## 5. Run the application against the database
+## 4. Run the application against the database
 
 ```sh
-DATABASE_URL=jdbc:postgresql://localhost:5432/p3?sslmode=require mvn javafx:run
+export DATABASE_URL="jdbc:postgresql://localhost:5432/p3?sslmode=require"
+export DATABASE_USER=p3
+export DATABASE_PASSWORD=p3
+mvn javafx:run
 ```
 
 **Expected outcome**: Log in as one of the seeded `user1`–`user40` accounts (password `123456`,
@@ -59,7 +53,7 @@ per the project README), play a full game of any of the three games, check the l
 add/remove a friend — every flow behaves identically to the CSV-based version. This proves User
 Story 1 (SC-001, SC-002).
 
-## 6. Confirm no manual CSV rollback is needed
+## 5. Confirm no manual CSV rollback is needed
 
 Re-run `mvn test` a second time immediately after step 1, with no manual file cleanup in between.
 
