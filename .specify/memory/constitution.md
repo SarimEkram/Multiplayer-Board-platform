@@ -1,26 +1,20 @@
 <!--
 Sync Impact Report
-- Version change: 1.0.0 → 2.0.0
+- Version change: 2.0.0 → 3.0.0
 - Modified principles:
-  - "I. Modular Package Boundaries" → replaced by "III. Modular Package Structure"
-    (adds explicit import restrictions and interface-based inter-package communication)
-  - "II. Test-First for Game and Account Logic" → replaced by "I. Test Coverage (JUnit)"
-    (scopes to gameLogic/MatchmakingLeaderboard/Authentication, adds controller
-    integration-test rule and mocking policy)
-  - "III. Player Data Integrity" → replaced by "IV. Data Safety (CSV Files)"
-    (adds *Database-class-only write rule, atomic writes, no File I/O in
-    controllers/game logic)
-  - "IV. Consistent JavaFX User Experience" → removed (superseded by controller
-    constraints folded into Principle III)
-  - "V. Simplicity and Dependency Discipline" → removed (not carried forward by the team)
-  - New: "II. Code Review via MR/PR" (was not previously covered)
-- Added sections: none beyond principle set (Technology & Data Constraints and
-  Development Workflow retained/updated to match new principles)
-- Removed sections: none (JavaFX UX and dependency-discipline guidance folded out of
-  Core Principles per team direction)
+  - "IV. Data Safety (CSV Files)" → replaced by "IV. Data Safety (Persistent Store)"
+    (redefines the persistence mechanism from CSV files to a relational database
+    accessed only through the `UserDatabase`/`PlayerDatabase`/`FriendDatabase` classes;
+    CSV files are demoted to a one-time migration source / archival backup)
+- Added sections: none
+- Removed sections: none (Technology & Data Constraints updated in place, not removed)
 - Follow-up TODOs:
-  - TODO(RATIFICATION_DATE): original adoption date still unknown; team did not supply
-    one for this amendment either.
+  - TODO(RATIFICATION_DATE): original adoption date still unknown.
+- Rationale for MAJOR bump: this redefines a Core Principle's non-negotiable rule
+  (the persistence mechanism itself) rather than clarifying or extending it, and it
+  reverses the prior principle's explicit requirement that no new persistence
+  mechanism be introduced without an amendment — this amendment IS that required
+  change, made in response to the `001-postgres-migration` feature.
 -->
 
 # Online Multiplayer Game Platform Constitution
@@ -30,7 +24,7 @@ Sync Impact Report
 ### I. Test Coverage (JUnit)
 All classes in `gameLogic/`, `MatchmakingLeaderboard/`, and `Authentication` MUST have
 JUnit 5 unit tests. Controllers require integration tests only, not unit tests. Tests
-MUST mock database/CSV I/O only — internal application classes MUST NOT be mocked. All
+MUST mock database I/O only — internal application classes MUST NOT be mocked. All
 tests MUST pass before a change is merged.
 **Rationale**: Unit-testing the true business logic (game rules, MMR/leaderboard
 calculation, authentication) catches regressions where they matter most, while mocking
@@ -54,23 +48,35 @@ concrete cross-package references.
 testable in isolation and lets packages evolve independently; interface-based
 communication prevents tight coupling between subsystems.
 
-### IV. Data Safety (CSV Files)
-Only `*Database` classes may write to `playerdata.csv`, `userdata.csv`, or
-`friends.csv`. Controllers and game logic MUST NOT perform file I/O directly. All CSV
-writes MUST be atomic. Any data mutated by local test runs MUST be rolled back before
-committing.
-**Rationale**: Centralizing CSV writes in dedicated classes prevents partial/corrupt
-writes and keeps the persistence layer auditable; the README already flags stray
-test-run mutations to player data as a recurring hazard.
+### IV. Data Safety (Persistent Store)
+Only the `UserDatabase`, `PlayerDatabase`, and `FriendDatabase` classes may read or
+write the platform's persistent store (a relational database). Controllers and game
+logic MUST NOT perform database or file I/O directly. Multi-row or related updates
+(e.g., recording a game result and updating leaderboard stats, or a mutual friend
+add/remove) MUST be atomic (wrapped in a single transaction). Automated tests MUST be
+able to run against an isolated, non-shared instance of the store (e.g., an in-memory
+database) so a test run can never corrupt real player data, and never require manual
+rollback afterward.
+**Rationale**: Centralizing all persistence access in these three classes keeps the
+data layer auditable and swappable regardless of the underlying storage technology;
+requiring atomic multi-row updates and test isolation prevents both partial/corrupt
+writes and the recurring test-data-rollback hazard the original CSV-file version of
+this principle was written to address.
 
 ## Technology & Data Constraints
 
 - Java **23.0.2** and JavaFX **23.0.2** are the required runtime/toolchain versions;
   the project MUST rebuild cleanly after pulling changes, per the README's build
   instructions.
-- Persistent state lives in the three CSV files listed in Principle IV, accessed only
-  through their corresponding `*Database` classes; no new persistence mechanism may be
-  introduced without a constitution amendment.
+- Persistent state lives in a relational database, accessed only through the
+  `UserDatabase`, `PlayerDatabase`, and `FriendDatabase` classes (Principle IV); no
+  further change of persistence mechanism may be introduced without a constitution
+  amendment.
+- The original `userdata.csv`, `playerdata.csv`, and `friends.csv` files are retained
+  only as a one-time migration source and archival backup; the running application does
+  not read from or write to them.
+- All connections to the database MUST be encrypted in transit (TLS); at-rest
+  encryption is not required.
 - Networking code (`networking` package) MUST NOT assume a specific deployment
   environment beyond what is already used for matchmaking/session communication.
 
@@ -81,9 +87,9 @@ test-run mutations to player data as a recurring hazard.
 - Changes to `gameLogic`, `MatchmakingLeaderboard`, or `Authentication` MUST include or
   update JUnit 5 unit tests; changes to controllers MUST include or update integration
   tests (Principle I).
-- Contributors MUST restore `playerdata.csv`/`userdata.csv`/`friends.csv` to their
-  pre-test state after running the test suite locally, and MUST NOT commit test-mutated
-  data files (Principle IV).
+- Automated tests MUST run against an isolated, non-shared database instance, so no
+  manual data rollback or reset is ever required after running the test suite locally
+  (Principle IV).
 - Per team convention, commits and pushes go to the `github` remote, not `origin`.
 
 ## Governance
@@ -98,8 +104,8 @@ require:
 
 Pull/merge requests and reviews for this project MUST verify compliance with the Core
 Principles above, in particular Principle I (test coverage for game/matchmaking/auth
-logic), Principle II (non-author approval + passing CI), and Principle IV (CSV data
-safety). Any deviation MUST be called out and justified in the PR description rather
-than silently merged.
+logic), Principle II (non-author approval + passing CI), and Principle IV (persistent
+store data safety). Any deviation MUST be called out and justified in the PR description
+rather than silently merged.
 
-**Version**: 2.0.0 | **Ratified**: TODO(RATIFICATION_DATE): original adoption date unknown | **Last Amended**: 2026-09-12
+**Version**: 3.0.0 | **Ratified**: TODO(RATIFICATION_DATE): original adoption date unknown | **Last Amended**: 2026-09-12
