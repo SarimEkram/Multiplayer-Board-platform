@@ -1,85 +1,94 @@
 package Authentication;
 
-import MatchmakingLeaderboard.Player;
 import MatchmakingLeaderboard.PlayerDatabase;
+import MatchmakingLeaderboard.persistence.DataSourceProvider;
 
-import java.io.*;
-import java.util.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * The UserDatabase class handles storing, loading, and managing users from a CSV file called "userdata.csv"
- *  This class uses an in-memory list of User objects and keeps it in sync with the CSV file.
+ * The UserDatabase class handles storing, loading, and managing users in the platform's
+ * relational database (see specs/001-postgres-migration). Its public API is frozen —
+ * see contracts/database-api-contract.md — so every method signature here matches the
+ * original CSV-backed implementation exactly.
  */
 
 public class UserDatabase {
-    private static final String FILE_PATH = "userdata.csv";     // Path to the CSV file
-    private static List<User> users = new ArrayList<>();
 
-    // Static block: loads users from CSV when class is first accessed
+    // Identity cache: the original CSV-backed implementation kept one long-lived User object per
+    // account in an in-memory list, so repeated lookups of the same account returned the SAME
+    // object reference. Callers (e.g. DeleteUserAccount.deletedUsers, a HashSet<User> that relies
+    // on User's default reference-based equals/hashCode) depend on that. The database is still
+    // the single source of truth for data; this cache only preserves object identity across reads.
+    private static final Map<Integer, User> identityCache = new ConcurrentHashMap<>();
+
+    // Static block: ensures the connection pool/schema are ready when this class is first used,
+    // mirroring the original CSV version's eager load-on-class-access behavior.
     static {
         loadUsersFromCSV();
     }
 
     /**
-     * Loads all user records from the CSV file into memory
+     * Retained name for API compatibility (see contracts/database-api-contract.md). No in-memory
+     * cache is kept any more — every read queries the database directly — so this simply ensures
+     * the connection pool and schema migrations are initialized.
      */
     public static void loadUsersFromCSV() {
-        users.clear();
-        File file = new File(FILE_PATH);
-        if (!file.exists()) return;
-
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                if (line.trim().isEmpty() || line.startsWith("userID")) continue;
-                String[] parts = line.split(",");
-                if (parts.length != 7) continue;
-
-                User user = new User();
-                user.setSuspendSave(true);    // Temporarily disable auto-save to avoid recursion
-                user.setUserID(Integer.parseInt(parts[0]));
-                user.setUsername(parts[1]);
-                user.setEmail(parts[2]);
-                user.setPassword(parts[3]);
-                user.setWinRatio(Double.parseDouble(parts[4]));
-                user.setLevel(Integer.parseInt(parts[5]));
-                user.setOnlineStatus(Boolean.parseBoolean(parts[6]));
-                user.setSuspendSave(false);
-
-                users.add(user);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        DataSourceProvider.getDataSource();
     }
 
     /**
      * Saves or updates a user in the database.
-     * If the user already exists (by ID), they are updated.
-     * If new, a new ID is assigned, they are added to the list
+     * If a row with the same ID already exists, it is updated.
+     * If not, a new unique ID is assigned and a new row is inserted.
      * @param user The user to save
      * @return true if save is successful
      */
     public static boolean saveUser(User user) {
-        boolean found = false;
-        // Check if user already exists by ID and update if so
-        for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).getUserID() == user.getUserID()) {
-                users.set(i, user);
-                found = true;
-                break;
+        return DataSourceProvider.withTransaction(connection -> {
+            boolean exists;
+            try (PreparedStatement check = connection.prepareStatement(
+                    "SELECT 1 FROM users WHERE user_id = ?")) {
+                check.setInt(1, user.getUserID());
+                try (ResultSet rs = check.executeQuery()) {
+                    exists = rs.next();
+                }
             }
-        }
 
-        // If not found, assign new ID and add to list
-        if (!found) {
-            user.setSuspendSave(true); // temporarily stop saving
-            user.setUserID(generateUniqueUserID());
-            user.setSuspendSave(false); // re-enable saving
-            users.add(user);
-        }
-        return saveAllToCSV();     // Save all users to file
+            if (!exists) {
+                user.setSuspendSave(true);
+                user.setUserID(generateUniqueUserID());
+                user.setSuspendSave(false);
+
+                try (PreparedStatement insert = connection.prepareStatement(
+                        "INSERT INTO users (user_id, username, email, password_hash, win_ratio, level, online_status) "
+                                + "VALUES (?, ?, ?, ?, ?, ?, ?)")) {
+                    bindUser(insert, user);
+                    insert.executeUpdate();
+                }
+            } else {
+                try (PreparedStatement update = connection.prepareStatement(
+                        "UPDATE users SET username = ?, email = ?, password_hash = ?, win_ratio = ?, "
+                                + "level = ?, online_status = ? WHERE user_id = ?")) {
+                    update.setString(1, user.getUsername());
+                    update.setString(2, user.getEmail());
+                    update.setString(3, user.getPassword());
+                    update.setDouble(4, user.getWinRatio());
+                    update.setInt(5, user.getLevel());
+                    update.setBoolean(6, user.isOnline());
+                    update.setInt(7, user.getUserID());
+                    update.executeUpdate();
+                }
+            }
+            // The saved object becomes the canonical cached instance for this ID from now on —
+            // matches the original CSV implementation, which stored this same reference directly
+            // into its in-memory list (see class-level note on identityCache).
+            identityCache.put(user.getUserID(), user);
+            return true;
+        });
     }
 
     /**
@@ -88,9 +97,19 @@ public class UserDatabase {
      * @return true if user was deleted
      */
     public static boolean deleteUser(int userId) {
-        users.removeIf(u -> u.getUserID() == userId);
+        // Matches the original CSV behavior: unconditionally succeeds (idempotent) regardless of
+        // whether a matching row existed, rather than reporting whether a row was actually removed.
+        DataSourceProvider.withConnection(connection -> {
+            try (PreparedStatement delete = connection.prepareStatement(
+                    "DELETE FROM users WHERE user_id = ?")) {
+                delete.setInt(1, userId);
+                delete.executeUpdate();
+                return null;
+            }
+        });
+        identityCache.remove(userId);
         PlayerDatabase.deletePlayer(userId);
-        return saveAllToCSV();
+        return true;
     }
 
     /**
@@ -99,7 +118,15 @@ public class UserDatabase {
      * @return User object or null if not found
      */
     public static User getUserById(int id) {
-        return users.stream().filter(u -> u.getUserID() == id).findFirst().orElse(null);
+        return DataSourceProvider.withConnection(connection -> {
+            try (PreparedStatement select = connection.prepareStatement(
+                    "SELECT * FROM users WHERE user_id = ?")) {
+                select.setInt(1, id);
+                try (ResultSet rs = select.executeQuery()) {
+                    return rs.next() ? cachedUserFrom(rs) : absentFromCache(id);
+                }
+            }
+        });
     }
 
     /**
@@ -107,9 +134,16 @@ public class UserDatabase {
      * @param email The user's email
      * @return User object or null if not found
      */
-
     public static User getUserByEmail(String email) {
-        return users.stream().filter(u -> u.getEmail().equalsIgnoreCase(email)).findFirst().orElse(null);
+        return DataSourceProvider.withConnection(connection -> {
+            try (PreparedStatement select = connection.prepareStatement(
+                    "SELECT * FROM users WHERE LOWER(email) = LOWER(?)")) {
+                select.setString(1, email);
+                try (ResultSet rs = select.executeQuery()) {
+                    return rs.next() ? cachedUserFrom(rs) : null;
+                }
+            }
+        });
     }
 
     /**
@@ -118,59 +152,81 @@ public class UserDatabase {
      * @return User object or null if not found
      */
     public static User getUserByUsername(String username) {
-        return users.stream().filter(u -> u.getUsername().equalsIgnoreCase(username)).findFirst().orElse(null);
+        return DataSourceProvider.withConnection(connection -> {
+            try (PreparedStatement select = connection.prepareStatement(
+                    "SELECT * FROM users WHERE LOWER(username) = LOWER(?)")) {
+                select.setString(1, username);
+                try (ResultSet rs = select.executeQuery()) {
+                    return rs.next() ? cachedUserFrom(rs) : null;
+                }
+            }
+        });
     }
 
-    public static int generateUniqueUserID(){
+    public static int generateUniqueUserID() {
         int userID;
-        do{
+        do {
             userID = ThreadLocalRandom.current().nextInt(100000, 999999);
         }
-        while (getUserById(userID)!=null);
+        while (getUserById(userID) != null);
         return userID;
     }
 
     /**
-     * Writes all users in memory back to the CSV file.
-     * @return true if file write was successful
+     * Retained name for API compatibility (see contracts/database-api-contract.md). Clears all
+     * persisted user data.
+     * @return true if the operation completed successfully
      */
-    private static boolean saveAllToCSV() {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_PATH))) {
-            // Write header
-            bw.write("userID,username,email,password,winRatio,level,onlineStatus\n");
-            // Write each user as CSV row
-            for (User u : users) {
-                bw.write(u.getUserID() + "," +
-                        u.getUsername() + "," +
-                        u.getEmail() + "," +
-                        u.getPassword() + "," +
-                        u.getWinRatio() + "," +
-                        u.getLevel() + "," +
-                        u.isOnline() + "\n");
+    public static boolean deleteCSVFile() {
+        boolean result = DataSourceProvider.withConnection(connection -> {
+            try (PreparedStatement delete = connection.prepareStatement("DELETE FROM users")) {
+                delete.executeUpdate();
+                return true;
             }
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
+        });
+        identityCache.clear();
+        return result;
+    }
+
+    private static void bindUser(PreparedStatement statement, User user) throws java.sql.SQLException {
+        statement.setInt(1, user.getUserID());
+        statement.setString(2, user.getUsername());
+        statement.setString(3, user.getEmail());
+        statement.setString(4, user.getPassword());
+        statement.setDouble(5, user.getWinRatio());
+        statement.setInt(6, user.getLevel());
+        statement.setBoolean(7, user.isOnline());
     }
 
     /**
-     * Deletes the entire CSV file and clears in-memory user data.
-     * @return true if file was deleted successfully
+     * Returns the single cached User instance for this row's user_id, creating it on first sight
+     * and refreshing its fields in place on every subsequent read (never replacing the reference),
+     * so repeated lookups of the same account are reference-equal — see {@link #identityCache}.
      */
-    public static boolean deleteCSVFile() {
-        users.clear();  // Clear the in-memory user list
-        File file = new File(FILE_PATH);
+    private static User cachedUserFrom(ResultSet rs) throws java.sql.SQLException {
+        int userId = rs.getInt("user_id");
+        String username = rs.getString("username");
+        String email = rs.getString("email");
+        String password = rs.getString("password_hash");
+        double winRatio = rs.getDouble("win_ratio");
+        int level = rs.getInt("level");
+        boolean onlineStatus = rs.getBoolean("online_status");
 
-        System.out.println("Attempting to delete file: " + file.getAbsolutePath());
-        if (file.exists()) {
-            boolean deleted = file.delete();
-            System.out.println("CSV deleted: " + deleted);
-            return deleted;
-        } else {
-            System.out.println("CSV file does not exist.");
-            return false;
-        }
+        User user = identityCache.computeIfAbsent(userId, id -> new User());
+        user.setSuspendSave(true);
+        user.setUserID(userId);
+        user.setUsername(username);
+        user.setEmail(email);
+        user.setPassword(password);
+        user.setWinRatio(winRatio);
+        user.setLevel(level);
+        user.setOnlineStatus(onlineStatus);
+        user.setSuspendSave(false);
+        return user;
+    }
+
+    private static User absentFromCache(int userId) {
+        identityCache.remove(userId);
+        return null;
     }
 }

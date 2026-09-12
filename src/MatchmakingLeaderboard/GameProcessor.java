@@ -58,6 +58,8 @@ public class GameProcessor {
 
         PlayerDatabase.savePlayer(winner);
         PlayerDatabase.savePlayer(loser);
+
+        PlayerDatabase.recordGameHistory(gameType, winner.getUserID(), loser.getUserID(), winner.getUserID());
     }
 
     /**
@@ -134,5 +136,7 @@ public class GameProcessor {
 
         PlayerDatabase.savePlayer(p1);
         PlayerDatabase.savePlayer(p2);
+
+        PlayerDatabase.recordGameHistory(gameType, p1.getUserID(), p2.getUserID(), null);
     }
 }

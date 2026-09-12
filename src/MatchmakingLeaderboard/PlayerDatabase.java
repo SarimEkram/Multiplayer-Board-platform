@@ -1,155 +1,112 @@
 package MatchmakingLeaderboard;
 
-import java.io.*;
-import java.util.*;
+import MatchmakingLeaderboard.persistence.DataSourceProvider;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * PlayerDatabase stores and retrieves player stats/leaderboard data in the platform's relational
+ * database (see specs/001-postgres-migration). Its public API is frozen — see
+ * contracts/database-api-contract.md — so every method signature here matches the original
+ * CSV-backed implementation exactly.
+ */
 public class PlayerDatabase {
-    private static final String FILE_PATH = "playerdata.csv";
-    private static List<Player> players = new ArrayList<>();
 
-    // Load all players when the class is first used
+    // Ensures the connection pool/schema are ready when this class is first used, mirroring the
+    // original CSV version's eager load-on-class-access behavior.
     static {
         loadPlayersFromCSV();
     }
 
     /**
-     * Reads player data from the CSV file and loads it into memory.
-     * Expected CSV columns:
-     * username,level,userID,
-     * For each GameType (TIC_TAC_TOE, CONNECT_FOUR, CHECKERS):
-     * wins,losses,mmr,winRatio,rankingPoints,gameSignal
+     * Retained name for API compatibility (see contracts/database-api-contract.md). No in-memory
+     * cache is kept any more — every read queries the database directly — so this simply ensures
+     * the connection pool and schema migrations are initialized.
      */
     public static void loadPlayersFromCSV() {
-        players.clear();
-        File file = new File(FILE_PATH);
-        if (!file.exists()) return;
-
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String line;
-            boolean isHeader = true;
-            while ((line = br.readLine()) != null) {
-                if (isHeader) {
-                    isHeader = false;
-                    continue;
-                }
-
-                String[] parts = line.split(",");
-                // For 3 game types, we expect 3 + (6 * 3) = 21 columns
-                if (parts.length < 21) continue;
-
-                String username = parts[0];
-                int level = Integer.parseInt(parts[1]);
-                int userID = Integer.parseInt(parts[2]);
-
-                Player player = new Player(username, level, userID);
-                int index = 3;
-                for (GameType gameType : GameType.values()) {
-                    int wins = Integer.parseInt(parts[index++]);
-                    int losses = Integer.parseInt(parts[index++]);
-                    int mmr = Integer.parseInt(parts[index++]);
-                    double winRatio = Double.parseDouble(parts[index++]);
-                    RankTier tier = RankTier.valueOf(parts[index++]);
-                    int gameSignal = Integer.parseInt(parts[index++]);
-
-                    // Add wins and losses (which will update the win ratio)
-                    for (int w = 0; w < wins; w++) {
-                        player.addWin(gameType);
-                    }
-                    for (int l = 0; l < losses; l++) {
-                        player.addLoss(gameType);
-                    }
-                    // Set MMR and override win ratio to the saved value
-                    player.setMMR(mmr, gameType);
-                    player.setWinRatio(gameType, winRatio);
-                    // Set rank using the rankingPoints (the Rank constructor updates the tier)
-                    player.setRank(new Rank(tier), gameType);
-                    // Set game signal
-                    player.setGameSignal(gameSignal, gameType);
-                }
-                players.add(player);
-            }
-        } catch (IOException | NumberFormatException e) {
-            e.printStackTrace();
-        }
+        DataSourceProvider.getDataSource();
     }
 
     /**
-     * Saves or updates a player in memory and writes all players to the CSV.
+     * Saves or updates a player's core info and all per-game stats.
      *
      * @param player the player to save
      * @return true if successful
      */
     public static boolean savePlayer(Player player) {
-        for (int i = 0; i < players.size(); i++) {
-            if (players.get(i).getUserID() == player.getUserID()) {
-                players.set(i, player);
-                return saveAllToCSV();
+        return DataSourceProvider.withTransaction(connection -> {
+            // Row-level lock on this player's existing stat rows (if any) before writing, so two
+            // concurrent savePlayer calls for the same player serialize instead of interleaving
+            // mid-write across the players/player_game_stats tables (FR-003; see
+            // contracts/database-api-contract.md "Concurrency guarantee"). This matches — rather
+            // than changes — the original CSV implementation's last-writer-wins semantics: it
+            // only guarantees the write itself is atomic, not that two independent in-memory
+            // mutations of the same player get merged.
+            lockPlayerRows(connection, player.getUserID());
+
+            upsertPlayer(connection, player);
+            for (GameType gameType : GameType.values()) {
+                upsertPlayerGameStats(connection, player, gameType);
             }
-        }
-        players.add(player);
-        return saveAllToCSV();
+            return true;
+        });
     }
 
     /**
      * Retrieves a player by their user ID.
      */
     public static Player getPlayerByUserID(int userID) {
-        return players.stream()
-                .filter(p -> p.getUserID() == userID)
-                .findFirst()
-                .orElse(null);
+        return DataSourceProvider.withConnection(connection -> {
+            try (PreparedStatement select = connection.prepareStatement(
+                    "SELECT * FROM players WHERE user_id = ?")) {
+                select.setInt(1, userID);
+                try (ResultSet rs = select.executeQuery()) {
+                    if (!rs.next()) {
+                        return null;
+                    }
+                    return loadFullPlayer(connection, rs);
+                }
+            }
+        });
     }
 
     /**
      * Deletes a player by user ID.
      */
     public static boolean deletePlayer(int userID) {
-        players.removeIf(p -> p.getUserID() == userID);
-        return saveAllToCSV();
-    }
-
-    /**
-     * Writes all player data back to the CSV file.
-     * CSV Format:
-     * username,level,userID,
-     * For each GameType: wins,losses,mmr,winRatio,rankingPoints,gameSignal
-     */
-    private static boolean saveAllToCSV() {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_PATH))) {
-            // Write header
-            bw.write("username,level,userID");
-            for (GameType game : GameType.values()) {
-                bw.write("," + game + "_wins," + game + "_losses," + game + "_mmr,"
-                        + game + "_winRatio," + game + "_rank," + game + "_gameSignal");
+        return DataSourceProvider.withTransaction(connection -> {
+            try (PreparedStatement deleteStats = connection.prepareStatement(
+                    "DELETE FROM player_game_stats WHERE user_id = ?")) {
+                deleteStats.setInt(1, userID);
+                deleteStats.executeUpdate();
             }
-            bw.newLine();
-
-            // Write player data
-            for (Player p : players) {
-                StringBuilder line = new StringBuilder();
-                line.append(p.getUsername()).append(",")
-                        .append(p.getLevel()).append(",")
-                        .append(p.getUserID());
-                for (GameType game : GameType.values()) {
-                    line.append(",").append(p.getWins(game))
-                            .append(",").append(p.getLosses(game))
-                            .append(",").append(p.getMMR(game))
-                            .append(",").append(p.getWinRatio(game))
-                            .append(",").append(p.rankForPlayer(game))
-                            .append(",").append(p.getGameSignal(game));
-                }
-                bw.write(line.toString());
-                bw.newLine();
+            try (PreparedStatement deletePlayer = connection.prepareStatement(
+                    "DELETE FROM players WHERE user_id = ?")) {
+                deletePlayer.setInt(1, userID);
+                deletePlayer.executeUpdate();
             }
             return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
+        });
     }
 
     public static List<Player> getAllPlayers() {
-        return new ArrayList<>(players);
+        return DataSourceProvider.withConnection(connection -> {
+            List<Player> players = new ArrayList<>();
+            try (PreparedStatement select = connection.prepareStatement("SELECT * FROM players");
+                 ResultSet rs = select.executeQuery()) {
+                while (rs.next()) {
+                    players.add(loadFullPlayer(connection, rs));
+                }
+            }
+            return players;
+        });
     }
 
     /**
@@ -158,9 +115,157 @@ public class PlayerDatabase {
      * @return Player object or null if not found
      */
     public static Player getPlayerByUsername(String username) {
-        return players.stream()
-                .filter(p -> p.getUsername().equalsIgnoreCase(username))
-                .findFirst()
-                .orElse(null);
+        return DataSourceProvider.withConnection(connection -> {
+            try (PreparedStatement select = connection.prepareStatement(
+                    "SELECT * FROM players WHERE LOWER(username) = LOWER(?)")) {
+                select.setString(1, username);
+                try (ResultSet rs = select.executeQuery()) {
+                    if (!rs.next()) {
+                        return null;
+                    }
+                    return loadFullPlayer(connection, rs);
+                }
+            }
+        });
+    }
+
+    /**
+     * Records a completed match in game_history. Additive-only method, not part of the frozen
+     * `*Database` API contract — called from GameProcessor per FR-013.
+     */
+    public static void recordGameHistory(GameType gameType, int playerOneId, int playerTwoId, Integer winnerId) {
+        DataSourceProvider.withConnection(connection -> {
+            try (PreparedStatement insert = connection.prepareStatement(
+                    "INSERT INTO game_history (game_type, player_one_id, player_two_id, winner_id, played_at) "
+                            + "VALUES (?, ?, ?, ?, ?)")) {
+                insert.setString(1, gameType.name());
+                insert.setInt(2, playerOneId);
+                insert.setInt(3, playerTwoId);
+                if (winnerId != null) {
+                    insert.setInt(4, winnerId);
+                } else {
+                    insert.setNull(4, java.sql.Types.BIGINT);
+                }
+                insert.setTimestamp(5, Timestamp.from(Instant.now()));
+                insert.executeUpdate();
+                return null;
+            }
+        });
+    }
+
+    private static void lockPlayerRows(Connection connection, int userId) throws SQLException {
+        try (PreparedStatement lock = connection.prepareStatement(
+                "SELECT user_id FROM player_game_stats WHERE user_id = ? FOR UPDATE")) {
+            lock.setInt(1, userId);
+            lock.executeQuery().close();
+        }
+    }
+
+    private static void upsertPlayer(Connection connection, Player player) throws SQLException {
+        boolean exists;
+        try (PreparedStatement check = connection.prepareStatement(
+                "SELECT 1 FROM players WHERE user_id = ?")) {
+            check.setInt(1, player.getUserID());
+            try (ResultSet rs = check.executeQuery()) {
+                exists = rs.next();
+            }
+        }
+
+        if (exists) {
+            try (PreparedStatement update = connection.prepareStatement(
+                    "UPDATE players SET username = ?, level = ? WHERE user_id = ?")) {
+                update.setString(1, player.getUsername());
+                update.setInt(2, player.getLevel());
+                update.setInt(3, player.getUserID());
+                update.executeUpdate();
+            }
+        } else {
+            try (PreparedStatement insert = connection.prepareStatement(
+                    "INSERT INTO players (user_id, username, level) VALUES (?, ?, ?)")) {
+                insert.setInt(1, player.getUserID());
+                insert.setString(2, player.getUsername());
+                insert.setInt(3, player.getLevel());
+                insert.executeUpdate();
+            }
+        }
+    }
+
+    private static void upsertPlayerGameStats(Connection connection, Player player, GameType gameType) throws SQLException {
+        boolean exists;
+        try (PreparedStatement check = connection.prepareStatement(
+                "SELECT 1 FROM player_game_stats WHERE user_id = ? AND game_type = ?")) {
+            check.setInt(1, player.getUserID());
+            check.setString(2, gameType.name());
+            try (ResultSet rs = check.executeQuery()) {
+                exists = rs.next();
+            }
+        }
+
+        String rankTier = player.rankForPlayer(gameType);
+
+        if (exists) {
+            try (PreparedStatement update = connection.prepareStatement(
+                    "UPDATE player_game_stats SET wins = ?, losses = ?, mmr = ?, win_ratio = ?, "
+                            + "rank_tier = ?, game_signal = ? WHERE user_id = ? AND game_type = ?")) {
+                update.setInt(1, player.getWins(gameType));
+                update.setInt(2, player.getLosses(gameType));
+                update.setInt(3, player.getMMR(gameType));
+                update.setDouble(4, player.getWinRatio(gameType));
+                update.setString(5, rankTier);
+                update.setInt(6, player.getGameSignal(gameType));
+                update.setInt(7, player.getUserID());
+                update.setString(8, gameType.name());
+                update.executeUpdate();
+            }
+        } else {
+            try (PreparedStatement insert = connection.prepareStatement(
+                    "INSERT INTO player_game_stats (user_id, game_type, wins, losses, mmr, win_ratio, rank_tier, game_signal) "
+                            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)")) {
+                insert.setInt(1, player.getUserID());
+                insert.setString(2, gameType.name());
+                insert.setInt(3, player.getWins(gameType));
+                insert.setInt(4, player.getLosses(gameType));
+                insert.setInt(5, player.getMMR(gameType));
+                insert.setDouble(6, player.getWinRatio(gameType));
+                insert.setString(7, rankTier);
+                insert.setInt(8, player.getGameSignal(gameType));
+                insert.executeUpdate();
+            }
+        }
+    }
+
+    /** Loads a Player's core row plus all of its per-game stats rows. */
+    private static Player loadFullPlayer(Connection connection, ResultSet playerRow) throws SQLException {
+        String username = playerRow.getString("username");
+        int level = playerRow.getInt("level");
+        int userID = playerRow.getInt("user_id");
+
+        Player player = new Player(username, level, userID);
+
+        try (PreparedStatement select = connection.prepareStatement(
+                "SELECT * FROM player_game_stats WHERE user_id = ?")) {
+            select.setInt(1, userID);
+            try (ResultSet rs = select.executeQuery()) {
+                while (rs.next()) {
+                    GameType gameType = GameType.valueOf(rs.getString("game_type"));
+
+                    int wins = rs.getInt("wins");
+                    int losses = rs.getInt("losses");
+                    for (int w = 0; w < wins; w++) {
+                        player.addWin(gameType);
+                    }
+                    for (int l = 0; l < losses; l++) {
+                        player.addLoss(gameType);
+                    }
+                    player.setMMR(rs.getInt("mmr"), gameType);
+                    player.setWinRatio(gameType, rs.getDouble("win_ratio"));
+                    RankTier tier = RankTier.valueOf(rs.getString("rank_tier"));
+                    player.setRank(new Rank(tier), gameType);
+                    player.setGameSignal(rs.getInt("game_signal"), gameType);
+                }
+            }
+        }
+
+        return player;
     }
 }

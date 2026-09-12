@@ -3,3 +3,7 @@
 .gitignore
 /out/
 /target/
+
+# Locally-generated dev TLS cert for docker-compose Postgres (001-postgres-migration)
+/db/certs/*.crt
+/db/certs/*.key
